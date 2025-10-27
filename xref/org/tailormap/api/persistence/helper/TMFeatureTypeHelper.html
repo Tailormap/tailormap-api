@@ -31,7 +31,7 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TMFeatureTypeHelper" href="../../../../../org/tailormap/api/persistence/helper/TMFeatureTypeHelper.html#TMFeatureTypeHelper">TMFeatureTypeHelper</a> {
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isEditable(
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>        <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, AppTreeLayerNode appTreeLayerNode, <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType) {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>        Application application, AppTreeLayerNode appTreeLayerNode, TMFeatureType featureType) {
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">if</strong> (featureType == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>        <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      }
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    }
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Set&lt;String&gt; getHiddenAttributes(
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>        @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType, @NotNull AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>        @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      Set&lt;String&gt; hiddenAttributes = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;();
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      Optional.ofNullable(featureType.getSettings().getHideAttributes()).ifPresent(hiddenAttributes::addAll);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      Optional.ofNullable(appLayerSettings.getHideAttributes()).ifPresent(hiddenAttributes::addAll);
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    }
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Set&lt;String&gt; getReadOnlyAttributes(
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType, @NotNull AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>        @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      Set&lt;String&gt; readOnlyAttributes = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;();
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   * @return A sorted map as described</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Map&lt;String, AttributeWithSettings&gt; getConfiguredAttributes(
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>        @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType, @NotNull AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      LinkedHashMap&lt;String, TMAttributeDescriptor&gt; originalAttributesOrder = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">for</strong> (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>        originalAttributesOrder.put(attributeDescriptor.getName(), attributeDescriptor);
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * @return Unordered set of attribute descriptors</em>
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Set&lt;TMAttributeDescriptor&gt; getNonHiddenAttributes(
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>       @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType, @NotNull AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     Set&lt;String&gt; hiddenAttributes = getHiddenAttributes(featureType, appLayerSettings);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">return</strong> featureType.getAttributes().stream()
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         .filter(attributeDescriptor -&gt; !hiddenAttributes.contains(attributeDescriptor.getName()))
@@ -140,7 +140,7 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">   * @return Unordered set of attribute names</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Set&lt;String&gt; getNonHiddenAttributeNames(
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>       @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType, @NotNull AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">return</strong> getNonHiddenAttributes(featureType, appLayerSettings).stream()
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         .map(TMAttributeDescriptor::getName)
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         .collect(Collectors.toSet());

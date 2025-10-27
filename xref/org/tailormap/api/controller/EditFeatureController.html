@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>    }
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> checkFeatureHasOnlyValidAttributes(
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        Feature feature, <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType, AppLayerSettings appLayerSettings) {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>        Feature feature, TMFeatureType tmFeatureType, AppLayerSettings appLayerSettings) {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (!getNonHiddenAttributeNames(tmFeatureType, appLayerSettings)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          .containsAll(feature.getAttributes().keySet())) {
@@ -118,14 +118,14 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>   @Counted(value = <span class="jxr_string">"create_feature"</span>, description = <span class="jxr_string">"number of create feature calls"</span>)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; createFeature(
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>       @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>       @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>       @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>       @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>       @RequestBody Feature completeFeature) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> 
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     checkAuthentication();
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     Map&lt;String, Object&gt; attributesMap = completeFeature.getAttributes();
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
@@ -189,15 +189,15 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>   @Counted(value = <span class="jxr_string">"update_feature"</span>, description = <span class="jxr_string">"number of patch feature calls"</span>)
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; patchFeature(
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>       @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>       @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>       @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>       @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>       @PathVariable String fid,
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>       @RequestBody Feature partialFeature) {
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     checkAuthentication();
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>     <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>     TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> 
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>     Map&lt;String, Object&gt; attributesMap = partialFeature.getAttributes();
@@ -248,14 +248,14 @@
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>   @Counted(value = <span class="jxr_string">"delete_feature"</span>, description = <span class="jxr_string">"number of delete feature calls"</span>)
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Void&gt; deleteFeature(
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>       @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>       @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>       @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>       @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>       @PathVariable String fid) {
 <a class="jxr_linenumber" name="L247" href="#L247">247</a> 
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>     checkAuthentication();
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> 
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>     <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>     TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> 
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     SimpleFeatureSource fs = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">try</strong> (Transaction transaction = <strong class="jxr_keyword">new</strong> DefaultTransaction(<span class="jxr_string">"delete"</span>)) {
@@ -301,8 +301,8 @@
 <a class="jxr_linenumber" name="L293" href="#L293">293</a> <em class="jxr_javadoccomment">   * @param layer the layer to edit</em>
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> <em class="jxr_javadoccomment">   * @return the editable feature type</em>
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>   <strong class="jxr_keyword">private</strong> <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> getEditableFeatureType(
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>       <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, AppTreeLayerNode appTreeLayerNode, <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer layer) {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>   <strong class="jxr_keyword">private</strong> TMFeatureType getEditableFeatureType(
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>       Application application, AppTreeLayerNode appTreeLayerNode, GeoService service, GeoServiceLayer layer) {
 <a class="jxr_linenumber" name="L298" href="#L298">298</a> 
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == layer) {
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Cannot find layer "</span> + appTreeLayerNode);
@@ -313,7 +313,7 @@
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Layer is not editable"</span>);
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
 <a class="jxr_linenumber" name="L307" href="#L307">307</a> 
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == tmft) {
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Layer does not have feature type"</span>);
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>     }
@@ -324,7 +324,7 @@
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">return</strong> tmft;
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>   }
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Feature getFeature(SimpleFeatureSource fs, Filter filter, <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application)
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>       <strong class="jxr_keyword">throws</strong> IOException, FactoryException {
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     Feature modelFeature = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>     <strong class="jxr_keyword">try</strong> (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
@@ -353,11 +353,11 @@
 <a class="jxr_linenumber" name="L345" href="#L345">345</a> 
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>   <em class="jxr_javadoccomment">/** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */</em>
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> handleGeometryAttributesInput(
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>       <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>       TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>       AppLayerSettings appLayerSettings,
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>       Feature modelFeature,
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>       Map&lt;String, Object&gt; attributesMap,
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>       <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>       Application application,
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>       SimpleFeatureSource fs)
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>       <strong class="jxr_keyword">throws</strong> FactoryException {
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 

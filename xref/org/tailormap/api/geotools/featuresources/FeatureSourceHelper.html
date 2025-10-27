@@ -47,18 +47,18 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(TMFeatureSource tmfs) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">return</strong> createDataStore(tmfs, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    }
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">public</strong> SimpleFeatureSource openGeoToolsFeatureSource(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">public</strong> SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">return</strong> ds.getFeatureSource(tmft.getName());
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    }
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadCapabilities(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadCapabilities(TMFeatureSource tmfs) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      loadCapabilities(tmfs, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">return</strong> ds;
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>    }
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadCapabilities(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadCapabilities(TMFeatureSource tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      DataStore ds = createDataStore(tmfs, timeout);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>        <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(tmfs.getTitle())) {
@@ -115,10 +115,10 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>       });
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>       <strong class="jxr_keyword">for</strong> (String typeName : typeNames) {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft = tmfs.getFeatureTypes().stream()
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         TMFeatureType pft = tmfs.getFeatureTypes().stream()
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>             .filter(ft -&gt; ft.getName().equals(typeName))
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>             .findFirst()
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             .orElseGet(() -&gt; <strong class="jxr_keyword">new</strong> <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a>().setName(typeName).setFeatureSource(tmfs));
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             .orElseGet(() -&gt; <strong class="jxr_keyword">new</strong> TMFeatureType().setName(typeName).setFeatureSource(tmfs));
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         <strong class="jxr_keyword">if</strong> (!tmfs.getFeatureTypes().contains(pft)) {
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>           tmfs.getFeatureTypes().add(pft);
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         }
@@ -182,7 +182,7 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>     }
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>   }
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>   <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>   <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TMFeatureTypeInfo()
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         .keywords(info.getKeywords())
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         .description(info.getDescription())

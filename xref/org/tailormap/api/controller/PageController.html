@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    @GetMapping(path = <span class="jxr_string">"${tailormap-api.base-path}/page"</span>)
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> PageResponse homePage() {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <a name="Page" href="../../../../org/tailormap/api/persistence/Page.html#Page">Page</a> page = configurationRepository
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      Page page = configurationRepository
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          .findByKey(Configuration.HOME_PAGE)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          .map(Configuration::getValue)
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          .map(Long::parseLong)
@@ -89,7 +89,7 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">boolean</strong> shouldBeFiltered;
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>    }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">private</strong> PageResponse getPageResponse(<a name="Page" href="../../../../org/tailormap/api/persistence/Page.html#Page">Page</a> page) {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">private</strong> PageResponse getPageResponse(Page page) {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      PageResponse pageResponse = <strong class="jxr_keyword">new</strong> PageResponse();
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      copyProperties(page, pageResponse);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      pageResponse.tiles(page.getTiles().stream()

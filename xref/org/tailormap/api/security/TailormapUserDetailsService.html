@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    @Override
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    <strong class="jxr_keyword">public</strong> UserDetails loadUserByUsername(String username) <strong class="jxr_keyword">throws</strong> UsernameNotFoundException {
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a> user = userRepository.findById(username).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      User user = userRepository.findById(username).orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">if</strong> (user == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UsernameNotFoundException(<span class="jxr_string">"User "</span> + username + <span class="jxr_string">" not found"</span>);
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      }

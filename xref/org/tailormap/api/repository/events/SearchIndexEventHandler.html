@@ -61,7 +61,7 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">   * @param searchIndex the search index that was deleted</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    @HandleAfterDelete
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> afterDeleteSearchIndexEventHandler(<a name="SearchIndex" href="../../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> afterDeleteSearchIndexEventHandler(SearchIndex searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != searchIndex.getSchedule()) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>        JobKey jobKey = taskManagerService.getJobKey(
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>            TaskType.INDEX, searchIndex.getSchedule().getUuid());
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * @throws SchedulerException if the task could not be created or updated</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>    @HandleBeforeSave
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeSaveSearchIndexEventHandler(<a name="SearchIndex" href="../../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeSaveSearchIndexEventHandler(SearchIndex searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      <em class="jxr_comment">// TODO we don't handle the case where the schedule is null here; we would need to determine if</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <em class="jxr_comment">//   a task exists that was associated with the search index before;</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      <em class="jxr_comment">//   this case can already be handled requesting a delete of the scheduled task instead</em>
@@ -145,7 +145,7 @@
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">   * @param searchIndex the search index to validate for scheduling a task</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">   * @throws SchedulerException if there is a task that is already associated with the given index</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> validateNoTaskExistsForIndex(<a name="SearchIndex" href="../../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> validateNoTaskExistsForIndex(SearchIndex searchIndex) <strong class="jxr_keyword">throws</strong> SchedulerException {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     Optional&lt;JobDataMap&gt; jobDataMapOptional =
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         scheduler.getJobKeys(GroupMatcher.groupEquals(TaskType.INDEX.getValue())).stream()
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             .map(jobKey -&gt; {

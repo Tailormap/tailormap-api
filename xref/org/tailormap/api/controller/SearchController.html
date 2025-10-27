@@ -75,8 +75,8 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>    @Counted(value = <span class="jxr_string">"search"</span>, description = <span class="jxr_string">"number of search calls"</span>)
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; search(
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @ModelAttribute GeoService service,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>        @RequestParam(required = false, name = <span class="jxr_string">"q"</span>) <strong class="jxr_keyword">final</strong> String solrQuery,
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>        @RequestParam(required = false, defaultValue = <span class="jxr_string">"0"</span>) Integer start,
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>        @RequestParam(required = false, name = <span class="jxr_string">"fq"</span>) <strong class="jxr_keyword">final</strong> String solrFilterQuery,
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>            <span class="jxr_string">"Layer '%s' does not have a search index"</span>.formatted(appTreeLayerNode.getLayerName()));
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">final</strong> <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex = searchIndexRepository
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">final</strong> SearchIndex searchIndex = searchIndexRepository
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          .findById(appLayerSettings.getSearchIndexId())
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              HttpStatus.NOT_FOUND,

@@ -91,8 +91,8 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>        method = {GET, POST},
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>        path = <span class="jxr_string">"/tiles3d/**"</span>)
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; proxy3dtiles(
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        @ModelAttribute Application application,
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>        @ModelAttribute GeoServiceLayer layer,
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>        HttpServletRequest request) {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
@@ -106,8 +106,8 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>        path = <span class="jxr_string">"/{protocol}"</span>)
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>    @Timed(value = <span class="jxr_string">"proxy"</span>, description = <span class="jxr_string">"Proxy OGC service calls"</span>)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; proxy(
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>       @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>       @ModelAttribute Application application,
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>       @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>       @ModelAttribute GeoServiceLayer layer,
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>       @PathVariable(<span class="jxr_string">"protocol"</span>) GeoServiceProtocol protocol,
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>       HttpServletRequest request) {
@@ -135,7 +135,7 @@
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>   }
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> checkRequestValidity(
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>       <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer layer, GeoServiceProtocol protocol) {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>       Application application, GeoService service, GeoServiceLayer layer, GeoServiceProtocol protocol) {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong> || layer == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND);
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
@@ -164,7 +164,7 @@
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     }
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>   }
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>   <strong class="jxr_keyword">private</strong> @Nullable URI buildLegendURI(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer layer, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>   <strong class="jxr_keyword">private</strong> @Nullable URI buildLegendURI(GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(service, layer);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">if</strong> (legendURI == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
@@ -194,7 +194,7 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">return</strong> uriComponentsBuilder.build(<strong class="jxr_keyword">true</strong>).toUri();
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>   }
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>   <strong class="jxr_keyword">private</strong> URI buildWMSUrl(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>   <strong class="jxr_keyword">private</strong> URI buildWMSUrl(GeoService service, HttpServletRequest request) {
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     <strong class="jxr_keyword">final</strong> UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     <em class="jxr_comment">// request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST</em>
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     <em class="jxr_comment">// body</em>
@@ -229,7 +229,7 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">return</strong> params;
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>   }
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>   <strong class="jxr_keyword">private</strong> URI build3DTilesUrl(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>   <strong class="jxr_keyword">private</strong> URI build3DTilesUrl(GeoService service, HttpServletRequest request) {
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>     <em class="jxr_comment">// The URL in the GeoService refers to the location of the JSON file describing the tileset,</em>
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>     <em class="jxr_comment">// e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do</em>
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>     <em class="jxr_comment">// not include the '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.</em>
@@ -255,7 +255,7 @@
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>   }
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> 
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>   @SuppressWarnings(<span class="jxr_string">"PMD.CloseResource"</span>)
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResponseEntity&lt;?&gt; doProxy(URI uri, <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResponseEntity&lt;?&gt; doProxy(URI uri, GeoService service, HttpServletRequest request) {
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">final</strong> HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     <em class="jxr_comment">// XXX not sure when this httpClient is closed... ignore for now</em>
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">final</strong> HttpClient httpClient = builder.build();

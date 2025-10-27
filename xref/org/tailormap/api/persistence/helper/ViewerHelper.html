@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> record AppLayerContext(
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>        @NotNull AppTreeLayerNode node,
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>        @NotNull AppLayerSettings appLayerSettings,
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        @NotNull <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        @NotNull GeoService geoService,
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>        @NotNull GeoServiceLayer geoServiceLayer,
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>        @Null FeatureTypeRef featureTypeRef) {}
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">   * @param application the application</em>
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">   * @return a map of appLayerId to AppLayerContext</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerContext&gt; getAppLayerContextMap(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerContext&gt; getAppLayerContextMap(Application application) {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">return</strong> getAppLayerContextMap(application, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   * @param appLayerIds the list of appLayerIds to limit the result to</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   * @return a map of appLayerId to AppLayerContext</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerContext&gt; getAppLayerContextMap(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, List&lt;String&gt; appLayerIds) {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerContext&gt; getAppLayerContextMap(Application application, List&lt;String&gt; appLayerIds) {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      Map&lt;String, AppTreeLayerNode&gt; nodeMap = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      application.getAllAppTreeLayerNode().forEach(node -&gt; {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>        <strong class="jxr_keyword">if</strong> (appLayerIds == <strong class="jxr_keyword">null</strong> || appLayerIds.contains(node.getId())) {
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>        String appLayerId = entry.getKey();
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>        AppTreeLayerNode lyrNode = entry.getValue();
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service = geoServiceMap.get(lyrNode.getServiceId());
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        GeoService service = geoServiceMap.get(lyrNode.getServiceId());
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>        <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">continue</strong>;
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>        }
@@ -123,9 +123,9 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>   <strong class="jxr_keyword">public</strong> record AppLayerFullContext(
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>       @NotNull AppTreeLayerNode node,
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>       @NotNull AppLayerSettings appLayerSettings,
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>       @NotNull <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>       @NotNull GeoService geoService,
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>       @NotNull GeoServiceLayer geoServiceLayer,
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>       @NotNull <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> featureType) {}
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>       @NotNull TMFeatureType featureType) {}
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> 
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">   * As #getAppLayerContextMap(), but only with nodes that reference an existing GeoServiceLayer that has a feature</em>
@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">   * @param application the application</em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">   * @return a map of appLayerId to AppLayerFullContext</em>
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerFullContext&gt; getAppLayerFullContextMap(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerFullContext&gt; getAppLayerFullContextMap(Application application) {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">return</strong> getAppLayerFullContextMap(application, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
@@ -146,7 +146,7 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">   * @return a map of appLayerId to AppLayerFullContext</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, AppLayerFullContext&gt; getAppLayerFullContextMap(
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>       <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, List&lt;String&gt; appLayerIds) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>       Application application, List&lt;String&gt; appLayerIds) {
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>     Map&lt;String, AppLayerContext&gt; contextMap = getAppLayerContextMap(application, appLayerIds);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>     <em class="jxr_comment">// Efficiently retrieve all TMFeatureSources in a single query</em>

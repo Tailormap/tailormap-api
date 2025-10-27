@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      <em class="jxr_comment">// Note that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <em class="jxr_comment">// have no ID's yet. So for a created feature source the frontend must retrieve the</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      <em class="jxr_comment">// TMFeatureSource separately or use the return value of the POST request.</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">if</strong> (!(entity instanceof <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a>)) {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">if</strong> (!(entity instanceof TMFeatureType)) {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>        sendEvent(ENTITY_CREATED, entity, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
@@ -104,7 +104,7 @@
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postRemove(Object entity) {
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>      <em class="jxr_comment">// Feature types are only deleted when refreshing the feature source, so the updated/deleted</em>
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      <em class="jxr_comment">// event for TMFeatureSource suffices.</em>
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">if</strong> (!(entity instanceof <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a>)) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">if</strong> (!(entity instanceof TMFeatureType)) {
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>       sendEvent(ENTITY_DELETED, entity, false);
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>   }

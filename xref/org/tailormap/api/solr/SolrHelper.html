@@ -174,9 +174,9 @@
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">   * @return the possibly updated {@code searchIndex} object</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>   @SuppressWarnings(<span class="jxr_string">"FromTemporalAccessor"</span>)
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>   <strong class="jxr_keyword">public</strong> <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> addFeatureTypeIndex(
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       @NotNull <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex,
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>   <strong class="jxr_keyword">public</strong> SearchIndex addFeatureTypeIndex(
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       @NotNull SearchIndex searchIndex,
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>       @NotNull TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>       @NotNull <a name="FeatureSourceFactoryHelper" href="../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper,
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>       @NotNull <a name="SearchIndexRepository" href="../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository)
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>       <strong class="jxr_keyword">throws</strong> IOException, SolrServerException {
@@ -202,9 +202,9 @@
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">   * @return the possibly updated {@code searchIndex} object</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>   @SuppressWarnings(<span class="jxr_string">"FromTemporalAccessor"</span>)
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>   <strong class="jxr_keyword">public</strong> <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> addFeatureTypeIndex(
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>       @NotNull <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex,
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>   <strong class="jxr_keyword">public</strong> SearchIndex addFeatureTypeIndex(
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>       @NotNull SearchIndex searchIndex,
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       @NotNull TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>       @NotNull <a name="FeatureSourceFactoryHelper" href="../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper,
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       @NotNull <a name="SearchIndexRepository" href="../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository,
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>       @NotNull Consumer&lt;TaskProgressEvent&gt; progressListener,
@@ -453,7 +453,7 @@
 <a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">   * @throws SolrServerException if a Solr error occurs</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>   <strong class="jxr_keyword">public</strong> SearchResponse findInIndex(
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>       @NotNull <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex,
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>       @NotNull SearchIndex searchIndex,
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>       String solrQuery,
 <a class="jxr_linenumber" name="L450" href="#L450">450</a>       String solrFilterQuery,
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>       String solrPoint,

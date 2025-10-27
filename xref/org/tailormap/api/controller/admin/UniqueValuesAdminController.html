@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Attribute name is required"</span>);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = <strong class="jxr_keyword">this</strong>.featureTypeRepository
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      TMFeatureType tmft = <strong class="jxr_keyword">this</strong>.featureTypeRepository
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          .findById(featureTypeId)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Feature type not found"</span>));
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  

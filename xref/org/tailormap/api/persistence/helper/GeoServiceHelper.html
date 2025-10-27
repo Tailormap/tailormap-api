@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         .orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   }
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> 
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadServiceCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadServiceCapabilities(GeoService geoService) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">if</strong> (geoService.getProtocol() == XYZ) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>       setXyzCapabilities(geoService);
@@ -188,7 +188,7 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>     }
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>   }
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setXyzCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setXyzCapabilities(GeoService geoService) {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     geoService.setLayers(List.of(<strong class="jxr_keyword">new</strong> GeoServiceLayer()
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         .id(<span class="jxr_string">"0"</span>)
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         .root(<strong class="jxr_keyword">true</strong>)
@@ -199,7 +199,7 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         .queryable(false)));
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>   }
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> set3DTilesCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> set3DTilesCapabilities(GeoService geoService) {
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>     geoService.setLayers(List.of(<strong class="jxr_keyword">new</strong> GeoServiceLayer()
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         .id(<span class="jxr_string">"0"</span>)
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         .root(<strong class="jxr_keyword">true</strong>)
@@ -209,7 +209,7 @@
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         .queryable(false)));
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>   }
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setQuantizedMeshCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setQuantizedMeshCapabilities(GeoService geoService) {
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>     geoService.setLayers(List.of(<strong class="jxr_keyword">new</strong> GeoServiceLayer()
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         .id(<span class="jxr_string">"0"</span>)
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         .root(<strong class="jxr_keyword">true</strong>)
@@ -220,7 +220,7 @@
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>   }
 <a class="jxr_linenumber" name="L213" href="#L213">213</a> 
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setServiceInfo(
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>       <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>       GeoService geoService,
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>       <a name="ResponseTeeingHTTPClient" href="../../../../../org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client,
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>       AbstractOpenWebService&lt;? <strong class="jxr_keyword">extends</strong> Capabilities, Layer&gt; ows) {
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>     geoService.setCapabilities(client.getLatestResponseCopy());
@@ -302,7 +302,7 @@
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>   }
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addLayerRecursive(
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>       <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers, Layer layer, Set&lt;String&gt; parentCrs) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>       GeoService geoService, List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers, Layer layer, Set&lt;String&gt; parentCrs) {
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>     GeoServiceLayer geoServiceLayer = toGeoServiceLayer(layer, layers);
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>     <em class="jxr_comment">// Crses are inherited from the parent and this is applied by GeoTools so Layer.getSrs() has all</em>
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>     <em class="jxr_comment">// supported crses, but to save space we reverse that by only saving new crses for child layers</em>
@@ -314,7 +314,7 @@
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>   }
 <a class="jxr_linenumber" name="L308" href="#L308">308</a> 
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>   <strong class="jxr_keyword">void</strong> loadWMSCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>   <strong class="jxr_keyword">void</strong> loadWMSCapabilities(GeoService geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>     WebMapServer wms;
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>       wms = <strong class="jxr_keyword">new</strong> WebMapServer(<strong class="jxr_keyword">new</strong> URI(geoService.getUrl()).toURL(), client);
@@ -403,7 +403,7 @@
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>         Collections.emptySet());
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>   }
 <a class="jxr_linenumber" name="L397" href="#L397">397</a> 
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>   <strong class="jxr_keyword">void</strong> loadWMTSCapabilities(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>   <strong class="jxr_keyword">void</strong> loadWMTSCapabilities(GeoService geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>     WebMapTileServer wmts = <strong class="jxr_keyword">new</strong> WebMapTileServer(<strong class="jxr_keyword">new</strong> URI(geoService.getUrl()).toURL(), client);
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>     setServiceInfo(geoService, client, wmts);
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> 
@@ -414,7 +414,7 @@
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>         layers.stream().map(l -&gt; toGeoServiceLayer(l, layers)).collect(Collectors.toList()));
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>   }
 <a class="jxr_linenumber" name="L408" href="#L408">408</a> 
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, SimpleWFSLayerDescription&gt; findRelatedWFS(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, SimpleWFSLayerDescription&gt; findRelatedWFS(GeoService geoService) {
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>     <em class="jxr_comment">// TODO: report back progress</em>
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> 
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">if</strong> (CollectionUtils.isEmpty(geoService.getLayers())) {
@@ -466,7 +466,7 @@
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>     <strong class="jxr_keyword">return</strong> descriptions;
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>   }
 <a class="jxr_linenumber" name="L460" href="#L460">460</a> 
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> findAndSaveRelatedWFS(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> findAndSaveRelatedWFS(GeoService geoService) {
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>     <strong class="jxr_keyword">if</strong> (geoService.getProtocol() != WMS) {
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException();
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>     }
@@ -479,9 +479,9 @@
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>         .map(SimpleWFSLayerDescription::wfsUrl)
 <a class="jxr_linenumber" name="L472" href="#L472">472</a>         .distinct()
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>         .forEach(url -&gt; {
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>           <a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> fs = featureSourceRepository.findByUrl(url);
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>           TMFeatureSource fs = featureSourceRepository.findByUrl(url);
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>           <strong class="jxr_keyword">if</strong> (fs == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>             fs = <strong class="jxr_keyword">new</strong> <a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a>()
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>             fs = <strong class="jxr_keyword">new</strong> TMFeatureSource()
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>                 .setProtocol(WFS)
 <a class="jxr_linenumber" name="L478" href="#L478">478</a>                 .setUrl(url)
 <a class="jxr_linenumber" name="L479" href="#L479">479</a>                 .setTitle(<span class="jxr_string">"WFS for "</span> + geoService.getTitle())
@@ -512,7 +512,7 @@
 <a class="jxr_linenumber" name="L504" href="#L504">504</a> <em class="jxr_javadoccomment">   * @param serviceLayer the layer to get the legend url for</em>
 <a class="jxr_linenumber" name="L505" href="#L505">505</a> <em class="jxr_javadoccomment">   * @return a URI to the legend image or null if not found</em>
 <a class="jxr_linenumber" name="L506" href="#L506">506</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI getLayerLegendUrlFromStyles(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer) {
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI getLayerLegendUrlFromStyles(GeoService service, GeoServiceLayer serviceLayer) {
 <a class="jxr_linenumber" name="L508" href="#L508">508</a>     <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
 <a class="jxr_linenumber" name="L509" href="#L509">509</a>       <em class="jxr_comment">// if this is a root layer, there are no parent layers, return the first style we find for</em>
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>       <em class="jxr_comment">// this layer, if any</em>

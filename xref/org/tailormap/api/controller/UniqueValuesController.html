@@ -73,9 +73,9 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>    @Timed(value = <span class="jxr_string">"get_unique_attributes"</span>, description = <span class="jxr_string">"time spent to process get unique attributes call"</span>)
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>    @Counted(value = <span class="jxr_string">"get_unique_attributes"</span>, description = <span class="jxr_string">"number of unique attributes calls"</span>)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getUniqueAttributes(
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>        @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @ModelAttribute Application app,
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>        @PathVariable(<span class="jxr_string">"attributeName"</span>) String attributeName,
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>        @RequestParam(required = false) String filter) {
@@ -83,7 +83,7 @@
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Attribute name is required"</span>);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      AppLayerSettings appLayerSettings = app.getAppLayerSettings(appTreeLayerNode);
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">if</strong> (tmft == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Layer does not have feature type"</span>);

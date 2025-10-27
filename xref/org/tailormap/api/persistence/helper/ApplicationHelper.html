@@ -102,14 +102,14 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">this</strong>.searchIndexRepository = searchIndexRepository;
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">public</strong> <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> getServiceApplication(String baseAppName, String projection, <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service) {
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">public</strong> Application getServiceApplication(String baseAppName, String projection, GeoService service) {
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">if</strong> (baseAppName == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>        baseAppName = Optional.ofNullable(service.getSettings().getPublishing())
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>           .map(ServicePublishingSettings::getBaseApp)
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>           .orElseGet(() -&gt; configurationRepository.get(Configuration.DEFAULT_BASE_APP));
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> baseApp = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     Application baseApp = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">if</strong> (baseAppName != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>       baseApp = applicationRepository.findByName(baseAppName);
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>       <strong class="jxr_keyword">if</strong> (baseApp != <strong class="jxr_keyword">null</strong>) {
@@ -119,7 +119,7 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>       }
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app = baseApp != <strong class="jxr_keyword">null</strong> ? baseApp : <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a>().setContentRoot(<strong class="jxr_keyword">new</strong> AppContent());
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     Application app = baseApp != <strong class="jxr_keyword">null</strong> ? baseApp : <strong class="jxr_keyword">new</strong> Application().setContentRoot(<strong class="jxr_keyword">new</strong> AppContent());
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">if</strong> (projection != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>       <em class="jxr_comment">// TODO: filter layers by projection parameter (layer.crs must inherit crs from parent layers)</em>
@@ -138,14 +138,14 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>   }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   @Transactional
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>   <strong class="jxr_keyword">public</strong> MapResponse toMapResponse(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app) {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>   <strong class="jxr_keyword">public</strong> MapResponse toMapResponse(Application app) {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     MapResponse mapResponse = <strong class="jxr_keyword">new</strong> MapResponse();
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     setCrsAndBounds(app, mapResponse);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     setLayers(app, mapResponse);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">return</strong> mapResponse;
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setCrsAndBounds(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> a, MapResponse mapResponse) {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setCrsAndBounds(Application a, MapResponse mapResponse) {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     CoordinateReferenceSystem gtCrs = a.getGeoToolsCoordinateReferenceSystem();
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>     <strong class="jxr_keyword">if</strong> (gtCrs == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Invalid CRS: "</span> + a.getCrs());
@@ -165,11 +165,11 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayers(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mr) {
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayers(Application app, MapResponse mr) {
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">new</strong> MapResponseLayerBuilder(app, mr).buildLayers();
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>   }
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">private</strong> String getProxyUrl(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, AppTreeLayerNode appTreeLayerNode) {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">private</strong> String getProxyUrl(GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     String baseProxyUrl = linkTo(
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>             GeoServiceProxyController.<strong class="jxr_keyword">class</strong>,
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>             Map.of(
@@ -186,7 +186,7 @@
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">return</strong> baseProxyUrl + protocolPath;
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>   }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>   <strong class="jxr_keyword">private</strong> String getLegendProxyUrl(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, AppTreeLayerNode appTreeLayerNode) {
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>   <strong class="jxr_keyword">private</strong> String getLegendProxyUrl(Application application, AppTreeLayerNode appTreeLayerNode) {
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">return</strong> linkTo(
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>             GeoServiceProxyController.<strong class="jxr_keyword">class</strong>,
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>             Map.of(
@@ -200,12 +200,12 @@
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>   }
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">class</strong> MapResponseLayerBuilder {
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app;
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Application app;
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> MapResponse mapResponse;
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     <em class="jxr_comment">// XXX not needed if we have GeoServiceLayer.getService().getName()</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;GeoServiceLayer, String&gt; serviceLayerServiceIds = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L199" href="#L199">199</a> 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     MapResponseLayerBuilder(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mapResponse) {
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>     MapResponseLayerBuilder(Application app, MapResponse mapResponse) {
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       <strong class="jxr_keyword">this</strong>.app = app;
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>       <strong class="jxr_keyword">this</strong>.mapResponse = mapResponse;
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>     }
@@ -326,7 +326,7 @@
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>       <strong class="jxr_keyword">if</strong> (layerInfo == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>         <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>       }
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>       <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service = layerInfo.service();
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>       GeoService service = layerInfo.service();
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>       GeoServiceLayer serviceLayer = layerInfo.serviceLayer();
 <a class="jxr_linenumber" name="L323" href="#L323">323</a> 
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>       <em class="jxr_comment">// Some settings can be set on the app layer level, layer level or service level (default</em>
@@ -383,7 +383,7 @@
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>       <em class="jxr_comment">// Do not get from defaultLayerSettings because a default wouldn't make sense</em>
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>       String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();
 <a class="jxr_linenumber" name="L377" href="#L377">377</a> 
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>       <a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>       TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
 <a class="jxr_linenumber" name="L379" href="#L379">379</a> 
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>       <strong class="jxr_keyword">boolean</strong> proxied = service.getSettings().getUseProxy();
 <a class="jxr_linenumber" name="L381" href="#L381">381</a> 
@@ -411,7 +411,7 @@
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>         }
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>       }
 <a class="jxr_linenumber" name="L405" href="#L405">405</a> 
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>       <a name="SearchIndex" href="../../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       SearchIndex searchIndex = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>       <strong class="jxr_keyword">if</strong> (appLayerSettings.getSearchIndexId() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>         searchIndex = searchIndexRepository
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>             .findById(appLayerSettings.getSearchIndexId())
@@ -462,7 +462,7 @@
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>     }
 <a class="jxr_linenumber" name="L455" href="#L455">455</a> 
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>     <strong class="jxr_keyword">private</strong> ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>       <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service =
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       GeoService service =
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>           geoServiceRepository.findById(layerRef.getServiceId()).orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>       <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>         logger.warn(
@@ -508,7 +508,7 @@
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>     }
 <a class="jxr_linenumber" name="L501" href="#L501">501</a> 
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>         <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>         GeoService service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
 <a class="jxr_linenumber" name="L505" href="#L505">505</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
 <a class="jxr_linenumber" name="L506" href="#L506">506</a>       }
@@ -536,7 +536,7 @@
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>     }
 <a class="jxr_linenumber" name="L529" href="#L529">529</a> 
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>     record ServiceLayerInfo(
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>         <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>         GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
 <a class="jxr_linenumber" name="L532" href="#L532">532</a>   }
 <a class="jxr_linenumber" name="L533" href="#L533">533</a> }
 </pre>

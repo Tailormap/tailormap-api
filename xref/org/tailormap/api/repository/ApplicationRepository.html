@@ -25,7 +25,7 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="ApplicationRepository" href="../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a>
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>      <strong class="jxr_keyword">extends</strong> JpaRepository&lt;Application, Long&gt;, RevisionRepository&lt;Application, Long, Long&gt; {
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> findByName(String name);
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    Application findByName(String name);
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>    @Override

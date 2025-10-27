@@ -66,16 +66,16 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    @GetMapping
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Timed(value = <span class="jxr_string">"get_layer_description"</span>, description = <span class="jxr_string">"Get layer description"</span>)
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getAppLayerDescription(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>        @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>        @ModelAttribute GeoServiceLayer layer) {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">if</strong> (layer == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Can't find layer "</span> + appTreeLayerNode);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">if</strong> (tmft == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Layer does not have feature type"</span>);
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <a name="Form" href="../../../../org/tailormap/api/persistence/Form.html#Form">Form</a> form;
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      Form form;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (appLayerSettings.getFormId() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>        form = formRepository.findById(appLayerSettings.getFormId()).orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">if</strong> (form != <strong class="jxr_keyword">null</strong>) {

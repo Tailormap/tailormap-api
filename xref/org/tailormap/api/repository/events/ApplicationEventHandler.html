@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   * @param application the application that was deleted</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    @HandleAfterDelete
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> afterDeleteApplicationEventHandler(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> afterDeleteApplicationEventHandler(Application application) {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      logger.trace(<span class="jxr_string">"Application '{}' (id: {}) was deleted."</span>, application.getName(), application.getId());
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">if</strong> (prometheusService.isPrometheusAvailable()) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>        <em class="jxr_comment">// cleanup any metrics from Prometheus or other systems if needed</em>
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>    }
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>    @HandleBeforeSave
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeSaveApplicationEventHandler(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeSaveApplicationEventHandler(Application application) {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">if</strong> (prometheusService.isPrometheusAvailable()) {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>        <em class="jxr_comment">// cleanup any metrics from Prometheus if needed</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>        Set&lt;String&gt; oldNodeIds = application

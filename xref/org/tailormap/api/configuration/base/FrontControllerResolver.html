@@ -156,7 +156,7 @@
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_comment">// configured for the app</em>
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> 
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">if</strong> (!staticOnly) {
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>       <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       Application app = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>       <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"index.html"</span>.equals(requestPath) || requestPath.matches(<span class="jxr_string">"^app/?"</span>)) {
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         app = applicationRepository.findByName(defaultAppName);

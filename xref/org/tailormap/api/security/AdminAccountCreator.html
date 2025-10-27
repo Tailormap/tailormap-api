@@ -90,7 +90,7 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>    }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> createAdmin(String username, String hashedPassword) {
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a> u = <strong class="jxr_keyword">new</strong> <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a>().setUsername(username).setPassword(hashedPassword);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      User u = <strong class="jxr_keyword">new</strong> User().setUsername(username).setPassword(hashedPassword);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      userRepository.saveAndFlush(u);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    }

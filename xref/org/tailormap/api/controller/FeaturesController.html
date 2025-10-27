@@ -111,9 +111,9 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Timed(value = <span class="jxr_string">"get_features"</span>, description = <span class="jxr_string">"time spent to process get features call"</span>)
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getFeatures(
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>       @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>       @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>       @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>       @ModelAttribute Application application,
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>       @RequestParam(required = false) Double x,
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>       @RequestParam(required = false) Double y,
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>       @RequestParam(defaultValue = <span class="jxr_string">"4"</span>) Double distance,
@@ -130,7 +130,7 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Can't find layer "</span> + appTreeLayerNode);
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">if</strong> (tmft == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Layer does not have feature type"</span>);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     }
@@ -166,8 +166,8 @@
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   @NotNull <strong class="jxr_keyword">private</strong> FeaturesResponse getAllFeatures(
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft,
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>       @NotNull <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>       @NotNull TMFeatureType tmft,
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>       @NotNull Application application,
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>       @NotNull AppLayerSettings appLayerSettings,
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>       Integer page,
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>       String filterCQL,
@@ -282,10 +282,10 @@
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>   }
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> 
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>   @NotNull <strong class="jxr_keyword">private</strong> FeaturesResponse getFeatureByFID(
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>       @NotNull TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>       @NotNull AppLayerSettings appLayerSettings,
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>       @NotNull String fid,
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>       @NotNull <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>       @NotNull Application application,
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>       <strong class="jxr_keyword">boolean</strong> skipGeometryOutput) {
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>     FeaturesResponse featuresResponse = <strong class="jxr_keyword">new</strong> FeaturesResponse();
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> 
@@ -319,12 +319,12 @@
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>   }
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> 
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>   @NotNull <strong class="jxr_keyword">private</strong> FeaturesResponse getFeaturesByXY(
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>       @NotNull TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>       @NotNull AppLayerSettings appLayerSettings,
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>       String filterCQL,
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>       @NotNull Double x,
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>       @NotNull Double y,
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>       @NotNull <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>       @NotNull Application application,
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>       @NotNull Double distance,
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>       @NotNull Boolean simplifyGeometry,
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>       <strong class="jxr_keyword">boolean</strong> skipGeometryOutput) {
@@ -395,12 +395,12 @@
 <a class="jxr_linenumber" name="L387" href="#L387">387</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> executeQueryOnFeatureSourceAndClose(
 <a class="jxr_linenumber" name="L388" href="#L388">388</a>       <strong class="jxr_keyword">boolean</strong> simplifyGeometry,
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>       @NotNull FeaturesResponse featuresResponse,
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>       @NotNull <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmFeatureType,
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>       @NotNull TMFeatureType tmFeatureType,
 <a class="jxr_linenumber" name="L391" href="#L391">391</a>       @NotNull AppLayerSettings appLayerSettings,
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>       <strong class="jxr_keyword">boolean</strong> onlyGeometries,
 <a class="jxr_linenumber" name="L393" href="#L393">393</a>       @NotNull SimpleFeatureSource featureSource,
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>       @NotNull Query selectQuery,
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>       @NotNull <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>       @NotNull Application application,
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>       <strong class="jxr_keyword">boolean</strong> skipGeometryOutput)
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>       <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>     <strong class="jxr_keyword">boolean</strong> addFields = false;

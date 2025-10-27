@@ -41,7 +41,7 @@
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    @Timed(value = <span class="jxr_string">"get_config_key"</span>, description = <span class="jxr_string">"Get configuration value"</span>)
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Counted(value = <span class="jxr_string">"get_config_key"</span>, description = <span class="jxr_string">"Count of get configuration value"</span>)
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getConfig(@PathVariable String key) {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <a name="Configuration" href="../../../../org/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a> config = configurationRepository
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      Configuration config = configurationRepository
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          .getAvailableForViewer(key)
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND));
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
