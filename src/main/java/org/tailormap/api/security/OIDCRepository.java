@@ -102,12 +102,9 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   public void synchronize() {
     Map<String, ClientRegistration> newMap = new HashMap<>();
 
-    final HttpClient httpClient = HttpClient.newBuilder()
-        .followRedirects(HttpClient.Redirect.NORMAL)
-        .build();
     for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {
       String id = "%d".formatted(configuration.getId());
-      try (httpClient) {
+      try (HttpClient httpClient = HttpClient.newBuilder().build()) {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
             .uri(new URI(configuration.getIssuerUrl() + "/.well-known/openid-configuration"));
         HttpResponse<String> response =
@@ -148,7 +145,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
     }
 
     if (isNotBlank(oidcName) && isNotBlank(oidcIssuerUri) && isNotBlank(oidcClientId)) {
-      try {
+      try (HttpClient httpClient = HttpClient.newBuilder().build()) {
         // When copying the URI from some IdP control panels into an .env file, this suffix won't be
         // stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
         if (!oidcIssuerUri.endsWith("/.well-known/openid-configuration")) {
