@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.MessageFormat;
 import java.util.Locale;
+import org.geotools.api.data.DataStore;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.slf4j.Logger;
@@ -94,18 +95,18 @@ CREATED_BY      VARCHAR2(255) NOT NULL
    */
   public String getCreateAttachmentsForFeatureTypeStatements(@NotNull TMFeatureType featureType)
       throws IOException, IllegalArgumentException {
-    JDBCConnectionProperties connProperties = featureType.getFeatureSource().getJdbcConnection();
-    SimpleFeatureType simpleFeatureType = new JDBCFeatureSourceHelper()
-        .createDataStore(featureType.getFeatureSource())
-        .getSchema(featureType.getName());
+
+    DataStore ds = new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+    SimpleFeatureType simpleFeatureType = ds.getSchema(featureType.getName());
     AttributeDescriptor pkDescriptor = simpleFeatureType.getDescriptor(featureType.getPrimaryKeyAttribute());
     String nativeType = (String) pkDescriptor.getUserData().get("org.geotools.jdbc.nativeTypeName");
-
+    ds.dispose();
     logger.debug(
         "Creating attachment table for feature type with primary key {} (\nnative type: {})",
         pkDescriptor,
         nativeType);
 
+    JDBCConnectionProperties connProperties = featureType.getFeatureSource().getJdbcConnection();
     switch (connProperties.getDbtype()) {
       case POSTGIS -> {
         return getPostGISCreateAttachmentsTableStatement(
