@@ -72,7 +72,7 @@ class JDBCDataStoreHelperIntegrationTest {
     try {
       String actual = helper.getCreateAttachmentsIndexForFeatureTypeStatements(featureType);
       assertNotNull(actual);
-      String expected = "CREATE INDEX " + ftName + "_attachments_" + ftName + "_pk ON bord_attachments (" + ftName
+      String expected = "CREATE INDEX " + ftName + "_attachments_" + ftName + "_pk ON " + ftName + "_attachments (" + ftName
           + "_pk);";
       if (fsTitle.equals("Oracle")) expected = expected.toUpperCase(Locale.ROOT);
       assertEquals(expected, actual);
