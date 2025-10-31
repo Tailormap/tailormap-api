@@ -32,7 +32,7 @@
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  @Schema(name = <span class="jxr_string">"SearchResponse"</span>, description = <span class="jxr_string">"A -possibly empty- list of search documents that fulfill the requested conditions and some metadata."</span>)
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.16.0"</span>)
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.17.0"</span>)
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SearchResponse" href="../../../../../org/tailormap/api/viewer/model/SearchResponse.html#SearchResponse">SearchResponse</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * minimum: 0</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   * @return start</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    @Min(0L) 
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    @Min(value = 0L) 
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    @Schema(name = <span class="jxr_string">"start"</span>, description = <span class="jxr_string">"requested start point, this will allow the client to request the next or previous page by adding or removing 1 or more. See also https://solr.apache.org/guide/solr/latest/query-guide/common-query-parameters.html#start-parameter"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>    @JsonProperty(<span class="jxr_string">"start"</span>)
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> Long getStart() {
