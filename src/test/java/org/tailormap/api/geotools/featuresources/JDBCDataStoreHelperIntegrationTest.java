@@ -55,7 +55,24 @@ class JDBCDataStoreHelperIntegrationTest {
     try {
       String sql = helper.getCreateAttachmentsForFeatureTypeStatements(featureType);
       assertNotNull(sql);
-      assertThat(sql, startsWithIgnoringCase("CREATE TABLE " + ftName + "_attachments (\n" + ftName + "_pk "));
+      switch (fsTitle) {
+        case "Oracle" ->
+          assertThat(
+              sql,
+              startsWithIgnoringCase("CREATE TABLE IF NOT EXISTS GEODATA." + ftName + "_attachments (\n"
+                  + ftName + "_pk "));
+        case "PostGIS" ->
+          assertThat(
+              sql,
+              startsWithIgnoringCase("CREATE TABLE IF NOT EXISTS public." + ftName + "_attachments (\n"
+                  + ftName + "_pk "));
+        case "MS SQL Server" ->
+          assertThat(
+              sql,
+              startsWithIgnoringCase(
+                  "CREATE TABLE dbo." + ftName + "_attachments (\n" + ftName + "_pk "));
+      }
+
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -72,9 +89,22 @@ class JDBCDataStoreHelperIntegrationTest {
     try {
       String actual = helper.getCreateAttachmentsIndexForFeatureTypeStatements(featureType);
       assertNotNull(actual);
-      String expected = "CREATE INDEX " + ftName + "_attachments_" + ftName + "_pk ON " + ftName
-          + "_attachments (" + ftName + "_pk);";
-      if (fsTitle.equals("Oracle")) expected = expected.toUpperCase(Locale.ROOT);
+
+      String expected =
+          switch (fsTitle) {
+            case "PostGIS" ->
+              "CREATE INDEX IF NOT EXISTS " + ftName + "_attachments_fk ON public." + ftName
+                  + "_attachments(" + ftName + "_pk)";
+            case "Oracle" ->
+              ("CREATE INDEX IF NOT EXISTS GEODATA." + ftName + "_attachments_fk ON GEODATA." + ftName
+                      + "_attachments(" + ftName + "_pk)")
+                  .toUpperCase(Locale.ROOT);
+            case "MS SQL Server" ->
+              "CREATE INDEX " + ftName + "_attachments_fk ON dbo." + ftName + "_attachments(" + ftName
+                  + "_pk)";
+            default -> null;
+          };
+
       assertEquals(expected, actual);
     } catch (Exception e) {
       fail(e.getMessage());
