@@ -96,7 +96,7 @@ public class LayerDescriptionController {
       }
     }
 
-    Set<String> readOnlyAttributes = TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
+    Set<String> readOnlyAttributes = TMFeatureTypeHelper.getEditableAttributes(tmft, appLayerSettings);
 
     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
         .map(attributeWithSettings -> {

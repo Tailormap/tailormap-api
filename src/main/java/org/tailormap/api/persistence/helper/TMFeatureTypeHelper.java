@@ -51,12 +51,12 @@ public class TMFeatureTypeHelper {
     return hiddenAttributes;
   }
 
-  public static Set<String> getReadOnlyAttributes(
+  public static Set<String> getEditableAttributes(
       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
-    Set<String> readOnlyAttributes = new HashSet<>();
-    Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
-    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
-    return readOnlyAttributes;
+    Set<String> editableAttributes = new HashSet<>();
+    Optional.ofNullable(featureType.getSettings().getEditableAttributes()).ifPresent(editableAttributes::addAll);
+    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(editableAttributes::addAll);
+    return editableAttributes;
   }
 
   public record AttributeWithSettings(TMAttributeDescriptor attributeDescriptor, AttributeSettings settings) {}
