@@ -57,7 +57,7 @@ class AttachmentsHelperIntegrationTest {
         .getSettings()
         .addAttachmentAttributesItem(new AttachmentAttributeType()
             .attributeName("bord_photos")
-            .attachmentSize(4_000_000L)
+            .maxAttachmentSize(4_000_000L)
             .mimeType("image/jpeg"));
 
     JDBCDataStore ds = null;
@@ -99,7 +99,7 @@ class AttachmentsHelperIntegrationTest {
         .getSettings()
         .addAttachmentAttributesItem(new AttachmentAttributeType()
             .attributeName(invalidInput) // Invalid attribute name
-            .attachmentSize(4_000_000L)
+            .maxAttachmentSize(4_000_000L)
             .mimeType("image/jpeg"));
 
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {

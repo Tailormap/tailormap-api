@@ -162,11 +162,12 @@ components:
           nullable: false
           minLength: 1
         mimeType:
-          description: 'Allowed mime type of the attachment, when null any type is allowed'
+          description: 'Allowed mime type(s) of the attachment, when null any type is allowed, 
+            similar to to the `Accept` HTTP header.'
           type: string
           nullable: true
-          example: 'image/png'
-        attachmentSize:
+          example: 'image/png,image/jpeg'
+        maxAttachmentSize:
           description: 'Maximum allowed size of the attachment in bytes'
           type: integer
           format: int64

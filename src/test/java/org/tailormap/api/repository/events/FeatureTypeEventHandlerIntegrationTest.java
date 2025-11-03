@@ -56,7 +56,7 @@ class FeatureTypeEventHandlerIntegrationTest {
         .getSettings()
         .addAttachmentAttributesItem(new AttachmentAttributeType()
             .attributeName("bord_photos")
-            .attachmentSize(4_000_000L)
+            .maxAttachmentSize(4_000_000L)
             .mimeType("image/jpeg"));
     featureTypeEventHandler.handleBeforeSaveTMFeatureType(featureType);
 
