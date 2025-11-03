@@ -1054,7 +1054,8 @@ SPDX-License-Identifier: MIT
                                 FormTab=org.tailormap.api.persistence.json.FormTab,
                                 FormField=org.tailormap.api.persistence.json.FormField,
                                 FormFieldValue=org.tailormap.api.persistence.json.FormFieldValue,
-                                HiddenLayerFunctionalityEnum=org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum</importMappings>
+                                HiddenLayerFunctionalityEnum=org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum,
+                                AttachmentAttributeType=org.tailormap.api.persistence.json.AttachmentAttributeType</importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>

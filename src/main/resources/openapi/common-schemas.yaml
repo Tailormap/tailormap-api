@@ -152,6 +152,27 @@ components:
         - timestamp
         - object
 
+    AttachmentAttributeType:
+      description: 'data type for an attachment attribute'
+      type: object
+      required: [attributeName]
+      properties:
+        attributeName:
+          type: string
+          nullable: false
+          minLength: 1
+        mimeType:
+          description: 'Allowed mime type(s) of the attachment, when null any type is allowed, 
+            similar to to the `Accept` HTTP header.'
+          type: string
+          nullable: true
+          example: 'image/png,image/jpeg'
+        maxAttachmentSize:
+          description: 'Maximum allowed size of the attachment in bytes'
+          type: integer
+          format: int64
+          nullable: false
+
     WMSStyle:
       type: object
       required: [name]
