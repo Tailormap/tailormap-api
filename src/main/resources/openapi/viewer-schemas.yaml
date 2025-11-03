@@ -286,41 +286,6 @@ components:
           description: 'Whether the attribute can be null.'
           type: boolean
 
-
-    Attachment:
-      description: 'data model for an attachment attached to a feature'
-      type: object
-      properties:
-        fid:
-          description: the feature id the attachment is linked to
-          type: string
-        attachmentId:
-          description: the key of the attachment
-          type: string
-          format: uuid
-        fileName:
-          type: string
-        description:
-          type: string
-        attachment:
-          description: The actual attachment data, base64 encoded
-          nullable: true
-          type: string
-          format: byte
-        mimeType:
-          type: string
-        attachmentSize:
-          type: integer
-          format: int64
-          readOnly: true
-        createdAt:
-          type: string
-          format: date-time
-          readOnly: true
-        createdBy:
-          type: string
-          readOnly: true
-
     Feature:
       description: '
       A possibly complete feature from the attribute source. 
@@ -348,11 +313,6 @@ components:
           type: object
           minProperties: 1
           additionalProperties: true
-        attachments:
-          description: 'feature attachments, only when supported by the layer or the service'
-          type: array
-          items:
-            $ref: '#/components/schemas/Attachment'
       example:
         __fid: 1
         geometry: "POLYGON(...)"

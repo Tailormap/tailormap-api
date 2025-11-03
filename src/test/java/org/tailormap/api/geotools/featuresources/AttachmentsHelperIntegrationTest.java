@@ -3,9 +3,12 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package org.tailormap.api.repository.events;
+package org.tailormap.api.geotools.featuresources;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.Connection;
@@ -14,27 +17,25 @@ import java.sql.Statement;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.geotools.jdbc.JDBCDataStore;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
-import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AttachmentAttributeType;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.FeatureTypeRepository;
 
 @PostgresIntegrationTest
-class FeatureTypeEventHandlerIntegrationTest {
+class AttachmentsHelperIntegrationTest {
   @Autowired
   private FeatureSourceRepository featureSourceRepository;
 
   @Autowired
   private FeatureTypeRepository featureTypeRepository;
-
-  @Autowired
-  private FeatureTypeEventHandler featureTypeEventHandler;
 
   private static Stream<Arguments> titlesAndNamesForFeatureSourcesAndFeatureTypes() {
     return Stream.of(
@@ -46,7 +47,7 @@ class FeatureTypeEventHandlerIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("titlesAndNamesForFeatureSourcesAndFeatureTypes")
-  void testFeatureTypeEventHandlerCreatesAttachmentTables(String fsTitle, String ftName) throws Exception {
+  void testGetCreateAttachmentsForFeatureTypeStatements(String fsTitle, String ftName) {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             ftName, featureSourceRepository.getByTitle(fsTitle).orElseThrow())
@@ -58,10 +59,10 @@ class FeatureTypeEventHandlerIntegrationTest {
             .attributeName("bord_photos")
             .attachmentSize(4_000_000L)
             .mimeType("image/jpeg"));
-    featureTypeEventHandler.handleBeforeSaveTMFeatureType(featureType);
 
     JDBCDataStore ds = null;
     try {
+      AttachmentsHelper.createAttachmentTableForFeatureType(featureType);
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
 
       if (Objects.equals(ftName, "osm_polygon")) ftName = ds.getDatabaseSchema() + "." + ftName;
@@ -74,10 +75,11 @@ class FeatureTypeEventHandlerIntegrationTest {
         } else {
           fail("Attachments table does not exist.");
         }
-
-        // cleanup
+        // cleanup created attachments table
         stmt.execute("drop table " + ftName + "_attachments");
       }
+    } catch (Exception e) {
+      fail(e.getMessage());
     } finally {
       if (ds != null) {
         ds.dispose();
@@ -86,17 +88,39 @@ class FeatureTypeEventHandlerIntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("titlesAndNamesForFeatureSourcesAndFeatureTypes")
-  void testFeatureTypeEventHandlerNoAttachmentAttributes(String fsTitle, String ftName) {
+  @NullAndEmptySource
+  void testInvalidAttachmentAttributes(String invalidInput) throws Exception {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
-            ftName, featureSourceRepository.getByTitle(fsTitle).orElseThrow())
+            "bak", featureSourceRepository.getByTitle("PostGIS").orElseThrow())
         .orElseThrow();
 
-    try {
-      featureTypeEventHandler.handleBeforeSaveTMFeatureType(featureType);
-    } catch (Exception e) {
-      fail("Exception thrown when no attachment attributes are present: " + e.getMessage());
-    }
+    featureType
+        .getSettings()
+        .addAttachmentAttributesItem(new AttachmentAttributeType()
+            .attributeName(invalidInput) // Invalid attribute name
+            .attachmentSize(4_000_000L)
+            .mimeType("image/jpeg"));
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      AttachmentsHelper.createAttachmentTableForFeatureType(featureType);
+    });
+
+    assertThat(
+        exception.getMessage(),
+        containsStringIgnoringCase(
+            "FeatureType bak has an attachment attribute with invalid (null or empty) attribute name"));
+  }
+
+  @Test
+  void testNullFeatureType() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      AttachmentsHelper.createAttachmentTableForFeatureType(null);
+    });
+
+    assertThat(
+        exception.getMessage(),
+        containsStringIgnoringCase(
+            "FeatureType null is invalid or has no attachment attributes defined in its settings"));
   }
 }

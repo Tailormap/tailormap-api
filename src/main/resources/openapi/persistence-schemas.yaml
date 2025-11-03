@@ -271,7 +271,8 @@ components:
         attachmentAttributes:
           description: '
             List of attributes that are attachments (files, images, etc.). Attachments
-            are stored in sidecar tables of a featuretype.'
+            are stored in sidecar tables of a featuretype. **Note** that the attributeName of any AttachmentAttributeType 
+            in the array should only be used once.'
           type: array
           minItems: 0
           uniqueItems: true

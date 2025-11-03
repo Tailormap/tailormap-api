@@ -155,12 +155,12 @@ components:
     AttachmentAttributeType:
       description: 'data type for an attachment attribute'
       type: object
-      x-discriminator-value: 'attributeName'
       required: [attributeName]
       properties:
         attributeName:
           type: string
           nullable: false
+          minLength: 1
         mimeType:
           description: 'Allowed mime type of the attachment, when null any type is allowed'
           type: string
