@@ -744,6 +744,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/CheckboxDropdownListFilterConfiguration.html#%3Cinit%3E()" class="member-name-link">CheckboxDropdownListFilterConfiguration()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/CheckboxDropdownListFilterConfiguration.html" title="class in org.tailormap.api.viewer.model">CheckboxDropdownListFilterConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/util/EditUtil.html#checkEditAuthorisation()" class="member-name-link">checkEditAuthorisation()</a> - Method in class org.tailormap.api.util.<a href="org/tailormap/api/util/EditUtil.html" title="class in org.tailormap.api.util">EditUtil</a></dt>
+<dd>
+<div class="block">Check if the current user is authenticated, throws exception if not.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/CatalogNode.html#children(java.util.List)" class="member-name-link">children(List&lt;String&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/CatalogNode.html" title="class in org.tailormap.api.persistence.json">CatalogNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#children(java.util.List)" class="member-name-link">children(List&lt;String&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
@@ -1207,7 +1211,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/EditFeatureController.html" class="type-name-link" title="class in org.tailormap.api.controller">EditFeatureController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/EditFeatureController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureSourceRepository)" class="member-name-link">EditFeatureController(FeatureSourceFactoryHelper, FeatureSourceRepository)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/EditFeatureController.html" title="class in org.tailormap.api.controller">EditFeatureController</a></dt>
+<dt><a href="org/tailormap/api/controller/EditFeatureController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.util.EditUtil)" class="member-name-link">EditFeatureController(FeatureSourceFactoryHelper, EditUtil)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/EditFeatureController.html" title="class in org.tailormap.api.controller">EditFeatureController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/util/EditUtil.html" class="type-name-link" title="class in org.tailormap.api.util">EditUtil</a> - Class in <a href="org/tailormap/api/util/package-summary.html">org.tailormap.api.util</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/util/EditUtil.html#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository)" class="member-name-link">EditUtil(FeatureSourceRepository)</a> - Constructor for class org.tailormap.api.util.<a href="org/tailormap/api/util/EditUtil.html" title="class in org.tailormap.api.util">EditUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppUiSettings.html#enable3D(java.lang.Boolean)" class="member-name-link">enable3D(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppUiSettings.html" title="class in org.tailormap.api.persistence.json">AppUiSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -2935,6 +2943,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#getEditable()" class="member-name-link">getEditable()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
 <dd>
 <div class="block">Get editable</div>
+</dd>
+<dt><a href="org/tailormap/api/util/EditUtil.html#getEditableFeatureType(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">getEditableFeatureType(Application, AppTreeLayerNode, GeoService, GeoServiceLayer)</a> - Method in class org.tailormap.api.util.<a href="org/tailormap/api/util/EditUtil.html" title="class in org.tailormap.api.util">EditUtil</a></dt>
+<dd>
+<div class="block">Get editable feature type, throws exception if not found or not editable.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/Filter.html#getEditConfiguration()" class="member-name-link">getEditConfiguration()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/Filter.html" title="class in org.tailormap.api.persistence.json">Filter</a></dt>
 <dd>
