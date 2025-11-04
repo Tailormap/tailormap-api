@@ -12,6 +12,7 @@ import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.util.Set;
 import java.util.UUID;
+import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
@@ -151,7 +152,9 @@ public class AttachmentsController {
     SimpleFeatureSource fs = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
-      return !fs.getFeatures(fidFilter).isEmpty();
+      Query query = new Query();
+      query.setFilter(fidFilter);
+      return fs.getCount(query) > 0;
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     } finally {
