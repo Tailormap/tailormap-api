@@ -1755,12 +1755,9 @@ paths:
             schema:
               type: object
               properties:
+                attachmentMetadata:
+                  $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
                 attachment:
-                  type: object
-                  properties:
-                    schema:
-                      $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
-                file:
                   type: string
                   format: binary
       responses:
