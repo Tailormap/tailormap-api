@@ -99,7 +99,9 @@ public class AttachmentsController {
 
     AttachmentAttributeType attachmentAttributeType = attachmentAttrSet.stream()
         .filter(attr -> (attr.getAttributeName().equals(attachment.getAttributeName())
-            && attr.getMimeType().contains(attachment.getMimeType())
+            && java.util.Arrays.stream(attr.getMimeType().split(","))
+                .map(String::trim)
+                .anyMatch(mime -> mime.equals(attachment.getMimeType()))
             && (attr.getMaxAttachmentSize() == null || attr.getMaxAttachmentSize() >= fileData.length)))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(
