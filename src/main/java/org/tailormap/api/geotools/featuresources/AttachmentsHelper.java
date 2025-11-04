@@ -343,7 +343,7 @@ END
     }
   }
 
-  /** convert UUID to byte array for storage in Oracle RAW(16). */
+  /** Convert UUID to byte array for storage in Oracle RAW(16). */
   private static byte[] asBytes(UUID uuid) {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
     bb.putLong(uuid.getMostSignificantBits());
