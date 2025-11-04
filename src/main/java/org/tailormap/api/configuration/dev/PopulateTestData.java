@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.tailormap.api.admin.model.TaskSchedule;
+import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
@@ -70,6 +72,7 @@ import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.AppTreeLevelNode;
 import org.tailormap.api.persistence.json.AppTreeNode;
 import org.tailormap.api.persistence.json.AppUiSettings;
+import org.tailormap.api.persistence.json.AttachmentAttributeType;
 import org.tailormap.api.persistence.json.AttributeSettings;
 import org.tailormap.api.persistence.json.AttributeValueSettings;
 import org.tailormap.api.persistence.json.AuthorizationRule;
@@ -919,6 +922,16 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           ft.getSettings().addAttributeOrderItem("identificatie");
           ft.getSettings().addAttributeOrderItem("bronhouder");
           ft.getSettings().addAttributeOrderItem("class");
+          ft.getSettings()
+              .addAttachmentAttributesItem(new AttachmentAttributeType()
+                  .attributeName("attachmentName")
+                  .maxAttachmentSize(4_000_000L)
+                  .mimeType("image/jpeg, image/svg+xml"));
+          try {
+            AttachmentsHelper.createAttachmentTableForFeatureType(ft);
+          } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to create attachments table", e);
+          }
         });
 
     featureSources.get("postgis").getFeatureTypes().stream()
@@ -937,6 +950,37 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           ft.getSettings().addHideAttributesItem("plus_status");
           ft.getSettings().addHideAttributesItem("function_");
           ft.getSettings().addHideAttributesItem("plus_type");
+        });
+
+    featureSources.get("oracle").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("WATERDEEL"))
+        .findFirst()
+        .ifPresent(ft -> {
+          ft.getSettings()
+              .addAttachmentAttributesItem(new AttachmentAttributeType()
+                  .attributeName("attachmentName")
+                  .maxAttachmentSize(4_000_000L)
+                  .mimeType("image/jpeg, image/svg+xml"));
+          try {
+            AttachmentsHelper.createAttachmentTableForFeatureType(ft);
+          } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to create attachments table", e);
+          }
+        });
+    featureSources.get("sqlserver").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("wegdeel"))
+        .findFirst()
+        .ifPresent(ft -> {
+          ft.getSettings()
+              .addAttachmentAttributesItem(new AttachmentAttributeType()
+                  .attributeName("attachmentName")
+                  .maxAttachmentSize(4_000_000L)
+                  .mimeType("image/jpeg, image/svg+xml"));
+          try {
+            AttachmentsHelper.createAttachmentTableForFeatureType(ft);
+          } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to create attachments table", e);
+          }
         });
 
     featureSources.get("postgis").getFeatureTypes().stream()

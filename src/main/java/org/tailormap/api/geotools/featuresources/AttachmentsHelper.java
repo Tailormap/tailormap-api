@@ -8,21 +8,28 @@ package org.tailormap.api.geotools.featuresources;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import org.apache.commons.dbcp.DelegatingConnection;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
+import org.tailormap.api.viewer.model.AttachmentMetadata;
 
 /** Helper class for managing the {@code <FT>_attachments} sidecar tables in JDBC DataStores. */
 public final class AttachmentsHelper {
@@ -62,7 +69,7 @@ public final class AttachmentsHelper {
         """
 CREATE TABLE IF NOT EXISTS {4}{0}_attachments (
 {0}_pk          {2}{3}        NOT NULL REFERENCES {4}{0}({1}) ON DELETE CASCADE,
-id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+attachment_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 file_name       VARCHAR(255),
 attribute_name  VARCHAR(255) NOT NULL,
 description     TEXT,
@@ -333,6 +340,90 @@ END
       default ->
         throw new IllegalArgumentException(
             "Unsupported database type for attachments: " + connProperties.getDbtype());
+    }
+  }
+
+  /** convert UUID to byte array for storage in Oracle RAW(16). */
+  private static byte[] asBytes(UUID uuid) {
+    ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+    bb.putLong(uuid.getMostSignificantBits());
+    bb.putLong(uuid.getLeastSignificantBits());
+    return bb.array();
+  }
+
+  public static AttachmentMetadata insertAttachment(
+      TMFeatureType featureType, AttachmentMetadata attachment, String featureId, byte[] fileData)
+      throws IOException, SQLException {
+
+    // create uuid here so we don't have to deal with DB-specific returning/generated key syntax
+    attachment.setAttachmentId(UUID.randomUUID());
+    attachment.setAttachmentSize((long) fileData.length);
+    attachment.setCreatedBy(
+        SecurityContextHolder.getContext().getAuthentication().getName());
+    attachment.createdAt(OffsetDateTime.now(ZoneId.of("UTC")));
+
+    logger.debug(
+        "Adding attachment {} for feature {}:{}, type {}: {} (bytes: {})",
+        attachment.getAttachmentId(),
+        featureType.getName(),
+        featureId,
+        attachment.getMimeType(),
+        attachment,
+        fileData.length);
+
+    String insertSql = MessageFormat.format(
+        """
+INSERT INTO {0}_attachments (
+{0}_pk,
+attachment_id,
+file_name,
+attribute_name,
+description,
+attachment,
+attachment_size,
+mime_type,
+created_at,
+created_by
+) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
+""",
+        featureType.getName());
+
+    byte[] attachmentIdBytes = asBytes(attachment.getAttachmentId());
+
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+
+        stmt.setString(1, featureId);
+        if (featureType
+            .getFeatureSource()
+            .getJdbcConnection()
+            .getDbtype()
+            .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+          stmt.setBytes(2, attachmentIdBytes);
+        } else {
+          stmt.setObject(2, attachment.getAttachmentId());
+        }
+        stmt.setString(3, attachment.getFileName());
+        stmt.setString(4, attachment.getAttributeName());
+        stmt.setString(5, attachment.getDescription());
+        stmt.setBytes(6, fileData);
+        stmt.setLong(7, fileData.length);
+        stmt.setString(8, attachment.getMimeType());
+        stmt.setTimestamp(
+            9, java.sql.Timestamp.from(attachment.getCreatedAt().toInstant()));
+        stmt.setString(10, attachment.getCreatedBy());
+
+        stmt.executeUpdate();
+
+        return attachment;
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
     }
   }
 }
