@@ -96,7 +96,7 @@ public class LayerDescriptionController {
       }
     }
 
-    Set<String> readOnlyAttributes = TMFeatureTypeHelper.getEditableAttributes(tmft, appLayerSettings);
+    Set<String> editableAttributes = TMFeatureTypeHelper.getEditableAttributes(tmft, appLayerSettings);
 
     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
         .map(attributeWithSettings -> {
@@ -110,7 +110,7 @@ public class LayerDescriptionController {
               .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
               // primary key can never be edited
               .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute())
-                  && !readOnlyAttributes.contains(a.getName()))
+                  && editableAttributes.contains(a.getName()))
               .defaultValue(a.getDefaultValue())
               .nullable(a.getNullable());
         })
