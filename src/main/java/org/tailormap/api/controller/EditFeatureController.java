@@ -40,9 +40,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -64,8 +61,8 @@ import org.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
-import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.util.Constants;
+import org.tailormap.api.util.EditUtil;
 import org.tailormap.api.viewer.model.Feature;
 
 @AppRestController
@@ -77,12 +74,11 @@ public class EditFeatureController implements Constants {
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
-  private final FeatureSourceRepository featureSourceRepository;
+  private final EditUtil editUtil;
 
-  public EditFeatureController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
+  public EditFeatureController(FeatureSourceFactoryHelper featureSourceFactoryHelper, EditUtil editUtil) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
-    this.featureSourceRepository = featureSourceRepository;
+    this.editUtil = editUtil;
   }
 
   private static void checkFeatureHasOnlyValidAttributes(
@@ -113,9 +109,9 @@ public class EditFeatureController implements Constants {
       @ModelAttribute Application application,
       @RequestBody Feature completeFeature) {
 
-    checkAuthentication();
+    editUtil.checkEditAuthorisation();
 
-    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
     Map<String, Object> attributesMap = completeFeature.getAttributes();
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
@@ -185,9 +181,9 @@ public class EditFeatureController implements Constants {
       @PathVariable String fid,
       @RequestBody Feature partialFeature) {
 
-    checkAuthentication();
+    editUtil.checkEditAuthorisation();
 
-    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
     Map<String, Object> attributesMap = partialFeature.getAttributes();
@@ -243,9 +239,9 @@ public class EditFeatureController implements Constants {
       @ModelAttribute Application application,
       @PathVariable String fid) {
 
-    checkAuthentication();
+    editUtil.checkEditAuthorisation();
 
-    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     SimpleFeatureSource fs = null;
     try (Transaction transaction = new DefaultTransaction("delete")) {
@@ -271,47 +267,6 @@ public class EditFeatureController implements Constants {
     }
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  }
-
-  private void checkAuthentication() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isAuthenticated = authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
-    if (!isAuthenticated) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-    }
-  }
-
-  /**
-   * Get editable feature type, throws exception if not found or not editable. Will throw a
-   * {@link ResponseStatusException} if the layer does not have an editable featuretype.
-   *
-   * @param application the application that has the editable layer
-   * @param appTreeLayerNode the layer to edit
-   * @param service the service that has the layer
-   * @param layer the layer to edit
-   * @return the editable feature type
-   */
-  private TMFeatureType getEditableFeatureType(
-      Application application, AppTreeLayerNode appTreeLayerNode, GeoService service, GeoServiceLayer layer) {
-
-    if (null == layer) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find layer " + appTreeLayerNode);
-    }
-
-    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-    if (!Boolean.TRUE.equals(appLayerSettings.getEditable())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer is not editable");
-    }
-
-    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
-    if (null == tmft) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not have feature type");
-    }
-    if (!tmft.isWriteable()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feature type is not writeable");
-    }
-
-    return tmft;
   }
 
   private static Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)

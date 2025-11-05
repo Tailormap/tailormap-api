@@ -233,6 +233,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
+        attachments:
+          description: 'Array with attachment attributes.'
+          type: array
+          items:
+              $ref: './common-schemas.yaml#/components/schemas/AttachmentAttributeType'
       required:
         - id
         - serviceId
