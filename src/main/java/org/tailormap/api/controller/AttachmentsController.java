@@ -154,8 +154,8 @@ public class AttachmentsController {
 
     TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
-    checkFeatureExists(tmFeatureType, featureId);
     checkFeatureTypeSupportsAttachments(tmFeatureType);
+    checkFeatureExists(tmFeatureType, featureId);
 
     List<AttachmentMetadata> response;
     try {
