@@ -1025,6 +1025,11 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .putAdditionalProperty("municipalities", List.of("0344"))),
             new Component().type("EDIT").config(new ComponentConfig().enabled(true)),
             new Component()
+                .type("TOC")
+                .config(new ComponentConfig()
+                    .enabled(true)
+                    .putAdditionalProperty("showEditLayerIcon", true)),
+            new Component()
                 .type("COORDINATE_LINK_WINDOW")
                 .config(new ComponentConfig()
                     .enabled(true)
