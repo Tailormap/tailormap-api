@@ -46,7 +46,7 @@ jobs:
           maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: 'Priming build with Maven'
-        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
+        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Dspotless.apply.skip install
 
       - name: 'Test with Maven'
         run: |
@@ -105,7 +105,7 @@ jobs:
         run: ./build/ci/testdata-setup.sh
 
       - name: 'Test PostgreSQL with Maven'
-        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
+        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: 'Upload test results'
         uses: actions/upload-artifact@v5
