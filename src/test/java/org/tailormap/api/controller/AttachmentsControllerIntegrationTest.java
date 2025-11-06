@@ -7,7 +7,6 @@ package org.tailormap.api.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -183,7 +182,6 @@ class AttachmentsControllerIntegrationTest {
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(header().string("Content-Type", "image/svg+xml"))
         .andExpect(header().string("Content-Disposition", "inline; filename=\"lichtpunt.svg\""))
-        .andExpect(header().string("Content-Type", "image/svg+xml"))
         .andExpect(content()
             .bytes(new ClassPathResource("test/lichtpunt.svg")
                 .getInputStream()
