@@ -393,10 +393,16 @@ created_by
     JDBCDataStore ds = null;
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+
+      Class<?> typeOfPK = ds.getSchema(featureType.getName())
+          .getDescriptor(featureType.getPrimaryKeyAttribute())
+          .getType()
+          .getBinding();
+
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        stmt.setString(1, featureId);
+        stmt.setObject(1, featureId, ds.getMapping(typeOfPK));
         if (featureType
             .getFeatureSource()
             .getJdbcConnection()
