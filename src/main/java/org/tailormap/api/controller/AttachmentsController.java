@@ -130,14 +130,14 @@ public class AttachmentsController {
   }
 
   /**
-   * Add an attachment to a feature
+   * List attachments for a feature.
    *
    * @param appTreeLayerNode the application tree layer node
    * @param service the geo service
    * @param layer the geo service layer
    * @param application the application
    * @param featureId the feature id
-   * @return the response entity
+   * @return the response entity containing a list of attachment metadata
    */
   @GetMapping(
       path = {
