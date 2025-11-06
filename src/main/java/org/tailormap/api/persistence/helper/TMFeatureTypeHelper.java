@@ -56,6 +56,9 @@ public class TMFeatureTypeHelper {
     Set<String> editableAttributes = new HashSet<>();
     Optional.ofNullable(featureType.getSettings().getEditableAttributes()).ifPresent(editableAttributes::addAll);
     Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(editableAttributes::removeAll);
+    if (featureType.getDefaultGeometryAttribute() != null) {
+      editableAttributes.add(featureType.getDefaultGeometryAttribute());
+    }
     return editableAttributes;
   }
 
