@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
@@ -72,7 +72,7 @@ public class AttachmentsController {
    * @param fileData the attachment file data
    * @return the response entity
    */
-  @PutMapping(
+  @PostMapping(
       path = {
         "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment"
       },
@@ -100,9 +100,8 @@ public class AttachmentsController {
 
     AttachmentAttributeType attachmentAttributeType = attachmentAttrSet.stream()
         .filter(attr -> (attr.getAttributeName().equals(attachment.getAttributeName())
-            && java.util.Arrays.stream(attr.getMimeType().split(","))
-                .map(String::trim)
-                .anyMatch(mime -> mime.equals(attachment.getMimeType()))
+            // TODO check attr.getMimeType() as "accept" attribute for HTML file input (null, mime types but
+            // also extensions)
             && (attr.getMaxAttachmentSize() == null || attr.getMaxAttachmentSize() >= fileData.length)))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(
