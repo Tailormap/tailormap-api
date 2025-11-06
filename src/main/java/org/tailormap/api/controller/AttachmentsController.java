@@ -169,6 +169,7 @@ public class AttachmentsController {
 
   @DeleteMapping(
       path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}")
+  @Transactional
   public ResponseEntity<Serializable> deleteAttachment(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
