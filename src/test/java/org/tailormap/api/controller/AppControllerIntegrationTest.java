@@ -50,7 +50,7 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.name").value("default"))
         .andExpect(jsonPath("$.title").value("Tailormap demo"))
         .andExpect(jsonPath("$.components").isArray())
-        .andExpect(jsonPath("$.components.length()").value(3))
+        .andExpect(jsonPath("$.components.length()").value(4))
         .andExpect(jsonPath("$.components[0].type").value("SIMPLE_SEARCH"))
         .andExpect(jsonPath("$.components[0].config.enabled").value(true))
         .andExpect(jsonPath("$.components[0].config.municipalities").value("0344"))
