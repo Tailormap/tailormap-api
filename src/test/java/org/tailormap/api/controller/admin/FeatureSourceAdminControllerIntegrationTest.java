@@ -41,6 +41,7 @@ class FeatureSourceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void refreshJdbcFeatureSourceCapabilities() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    final int expectedTotal = 32;
 
     String host = "localhost";
     int port = 54322;
@@ -84,7 +85,7 @@ class FeatureSourceAdminControllerIntegrationTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
-        .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
+        .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
         .andReturn();
     Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     String selfLink = JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
@@ -100,7 +101,7 @@ class FeatureSourceAdminControllerIntegrationTest {
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id").isNotEmpty())
           .andExpect(jsonPath("$.allFeatureTypes").isArray())
-          .andExpect(jsonPath("$.allFeatureTypes.length()").value(32))
+          .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal + 1))
           .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isNotEmpty());
     } finally {
       try {
@@ -118,7 +119,7 @@ class FeatureSourceAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
-        .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
+        .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
         .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isEmpty());
   }
 }

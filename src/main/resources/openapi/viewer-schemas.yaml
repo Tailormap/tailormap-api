@@ -626,3 +626,34 @@ components:
             #     ]
             # }
           }
+
+    AttachmentMetadata:
+      type: object
+      required: [ attributeName, mimeType, fileName ]
+      properties:
+        attachmentId:
+          description: the key of the attachment
+          type: string
+          format: uuid
+          readOnly: true
+        attributeName:
+          type: string
+          nullable: false
+          minLength: 1
+        fileName:
+          type: string
+        description:
+          type: string
+        mimeType:
+          type: string
+        attachmentSize:
+          type: integer
+          format: int64
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
