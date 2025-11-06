@@ -1267,6 +1267,7 @@ SPDX-License-Identifier: MIT
                         <enabled>true</enabled>
                         <indexFile>${project.basedir}/.spotless-index</indexFile>
                     </upToDateChecking>
+                    <skip>${skipQA}</skip>
                 </configuration>
                 <executions>
                     <execution>
