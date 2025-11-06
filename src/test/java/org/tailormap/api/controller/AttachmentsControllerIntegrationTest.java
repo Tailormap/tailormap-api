@@ -179,7 +179,6 @@ class AttachmentsControllerIntegrationTest {
     mockMvc.perform(get(attachmentUrl)
             .with(setServletPath(attachmentUrl))
             .accept(MediaType.APPLICATION_OCTET_STREAM))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(header().string("Content-Type", "image/svg+xml"))
