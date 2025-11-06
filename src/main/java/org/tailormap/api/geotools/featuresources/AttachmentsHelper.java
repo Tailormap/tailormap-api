@@ -396,7 +396,7 @@ created_by
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        stmt.setString(1, featureId);
+        stmt.setLong(1, Long.parseLong(featureId.substring(featureId.indexOf('.') + 1)));
         if (featureType
             .getFeatureSource()
             .getJdbcConnection()
