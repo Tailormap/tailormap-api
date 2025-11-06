@@ -1825,7 +1825,7 @@ paths:
 
   /{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}:
     summary: 'Attachment operations on a single Attachment.'
-    description: 'Attachment operations on a single feature referenced by the featureId.'
+    description: 'Attachment operations on a single attachment referenced by the attachmentId.'
     parameters:
       - in: path
         name: viewerKind
