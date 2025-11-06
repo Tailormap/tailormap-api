@@ -55,7 +55,7 @@ public class TMFeatureTypeHelper {
       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
     Set<String> editableAttributes = new HashSet<>();
     Optional.ofNullable(featureType.getSettings().getEditableAttributes()).ifPresent(editableAttributes::addAll);
-    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(editableAttributes::addAll);
+    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(editableAttributes::removeAll);
     return editableAttributes;
   }
 
