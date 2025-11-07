@@ -76,7 +76,7 @@ public class AttachmentsController {
    */
   @PutMapping(
       path = {
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment"
+        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments"
       },
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -99,7 +99,7 @@ public class AttachmentsController {
     Set<@Valid AttachmentAttributeType> attachmentAttrSet =
         tmFeatureType.getSettings().getAttachmentAttributes();
     if (attachmentAttrSet == null || attachmentAttrSet.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feature type does not support attachments");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not support attachments");
     }
 
     AttachmentAttributeType attachmentAttributeType = attachmentAttrSet.stream()
@@ -111,7 +111,7 @@ public class AttachmentsController {
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Feature type does not support attachments for attribute "
+            "Layer does not support attachments for attribute "
                 + attachment.getAttributeName()
                 + " with mime type "
                 + attachment.getMimeType()
@@ -141,7 +141,7 @@ public class AttachmentsController {
    */
   @GetMapping(
       path = {
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment"
+        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments"
       },
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional
@@ -256,7 +256,7 @@ public class AttachmentsController {
     Set<@Valid AttachmentAttributeType> attachmentAttrSet =
         tmFeatureType.getSettings().getAttachmentAttributes();
     if (attachmentAttrSet == null || attachmentAttrSet.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feature type does not support attachments");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not support attachments");
     }
   }
 }
