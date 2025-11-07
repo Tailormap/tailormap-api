@@ -240,7 +240,7 @@ components:
         - attributeOrder
         - hideAttributes
         - attributeSettings
-        - readOnlyAttributes
+        - editableAttributes
         - attachmentAttributes
       properties:
         template:
@@ -257,8 +257,8 @@ components:
           type: array
           items:
             type: string
-        readOnlyAttributes:
-          description: List of attribute names that are not editable.
+        editableAttributes:
+          description: List of attribute names that are editable.
           type: array
           items:
             type: string
