@@ -84,7 +84,9 @@ public class LayerDescriptionController {
             .map(TMAttributeType::getValue)
             .map(TMGeometryType::fromValue)
             .orElse(null))
-        .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
+        .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft))
+        .attachmentAttributes(
+            tmft.getSettings().getAttachmentAttributes().stream().toList());
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
