@@ -924,7 +924,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           ft.getSettings().addAttributeOrderItem("class");
           ft.getSettings()
               .addAttachmentAttributesItem(new AttachmentAttributeType()
-                  .attributeName("attachmentName")
+                  .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
                   .mimeType("image/jpeg, image/svg+xml"));
           try {
@@ -973,7 +973,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         .ifPresent(ft -> {
           ft.getSettings()
               .addAttachmentAttributesItem(new AttachmentAttributeType()
-                  .attributeName("attachmentName")
+                  .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
                   .mimeType("image/jpeg, image/svg+xml"));
           try {
@@ -1002,7 +1002,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         .ifPresent(ft -> {
           ft.getSettings()
               .addAttachmentAttributesItem(new AttachmentAttributeType()
-                  .attributeName("attachmentName")
+                  .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
                   .mimeType("image/jpeg, image/svg+xml"));
           try {

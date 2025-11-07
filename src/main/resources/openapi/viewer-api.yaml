@@ -1718,7 +1718,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment:
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments:
     summary: 'Attachment operations on a single feature.'
     description: 'Attachment operations on a single feature referenced by the featureId.'
     parameters:
@@ -1745,6 +1745,37 @@ paths:
         required: true
         schema:
           type: string
+    get:
+      operationId: 'getAttachments'
+      description: 'Get the attachment(s) for a feature.'
+      responses:
+        '200':
+          description: 'successfully retrieved attachments.'
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 0
+                items:
+                  $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: 'Feature not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
     put:
       operationId: 'addAttachment'
       description: 'Add an attachment to a feature.'
@@ -1779,6 +1810,12 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: 'Feature not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Internal server error'
           content:
@@ -1786,3 +1823,84 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}:
+    summary: 'Attachment operations on a single Attachment.'
+    description: 'Attachment operations on a single attachment referenced by the attachmentId.'
+    parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - in: path
+        name: viewerName
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: appLayerId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: attachmentId
+        required: true
+        schema:
+          type: string
+          format: uuid
+    delete:
+      operationId: 'deleteAttachment'
+      description: 'Delete an attachment from a feature.'
+      responses:
+        '204':
+          description: 'successfully deleted attachment'
+        '404':
+          description: 'Attachment not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+    get:
+      operationId: 'getAttachment'
+      description: 'Get a single binary attachment from a feature.'
+      responses:
+        '200':
+          description: 'successfully retrieved attachment.'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 'Attachment not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'

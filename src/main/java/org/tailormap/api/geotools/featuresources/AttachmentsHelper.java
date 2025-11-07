@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -244,7 +245,8 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
       typeModifier = getValidModifier(fkColumnType, fkColumnSize);
     }
     logger.debug(
-        "Creating attachment table for feature type with primary key {} (native type: {}, meta type: {}, size: {} (modifier: {}))",
+        "Creating attachment table for feature type with primary key {} (native type: {}, meta type: {}, size:"
+            + " {} (modifier: {}))",
         pkDescriptor.getLocalName(),
         fkColumnType,
         pkDescriptor.getUserData().get("org.geotools.jdbc.nativeTypeName"),
@@ -388,21 +390,25 @@ created_by
 """,
         featureType.getName());
 
-    byte[] attachmentIdBytes = asBytes(attachment.getAttachmentId());
-
     JDBCDataStore ds = null;
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+
+      Class<?> typeOfPK = ds.getSchema(featureType.getName())
+          .getDescriptor(featureType.getPrimaryKeyAttribute())
+          .getType()
+          .getBinding();
+
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        stmt.setString(1, featureId);
+        stmt.setObject(1, featureId, ds.getMapping(typeOfPK));
         if (featureType
             .getFeatureSource()
             .getJdbcConnection()
             .getDbtype()
             .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
-          stmt.setBytes(2, attachmentIdBytes);
+          stmt.setBytes(2, asBytes(attachment.getAttachmentId()));
         } else {
           stmt.setObject(2, attachment.getAttachmentId());
         }
@@ -426,4 +432,152 @@ created_by
       }
     }
   }
+
+  public static void deleteAttachment(UUID attachmentId, TMFeatureType featureType) throws IOException, SQLException {
+    String deleteSql = MessageFormat.format(
+        """
+DELETE FROM {0}_attachments WHERE attachment_id = ?
+""", featureType.getName());
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(deleteSql)) {
+        if (featureType
+            .getFeatureSource()
+            .getJdbcConnection()
+            .getDbtype()
+            .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+          stmt.setBytes(1, asBytes(attachmentId));
+        } else {
+          stmt.setObject(1, attachmentId);
+        }
+
+        stmt.executeUpdate();
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
+    }
+  }
+
+  public static List<AttachmentMetadata> listAttachmentsForFeature(TMFeatureType featureType, String featureId)
+      throws IOException, SQLException {
+
+    String querySql = MessageFormat.format(
+        """
+SELECT
+{0}_pk,
+attachment_id,
+file_name,
+attribute_name,
+description,
+attachment_size,
+mime_type,
+created_at,
+created_by
+FROM {0}_attachments WHERE {0}_pk = ?
+""",
+        featureType.getName());
+
+    List<AttachmentMetadata> attachments = new ArrayList<>();
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(querySql)) {
+
+        stmt.setString(1, featureId);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+          while (rs.next()) {
+            AttachmentMetadata a = new AttachmentMetadata();
+            // attachment_id (handle UUID, RAW(16) as byte[] or string)
+            Object idObj = rs.getObject("attachment_id");
+            if (idObj instanceof UUID u) {
+              a.setAttachmentId(u);
+            } else if (idObj instanceof byte[] b) {
+              ByteBuffer bb = ByteBuffer.wrap(b);
+              a.setAttachmentId(new UUID(bb.getLong(), bb.getLong()));
+            } else {
+              String s = rs.getString("attachment_id");
+              if (s != null && !s.isEmpty()) {
+                a.setAttachmentId(UUID.fromString(s));
+              }
+            }
+            a.setFileName(rs.getString("file_name"));
+            a.setAttributeName(rs.getString("attribute_name"));
+            a.setDescription(rs.getString("description"));
+            long size = rs.getLong("attachment_size");
+            if (!rs.wasNull()) {
+              a.setAttachmentSize(size);
+            }
+            a.setMimeType(rs.getString("mime_type"));
+            java.sql.Timestamp ts = rs.getTimestamp("created_at");
+            if (ts != null) {
+              a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of("UTC")));
+            }
+            a.setCreatedBy(rs.getString("created_by"));
+            attachments.add(a);
+          }
+        }
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
+    }
+    return attachments;
+  }
+
+  public static AttachmentWithBinary getAttachment(TMFeatureType featureType, UUID attachmentId)
+      throws IOException, SQLException {
+
+    String querySql = MessageFormat.format(
+        "SELECT attachment, attachment_size, mime_type, file_name FROM {0}_attachments WHERE attachment_id = ?",
+        featureType.getName());
+    JDBCDataStore ds = null;
+    try {
+      byte[] attachment;
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(querySql)) {
+
+        if (featureType
+            .getFeatureSource()
+            .getJdbcConnection()
+            .getDbtype()
+            .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+          stmt.setBytes(1, asBytes(attachmentId));
+        } else {
+          stmt.setObject(1, attachmentId);
+        }
+
+        try (ResultSet rs = stmt.executeQuery()) {
+          if (rs.next()) {
+            attachment = rs.getBytes("attachment");
+            AttachmentMetadata a = new AttachmentMetadata();
+            long size = rs.getLong("attachment_size");
+            if (!rs.wasNull()) {
+              a.setAttachmentSize(size);
+            }
+            a.setMimeType(rs.getString("mime_type"));
+            a.setFileName(rs.getString("file_name"));
+            return new AttachmentWithBinary(
+                a, ByteBuffer.wrap(attachment).asReadOnlyBuffer());
+          } else {
+            return null;
+          }
+        }
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
+    }
+  }
+
+  public record AttachmentWithBinary(
+      @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
 }
