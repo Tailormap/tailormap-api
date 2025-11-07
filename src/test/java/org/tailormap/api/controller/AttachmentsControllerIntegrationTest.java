@@ -7,6 +7,7 @@ package org.tailormap.api.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,12 +73,18 @@ class AttachmentsControllerIntegrationTest {
   private static Stream<Arguments> testUrls() {
     return Stream.of(
         Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachment"),
+            "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"),
         Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachment"),
+            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
         Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachment"));
+            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachments"));
   }
+
+  private static final String layerNotEditableUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:bak/feature/dbbe3dd9c3e45f1261faf5f74c67e19e/attachments";
+
+  private static final String attachmentsNotSupportedUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/feature/299933373/attachments";
 
   @BeforeAll
   void initialize() {
@@ -136,6 +144,60 @@ class AttachmentsControllerIntegrationTest {
             .with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Order(1)
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void addAttachmentsNotSupported() throws Exception {
+    String url = apiBasePath + attachmentsNotSupportedUrl;
+
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+
+    MockMultipartFile svgFile = new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes);
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+            .file(attachmentMetadata)
+            .file(svgFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer does not support attachments"));
+  }
+
+  @Order(1)
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void addAttachmentsToNonEditableLayer() throws Exception {
+    String url = apiBasePath + layerNotEditableUrl;
+
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+
+    MockMultipartFile svgFile = new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes);
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+            .file(attachmentMetadata)
+            .file(svgFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer is not editable"));
   }
 
   @Order(2)
