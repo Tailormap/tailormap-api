@@ -203,6 +203,13 @@ public class TMFeatureType extends AuditMetadata {
         .orElse(null);
   }
 
+  public List<String> getAllGeometryAttributeNames() {
+    return getAttributes().stream()
+        .filter(a -> TMAttributeTypeHelper.isGeometry(a.getType()))
+        .map(TMAttributeDescriptor::getName)
+        .toList();
+  }
+
   public Optional<TMAttributeDescriptor> getDefaultGeometryDescriptor() {
     return getAttributeByName(defaultGeometryAttribute);
   }

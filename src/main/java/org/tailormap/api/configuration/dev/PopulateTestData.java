@@ -1010,7 +1010,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           } catch (IOException | SQLException e) {
             throw new RuntimeException("Failed to create attachments table", e);
           }
-          ft.getSettings().addEditableAttributesItem("gml_id");
+          ft.getSettings().addEditableAttributesItem("gmlid");
           ft.getSettings().addEditableAttributesItem("identificatie");
           ft.getSettings().addEditableAttributesItem("lv_publicatiedatum");
           ft.getSettings().addEditableAttributesItem("creationdate");
@@ -1024,7 +1024,6 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           ft.getSettings().addEditableAttributesItem("plus_status");
           ft.getSettings().addEditableAttributesItem("function_");
           ft.getSettings().addEditableAttributesItem("plus_functiewegdeel");
-          ft.getSettings().addEditableAttributesItem("plus_fysiekvoorkomen");
           ft.getSettings().addEditableAttributesItem("plus_fysiekvoorkomenwegdeel");
           ft.getSettings().addEditableAttributesItem("surfacematerial");
           ft.getSettings().addEditableAttributesItem("wegdeeloptalud");
