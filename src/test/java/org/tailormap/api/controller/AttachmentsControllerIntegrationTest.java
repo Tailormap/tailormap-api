@@ -62,7 +62,7 @@ class AttachmentsControllerIntegrationTest {
       "application/json",
       """
 {
-"attributeName":"attachmentName",
+"attributeName":"bijlage",
 "mimeType":"image/svg+xml",
 "fileName":"lichtpunt.svg",
 "description":"A test SVG attachment"
