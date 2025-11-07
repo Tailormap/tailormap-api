@@ -27,6 +27,8 @@ import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -56,6 +58,8 @@ public final class AttachmentsHelper {
       "NVARCHAR2",
       "NUMBER",
       "RAW");
+
+  private static final ConversionService conversionService = new DefaultFormattingConversionService();
 
   private AttachmentsHelper() {
     // private constructor for utility class
@@ -402,7 +406,20 @@ created_by
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        stmt.setObject(1, featureId, ds.getMapping(typeOfPK));
+        String pkStringValue = featureId.substring(featureId.indexOf(".") + 1);
+        Object pkValue = pkStringValue;
+        if (!typeOfPK.isAssignableFrom(String.class)) {
+          try {
+            pkValue = conversionService.convert(pkStringValue, typeOfPK);
+          } catch (RuntimeException ex) {
+            throw new SQLException(
+                "Failed to convert \"%s\" to primary key type %s: %s"
+                    .formatted(pkStringValue, typeOfPK.getName(), ex.getMessage()),
+                ex);
+          }
+        }
+        stmt.setObject(1, pkValue, ds.getMapping(typeOfPK));
+
         if (featureType
             .getFeatureSource()
             .getJdbcConnection()
