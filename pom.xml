@@ -129,7 +129,7 @@ SPDX-License-Identifier: MIT
         <flyway.version>11.15.0</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.34.Final</hibernate.version>
-        <junit-jupiter.version>6.0.0</junit-jupiter.version>
+        <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <logback.version>1.5.19</logback.version>
         <micrometer.version>1.15.5</micrometer.version>
         <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
@@ -159,7 +159,7 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.1.8</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.30.0</swagger-ui.version>
+        <swagger-ui.version>5.30.1</swagger-ui.version>
         <sentry.version>8.25.0</sentry.version>
         <errorProne.version>2.43.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
@@ -711,7 +711,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.46.0</version>
+                    <version>0.47.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
