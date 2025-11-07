@@ -1718,7 +1718,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment:
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments:
     summary: 'Attachment operations on a single feature.'
     description: 'Attachment operations on a single feature referenced by the featureId.'
     parameters:
