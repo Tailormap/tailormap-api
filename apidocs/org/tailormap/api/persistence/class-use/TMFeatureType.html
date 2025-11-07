@@ -82,6 +82,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Create attachment table and index for the given FeatureType.</div>
 </div>
+<div class="col-first odd-row-color"><code>static void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../geotools/featuresources/AttachmentsHelper.html#deleteAttachment(java.util.UUID,org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">deleteAttachment</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId,
+ <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../../geotools/featuresources/AttachmentsHelper.AttachmentWithBinary.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper.AttachmentWithBinary</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../geotools/featuresources/AttachmentsHelper.html#getAttachment(org.tailormap.api.persistence.TMFeatureType,java.util.UUID)" class="member-name-link">getAttachment</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>protected <a href="../json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">FeatureSourceHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceHelper.html#getFeatureTypeInfo(org.tailormap.api.persistence.TMFeatureType,org.geotools.api.data.ResourceInfo,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getFeatureTypeInfo</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;pft,
  org.geotools.api.data.ResourceInfo&nbsp;info,
@@ -98,17 +106,21 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId,
  byte[]&nbsp;fileData)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceFactoryHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft)</code></div>
+<div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../../viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.String)" class="member-name-link">listAttachmentsForFeature</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">FeatureSourceFactoryHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,int)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
- int&nbsp;timeout)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FeatureSourceFactoryHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceFactoryHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,int)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+ int&nbsp;timeout)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FeatureSourceHelper.</span><code><a href="../../geotools/featuresources/FeatureSourceHelper.html#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

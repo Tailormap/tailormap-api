@@ -133,11 +133,28 @@ loadScripts(document, 'script');</script>
 <div class="block">Add an attachment to a feature</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteAttachment(java.util.UUID)" class="member-name-link">deleteAttachment</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteAttachment(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.util.UUID)" class="member-name-link">deleteAttachment</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;byte[]&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAttachment(java.util.UUID)" class="member-name-link">getAttachment</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAttachment(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.util.UUID)" class="member-name-link">getAttachment</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listAttachments(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">listAttachments</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">List attachments for a feature.</div>
+</div>
 </div>
 </div>
 </div>
@@ -173,7 +190,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="addAttachment(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.String,org.tailormap.api.viewer.model.AttachmentMetadata,byte[])">
 <h3>addAttachment</h3>
-<div class="member-signature"><span class="annotations">@PutMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachment",
+<div class="member-signature"><span class="annotations">@PutMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments",
             consumes="multipart/form-data",
             produces="application/json")
 @Transactional
@@ -207,19 +224,66 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="deleteAttachment(java.util.UUID)">
+<section class="detail" id="listAttachments(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.String)">
+<h3>listAttachments</h3>
+<div class="member-signature"><span class="annotations">@GetMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments",
+            produces="application/json")
+@Transactional
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;&gt;</span>&nbsp;<span class="element-name">listAttachments</span><wbr><span class="parameters">(@ModelAttribute
+ <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ @ModelAttribute
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ @ModelAttribute
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ @ModelAttribute
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @PathVariable
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId)</span></div>
+<div class="block">List attachments for a feature.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>appTreeLayerNode</code> - the application tree layer node</dd>
+<dd><code>service</code> - the geo service</dd>
+<dd><code>layer</code> - the geo service layer</dd>
+<dd><code>application</code> - the application</dd>
+<dd><code>featureId</code> - the feature id</dd>
+<dt>Returns:</dt>
+<dd>the response entity containing a list of attachment metadata</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="deleteAttachment(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.util.UUID)">
 <h3>deleteAttachment</h3>
-<div class="member-signature"><span class="annotations">@DeleteMapping(path="${tailormap-api.base-path}/attachment/{attachmentId}")
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">deleteAttachment</span><wbr><span class="parameters">(@PathVariable
+<div class="member-signature"><span class="annotations">@DeleteMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}")
+@Transactional
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">deleteAttachment</span><wbr><span class="parameters">(@ModelAttribute
+ <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ @ModelAttribute
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ @ModelAttribute
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ @ModelAttribute
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @PathVariable
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="getAttachment(java.util.UUID)">
+<section class="detail" id="getAttachment(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.util.UUID)">
 <h3>getAttachment</h3>
-<div class="member-signature"><span class="annotations">@GetMapping(path="${tailormap-api.base-path}/attachment/{attachmentId}",
+<div class="member-signature"><span class="annotations">@Transactional
+@GetMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}",
             produces="application/octet-stream")
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getAttachment</span><wbr><span class="parameters">(@PathVariable
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getAttachment</span><wbr><span class="parameters">(@ModelAttribute
+ <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ @ModelAttribute
+ <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ @ModelAttribute
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ @ModelAttribute
+ <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @PathVariable
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</span></div>
 </section>
 </li>
