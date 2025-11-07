@@ -85,7 +85,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#addAttachmentAttributesItem(org.tailormap.api.persistence.json.AttachmentAttributeType)" class="member-name-link">addAttachmentAttributesItem(AttachmentAttributeType)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#addAttachmentsItem(org.tailormap.api.persistence.json.AttachmentAttributeType)" class="member-name-link">addAttachmentsItem(AttachmentAttributeType)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
+<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#addAttachmentAttributesItem(org.tailormap.api.persistence.json.AttachmentAttributeType)" class="member-name-link">addAttachmentAttributesItem(AttachmentAttributeType)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#addAttributeOrderItem(java.lang.String)" class="member-name-link">addAttributeOrderItem(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -470,6 +470,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the value of the <code>attachment</code> record component.</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#attachmentAttributes(java.util.List)" class="member-name-link">attachmentAttributes(List&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#attachmentAttributes(java.util.Set)" class="member-name-link">attachmentAttributes(Set&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">AttachmentAttributeType</a> - Class in <a href="org/tailormap/api/persistence/json/package-summary.html">org.tailormap.api.persistence.json</a></dt>
@@ -495,8 +497,6 @@ loadScripts(document, 'script');</script>
 <div class="block">AttachmentMetadata</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#%3Cinit%3E()" class="member-name-link">AttachmentMetadata()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#attachments(java.util.List)" class="member-name-link">attachments(List&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AttachmentsController.html" class="type-name-link" title="class in org.tailormap.api.controller">AttachmentsController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
@@ -2359,13 +2359,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">List of attributes that are attachments (files, images, etc.).</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#getAttachmentAttributes()" class="member-name-link">getAttachmentAttributes()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
+<dd>
+<div class="block">Get attachmentAttributes</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#getAttachmentId()" class="member-name-link">getAttachmentId()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>
 <div class="block">the key of the attachment</div>
-</dd>
-<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#getAttachments()" class="member-name-link">getAttachments()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
-<dd>
-<div class="block">Array with attachment attributes.</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#getAttachmentSize()" class="member-name-link">getAttachmentSize()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>
@@ -7091,11 +7091,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerPageTile.html#setApplicationUrl(java.lang.String)" class="member-name-link">setApplicationUrl(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerPageTile.html" title="class in org.tailormap.api.viewer.model">ViewerPageTile</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#setAttachmentAttributes(java.util.List)" class="member-name-link">setAttachmentAttributes(List&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#setAttachmentAttributes(java.util.Set)" class="member-name-link">setAttachmentAttributes(Set&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setAttachmentId(java.util.UUID)" class="member-name-link">setAttachmentId(UUID)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#setAttachments(java.util.List)" class="member-name-link">setAttachments(List&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setAttachmentSize(java.lang.Long)" class="member-name-link">setAttachmentSize(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
