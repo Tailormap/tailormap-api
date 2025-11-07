@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -13,6 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
+import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
 import com.jayway.jsonpath.JsonPath;
@@ -78,6 +82,14 @@ class AttachmentsControllerIntegrationTest {
             "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
         Arguments.of(
             "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachments"));
+  }
+
+  private static Stream<Arguments> getFeaturesTestUrls() {
+    return Stream.of(
+        // docker host,table,url, feature count
+        arguments(layerBegroeidTerreindeelPostgis, 132255, 458382, 10, "21f95499702e3a5d05230d2ae596ea1c"),
+        arguments(layerWaterdeelOracle, 132139, 458390, 10, "93294fda97a19c37080849c5c1fddbf3"),
+        arguments(layerWegdeelSqlServer, 130819, 458989, 10, "c9baca2a2f078038ace1b3a1acf8e0c8"));
   }
 
   private static final String layerNotEditableUrl =
@@ -248,6 +260,34 @@ class AttachmentsControllerIntegrationTest {
             .bytes(new ClassPathResource("test/lichtpunt.svg")
                 .getInputStream()
                 .readAllBytes()));
+  }
+
+  @Order(2)
+  @ParameterizedTest
+  @MethodSource("getFeaturesTestUrls")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void getFeaturesWithAttachments(String url, int x, int y, int distance, String gmlId) throws Exception {
+
+    String getUrl = apiBasePath + url + "/features";
+    mockMvc.perform(get(getUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(getUrl))
+            .param("x", String.valueOf(x))
+            .param("y", String.valueOf(y))
+            .param("distance", String.valueOf(distance))
+            .param("withAttachments", "true"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes").isNotEmpty())
+        .andExpect(jsonPath("$.attachmentMetadata[0].maxAttachmentSize").value(4_000_000))
+        .andExpect(jsonPath("$.attachmentMetadata[0].mimeType").value("image/jpeg, image/svg+xml"))
+        .andExpect(jsonPath("$.attachmentMetadata[0].attributeName").value("bijlage"))
+        .andExpect(jsonPath("$.features[0].attachments").isArray())
+        .andExpect(jsonPath("$.features[0].attachments[0].fileName").value("lichtpunt.svg"));
   }
 
   @Order(Integer.MAX_VALUE)

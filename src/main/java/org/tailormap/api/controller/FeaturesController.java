@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.geotools.TransformationUtil;
+import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.Application;
@@ -65,6 +67,7 @@ import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.persistence.json.TMAttributeType;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.util.Constants;
+import org.tailormap.api.viewer.model.AttachmentMetadata;
 import org.tailormap.api.viewer.model.ColumnMetadata;
 import org.tailormap.api.viewer.model.Feature;
 import org.tailormap.api.viewer.model.FeaturesResponse;
@@ -116,7 +119,8 @@ public class FeaturesController implements Constants {
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false, defaultValue = "asc") String sortOrder,
       @RequestParam(defaultValue = "false") boolean onlyGeometries,
-      @RequestParam(defaultValue = "false") boolean geometryInAttributes) {
+      @RequestParam(defaultValue = "false") boolean geometryInAttributes,
+      @RequestParam(defaultValue = "false") boolean withAttachments) {
 
     if (layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
@@ -135,10 +139,20 @@ public class FeaturesController implements Constants {
     FeaturesResponse featuresResponse;
 
     if (null != __fid) {
-      featuresResponse = getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes);
+      featuresResponse =
+          getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes, withAttachments);
     } else if (null != x && null != y) {
       featuresResponse = getFeaturesByXY(
-          tmft, appLayerSettings, filter, x, y, application, distance, simplify, !geometryInAttributes);
+          tmft,
+          appLayerSettings,
+          filter,
+          x,
+          y,
+          application,
+          distance,
+          simplify,
+          !geometryInAttributes,
+          withAttachments);
     } else if (null != page && page > 0) {
       featuresResponse = getAllFeatures(
           tmft,
@@ -149,7 +163,8 @@ public class FeaturesController implements Constants {
           sortBy,
           sortOrder,
           onlyGeometries,
-          !geometryInAttributes);
+          !geometryInAttributes,
+          withAttachments);
     } else {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported combination of request parameters");
     }
@@ -166,7 +181,8 @@ public class FeaturesController implements Constants {
       String sortBy,
       String sortOrder,
       boolean onlyGeometries,
-      boolean skipGeometryOutput) {
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
     FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
     SimpleFeatureSource fs = null;
@@ -258,7 +274,8 @@ public class FeaturesController implements Constants {
           fs,
           q,
           application,
-          skipGeometryOutput);
+          skipGeometryOutput,
+          withAttachments);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException e) {
@@ -278,7 +295,8 @@ public class FeaturesController implements Constants {
       @NotNull AppLayerSettings appLayerSettings,
       @NotNull String fid,
       @NotNull Application application,
-      boolean skipGeometryOutput) {
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
     FeaturesResponse featuresResponse = new FeaturesResponse();
 
     SimpleFeatureSource fs = null;
@@ -298,7 +316,8 @@ public class FeaturesController implements Constants {
           fs,
           q,
           application,
-          skipGeometryOutput);
+          skipGeometryOutput,
+          withAttachments);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {
@@ -319,7 +338,8 @@ public class FeaturesController implements Constants {
       @NotNull Application application,
       @NotNull Double distance,
       @NotNull Boolean simplifyGeometry,
-      boolean skipGeometryOutput) {
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
 
     if (null != distance && 0d >= distance) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
@@ -374,7 +394,8 @@ public class FeaturesController implements Constants {
           fs,
           q,
           application,
-          skipGeometryOutput);
+          skipGeometryOutput,
+          withAttachments);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } catch (CQLException e) {
@@ -393,7 +414,8 @@ public class FeaturesController implements Constants {
       @NotNull SimpleFeatureSource featureSource,
       @NotNull Query selectQuery,
       @NotNull Application application,
-      boolean skipGeometryOutput)
+      boolean skipGeometryOutput,
+      boolean withAttachments)
       throws IOException {
     boolean addFields = false;
 
@@ -404,6 +426,10 @@ public class FeaturesController implements Constants {
       logger.error("Can not transform geometry to desired CRS", e);
     }
 
+    boolean ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != null
+        && !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
+
+    List<Object> featureIds = new ArrayList<>();
     Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
@@ -435,6 +461,9 @@ public class FeaturesController implements Constants {
             }
             newFeat.putAttributesItem(attName, value);
           }
+          if (withAttachments && ftSupportsAttachments) {
+            featureIds.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
+          }
         }
         featuresResponse.addFeaturesItem(newFeat);
       }
@@ -458,6 +487,24 @@ public class FeaturesController implements Constants {
                 .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
           })
           .forEach(featuresResponse::addColumnMetadataItem);
+    }
+    if (ftSupportsAttachments) {
+      //  add attachment metadata
+      featuresResponse.setAttachmentMetadata(tmFeatureType.getSettings().getAttachmentAttributes());
+
+      if (withAttachments) {
+        //  fetch all attachments for all features, grouped by feature id
+        Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
+            AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featureIds);
+        //  add attachment data to features using feature.primaryKeyAttribute to match
+        for (Feature feature : featuresResponse.getFeatures()) {
+          Object primaryKey = feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute());
+          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
+          if (attachments != null) {
+            feature.setAttachments(attachments);
+          }
+        }
+      }
     }
   }
 }

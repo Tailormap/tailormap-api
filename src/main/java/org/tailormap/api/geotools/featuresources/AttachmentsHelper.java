@@ -19,9 +19,12 @@ import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.commons.dbcp.DelegatingConnection;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
@@ -492,33 +495,7 @@ FROM {0}_attachments WHERE {0}_pk = ?
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
-            AttachmentMetadata a = new AttachmentMetadata();
-            // attachment_id (handle UUID, RAW(16) as byte[] or string)
-            Object idObj = rs.getObject("attachment_id");
-            if (idObj instanceof UUID u) {
-              a.setAttachmentId(u);
-            } else if (idObj instanceof byte[] b) {
-              ByteBuffer bb = ByteBuffer.wrap(b);
-              a.setAttachmentId(new UUID(bb.getLong(), bb.getLong()));
-            } else {
-              String s = rs.getString("attachment_id");
-              if (s != null && !s.isEmpty()) {
-                a.setAttachmentId(UUID.fromString(s));
-              }
-            }
-            a.setFileName(rs.getString("file_name"));
-            a.setAttributeName(rs.getString("attribute_name"));
-            a.setDescription(rs.getString("description"));
-            long size = rs.getLong("attachment_size");
-            if (!rs.wasNull()) {
-              a.setAttachmentSize(size);
-            }
-            a.setMimeType(rs.getString("mime_type"));
-            java.sql.Timestamp ts = rs.getTimestamp("created_at");
-            if (ts != null) {
-              a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of("UTC")));
-            }
-            a.setCreatedBy(rs.getString("created_by"));
+            AttachmentMetadata a = getAttachmentMetadata(rs);
             attachments.add(a);
           }
         }
@@ -578,6 +555,104 @@ FROM {0}_attachments WHERE {0}_pk = ?
     }
   }
 
+  /**
+   * List attachments for multiple features grouped by their IDs.
+   *
+   * @param featureType the feature type
+   * @param featureIds the feature IDs
+   * @return map of feature ID to list of attachments
+   * @throws IOException when an IO error occurs conecting to the database
+   */
+  public static Map<@NotNull Object, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
+      TMFeatureType featureType, List<?> featureIds) throws IOException {
+    List<AttachmentMetadataListItem> attachments = new ArrayList<>();
+    if (featureIds == null || featureIds.isEmpty()) {
+      return new HashMap<>();
+    }
+
+    String querySql = MessageFormat.format(
+        """
+SELECT
+{0}_pk as featureId,
+attachment_id,
+file_name,
+attribute_name,
+description,
+attachment_size,
+mime_type,
+created_at,
+created_by
+FROM {0}_attachments WHERE {0}_pk IN ( {1} )
+""",
+        featureType.getName(),
+        String.join(", ", featureIds.stream().map(id -> "?").toArray(String[]::new)));
+
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(querySql)) {
+
+        for (int i = 0; i < featureIds.size(); i++) {
+          stmt.setObject(
+              i + 1,
+              featureIds.get(i),
+              ds.getMapping(featureIds.get(i).getClass()));
+        }
+
+        try (ResultSet rs = stmt.executeQuery()) {
+          while (rs.next()) {
+            AttachmentMetadata a = getAttachmentMetadata(rs);
+            attachments.add(new AttachmentMetadataListItem(rs.getObject("featureId"), a));
+          }
+        }
+      } catch (SQLException ex) {
+        logger.error("Failed to get attachments for %s".formatted(featureType.getName()), ex);
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
+    }
+    return attachments.stream()
+        .collect(Collectors.groupingBy(
+            AttachmentMetadataListItem::key,
+            Collectors.mapping(AttachmentMetadataListItem::value, Collectors.toList())));
+  }
+
+  private static AttachmentMetadata getAttachmentMetadata(ResultSet rs) throws SQLException {
+    AttachmentMetadata a = new AttachmentMetadata();
+    // attachment_id (handle UUID, RAW(16) as byte[] or string)
+    Object idObj = rs.getObject("attachment_id");
+    if (idObj instanceof UUID u) {
+      a.setAttachmentId(u);
+    } else if (idObj instanceof byte[] b) {
+      ByteBuffer bb = ByteBuffer.wrap(b);
+      a.setAttachmentId(new UUID(bb.getLong(), bb.getLong()));
+    } else {
+      String s = rs.getString("attachment_id");
+      if (s != null && !s.isEmpty()) {
+        a.setAttachmentId(UUID.fromString(s));
+      }
+    }
+    a.setFileName(rs.getString("file_name"));
+    a.setAttributeName(rs.getString("attribute_name"));
+    a.setDescription(rs.getString("description"));
+    long size = rs.getLong("attachment_size");
+    if (!rs.wasNull()) {
+      a.setAttachmentSize(size);
+    }
+    a.setMimeType(rs.getString("mime_type"));
+    java.sql.Timestamp ts = rs.getTimestamp("created_at");
+    if (ts != null) {
+      a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of("UTC")));
+    }
+    a.setCreatedBy(rs.getString("created_by"));
+    return a;
+  }
+
   public record AttachmentWithBinary(
       @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
+
+  private record AttachmentMetadataListItem(@NotNull Object key, @NotNull AttachmentMetadata value) {}
 }
