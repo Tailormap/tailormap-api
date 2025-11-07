@@ -12,12 +12,14 @@ import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.util.factory.GeoTools;
 import org.slf4j.Logger;
@@ -94,7 +96,7 @@ public class AttachmentsController {
 
     TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
-    checkFeatureExists(tmFeatureType, featureId);
+    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);
 
     Set<@Valid AttachmentAttributeType> attachmentAttrSet =
         tmFeatureType.getSettings().getAttachmentAttributes();
@@ -120,7 +122,7 @@ public class AttachmentsController {
 
     AttachmentMetadata response;
     try {
-      response = AttachmentsHelper.insertAttachment(tmFeatureType, attachment, featureId, fileData);
+      response = AttachmentsHelper.insertAttachment(tmFeatureType, attachment, primaryKey, fileData);
     } catch (IOException | SQLException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
@@ -154,11 +156,11 @@ public class AttachmentsController {
     TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     checkFeatureTypeSupportsAttachments(tmFeatureType);
-    checkFeatureExists(tmFeatureType, featureId);
+    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);
 
     List<AttachmentMetadata> response;
     try {
-      response = AttachmentsHelper.listAttachmentsForFeature(tmFeatureType, featureId);
+      response = AttachmentsHelper.listAttachmentsForFeature(tmFeatureType, primaryKey);
     } catch (IOException | SQLException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
@@ -231,20 +233,27 @@ public class AttachmentsController {
     }
   }
 
-  private void checkFeatureExists(TMFeatureType tmFeatureType, String featureId) throws ResponseStatusException {
+  private Object getFeaturePrimaryKeyByFid(TMFeatureType tmFeatureType, String featureId)
+      throws ResponseStatusException {
     final Filter fidFilter = ff.id(ff.featureId(featureId));
     SimpleFeatureSource fs = null;
+    SimpleFeatureIterator sfi = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       Query query = new Query();
       query.setFilter(fidFilter);
-      if (fs.getCount(query) < 1) {
-        throw new ResponseStatusException(
-            HttpStatus.NOT_FOUND, "Feature with id " + featureId + " does not exist");
-      }
+      query.setPropertyNames(tmFeatureType.getPrimaryKeyAttribute());
+      sfi = fs.getFeatures(query).features();
+      return sfi.next().getAttribute(tmFeatureType.getPrimaryKeyAttribute());
+    } catch (NoSuchElementException e) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Feature with id %s does not exist".formatted(featureId));
     } catch (IOException e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     } finally {
+      if (sfi != null) {
+        sfi.close();
+      }
       if (fs != null) {
         fs.getDataStore().dispose();
       }

@@ -27,8 +27,6 @@ import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -58,8 +56,6 @@ public final class AttachmentsHelper {
       "NVARCHAR2",
       "NUMBER",
       "RAW");
-
-  private static final ConversionService conversionService = new DefaultFormattingConversionService();
 
   private AttachmentsHelper() {
     // private constructor for utility class
@@ -358,7 +354,7 @@ END
   }
 
   public static AttachmentMetadata insertAttachment(
-      TMFeatureType featureType, AttachmentMetadata attachment, String featureId, byte[] fileData)
+      TMFeatureType featureType, AttachmentMetadata attachment, Object primaryKey, byte[] fileData)
       throws IOException, SQLException {
 
     // create uuid here so we don't have to deal with DB-specific returning/generated key syntax
@@ -372,7 +368,7 @@ END
         "Adding attachment {} for feature {}:{}, type {}: {} (bytes: {})",
         attachment.getAttachmentId(),
         featureType.getName(),
-        featureId,
+        primaryKey,
         attachment.getMimeType(),
         attachment,
         fileData.length);
@@ -398,27 +394,10 @@ created_by
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
 
-      Class<?> typeOfPK = ds.getSchema(featureType.getName())
-          .getDescriptor(featureType.getPrimaryKeyAttribute())
-          .getType()
-          .getBinding();
-
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        String pkStringValue = featureId.substring(featureId.indexOf(".") + 1);
-        Object pkValue = pkStringValue;
-        if (!typeOfPK.isAssignableFrom(String.class)) {
-          try {
-            pkValue = conversionService.convert(pkStringValue, typeOfPK);
-          } catch (RuntimeException ex) {
-            throw new SQLException(
-                "Failed to convert \"%s\" to primary key type %s: %s"
-                    .formatted(pkStringValue, typeOfPK.getName(), ex.getMessage()),
-                ex);
-          }
-        }
-        stmt.setObject(1, pkValue, ds.getMapping(typeOfPK));
+        stmt.setObject(1, primaryKey);
 
         if (featureType
             .getFeatureSource()
@@ -479,7 +458,7 @@ DELETE FROM {0}_attachments WHERE attachment_id = ?
     }
   }
 
-  public static List<AttachmentMetadata> listAttachmentsForFeature(TMFeatureType featureType, String featureId)
+  public static List<AttachmentMetadata> listAttachmentsForFeature(TMFeatureType featureType, Object primaryKey)
       throws IOException, SQLException {
 
     String querySql = MessageFormat.format(
@@ -505,7 +484,7 @@ FROM {0}_attachments WHERE {0}_pk = ?
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
-        stmt.setString(1, featureId);
+        stmt.setObject(1, primaryKey);
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
