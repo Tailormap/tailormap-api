@@ -63,7 +63,9 @@ class LayerDescriptionControllerIntegrationTest {
             jsonPath("$.attributes[?(@.name == 'gmlid')].nullable").value(false))
         .andExpect(
             jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(false))
-        .andExpect(jsonPath("$.editable").value(true));
+        .andExpect(jsonPath("$.editable").value(true))
+        .andExpect(jsonPath("$.attachmentAttributes.length()").value(1))
+        .andExpect(jsonPath("$.attachmentAttributes[0].attributeName").value("bijlage"));
   }
 
   @Test

@@ -233,8 +233,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
-        attachments:
-          description: 'Array with attachment attributes.'
+        attachmentAttributes:
           type: array
           items:
               $ref: './common-schemas.yaml#/components/schemas/AttachmentAttributeType'
