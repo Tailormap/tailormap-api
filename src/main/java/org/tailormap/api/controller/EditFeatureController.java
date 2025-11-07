@@ -5,16 +5,15 @@
  */
 package org.tailormap.api.controller;
 
+import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getEditableAttributes;
 import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributes;
-import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getReadOnlyAttributes;
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.geotools.api.data.FeatureStore;
@@ -93,9 +92,8 @@ public class EditFeatureController implements Constants {
           HttpStatus.BAD_REQUEST,
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
     }
-    if (!Collections.disjoint(
-        getReadOnlyAttributes(tmFeatureType, appLayerSettings),
-        feature.getAttributes().keySet())) {
+    if (!getEditableAttributes(tmFeatureType, appLayerSettings)
+        .containsAll(feature.getAttributes().keySet())) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Feature cannot be edited, one or more requested attributes are not editable on the feature type");
