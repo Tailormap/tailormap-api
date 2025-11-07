@@ -5,20 +5,28 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
+import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,28 +56,11 @@ class AttachmentsControllerIntegrationTest {
 
   private MockMvc mockMvc;
 
-  @BeforeAll
-  void initialize() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-  }
-
-  @ParameterizedTest
-  @ValueSource(
-      strings = {
-        "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachment",
-        "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachment",
-        "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachment"
-      })
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {ADMIN})
-  void addAttachment(String url) throws Exception {
-    url = apiBasePath + url;
-    MockMultipartFile attachmentMetadata = new MockMultipartFile(
-        "attachmentMetadata",
-        "metadata.json",
-        "application/json",
-        """
+  private static final MockMultipartFile attachmentMetadata = new MockMultipartFile(
+      "attachmentMetadata",
+      "metadata.json",
+      "application/json",
+      """
 {
 "attributeName":"bijlage",
 "mimeType":"image/svg+xml",
@@ -77,7 +68,37 @@ class AttachmentsControllerIntegrationTest {
 "description":"A test SVG attachment"
 }
 """
-            .getBytes(StandardCharsets.UTF_8));
+          .getBytes(StandardCharsets.UTF_8));
+
+  private static Stream<Arguments> testUrls() {
+    return Stream.of(
+        Arguments.of(
+            "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"),
+        Arguments.of(
+            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
+        Arguments.of(
+            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachments"));
+  }
+
+  private static final String layerNotEditableUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:bak/feature/dbbe3dd9c3e45f1261faf5f74c67e19e/attachments";
+
+  private static final String attachmentsNotSupportedUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/feature/299933373/attachments";
+
+  @BeforeAll
+  void initialize() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+  }
+
+  @Order(1)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void addAttachment(String url) throws Exception {
+    url = apiBasePath + url;
 
     byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
 
@@ -92,7 +113,6 @@ class AttachmentsControllerIntegrationTest {
             })
             .with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.description").value("A test SVG attachment"))
@@ -102,5 +122,184 @@ class AttachmentsControllerIntegrationTest {
         .andExpect(jsonPath("$.createdAt").isNotEmpty())
         .andExpect(jsonPath("$.createdBy").isNotEmpty())
         .andExpect(jsonPath("$.attachmentSize").value(svgBytes.length));
+  }
+
+  @Order(1)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  void addAttachmentUnauthorised(String url) throws Exception {
+    url = apiBasePath + url;
+
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+
+    MockMultipartFile svgFile = new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes);
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+            .file(attachmentMetadata)
+            .file(svgFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Order(1)
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void addAttachmentsNotSupported() throws Exception {
+    String url = apiBasePath + attachmentsNotSupportedUrl;
+
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+
+    MockMultipartFile svgFile = new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes);
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+            .file(attachmentMetadata)
+            .file(svgFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer does not support attachments"));
+  }
+
+  @Order(1)
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void addAttachmentsToNonEditableLayer() throws Exception {
+    String url = apiBasePath + layerNotEditableUrl;
+
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+
+    MockMultipartFile svgFile = new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes);
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+            .file(attachmentMetadata)
+            .file(svgFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer is not editable"));
+  }
+
+  @Order(2)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  void listAttachments(String url) throws Exception {
+    url = apiBasePath + url;
+
+    mockMvc.perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.[0].description").value("A test SVG attachment"))
+        .andExpect(jsonPath("$.[0].fileName").value("lichtpunt.svg"))
+        .andExpect(jsonPath("$.[0].mimeType").value("image/svg+xml"))
+        .andExpect(jsonPath("$.[0].attachmentId").isNotEmpty())
+        .andExpect(jsonPath("$.[0].createdAt").isNotEmpty())
+        .andExpect(jsonPath("$.[0].createdBy").isNotEmpty())
+        .andExpect(jsonPath("$.[0].attachmentSize").isNotEmpty());
+  }
+
+  @Order(2)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  void getAttachment(String url) throws Exception {
+    url = apiBasePath + url;
+
+    // First get the list of attachments to retrieve the attachmentId
+    String responseContent = mockMvc.perform(
+            get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    // Extract attachmentId from the response (assuming it's the first attachment)
+    String attachmentId = JsonPath.read(responseContent, "$.[0].attachmentId");
+    // Now get the actual attachment
+    String attachmentUrl = url.substring(0, url.indexOf("/feature")) + "/attachment/" + attachmentId;
+
+    mockMvc.perform(get(attachmentUrl)
+            .with(setServletPath(attachmentUrl))
+            .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("image/svg+xml"))
+        .andExpect(header().string("Content-Type", "image/svg+xml"))
+        .andExpect(header().string("Content-Disposition", "inline; filename=\"lichtpunt.svg\""))
+        .andExpect(content()
+            .bytes(new ClassPathResource("test/lichtpunt.svg")
+                .getInputStream()
+                .readAllBytes()));
+  }
+
+  @Order(Integer.MAX_VALUE)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void deleteAttachment(String url) throws Exception {
+    url = apiBasePath + url;
+
+    // First get the list of attachments to retrieve the attachmentId
+    String responseContent = mockMvc.perform(
+            get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    // Extract attachmentId from the response (assuming it's the first attachment)
+    String attachmentId = JsonPath.read(responseContent, "$.[0].attachmentId");
+    // Now get the actual attachment
+    String attachmentUrl = url.substring(0, url.indexOf("/feature")) + "/attachment/" + attachmentId;
+
+    mockMvc.perform(delete(attachmentUrl)
+            .with(setServletPath(attachmentUrl))
+            .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isNoContent());
+  }
+
+  @Order(2)
+  @ParameterizedTest
+  @MethodSource("testUrls")
+  void deleteAttachmentUnauthorised(String url) throws Exception {
+    url = apiBasePath + url;
+
+    // First get the list of attachments to retrieve the attachmentId
+    String responseContent = mockMvc.perform(
+            get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    // Extract attachmentId from the response (assuming it's the first attachment)
+    String attachmentId = JsonPath.read(responseContent, "$.[0].attachmentId");
+    // Now get the actual attachment
+    String attachmentUrl = url.substring(0, url.indexOf("/feature")) + "/attachment/" + attachmentId;
+
+    mockMvc.perform(delete(attachmentUrl)
+            .with(setServletPath(attachmentUrl))
+            .accept(MediaType.APPLICATION_OCTET_STREAM))
+        .andExpect(status().isUnauthorized());
   }
 }
