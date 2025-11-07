@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.geotools.TransformationUtil;
+import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.Application;
@@ -64,6 +65,7 @@ import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.util.Constants;
 import org.tailormap.api.util.EditUtil;
+import org.tailormap.api.viewer.model.AttachmentMetadata;
 import org.tailormap.api.viewer.model.Feature;
 
 @AppRestController
@@ -147,7 +149,7 @@ public class EditFeatureController implements Constants {
 
         transaction.commit();
         // find the created feature to return
-        newFeature = getFeature(fs, ff.id(newFids.getFirst()), application);
+        newFeature = getFeature(fs, ff.id(newFids.getFirst()), application, tmFeatureType);
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Feature cannot be added, datasource is not editable");
@@ -209,7 +211,7 @@ public class EditFeatureController implements Constants {
             filter);
         transaction.commit();
         // find the updated feature to return
-        patchedFeature = getFeature(fs, filter, application);
+        patchedFeature = getFeature(fs, filter, application, tmFeatureType);
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Feature cannot be edited, it does not exist or is not editable");
@@ -271,7 +273,8 @@ public class EditFeatureController implements Constants {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  private static Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)
+  private static Feature getFeature(
+      SimpleFeatureSource fs, Filter filter, Application application, TMFeatureType tmFeatureType)
       throws IOException, FactoryException {
     Feature modelFeature = null;
     try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
@@ -292,6 +295,20 @@ public class EditFeatureController implements Constants {
             value = GeometryProcessor.geometryToWKT(geometry);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
+        }
+        if (tmFeatureType.getSettings().getAttachmentAttributes() != null
+            && !tmFeatureType
+                .getSettings()
+                .getAttachmentAttributes()
+                .isEmpty()) {
+          //  add attachments
+          Object primaryKey = simpleFeature.getAttribute(tmFeatureType.getPrimaryKeyAttribute());
+          Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
+              AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, List.of(primaryKey));
+          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
+          if (attachments != null) {
+            modelFeature.setAttachments(attachments);
+          }
         }
       }
     }
