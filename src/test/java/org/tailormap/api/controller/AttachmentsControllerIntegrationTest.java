@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -180,7 +179,6 @@ class AttachmentsControllerIntegrationTest {
             .with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andDo(print())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Layer does not support attachments"));
   }
@@ -207,7 +205,6 @@ class AttachmentsControllerIntegrationTest {
             .with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andDo(print())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Layer is not editable"));
   }
