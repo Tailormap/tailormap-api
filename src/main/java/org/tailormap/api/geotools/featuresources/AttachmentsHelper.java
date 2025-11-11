@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.commons.dbcp.DelegatingConnection;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
@@ -181,14 +181,36 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
       try (Connection conn = ds.getDataSource().getConnection();
           Statement stmt = conn.createStatement()) {
         String sql = getCreateAttachmentsForFeatureTypeStatements(featureType, ds);
-        logger.debug("About to create attachments table using {}", sql);
+        logger.debug("About to create attachments table using statement:\n{}", sql);
         stmt.execute(sql);
         logger.info("Attachment table created for FeatureType: {}", featureType.getName());
 
         sql = getCreateAttachmentsIndexForFeatureTypeStatements(featureType, ds);
-        logger.debug("About to create attachments table FK index using {}", sql);
+        logger.debug("About to create attachments table FK index using statement:\n{}", sql);
         stmt.execute(sql);
         logger.info("Attachment table FK index created for FeatureType: {}", featureType.getName());
+      }
+    } finally {
+      if (ds != null) {
+        ds.dispose();
+      }
+    }
+  }
+
+  public static void dropAttachmentTableForFeatureType(TMFeatureType featureType) throws IOException, SQLException {
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      String schemaPrefix = ds.getDatabaseSchema();
+      if (!schemaPrefix.isEmpty()) {
+        schemaPrefix += ".";
+      }
+      String dropSql = MessageFormat.format("DROP TABLE {1}{0}_attachments", featureType.getName(), schemaPrefix);
+      logger.debug("About to drop attachments table using statement:\n{}", dropSql);
+      try (Connection conn = ds.getDataSource().getConnection();
+          PreparedStatement stmt = conn.prepareStatement(dropSql); ) {
+        stmt.execute();
+        logger.info("Attachment table dropped for FeatureType: {}", featureType.getName());
       }
     } finally {
       if (ds != null) {
@@ -373,55 +395,43 @@ END
   }
 
   public static AttachmentMetadata insertAttachment(
-      TMFeatureType featureType, AttachmentMetadata attachment, String featureId, byte[] fileData)
+      TMFeatureType featureType, AttachmentMetadata attachment, Object primaryKey, byte[] fileData)
       throws IOException, SQLException {
 
     // create uuid here so we don't have to deal with DB-specific returning/generated key syntax
     attachment.setAttachmentId(UUID.randomUUID());
     attachment.setAttachmentSize((long) fileData.length);
+    attachment.createdAt(OffsetDateTime.now(ZoneId.of("UTC")));
     attachment.setCreatedBy(
         SecurityContextHolder.getContext().getAuthentication().getName());
-    attachment.createdAt(OffsetDateTime.now(ZoneId.of("UTC")));
 
     logger.debug(
         "Adding attachment {} for feature {}:{}, type {}: {} (bytes: {})",
         attachment.getAttachmentId(),
         featureType.getName(),
-        featureId,
+        primaryKey,
         attachment.getMimeType(),
         attachment,
         fileData.length);
-
-    String insertSql = MessageFormat.format(
-        """
-INSERT INTO {0}_attachments (
-{0}_pk,
-attachment_id,
-file_name,
-attribute_name,
-description,
-attachment,
-attachment_size,
-mime_type,
-created_at,
-created_by
-) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
-""",
-        featureType.getName());
 
     JDBCDataStore ds = null;
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
 
-      Class<?> typeOfPK = ds.getSchema(featureType.getName())
-          .getDescriptor(featureType.getPrimaryKeyAttribute())
-          .getType()
-          .getBinding();
+      String insertSql = MessageFormat.format(
+          """
+INSERT INTO {1}{0}_attachments (
+{0}_pk,
+attachment_id, file_name, attribute_name, description, attachment, attachment_size,
+mime_type, created_at, created_by) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
+""",
+          featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
 
+      logger.debug("Insert attachment SQL: {}", insertSql);
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 
-        stmt.setObject(1, featureId, ds.getMapping(typeOfPK));
+        stmt.setObject(1, primaryKey);
         if (featureType
             .getFeatureSource()
             .getJdbcConnection()
@@ -481,11 +491,15 @@ DELETE FROM {0}_attachments WHERE attachment_id = ?
     }
   }
 
-  public static List<AttachmentMetadata> listAttachmentsForFeature(TMFeatureType featureType, String featureId)
+  public static List<AttachmentMetadata> listAttachmentsForFeature(TMFeatureType featureType, Object primaryKey)
       throws IOException, SQLException {
 
-    String querySql = MessageFormat.format(
-        """
+    List<AttachmentMetadata> attachments = new ArrayList<>();
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      String querySql = MessageFormat.format(
+          """
 SELECT
 {0}_pk,
 attachment_id,
@@ -496,18 +510,13 @@ attachment_size,
 mime_type,
 created_at,
 created_by
-FROM {0}_attachments WHERE {0}_pk = ?
+FROM {1}{0}_attachments WHERE {0}_pk = ?
 """,
-        featureType.getName());
-
-    List<AttachmentMetadata> attachments = new ArrayList<>();
-    JDBCDataStore ds = null;
-    try {
-      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+          featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
-        stmt.setString(1, featureId);
+        stmt.setObject(1, primaryKey);
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
@@ -527,13 +536,13 @@ FROM {0}_attachments WHERE {0}_pk = ?
   public static AttachmentWithBinary getAttachment(TMFeatureType featureType, UUID attachmentId)
       throws IOException, SQLException {
 
-    String querySql = MessageFormat.format(
-        "SELECT attachment, attachment_size, mime_type, file_name FROM {0}_attachments WHERE attachment_id = ?",
-        featureType.getName());
     JDBCDataStore ds = null;
     try {
       byte[] attachment;
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      String querySql = MessageFormat.format(
+          "SELECT attachment, attachment_size, mime_type, file_name FROM {1}{0}_attachments WHERE attachment_id = ?",
+          featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
@@ -575,21 +584,24 @@ FROM {0}_attachments WHERE {0}_pk = ?
    * List attachments for multiple features grouped by their IDs.
    *
    * @param featureType the feature type
-   * @param featureIds the feature IDs
+   * @param featurePKs the feature primary keys
    * @return map of feature ID to list of attachments
    * @throws IOException when an IO error occurs conecting to the database
    */
   public static Map<@NotNull Object, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
-      TMFeatureType featureType, List<?> featureIds) throws IOException {
+      TMFeatureType featureType, List<Object> featurePKs) throws IOException {
     List<AttachmentMetadataListItem> attachments = new ArrayList<>();
-    if (featureIds == null || featureIds.isEmpty()) {
+    if (featurePKs == null || featurePKs.isEmpty()) {
       return new HashMap<>();
     }
 
-    String querySql = MessageFormat.format(
-        """
+    JDBCDataStore ds = null;
+    try {
+      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      String querySql = MessageFormat.format(
+          """
 SELECT
-{0}_pk as featureId,
+{0}_pk,
 attachment_id,
 file_name,
 attribute_name,
@@ -598,28 +610,50 @@ attachment_size,
 mime_type,
 created_at,
 created_by
-FROM {0}_attachments WHERE {0}_pk IN ( {1} )
+FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
 """,
-        featureType.getName(),
-        String.join(", ", featureIds.stream().map(id -> "?").toArray(String[]::new)));
+          featureType.getName(),
+          String.join(", ", featurePKs.stream().map(id -> "?").toArray(String[]::new)),
+          ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
 
-    JDBCDataStore ds = null;
-    try {
-      ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      logger.debug("Querying attachments with SQL: {}", querySql);
+
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
-        for (int i = 0; i < featureIds.size(); i++) {
-          stmt.setObject(
-              i + 1,
-              featureIds.get(i),
-              ds.getMapping(featureIds.get(i).getClass()));
+        if (featurePKs.getFirst() instanceof UUID) {
+          switch (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
+            case ORACLE -> {
+              // Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be
+              // correctly formatted binary literals (hextoraw('...')).
+              // If using JDBC, make sure parameters are set as byte[] or as appropriate for RAW columns.
+              for (Object featurePK : featurePKs) {
+                stmt.setBytes(1, asBytes((UUID) featurePK));
+              }
+            }
+            case POSTGIS -> {
+              for (Object featurePK : featurePKs) {
+                stmt.setObject(1, featurePK);
+              }
+            }
+            case SQLSERVER -> {
+              // (UNIQUEIDENTIFIER): You can use IN with a list of string representations of GUIDs; e.g.
+              // WHERE myGuid IN ('guid1','guid2')
+              for (Object featurePK : featurePKs) {
+                stmt.setString(1, featurePK.toString());
+              }
+            }
+          }
+        } else {
+          for (Object featurePK : featurePKs) {
+            stmt.setObject(1, featurePK);
+          }
         }
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             AttachmentMetadata a = getAttachmentMetadata(rs);
-            attachments.add(new AttachmentMetadataListItem(rs.getObject("featureId"), a));
+            attachments.add(new AttachmentMetadataListItem(rs.getObject(1), a));
           }
         }
       } catch (SQLException ex) {
