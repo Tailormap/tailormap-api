@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.apache.commons.dbcp.DelegatingConnection;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
@@ -36,6 +37,10 @@ import org.tailormap.api.viewer.model.AttachmentMetadata;
 public final class AttachmentsHelper {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final Pattern NUMERIC_WITH_IDENTITY = Pattern.compile(
+      "(?i)\\b(?:int|integer|bigint|smallint|numeric|decimal|number)(?:\\s*\\(\\s*\\d+(?:\\s*,\\s*\\d+)?\\s*\\))?\\s+identity\\b");
+
   private static final List<String> allowedPKTypesSupportingSize = List.of(
       // list of database types that support size modifiers
       // for their foreign key columns
@@ -254,6 +259,7 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
         typeModifier);
 
     JDBCConnectionProperties connProperties = featureType.getFeatureSource().getJdbcConnection();
+    fkColumnType = getValidColumnType(fkColumnType, connProperties.getDbtype());
     switch (connProperties.getDbtype()) {
       case POSTGIS -> {
         return getPostGISCreateAttachmentsTableStatement(
@@ -284,6 +290,16 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
         throw new IllegalArgumentException(
             "Unsupported database type for attachments: " + connProperties.getDbtype());
     }
+  }
+
+  private static String getValidColumnType(String columnType, JDBCConnectionProperties.DbtypeEnum dbtype) {
+    if (dbtype.equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
+        && NUMERIC_WITH_IDENTITY.matcher(columnType).find()) {
+      // Remove IDENTITY keyword from numeric types as it is not supported in FK columns
+      columnType = columnType.replaceAll("(?i)\\s+identity\\b", "");
+    }
+
+    return columnType;
   }
 
   private static String getValidModifier(String columnType, int fkColumnSize) {
