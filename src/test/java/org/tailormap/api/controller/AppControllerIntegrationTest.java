@@ -7,7 +7,6 @@ package org.tailormap.api.controller;
 
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -159,7 +158,6 @@ class AppControllerIntegrationTest {
     String path = basePath + "/app/3d_utrecht";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
         .andExpect(jsonPath("$.name").value("3d_utrecht"))

@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,7 +98,6 @@ class TaskAdminControllerIntegrationTest {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
@@ -124,7 +122,6 @@ class TaskAdminControllerIntegrationTest {
     mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, "does-not-exist")
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
@@ -150,7 +147,6 @@ class TaskAdminControllerIntegrationTest {
 
     mockMvc.perform(get(adminBasePath + "/tasks/{type}/{uuid}", detailsType, detailsUUID)
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.uuid").value(detailsUUID))
@@ -167,7 +163,6 @@ class TaskAdminControllerIntegrationTest {
                 TEST_TASK_TYPE,
                 "6308d26e-fe1e-4268-bb28-20db2cd06914")
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Task not found"));
@@ -243,7 +238,6 @@ class TaskAdminControllerIntegrationTest {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TaskType.INDEX.getValue())
             .accept(MediaType.APPLICATION_JSON))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())

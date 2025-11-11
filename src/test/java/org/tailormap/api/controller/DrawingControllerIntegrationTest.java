@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,7 +107,6 @@ class DrawingControllerIntegrationTest {
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(KNOWN_DRAWING_ID))
         .andExpect(jsonPath("$.id", matchesPattern(UUID_REGEX)))
@@ -141,7 +139,6 @@ class DrawingControllerIntegrationTest {
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .content(NEW_DRAWING_JSON))
-        .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         // API created values
@@ -253,7 +250,6 @@ class DrawingControllerIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding(Charset.defaultCharset())
             .content(updatedDrawing))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         // API-created values
@@ -316,7 +312,6 @@ class DrawingControllerIntegrationTest {
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isUnauthorized())
-        .andDo(print())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
         .andExpect(jsonPath("$.url").value("/login"));
@@ -359,7 +354,6 @@ class DrawingControllerIntegrationTest {
     mockMvc.perform(get(getDrawingUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getDrawingUrl)))
         .andExpect(status().is2xxSuccessful())
         .andExpect(status().is(200))
-        .andDo(print())
         .andExpect(jsonPath("$.id").value(drawingId))
         .andExpect(jsonPath("$.createdBy").value("tm-admin"))
         .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
@@ -404,7 +398,6 @@ class DrawingControllerIntegrationTest {
     final String getDrawingUrl = apiBasePath + "/app/austria/drawing/" + drawingId;
 
     mockMvc.perform(get(getDrawingUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getDrawingUrl)))
-        .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(status().is(200))
         .andExpect(jsonPath("$.id").value(drawingId))

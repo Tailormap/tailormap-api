@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
@@ -193,7 +192,6 @@ class LayerExportControllerIntegrationTest {
             .with(setServletPath(url))
             .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
             .param("filter", "(identificatie = 'P0026.8abeacd54c5b7500047b2112796cab56')"))
-        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features.length()").value(1))

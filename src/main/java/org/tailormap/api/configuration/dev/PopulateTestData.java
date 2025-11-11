@@ -932,6 +932,21 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           } catch (IOException | SQLException e) {
             throw new RuntimeException("Failed to create attachments table", e);
           }
+          ft.getSettings().addEditableAttributesItem("identificatie");
+          ft.getSettings().addEditableAttributesItem("bronhouder");
+          ft.getSettings().addEditableAttributesItem("class");
+          ft.getSettings().addEditableAttributesItem("gmlid");
+          ft.getSettings().addEditableAttributesItem("lv_publicatiedatum");
+          ft.getSettings().addEditableAttributesItem("creationdate");
+          ft.getSettings().addEditableAttributesItem("tijdstipregistratie");
+          ft.getSettings().addEditableAttributesItem("eindregistratie");
+          ft.getSettings().addEditableAttributesItem("terminationdate");
+          ft.getSettings().addEditableAttributesItem("inonderzoek");
+          ft.getSettings().addEditableAttributesItem("relatievehoogteligging");
+          ft.getSettings().addEditableAttributesItem("bgt_status");
+          ft.getSettings().addEditableAttributesItem("plus_status");
+          ft.getSettings().addEditableAttributesItem("plus_fysiekvoorkomen");
+          ft.getSettings().addEditableAttributesItem("begroeidterreindeeloptalud");
         });
 
     featureSources.get("postgis").getFeatureTypes().stream()
@@ -966,6 +981,20 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           } catch (IOException | SQLException e) {
             throw new RuntimeException("Failed to create attachments table", e);
           }
+          ft.getSettings().addEditableAttributesItem("GMLID");
+          ft.getSettings().addEditableAttributesItem("IDENTIFICATIE");
+          ft.getSettings().addEditableAttributesItem("LV_PUBLICATIEDATUM");
+          ft.getSettings().addEditableAttributesItem("CREATIONDATE");
+          ft.getSettings().addEditableAttributesItem("TIJDSTIPREGISTRATIE");
+          ft.getSettings().addEditableAttributesItem("EINDREGISTRATIE");
+          ft.getSettings().addEditableAttributesItem("TERMINATIONDATE");
+          ft.getSettings().addEditableAttributesItem("BRONHOUDER");
+          ft.getSettings().addEditableAttributesItem("INONDERZOEK");
+          ft.getSettings().addEditableAttributesItem("RELATIEVEHOOGTELIGGING");
+          ft.getSettings().addEditableAttributesItem("BGT_STATUS");
+          ft.getSettings().addEditableAttributesItem("PLUS_STATUS");
+          ft.getSettings().addEditableAttributesItem("CLASS");
+          ft.getSettings().addEditableAttributesItem("PLUS_TYPE");
         });
     featureSources.get("sqlserver").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("wegdeel"))
@@ -981,12 +1010,38 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           } catch (IOException | SQLException e) {
             throw new RuntimeException("Failed to create attachments table", e);
           }
+          ft.getSettings().addEditableAttributesItem("gmlid");
+          ft.getSettings().addEditableAttributesItem("identificatie");
+          ft.getSettings().addEditableAttributesItem("lv_publicatiedatum");
+          ft.getSettings().addEditableAttributesItem("creationdate");
+          ft.getSettings().addEditableAttributesItem("tijdstipregistratie");
+          ft.getSettings().addEditableAttributesItem("eindregistratie");
+          ft.getSettings().addEditableAttributesItem("terminationdate");
+          ft.getSettings().addEditableAttributesItem("bronhouder");
+          ft.getSettings().addEditableAttributesItem("inonderzoek");
+          ft.getSettings().addEditableAttributesItem("relatievehoogteligging");
+          ft.getSettings().addEditableAttributesItem("bgt_status");
+          ft.getSettings().addEditableAttributesItem("plus_status");
+          ft.getSettings().addEditableAttributesItem("function_");
+          ft.getSettings().addEditableAttributesItem("plus_functiewegdeel");
+          ft.getSettings().addEditableAttributesItem("plus_fysiekvoorkomenwegdeel");
+          ft.getSettings().addEditableAttributesItem("surfacematerial");
+          ft.getSettings().addEditableAttributesItem("wegdeeloptalud");
         });
 
     featureSources.get("postgis").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("kadastraal_perceel"))
         .findFirst()
         .ifPresent(ft -> ft.getSettings().addHideAttributesItem("gml_id"));
+
+    featureSources.get("postgis_osm").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("osm_polygon"))
+        .findFirst()
+        .ifPresent(ft -> {
+          ft.getSettings().addEditableAttributesItem("osm_id");
+          ft.getSettings().addEditableAttributesItem("building");
+          ft.getSettings().addEditableAttributesItem("z_order");
+        });
   }
 
   public void createAppTestData() throws Exception {
