@@ -292,7 +292,8 @@ class AttachmentsControllerIntegrationTest {
         .andExpect(jsonPath("$.columnMetadata[?(@.name=='" + gmlIdKey + "')]")
             .isNotEmpty())
         .andExpect(jsonPath("$.attachmentMetadata[0].maxAttachmentSize").value(4_000_000))
-        .andExpect(jsonPath("$.attachmentMetadata[0].mimeType").value("image/jpeg, image/svg+xml"))
+        .andExpect(
+            jsonPath("$.attachmentMetadata[0].mimeType").value("image/jpeg, image/svg+xml, .png, image/*"))
         .andExpect(jsonPath("$.attachmentMetadata[0].attributeName").value("bijlage"))
         .andExpect(jsonPath("$.features[0].attachments").isArray())
         .andExpect(jsonPath("$.features[0].attachments[0].fileName").value("lichtpunt.svg"));
