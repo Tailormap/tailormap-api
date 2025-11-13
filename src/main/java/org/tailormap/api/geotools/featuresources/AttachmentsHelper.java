@@ -208,8 +208,8 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
       String dropSql = MessageFormat.format("DROP TABLE {1}{0}_attachments", featureType.getName(), schemaPrefix);
       logger.debug("About to drop attachments table using statement:\n{}", dropSql);
       try (Connection conn = ds.getDataSource().getConnection();
-          PreparedStatement stmt = conn.prepareStatement(dropSql); ) {
-        stmt.execute();
+          Statement stmt = conn.createStatement()) {
+        stmt.execute(dropSql);
         logger.info("Attachment table dropped for FeatureType: {}", featureType.getName());
       }
     } finally {
