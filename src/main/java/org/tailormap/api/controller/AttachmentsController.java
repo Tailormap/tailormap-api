@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import com.google.common.base.Splitter;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,8 +13,11 @@ import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
@@ -103,22 +107,29 @@ public class AttachmentsController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not support attachments");
     }
 
-    AttachmentAttributeType attachmentAttributeType = attachmentAttrSet.stream()
-        .filter(attr -> (attr.getAttributeName().equals(attachment.getAttributeName())
-            && java.util.Arrays.stream(attr.getMimeType().split(","))
-                .map(String::trim)
-                .anyMatch(mime -> mime.equals(attachment.getMimeType()))
-            && (attr.getMaxAttachmentSize() == null || attr.getMaxAttachmentSize() >= fileData.length)))
+    AttachmentAttributeType attachmentAttribute = attachmentAttrSet.stream()
+        .filter(attr -> attr.getAttributeName().equals(attachment.getAttributeName()))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Layer does not support attachments for attribute "
-                + attachment.getAttributeName()
-                + " with mime type "
-                + attachment.getMimeType()
-                + " and size "
-                + fileData.length));
-    logger.debug("Using attachment attribute {}", attachmentAttributeType);
+            "Layer does not support attachments for attribute " + attachment.getAttributeName()));
+
+    if (attachmentAttribute.getMaxAttachmentSize() != null
+        && attachmentAttribute.getMaxAttachmentSize() < fileData.length) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Attachment size %d exceeds maximum of %d"
+              .formatted(fileData.length, attachmentAttribute.getMaxAttachmentSize()));
+    }
+
+    if (attachmentAttribute.getMimeType() != null) {
+      if (!validateMimeTypeAccept(
+          attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type or extension not allowed");
+      }
+    }
+
+    logger.debug("Using attachment attribute {}", attachmentAttribute);
 
     AttachmentMetadata response;
     try {
@@ -128,6 +139,40 @@ public class AttachmentsController {
     }
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  /**
+   * Validate as <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file#accept">file
+   * input "accept" attribute</a>.
+   *
+   * @param acceptList comma-separated list of MIME types and file extensions to validate against
+   * @param fileName name of the file to validate
+   * @param mimeType MIME type of the file to validate
+   * @return true if the file's extension or MIME type matches one of the accepted types, false otherwise
+   */
+  private static boolean validateMimeTypeAccept(String acceptList, String fileName, String mimeType) {
+    Iterable<String> allowedMimeTypes = Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
+    final Locale locale = Locale.ENGLISH;
+    for (String allowedType : allowedMimeTypes) {
+      if (allowedType.startsWith(".")) {
+        // Check file extension
+        if (fileName.toLowerCase(locale).endsWith(allowedType.toLowerCase(locale))) {
+          return true;
+        }
+      } else if (allowedType.endsWith("/*")) {
+        // Check mime type category (e.g. image/*)
+        String category = allowedType.substring(0, allowedType.length() - 1);
+        if (mimeType.startsWith(category)) {
+          return true;
+        }
+      } else {
+        // Check exact mime type match
+        if (mimeType.equals(allowedType)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
