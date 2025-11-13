@@ -585,7 +585,7 @@ FROM {1}{0}_attachments WHERE {0}_pk = ?
    * <strong>NOTE</strong>: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as
    * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}.
    *
-   * <p><strong>TODO:</strong>{@link <a href="https://b3partners.atlassian.net/browse/HTM-1771">HTM-1771</a>}
+   * <p><strong>TODO:</strong> <a href="https://b3partners.atlassian.net/browse/HTM-1771">HTM-1771</a>
    *
    * @param featureType the feature type
    * @param featurePKs the feature primary keys
