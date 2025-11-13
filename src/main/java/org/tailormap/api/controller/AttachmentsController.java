@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
@@ -36,7 +35,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
@@ -79,7 +78,7 @@ public class AttachmentsController {
    * @param fileData the attachment file data
    * @return the response entity
    */
-  @PutMapping(
+  @PostMapping(
       path = {
         "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments"
       },
@@ -151,7 +150,8 @@ public class AttachmentsController {
    * @return true if the file's extension or MIME type matches one of the accepted types, false otherwise
    */
   private static boolean validateMimeTypeAccept(String acceptList, String fileName, String mimeType) {
-    Iterable<String> allowedMimeTypes = Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
+    Iterable<String> allowedMimeTypes =
+        Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
     final Locale locale = Locale.ENGLISH;
     for (String allowedType : allowedMimeTypes) {
       if (allowedType.startsWith(".")) {

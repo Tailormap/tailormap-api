@@ -120,7 +120,7 @@ class AttachmentsControllerIntegrationTest {
             .file(attachmentMetadata)
             .file(svgFile)
             .with(request -> {
-              request.setMethod("PUT");
+              request.setMethod("POST");
               return request;
             })
             .with(setServletPath(url))
@@ -150,7 +150,7 @@ class AttachmentsControllerIntegrationTest {
             .file(attachmentMetadata)
             .file(svgFile)
             .with(request -> {
-              request.setMethod("PUT");
+              request.setMethod("POST");
               return request;
             })
             .with(setServletPath(url))
@@ -174,7 +174,7 @@ class AttachmentsControllerIntegrationTest {
             .file(attachmentMetadata)
             .file(svgFile)
             .with(request -> {
-              request.setMethod("PUT");
+              request.setMethod("POST");
               return request;
             })
             .with(setServletPath(url))
@@ -200,7 +200,7 @@ class AttachmentsControllerIntegrationTest {
             .file(attachmentMetadata)
             .file(svgFile)
             .with(request -> {
-              request.setMethod("PUT");
+              request.setMethod("POST");
               return request;
             })
             .with(setServletPath(url))
