@@ -429,7 +429,7 @@ public class FeaturesController implements Constants {
     boolean ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != null
         && !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
 
-    List<Object> featureIds = new ArrayList<>();
+    List<Object> featurePKs = new ArrayList<>();
     Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
@@ -462,7 +462,7 @@ public class FeaturesController implements Constants {
             newFeat.putAttributesItem(attName, value);
           }
           if (withAttachments && ftSupportsAttachments) {
-            featureIds.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
+            featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
           }
         }
         featuresResponse.addFeaturesItem(newFeat);
@@ -495,7 +495,7 @@ public class FeaturesController implements Constants {
       if (withAttachments) {
         //  fetch all attachments for all features, grouped by feature id
         Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
-            AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featureIds);
+            AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
         //  add attachment data to features using feature.primaryKeyAttribute to match
         for (Feature feature : featuresResponse.getFeatures()) {
           Object primaryKey = feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute());

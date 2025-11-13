@@ -8,6 +8,7 @@ package org.tailormap.api.controller;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,7 +81,7 @@ class AttachmentsControllerIntegrationTest {
         Arguments.of(
             "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
         Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/2d323d3d98a2101c01ef1c6274085254/attachments"));
+            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/c9baca2a2f078038ace1b3a1acf8e0c8/attachments"));
   }
 
   private static Stream<Arguments> getFeaturesTestUrls() {
@@ -265,9 +266,15 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void getFeaturesWithAttachments(String url, int x, int y, int distance, String gmlId) throws Exception {
-
-    String getUrl = apiBasePath + url + "/features";
+  void getFeaturesWithAttachments(String layerUrl, int x, int y, int distance, String expectedGmlId)
+      throws Exception {
+    final String gmlIdKey =
+        switch (layerUrl) {
+          case TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -> "gmlid";
+          case TestUrls.layerWaterdeelOracle -> "GMLID";
+          default -> throw new IllegalArgumentException("Unknown URL: " + layerUrl);
+        };
+    final String getUrl = apiBasePath + layerUrl + "/features";
     mockMvc.perform(get(getUrl)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(getUrl))
@@ -276,10 +283,14 @@ class AttachmentsControllerIntegrationTest {
             .param("distance", String.valueOf(distance))
             .param("withAttachments", "true"))
         .andExpect(status().isOk())
+        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes." + gmlIdKey).value(expectedGmlId))
+        .andExpect(jsonPath("$.columnMetadata[?(@.name=='" + gmlIdKey + "')]")
+            .isNotEmpty())
         .andExpect(jsonPath("$.attachmentMetadata[0].maxAttachmentSize").value(4_000_000))
         .andExpect(jsonPath("$.attachmentMetadata[0].mimeType").value("image/jpeg, image/svg+xml"))
         .andExpect(jsonPath("$.attachmentMetadata[0].attributeName").value("bijlage"))
