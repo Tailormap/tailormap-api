@@ -322,7 +322,8 @@ class AttachmentsHelperIntegrationTest {
 
       try (Connection conn = ds.getDataSource().getConnection();
           Statement stmt = conn.createStatement();
-          ResultSet rs = stmt.executeQuery("select count(*) from " + featureTypeName + "_attachments")) {
+          ResultSet rs = stmt.executeQuery(
+              "select count(*) from " + schemaPrefix + featureTypeName + "_attachments")) {
         if (rs.next()) {
           fail("Attachments table '%s_attachments' still exists.".formatted(featureTypeName));
         }

@@ -583,7 +583,9 @@ FROM {1}{0}_attachments WHERE {0}_pk = ?
   /**
    * List attachments for multiple features grouped by their IDs. <br>
    * <strong>NOTE</strong>: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as
-   * these are used as map keys. Eg. {@code byte[]} is converted to {@code ByteBuffer}.
+   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}.
+   *
+   * <p><strong>TODO:</strong>{@link <a href="https://b3partners.atlassian.net/browse/HTM-1771">HTM-1771</a>}
    *
    * @param featureType the feature type
    * @param featurePKs the feature primary keys
@@ -621,15 +623,18 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
+        Object firstPK = featurePKs.getFirst();
+        boolean isUUID = firstPK instanceof UUID;
+        boolean isByteBuffer = firstPK instanceof ByteBuffer;
+
         switch (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
           case ORACLE -> {
             for (int i = 0; i < featurePKs.size(); i++) {
-              if (featurePKs.getFirst() instanceof UUID) {
+              if (isUUID) {
                 // Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be
                 // correctly formatted binary literals (hextoraw('...')).
                 stmt.setBytes(i + 1, asBytes((UUID) featurePKs.get(i)));
-              }
-              if (featurePKs.getFirst() instanceof ByteBuffer) {
+              } else if (isByteBuffer) {
                 // unwrap ByteBuffer to byte[] for the query
                 stmt.setBytes(i + 1, ((ByteBuffer) featurePKs.get(i)).array());
               } else {
@@ -639,7 +644,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
           }
           case SQLSERVER -> {
             for (int i = 0; i < featurePKs.size(); i++) {
-              if (featurePKs.getFirst() instanceof UUID) {
+              if (isUUID) {
                 // use uppercase string representation for SQL Server UNIQUEIDENTIFIER
                 stmt.setString(
                     i + 1, featurePKs.get(i).toString().toUpperCase(Locale.ROOT));
@@ -665,7 +670,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
           while (rs.next()) {
             AttachmentMetadata a = getAttachmentMetadata(rs);
             Object keyObject = rs.getObject(1);
-            if (featurePKs.getFirst() instanceof UUID
+            if (isUUID
                 && featureType
                     .getFeatureSource()
                     .getJdbcConnection()
@@ -675,7 +680,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
               byte[] rawBytes = rs.getBytes(1);
               ByteBuffer bb = ByteBuffer.wrap(rawBytes);
               keyObject = new UUID(bb.getLong(), bb.getLong());
-            } else if (featurePKs.getFirst() instanceof UUID
+            } else if (isUUID
                 && featureType
                     .getFeatureSource()
                     .getJdbcConnection()
@@ -685,8 +690,9 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
               keyObject = UUID.fromString(rs.getString(1));
             }
 
-            if (featurePKs.getFirst() instanceof ByteBuffer) {
+            if (isByteBuffer) {
               // we need to use a key that is comparable, so convert byte[] to ByteBuffer
+              assert keyObject instanceof byte[];
               keyObject = ByteBuffer.wrap((byte[]) keyObject);
             }
             attachments.add(new AttachmentMetadataListItem(keyObject, a));
