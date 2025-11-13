@@ -292,7 +292,7 @@ class AttachmentsHelperIntegrationTest {
               featureType, List.of(validFeaturePrimaryKey));
 
       assertNotNull(listAttachments);
-      //      assertEquals(1, listAttachments.size(), "Expected exactly one feature.");
+      assertEquals(1, listAttachments.size(), "Expected exactly one feature.");
       if (featurePrimaryKey instanceof byte[] bytes) {
         // byte[] does not implement equals/hashCode properly, but GeoTools uses byte[] for PKs in Oracle when
         // UUID is used
