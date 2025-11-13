@@ -926,7 +926,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               .addAttachmentAttributesItem(new AttachmentAttributeType()
                   .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
-                  .mimeType("image/jpeg, image/svg+xml"));
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
           try {
             AttachmentsHelper.createAttachmentTableForFeatureType(ft);
           } catch (IOException | SQLException e) {
@@ -975,7 +975,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               .addAttachmentAttributesItem(new AttachmentAttributeType()
                   .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
-                  .mimeType("image/jpeg, image/svg+xml"));
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
           try {
             AttachmentsHelper.createAttachmentTableForFeatureType(ft);
           } catch (IOException | SQLException e) {
@@ -1004,7 +1004,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               .addAttachmentAttributesItem(new AttachmentAttributeType()
                   .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
-                  .mimeType("image/jpeg, image/svg+xml"));
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
           try {
             AttachmentsHelper.createAttachmentTableForFeatureType(ft);
           } catch (IOException | SQLException e) {
