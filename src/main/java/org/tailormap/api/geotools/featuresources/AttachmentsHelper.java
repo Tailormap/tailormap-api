@@ -581,12 +581,14 @@ FROM {1}{0}_attachments WHERE {0}_pk = ?
   }
 
   /**
-   * List attachments for multiple features grouped by their IDs.
+   * List attachments for multiple features grouped by their IDs. <br>
+   * <strong>NOTE</strong>: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as
+   * these are used as map keys. Eg. {@code byte[]} is converted to {@code ByteBuffer}.
    *
    * @param featureType the feature type
    * @param featurePKs the feature primary keys
    * @return map of feature ID to list of attachments
-   * @throws IOException when an IO error occurs conecting to the database
+   * @throws IOException when an IO error occurs connecting to the database
    */
   public static Map<@NotNull Object, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
       TMFeatureType featureType, List<Object> featurePKs) throws IOException {
@@ -616,44 +618,78 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
           String.join(", ", featurePKs.stream().map(id -> "?").toArray(String[]::new)),
           ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
 
-      logger.debug("Querying attachments with SQL: {}", querySql);
-
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
-        if (featurePKs.getFirst() instanceof UUID) {
-          switch (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
-            case ORACLE -> {
-              // Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be
-              // correctly formatted binary literals (hextoraw('...')).
-              // If using JDBC, make sure parameters are set as byte[] or as appropriate for RAW columns.
-              for (Object featurePK : featurePKs) {
-                stmt.setBytes(1, asBytes((UUID) featurePK));
+        switch (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
+          case ORACLE -> {
+            for (int i = 0; i < featurePKs.size(); i++) {
+              if (featurePKs.getFirst() instanceof UUID) {
+                // Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be
+                // correctly formatted binary literals (hextoraw('...')).
+                stmt.setBytes(i + 1, asBytes((UUID) featurePKs.get(i)));
               }
-            }
-            case POSTGIS -> {
-              for (Object featurePK : featurePKs) {
-                stmt.setObject(1, featurePK);
-              }
-            }
-            case SQLSERVER -> {
-              // (UNIQUEIDENTIFIER): You can use IN with a list of string representations of GUIDs; e.g.
-              // WHERE myGuid IN ('guid1','guid2')
-              for (Object featurePK : featurePKs) {
-                stmt.setString(1, featurePK.toString());
+              if (featurePKs.getFirst() instanceof ByteBuffer) {
+                // unwrap ByteBuffer to byte[] for the query
+                stmt.setBytes(i + 1, ((ByteBuffer) featurePKs.get(i)).array());
+              } else {
+                stmt.setObject(i + 1, featurePKs.get(i));
               }
             }
           }
-        } else {
-          for (Object featurePK : featurePKs) {
-            stmt.setObject(1, featurePK);
+          case SQLSERVER -> {
+            for (int i = 0; i < featurePKs.size(); i++) {
+              if (featurePKs.getFirst() instanceof UUID) {
+                // use uppercase string representation for SQL Server UNIQUEIDENTIFIER
+                stmt.setString(
+                    i + 1, featurePKs.get(i).toString().toUpperCase(Locale.ROOT));
+              } else {
+                stmt.setObject(i + 1, featurePKs.get(i));
+              }
+            }
           }
+          case POSTGIS -> {
+            for (int i = 0; i < featurePKs.size(); i++) {
+              stmt.setObject(i + 1, featurePKs.get(i));
+            }
+          }
+          default ->
+            throw new UnsupportedOperationException("Unsupported database type: "
+                + featureType
+                    .getFeatureSource()
+                    .getJdbcConnection()
+                    .getDbtype());
         }
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             AttachmentMetadata a = getAttachmentMetadata(rs);
-            attachments.add(new AttachmentMetadataListItem(rs.getObject(1), a));
+            Object keyObject = rs.getObject(1);
+            if (featurePKs.getFirst() instanceof UUID
+                && featureType
+                    .getFeatureSource()
+                    .getJdbcConnection()
+                    .getDbtype()
+                    .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+              // convert RAW(16) back to UUID
+              byte[] rawBytes = rs.getBytes(1);
+              ByteBuffer bb = ByteBuffer.wrap(rawBytes);
+              keyObject = new UUID(bb.getLong(), bb.getLong());
+            } else if (featurePKs.getFirst() instanceof UUID
+                && featureType
+                    .getFeatureSource()
+                    .getJdbcConnection()
+                    .getDbtype()
+                    .equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)) {
+              // convert uppercase string back to UUID
+              keyObject = UUID.fromString(rs.getString(1));
+            }
+
+            if (featurePKs.getFirst() instanceof ByteBuffer) {
+              // we need to use a key that is comparable, so convert byte[] to ByteBuffer
+              keyObject = ByteBuffer.wrap((byte[]) keyObject);
+            }
+            attachments.add(new AttachmentMetadataListItem(keyObject, a));
           }
         }
       } catch (SQLException ex) {
@@ -664,6 +700,13 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
         ds.dispose();
       }
     }
+    logger.debug(
+        "Found {} attachments for {} features (features: {}, attachments: {})",
+        attachments.size(),
+        featurePKs.size(),
+        featurePKs,
+        attachments.toArray());
+
     return attachments.stream()
         .collect(Collectors.groupingBy(
             AttachmentMetadataListItem::key,
