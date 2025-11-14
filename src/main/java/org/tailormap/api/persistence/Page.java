@@ -19,6 +19,7 @@ import java.util.List;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
@@ -52,6 +53,10 @@ public class Page extends AuditMetadata {
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private List<PageTile> tiles = new ArrayList<>();
+
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -115,5 +120,13 @@ public class Page extends AuditMetadata {
 
   public void setTiles(List<PageTile> tiles) {
     this.tiles = tiles;
+  }
+
+  public List<AuthorizationRule> getAuthorizationRules() {
+    return authorizationRules;
+  }
+
+  public void setAuthorizationRules(List<AuthorizationRule> authorizationRules) {
+    this.authorizationRules = authorizationRules;
   }
 }
