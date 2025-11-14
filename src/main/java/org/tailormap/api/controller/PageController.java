@@ -83,7 +83,7 @@ public class PageController {
 
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
-    if (!page.getAuthorizationRules().isEmpty() && !authorisationService.userAllowedToViewPage(page)) {
+    if (!authorisationService.userAllowedToViewPage(page)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     copyProperties(page, pageResponse);
