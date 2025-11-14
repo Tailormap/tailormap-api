@@ -131,7 +131,7 @@ public class AuthorisationService {
   }
 
   /**
-   * Verifies that the (authenticated) user may view/open the page.
+   * Verifies that the (authenticated) user may view/open the page tile.
    *
    * @param pageTile the Page tile to check
    * @return the result from the access control checks.
