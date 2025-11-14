@@ -436,6 +436,7 @@ mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             .getJdbcConnection()
             .getDbtype()
             .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+
           stmt.setBytes(2, asBytes(attachment.getAttachmentId()));
         } else {
           stmt.setObject(2, attachment.getAttachmentId());
@@ -722,20 +723,30 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
 
   /**
    * Check if the given feature primary key is Comparable, and convert it if necessary (e.g. byte[] to ByteBuffer). We
-   * need the key to be Comparable as it is used as map key in {@link AttachmentMetadataListItem}.
+   * need the key to be Comparable as it is used as map key in {@link AttachmentMetadataListItem}. Currently supported
+   * types are:
    *
-   * @param featurePK the feature primary key
-   * @return the Comparable feature primary key
-   * @throws IllegalArgumentException when the feature primary key is not Comparable and no mapping is specified
+   * <ul>
+   *   <li>Comparable (String, Number, UUID, etc.) - returned as is
+   *   <li>byte[] - converted to ByteBuffer
+   * </ul>
+   *
+   * Otherwise an IllegalArgumentException is thrown.
+   *
+   * @param featurePK the feature primary key (NOT {@code null}) to check
+   * @return the Comparable feature primary key (NOT {@code null})
+   * @throws IllegalArgumentException when the feature primary key is null, not Comparable, and no mapping is
+   *     specified
    */
-  public static Comparable<?> checkAndMakeFeaturePkComparable(Object featurePK) {
+  public static @NotNull Comparable<?> checkAndMakeFeaturePkComparable(@NotNull Object featurePK) {
     if (featurePK instanceof Comparable<?>) {
       return (Comparable<?>) featurePK;
     } else if (featurePK instanceof byte[] pkBytes) {
       // convert byte[] to ByteBuffer which is Comparable
       return ByteBuffer.wrap(pkBytes);
     } else {
-      throw new IllegalArgumentException("Feature primary key is not Comparable: " + featurePK);
+      throw new IllegalArgumentException("Unexpected non-Comparable primary key type from database: "
+          + (featurePK != null ? featurePK.getClass().getName() : "null"));
     }
   }
 

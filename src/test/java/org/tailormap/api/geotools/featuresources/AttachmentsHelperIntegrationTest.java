@@ -87,7 +87,7 @@ class AttachmentsHelperIntegrationTest {
   private UUID attachmentAttributePKvalue;
   private AttachmentMetadata attachmentMetadata;
   private byte[] attachmentData = null;
-  private Comparable<?> featurePrimaryKey;
+  private Object featurePrimaryKey;
   private String schemaPrefix = "";
 
   static Stream<Arguments> titlesAndNamesForFeatureSourcesAndFeatureTypes() {
@@ -194,8 +194,7 @@ class AttachmentsHelperIntegrationTest {
       try (FeatureIterator<SimpleFeature> featureIterator =
           fs.getFeatures(query).features()) {
         if (featureIterator.hasNext()) {
-          featurePrimaryKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(
-              featureIterator.next().getAttribute(featureType.getPrimaryKeyAttribute()));
+          featurePrimaryKey = featureIterator.next().getAttribute(featureType.getPrimaryKeyAttribute());
         } else {
           fail("No feature found in feature type table to get a valid UUID primary key value.");
         }
@@ -280,13 +279,14 @@ class AttachmentsHelperIntegrationTest {
   void testListAttachmentsForFeaturesByFeatureId() {
     try {
       assertNotNull(featurePrimaryKey);
+      Comparable<?> featurePrimarySafeKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(featurePrimaryKey);
       Map<@NotNull Comparable<?>, List<AttachmentMetadata>> listAttachments =
-          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(featureType, List.of(featurePrimaryKey));
-
+          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(
+              featureType, List.of(featurePrimarySafeKey));
       assertNotNull(listAttachments);
       assertEquals(1, listAttachments.size(), "Expected exactly one feature.");
-      assertNotNull(listAttachments.get(featurePrimaryKey));
-      assertEquals(1, listAttachments.get(featurePrimaryKey).size(), "Expected exactly one attachment.");
+      assertNotNull(listAttachments.get(featurePrimarySafeKey));
+      assertEquals(1, listAttachments.get(featurePrimarySafeKey).size(), "Expected exactly one attachment.");
     } catch (RuntimeException | IOException e) {
       fail(e);
     }
