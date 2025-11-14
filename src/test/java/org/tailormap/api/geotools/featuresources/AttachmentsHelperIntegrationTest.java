@@ -87,7 +87,7 @@ class AttachmentsHelperIntegrationTest {
   private UUID attachmentAttributePKvalue;
   private AttachmentMetadata attachmentMetadata;
   private byte[] attachmentData = null;
-  private Object featurePrimaryKey;
+  private Comparable<?> featurePrimaryKey;
   private String schemaPrefix = "";
 
   static Stream<Arguments> titlesAndNamesForFeatureSourcesAndFeatureTypes() {
@@ -194,7 +194,8 @@ class AttachmentsHelperIntegrationTest {
       try (FeatureIterator<SimpleFeature> featureIterator =
           fs.getFeatures(query).features()) {
         if (featureIterator.hasNext()) {
-          featurePrimaryKey = featureIterator.next().getAttribute(featureType.getPrimaryKeyAttribute());
+          featurePrimaryKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(
+              featureIterator.next().getAttribute(featureType.getPrimaryKeyAttribute()));
         } else {
           fail("No feature found in feature type table to get a valid UUID primary key value.");
         }
@@ -278,30 +279,14 @@ class AttachmentsHelperIntegrationTest {
   @DisplayName("Get attachments for a list of features of a type.")
   void testListAttachmentsForFeaturesByFeatureId() {
     try {
-      Object validFeaturePrimaryKey = null;
-      if (featurePrimaryKey instanceof byte[] bytes) {
-        // byte[] does not implement equals/hashCode properly, but GeoTools uses byte[] for PKs in Oracle when
-        // UUID is used
-        validFeaturePrimaryKey = ByteBuffer.wrap(bytes);
-      } else if (featurePrimaryKey instanceof Comparable<?> key) {
-        validFeaturePrimaryKey = key;
-      }
-      assertNotNull(validFeaturePrimaryKey);
-      Map<@NotNull Object, List<AttachmentMetadata>> listAttachments =
-          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(
-              featureType, List.of(validFeaturePrimaryKey));
+      assertNotNull(featurePrimaryKey);
+      Map<@NotNull Comparable<?>, List<AttachmentMetadata>> listAttachments =
+          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(featureType, List.of(featurePrimaryKey));
 
       assertNotNull(listAttachments);
       assertEquals(1, listAttachments.size(), "Expected exactly one feature.");
-      if (featurePrimaryKey instanceof byte[] bytes) {
-        // byte[] does not implement equals/hashCode properly, but GeoTools uses byte[] for PKs in Oracle when
-        // UUID is used
-        assertNotNull(listAttachments.get(ByteBuffer.wrap(bytes)));
-        assertEquals(1, listAttachments.get(ByteBuffer.wrap(bytes)).size(), "Expected exactly one attachment.");
-      } else {
-        assertNotNull(listAttachments.get(validFeaturePrimaryKey));
-        assertEquals(1, listAttachments.get(validFeaturePrimaryKey).size(), "Expected exactly one attachment.");
-      }
+      assertNotNull(listAttachments.get(featurePrimaryKey));
+      assertEquals(1, listAttachments.get(featurePrimaryKey).size(), "Expected exactly one attachment.");
     } catch (RuntimeException | IOException e) {
       fail(e);
     }
