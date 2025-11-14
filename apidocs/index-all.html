@@ -87,6 +87,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#addAttachmentAttributesItem(org.tailormap.api.persistence.json.AttachmentAttributeType)" class="member-name-link">addAttachmentAttributesItem(AttachmentAttributeType)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#addAttachmentMetadataItem(org.tailormap.api.persistence.json.AttachmentAttributeType)" class="member-name-link">addAttachmentMetadataItem(AttachmentAttributeType)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/Feature.html#addAttachmentsItem(org.tailormap.api.viewer.model.AttachmentMetadata)" class="member-name-link">addAttachmentsItem(AttachmentMetadata)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#addAttributeOrderItem(java.lang.String)" class="member-name-link">addAttributeOrderItem(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerDetails.html#addAttributesItem(org.tailormap.api.viewer.model.Attribute)" class="member-name-link">addAttributesItem(Attribute)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">LayerDetails</a></dt>
@@ -492,11 +496,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the value of the <code>attachmentMetadata</code> record component.</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#attachmentMetadata(java.util.Set)" class="member-name-link">attachmentMetadata(Set&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
 <div class="block">AttachmentMetadata</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#%3Cinit%3E()" class="member-name-link">AttachmentMetadata()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/Feature.html#attachments(java.util.List)" class="member-name-link">attachments(List&lt;AttachmentMetadata&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AttachmentsController.html" class="type-name-link" title="class in org.tailormap.api.controller">AttachmentsController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
@@ -1229,6 +1237,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Service for managing drawings.</div>
 </dd>
 <dt><a href="org/tailormap/api/drawing/DrawingService.html#%3Cinit%3E(org.springframework.jdbc.core.simple.JdbcClient,com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">DrawingService(JdbcClient, ObjectMapper)</a> - Constructor for class org.tailormap.api.drawing.<a href="org/tailormap/api/drawing/DrawingService.html" title="class in org.tailormap.api.drawing">DrawingService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#dropAttachmentTableForFeatureType(org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">dropAttachmentTableForFeatureType(TMFeatureType)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html#DROPDOWN_LIST" class="member-name-link">DROPDOWN_LIST</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterEditConfiguration.FilterToolEnum</a></dt>
 <dd>&nbsp;</dd>
@@ -2371,6 +2381,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">the key of the attachment</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#getAttachmentMetadata()" class="member-name-link">getAttachmentMetadata()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
+<dd>
+<div class="block">Get attachmentMetadata</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/Feature.html#getAttachments()" class="member-name-link">getAttachments()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></dt>
+<dd>
+<div class="block">Metadata of feature attachments, only when supported by the layer or the service.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#getAttachmentSize()" class="member-name-link">getAttachmentSize()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>
 <div class="block">Get attachmentSize</div>
@@ -3104,7 +3122,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">list of features.</div>
 </dd>
-<dt><a href="org/tailormap/api/controller/FeaturesController.html#getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean)" class="member-name-link">getFeatures(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, Double, Double, Double, String, Boolean, String, Integer, String, String, boolean, boolean)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/FeaturesController.html" title="class in org.tailormap.api.controller">FeaturesController</a></dt>
+<dt><a href="org/tailormap/api/controller/FeaturesController.html#getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean,boolean)" class="member-name-link">getFeatures(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, Double, Double, Double, String, Boolean, String, Integer, String, String, boolean, boolean, boolean)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/FeaturesController.html" title="class in org.tailormap.api.controller">FeaturesController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#getFeatureSource()" class="member-name-link">getFeatureSource()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
@@ -5891,7 +5909,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SliderFilterConfiguration.html#inputMode(org.tailormap.api.viewer.model.SliderFilterConfiguration.InputModeEnum)" class="member-name-link">inputMode(SliderFilterConfiguration.InputModeEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SliderFilterConfiguration.html" title="class in org.tailormap.api.viewer.model">SliderFilterConfiguration</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.String,byte%5B%5D)" class="member-name-link">insertAttachment(TMFeatureType, AttachmentMetadata, String, byte[])</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.Object,byte%5B%5D)" class="member-name-link">insertAttachment(TMFeatureType, AttachmentMetadata, Object, byte[])</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/PreventLocalAllowNestedJarEntityResolver.html#INSTANCE" class="member-name-link">INSTANCE</a> - Static variable in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/PreventLocalAllowNestedJarEntityResolver.html" title="class in org.tailormap.api.geotools">PreventLocalAllowNestedJarEntityResolver</a></dt>
 <dd>&nbsp;</dd>
@@ -6177,8 +6195,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">List attachments for a feature.</div>
 </dd>
-<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.String)" class="member-name-link">listAttachmentsForFeature(TMFeatureType, String)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.Object)" class="member-name-link">listAttachmentsForFeature(TMFeatureType, Object)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeaturesByFeatureId(org.tailormap.api.persistence.TMFeatureType,java.util.List)" class="member-name-link">listAttachmentsForFeaturesByFeatureId(TMFeatureType, List&lt;Object&gt;)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
+<dd>
+<div class="block">List attachments for multiple features grouped by their IDs.</div>
+</dd>
 <dt><a href="org/tailormap/api/controller/DrawingController.html#listDrawings()" class="member-name-link">listDrawings()</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/DrawingController.html" title="class in org.tailormap.api.controller">DrawingController</a></dt>
 <dd>
 <div class="block">List drawings.</div>
@@ -7098,6 +7120,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html#setAttachmentAttributes(java.util.Set)" class="member-name-link">setAttachmentAttributes(Set&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in org.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setAttachmentId(java.util.UUID)" class="member-name-link">setAttachmentId(UUID)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#setAttachmentMetadata(java.util.Set)" class="member-name-link">setAttachmentMetadata(Set&lt;AttachmentAttributeType&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/Feature.html#setAttachments(java.util.List)" class="member-name-link">setAttachments(List&lt;AttachmentMetadata&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setAttachmentSize(java.lang.Long)" class="member-name-link">setAttachmentSize(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>

@@ -114,9 +114,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the value of the <code>attachmentMetadata</code> record component.</div>
 </div>
 <div class="col-first odd-row-color"><code>static <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.String,byte%5B%5D)" class="member-name-link">insertAttachment</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+<div class="col-second odd-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.Object,byte%5B%5D)" class="member-name-link">insertAttachment</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
  <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&nbsp;attachment,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;primaryKey,
  byte[]&nbsp;fileData)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
@@ -126,9 +126,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.String)" class="member-name-link">listAttachmentsForFeature</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.Object)" class="member-name-link">listAttachmentsForFeature</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;primaryKey)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeaturesByFeatureId(org.tailormap.api.persistence.TMFeatureType,java.util.List)" class="member-name-link">listAttachmentsForFeaturesByFeatureId</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;featurePKs)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">List attachments for multiple features grouped by their IDs.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../../geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a> with parameters of type <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></span></div>
 <div class="summary-table three-column-summary">
@@ -136,9 +142,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.String,byte%5B%5D)" class="member-name-link">insertAttachment</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+<div class="col-second even-row-color"><span class="type-name-label">AttachmentsHelper.</span><code><a href="../../../geotools/featuresources/AttachmentsHelper.html#insertAttachment(org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.viewer.model.AttachmentMetadata,java.lang.Object,byte%5B%5D)" class="member-name-link">insertAttachment</a><wbr>(<a href="../../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
  <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&nbsp;attachment,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;featureId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;primaryKey,
  byte[]&nbsp;fileData)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -187,6 +193,38 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AttachmentMetadata.</span><code><a href="../AttachmentMetadata.html#mimeType(java.lang.String)" class="member-name-link">mimeType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mimeType)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../package-summary.html">org.tailormap.api.viewer.model</a> that return types with arguments of type <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;@Valid <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Feature.</span><code><a href="../Feature.html#getAttachments()" class="member-name-link">getAttachments</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Metadata of feature attachments, only when supported by the layer or the service.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../package-summary.html">org.tailormap.api.viewer.model</a> with parameters of type <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Feature.</span><code><a href="../Feature.html#addAttachmentsItem(org.tailormap.api.viewer.model.AttachmentMetadata)" class="member-name-link">addAttachmentsItem</a><wbr>(<a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&nbsp;attachmentsItem)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Method parameters in <a href="../package-summary.html">org.tailormap.api.viewer.model</a> with type arguments of type <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Feature.</span><code><a href="../Feature.html#attachments(java.util.List)" class="member-name-link">attachments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;&nbsp;attachments)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Feature.</span><code><a href="../Feature.html#setAttachments(java.util.List)" class="member-name-link">setAttachments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a>&gt;&nbsp;attachments)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>

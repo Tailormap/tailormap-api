@@ -138,7 +138,7 @@ implements <a href="../util/Constants.html" title="interface in org.tailormap.ap
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean)" class="member-name-link">getFeatures</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean,boolean)" class="member-name-link">getFeatures</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
@@ -152,7 +152,8 @@ implements <a href="../util/Constants.html" title="interface in org.tailormap.ap
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortBy,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortOrder,
  boolean&nbsp;onlyGeometries,
- boolean&nbsp;geometryInAttributes)</code></div>
+ boolean&nbsp;geometryInAttributes,
+ boolean&nbsp;withAttachments)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -187,7 +188,7 @@ implements <a href="../util/Constants.html" title="interface in org.tailormap.ap
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean)">
+<section class="detail" id="getFeatures(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,java.lang.Double,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,boolean,boolean,boolean)">
 <h3>getFeatures</h3>
 <div class="member-signature"><span class="annotations">@Transactional
 @RequestMapping(method={GET,POST})
@@ -220,7 +221,9 @@ implements <a href="../util/Constants.html" title="interface in org.tailormap.ap
  @RequestParam(defaultValue="false")
  boolean&nbsp;onlyGeometries,
  @RequestParam(defaultValue="false")
- boolean&nbsp;geometryInAttributes)</span></div>
+ boolean&nbsp;geometryInAttributes,
+ @RequestParam(defaultValue="false")
+ boolean&nbsp;withAttachments)</span></div>
 </section>
 </li>
 </ul>
