@@ -84,7 +84,7 @@ public class PageController {
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
     if (!authorisationService.userAllowedToViewPage(page)) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     copyProperties(page, pageResponse);
     pageResponse.tiles(page.getTiles().stream()
