@@ -837,7 +837,7 @@ SPDX-License-Identifier: MIT
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
-                    <argLine>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                    <argLine>${surefireArgLine} -Xshare:off -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <excludes>
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
@@ -1872,7 +1872,7 @@ SPDX-License-Identifier: MIT
                             </includes>
                             <!-- <excludedGroups>prometheus-service-testcase</excludedGroups>-->
                             <!--suppress UnresolvedMavenProperty -->
-                            <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                            <argLine>${failsafeArgLine} -Xshare:off -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
