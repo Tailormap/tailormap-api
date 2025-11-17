@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -430,7 +429,7 @@ public class FeaturesController implements Constants {
     boolean ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != null
         && !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
 
-    List<Object> featurePKs = new ArrayList<>();
+    List<Comparable<?>> featurePKs = new ArrayList<>();
     Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
@@ -463,7 +462,9 @@ public class FeaturesController implements Constants {
             newFeat.putAttributesItem(attName, value);
           }
           if (withAttachments && ftSupportsAttachments) {
-            featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
+            Comparable<?> pk = AttachmentsHelper.checkAndMakeFeaturePkComparable(
+                feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
+            featurePKs.add(pk);
           }
         }
         featuresResponse.addFeaturesItem(newFeat);
@@ -495,19 +496,12 @@ public class FeaturesController implements Constants {
 
       if (withAttachments) {
         //  fetch all attachments for all features, grouped by feature id
-
-        // wrap byte[] pk values in ByteBuffer objects to be used as Map keys
-        featurePKs = featurePKs.stream()
-            .map(pk -> pk instanceof byte[] pkBytes ? ByteBuffer.wrap(pkBytes) : pk)
-            .collect(Collectors.toList());
-
-        Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
+        Map<Comparable<?>, List<AttachmentMetadata>> attachmentsByFeatureId =
             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
         //  add attachment data to features using feature.primaryKeyAttribute to match
         for (Feature feature : featuresResponse.getFeatures()) {
-          Object primaryKey = feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute());
-
-          primaryKey = primaryKey instanceof byte[] pkBytes ? ByteBuffer.wrap(pkBytes) : primaryKey;
+          Comparable<?> primaryKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(
+              feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute()));
           List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
           if (attachments != null) {
             feature.setAttachments(attachments);
