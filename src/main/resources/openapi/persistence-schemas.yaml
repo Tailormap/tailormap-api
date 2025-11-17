@@ -729,6 +729,11 @@ components:
           type: boolean
           nullable: true
           description: indicates whether the link should be opened in a new window
+        authorizationRules:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AuthorizationRule'
 
     AdminAdditionalProperty:
       type: object
