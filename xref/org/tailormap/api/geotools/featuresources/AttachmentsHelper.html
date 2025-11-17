@@ -429,22 +429,22 @@
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>       String insertSql = MessageFormat.format(
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>           <span class="jxr_string">""</span><span class="jxr_string">"
 <a class="jxr_linenumber" name="L423" href="#L423">423</a> INSERT INTO {1}{0}_attachments (
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> {0}_pk,
-<a class="jxr_linenumber" name="L425" href="#L425">425</a> attachment_id, file_name, attribute_name, description, attachment, attachment_size,
-<a class="jxr_linenumber" name="L426" href="#L426">426</a> mime_type, created_at, created_by) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
-<a class="jxr_linenumber" name="L427" href="#L427">427</a> <span class="jxr_string">""</span><span class="jxr_string">",
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>           featureType.getName(), ds.getDatabaseSchema().isEmpty() ? <span class="jxr_string">""</span> : ds.getDatabaseSchema() + <span class="jxr_string">"."</span>);
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>       logger.debug(<span class="jxr_string">"Insert attachment SQL: {}"</span>, insertSql);
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>         stmt.setObject(1, primaryKey);
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         <strong class="jxr_keyword">if</strong> (featureType
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             .getFeatureSource()
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>             .getJdbcConnection()
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>             .getDbtype()
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>             .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a> {0}_pk, attachment_id, file_name, attribute_name, description, attachment, attachment_size,
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+<a class="jxr_linenumber" name="L426" href="#L426">426</a> <span class="jxr_string">""</span><span class="jxr_string">",
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>           featureType.getName(), ds.getDatabaseSchema().isEmpty() ? <span class="jxr_string">""</span> : ds.getDatabaseSchema() + <span class="jxr_string">"."</span>);
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>       logger.debug(<span class="jxr_string">"Insert attachment SQL: {}"</span>, insertSql);
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>           PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> 
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         stmt.setObject(1, primaryKey);
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>         <strong class="jxr_keyword">if</strong> (featureType
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>             .getFeatureSource()
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>             .getJdbcConnection()
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>             .getDbtype()
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>             .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>           stmt.setBytes(2, asBytes(attachment.getAttachmentId()));
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>           stmt.setObject(2, attachment.getAttachmentId());
@@ -591,178 +591,209 @@
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L584" href="#L584">584</a> <em class="jxr_javadoccomment">   * List attachments for multiple features grouped by their IDs. &lt;br&gt;</em>
 <a class="jxr_linenumber" name="L585" href="#L585">585</a> <em class="jxr_javadoccomment">   * &lt;strong&gt;NOTE&lt;/strong&gt;: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as</em>
-<a class="jxr_linenumber" name="L586" href="#L586">586</a> <em class="jxr_javadoccomment">   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}.</em>
-<a class="jxr_linenumber" name="L587" href="#L587">587</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L588" href="#L588">588</a> <em class="jxr_javadoccomment">   * &lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; &lt;a href="<a href="https://b3partners.atlassian.net/browse/HTM-1771" target="alexandria_uri">https://b3partners.atlassian.net/browse/HTM-1771</a>"&gt;HTM-1771&lt;/a&gt;</em>
-<a class="jxr_linenumber" name="L589" href="#L589">589</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L590" href="#L590">590</a> <em class="jxr_javadoccomment">   * @param featureType the feature type</em>
-<a class="jxr_linenumber" name="L591" href="#L591">591</a> <em class="jxr_javadoccomment">   * @param featurePKs the feature primary keys</em>
-<a class="jxr_linenumber" name="L592" href="#L592">592</a> <em class="jxr_javadoccomment">   * @return map of feature ID to list of attachments</em>
-<a class="jxr_linenumber" name="L593" href="#L593">593</a> <em class="jxr_javadoccomment">   * @throws IOException when an IO error occurs connecting to the database</em>
-<a class="jxr_linenumber" name="L594" href="#L594">594</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Map&lt;@NotNull Object, List&lt;AttachmentMetadata&gt;&gt; listAttachmentsForFeaturesByFeatureId(
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>       TMFeatureType featureType, List&lt;Object&gt; featurePKs) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>     List&lt;AttachmentMetadataListItem&gt; attachments = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>     <strong class="jxr_keyword">if</strong> (featurePKs == <strong class="jxr_keyword">null</strong> || featurePKs.isEmpty()) {
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>     }
-<a class="jxr_linenumber" name="L601" href="#L601">601</a> 
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>     JDBCDataStore ds = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L604" href="#L604">604</a>       ds = (JDBCDataStore) <strong class="jxr_keyword">new</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a>().createDataStore(featureType.getFeatureSource());
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>       String querySql = MessageFormat.format(
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>           <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L607" href="#L607">607</a> SELECT
-<a class="jxr_linenumber" name="L608" href="#L608">608</a> {0}_pk,
-<a class="jxr_linenumber" name="L609" href="#L609">609</a> attachment_id,
-<a class="jxr_linenumber" name="L610" href="#L610">610</a> file_name,
-<a class="jxr_linenumber" name="L611" href="#L611">611</a> attribute_name,
-<a class="jxr_linenumber" name="L612" href="#L612">612</a> description,
-<a class="jxr_linenumber" name="L613" href="#L613">613</a> attachment_size,
-<a class="jxr_linenumber" name="L614" href="#L614">614</a> mime_type,
-<a class="jxr_linenumber" name="L615" href="#L615">615</a> created_at,
-<a class="jxr_linenumber" name="L616" href="#L616">616</a> created_by
-<a class="jxr_linenumber" name="L617" href="#L617">617</a> FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
-<a class="jxr_linenumber" name="L618" href="#L618">618</a> <span class="jxr_string">""</span><span class="jxr_string">",
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>           featureType.getName(),
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>           String.join(<span class="jxr_string">", "</span>, featurePKs.stream().map(id -&gt; <span class="jxr_string">"?"</span>).toArray(String[]::<strong class="jxr_keyword">new</strong>)),
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>           ds.getDatabaseSchema().isEmpty() ? <span class="jxr_string">""</span> : ds.getDatabaseSchema() + <span class="jxr_string">"."</span>);
-<a class="jxr_linenumber" name="L622" href="#L622">622</a> 
-<a class="jxr_linenumber" name="L623" href="#L623">623</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>           PreparedStatement stmt = conn.prepareStatement(querySql)) {
-<a class="jxr_linenumber" name="L625" href="#L625">625</a> 
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>         Object firstPK = featurePKs.getFirst();
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>         <strong class="jxr_keyword">boolean</strong> isUUID = firstPK instanceof UUID;
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>         <strong class="jxr_keyword">boolean</strong> isByteBuffer = firstPK instanceof ByteBuffer;
-<a class="jxr_linenumber" name="L629" href="#L629">629</a> 
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>         <strong class="jxr_keyword">switch</strong> (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>           <strong class="jxr_keyword">case</strong> ORACLE -&gt; {
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>               <strong class="jxr_keyword">if</strong> (isUUID) {
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>                 <em class="jxr_comment">// Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be</em>
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>                 <em class="jxr_comment">// correctly formatted binary literals (hextoraw('...')).</em>
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>                 stmt.setBytes(i + 1, asBytes((UUID) featurePKs.get(i)));
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>               } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isByteBuffer) {
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>                 <em class="jxr_comment">// unwrap ByteBuffer to byte[] for the query</em>
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>                 stmt.setBytes(i + 1, ((ByteBuffer) featurePKs.get(i)).array());
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>                 stmt.setObject(i + 1, featurePKs.get(i));
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>               }
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>             }
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>           }
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>           <strong class="jxr_keyword">case</strong> SQLSERVER -&gt; {
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>               <strong class="jxr_keyword">if</strong> (isUUID) {
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>                 <em class="jxr_comment">// use uppercase string representation for SQL Server UNIQUEIDENTIFIER</em>
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>                 stmt.setString(
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>                     i + 1, featurePKs.get(i).toString().toUpperCase(Locale.ROOT));
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>                 stmt.setObject(i + 1, featurePKs.get(i));
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>               }
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>             }
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>           }
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>           <strong class="jxr_keyword">case</strong> POSTGIS -&gt; {
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>               stmt.setObject(i + 1, featurePKs.get(i));
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>             }
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>           }
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>           <strong class="jxr_keyword">default</strong> -&gt;
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(<span class="jxr_string">"Unsupported database type: "</span>
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>                 + featureType
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>                     .getFeatureSource()
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>                     .getJdbcConnection()
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>                     .getDbtype());
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>         }
-<a class="jxr_linenumber" name="L668" href="#L668">668</a> 
-<a class="jxr_linenumber" name="L669" href="#L669">669</a>         <strong class="jxr_keyword">try</strong> (ResultSet rs = stmt.executeQuery()) {
-<a class="jxr_linenumber" name="L670" href="#L670">670</a>           <strong class="jxr_keyword">while</strong> (rs.next()) {
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>             AttachmentMetadata a = getAttachmentMetadata(rs);
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>             Object keyObject = rs.getObject(1);
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>             <strong class="jxr_keyword">if</strong> (isUUID
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>                 &amp;&amp; featureType
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>                     .getFeatureSource()
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>                     .getJdbcConnection()
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>                     .getDbtype()
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>                     .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>               <em class="jxr_comment">// convert RAW(16) back to UUID</em>
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>               byte[] rawBytes = rs.getBytes(1);
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>               ByteBuffer bb = ByteBuffer.wrap(rawBytes);
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>               keyObject = <strong class="jxr_keyword">new</strong> UUID(bb.getLong(), bb.getLong());
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isUUID
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 &amp;&amp; featureType
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>                     .getFeatureSource()
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>                     .getJdbcConnection()
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>                     .getDbtype()
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>                     .equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)) {
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>               <em class="jxr_comment">// convert uppercase string back to UUID</em>
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>               keyObject = UUID.fromString(rs.getString(1));
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>             }
-<a class="jxr_linenumber" name="L692" href="#L692">692</a> 
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>             <strong class="jxr_keyword">if</strong> (isByteBuffer) {
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>               <em class="jxr_comment">// we need to use a key that is comparable, so convert byte[] to ByteBuffer</em>
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>               assert keyObject instanceof byte[];
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>               keyObject = ByteBuffer.wrap((byte[]) keyObject);
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>             }
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>             attachments.add(<strong class="jxr_keyword">new</strong> AttachmentMetadataListItem(keyObject, a));
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>           }
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>         }
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>       } <strong class="jxr_keyword">catch</strong> (SQLException ex) {
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>         logger.error(<span class="jxr_string">"Failed to get attachments for %s"</span>.formatted(featureType.getName()), ex);
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>       }
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>       <strong class="jxr_keyword">if</strong> (ds != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>         ds.dispose();
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>       }
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>     }
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>     logger.debug(
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>         <span class="jxr_string">"Found {} attachments for {} features (features: {}, attachments: {})"</span>,
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>         attachments.size(),
-<a class="jxr_linenumber" name="L712" href="#L712">712</a>         featurePKs.size(),
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>         featurePKs,
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>         attachments.toArray());
-<a class="jxr_linenumber" name="L715" href="#L715">715</a> 
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>     <strong class="jxr_keyword">return</strong> attachments.stream()
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>         .collect(Collectors.groupingBy(
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>             AttachmentMetadataListItem::key,
-<a class="jxr_linenumber" name="L719" href="#L719">719</a>             Collectors.mapping(AttachmentMetadataListItem::value, Collectors.toList())));
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>   }
-<a class="jxr_linenumber" name="L721" href="#L721">721</a> 
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> AttachmentMetadata getAttachmentMetadata(ResultSet rs) <strong class="jxr_keyword">throws</strong> SQLException {
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>     AttachmentMetadata a = <strong class="jxr_keyword">new</strong> AttachmentMetadata();
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>     <em class="jxr_comment">// attachment_id (handle UUID, RAW(16) as byte[] or string)</em>
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>     Object idObj = rs.getObject(<span class="jxr_string">"attachment_id"</span>);
-<a class="jxr_linenumber" name="L726" href="#L726">726</a>     <strong class="jxr_keyword">if</strong> (idObj instanceof UUID u) {
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>       a.setAttachmentId(u);
-<a class="jxr_linenumber" name="L728" href="#L728">728</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (idObj instanceof byte[] b) {
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>       ByteBuffer bb = ByteBuffer.wrap(b);
-<a class="jxr_linenumber" name="L730" href="#L730">730</a>       a.setAttachmentId(<strong class="jxr_keyword">new</strong> UUID(bb.getLong(), bb.getLong()));
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>       String s = rs.getString(<span class="jxr_string">"attachment_id"</span>);
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>       <strong class="jxr_keyword">if</strong> (s != <strong class="jxr_keyword">null</strong> &amp;&amp; !s.isEmpty()) {
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>         a.setAttachmentId(UUID.fromString(s));
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>       }
-<a class="jxr_linenumber" name="L736" href="#L736">736</a>     }
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>     a.setFileName(rs.getString(<span class="jxr_string">"file_name"</span>));
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>     a.setAttributeName(rs.getString(<span class="jxr_string">"attribute_name"</span>));
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>     a.setDescription(rs.getString(<span class="jxr_string">"description"</span>));
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>     <strong class="jxr_keyword">long</strong> size = rs.getLong(<span class="jxr_string">"attachment_size"</span>);
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>     <strong class="jxr_keyword">if</strong> (!rs.wasNull()) {
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>       a.setAttachmentSize(size);
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>     }
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>     a.setMimeType(rs.getString(<span class="jxr_string">"mime_type"</span>));
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>     java.sql.Timestamp ts = rs.getTimestamp(<span class="jxr_string">"created_at"</span>);
-<a class="jxr_linenumber" name="L746" href="#L746">746</a>     <strong class="jxr_keyword">if</strong> (ts != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>       a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of(<span class="jxr_string">"UTC"</span>)));
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>     }
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>     a.setCreatedBy(rs.getString(<span class="jxr_string">"created_by"</span>));
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>     <strong class="jxr_keyword">return</strong> a;
+<a class="jxr_linenumber" name="L586" href="#L586">586</a> <em class="jxr_javadoccomment">   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}. Use</em>
+<a class="jxr_linenumber" name="L587" href="#L587">587</a> <em class="jxr_javadoccomment">   * {@link #checkAndMakeFeaturePkComparable(Object)} to convert feature primary keys if necessary.</em>
+<a class="jxr_linenumber" name="L588" href="#L588">588</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L589" href="#L589">589</a> <em class="jxr_javadoccomment">   * @param featureType the feature type</em>
+<a class="jxr_linenumber" name="L590" href="#L590">590</a> <em class="jxr_javadoccomment">   * @param featurePKs the feature primary keys</em>
+<a class="jxr_linenumber" name="L591" href="#L591">591</a> <em class="jxr_javadoccomment">   * @return map of feature ID to list of attachments</em>
+<a class="jxr_linenumber" name="L592" href="#L592">592</a> <em class="jxr_javadoccomment">   * @throws IOException when an IO error occurs connecting to the database</em>
+<a class="jxr_linenumber" name="L593" href="#L593">593</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Map&lt;@NotNull Comparable&lt;?&gt;, List&lt;AttachmentMetadata&gt;&gt; listAttachmentsForFeaturesByFeatureId(
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>       TMFeatureType featureType, List&lt;Comparable&lt;?&gt;&gt; featurePKs) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>     List&lt;AttachmentMetadataListItem&gt; attachments = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>     <strong class="jxr_keyword">if</strong> (featurePKs == <strong class="jxr_keyword">null</strong> || featurePKs.isEmpty()) {
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>     }
+<a class="jxr_linenumber" name="L600" href="#L600">600</a> 
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>     JDBCDataStore ds = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>       ds = (JDBCDataStore) <strong class="jxr_keyword">new</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a>().createDataStore(featureType.getFeatureSource());
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>       String querySql = MessageFormat.format(
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>           <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L606" href="#L606">606</a> SELECT
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> {0}_pk,
+<a class="jxr_linenumber" name="L608" href="#L608">608</a> attachment_id,
+<a class="jxr_linenumber" name="L609" href="#L609">609</a> file_name,
+<a class="jxr_linenumber" name="L610" href="#L610">610</a> attribute_name,
+<a class="jxr_linenumber" name="L611" href="#L611">611</a> description,
+<a class="jxr_linenumber" name="L612" href="#L612">612</a> attachment_size,
+<a class="jxr_linenumber" name="L613" href="#L613">613</a> mime_type,
+<a class="jxr_linenumber" name="L614" href="#L614">614</a> created_at,
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> created_by
+<a class="jxr_linenumber" name="L616" href="#L616">616</a> FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> <span class="jxr_string">""</span><span class="jxr_string">",
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>           featureType.getName(),
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>           String.join(<span class="jxr_string">", "</span>, featurePKs.stream().map(id -&gt; <span class="jxr_string">"?"</span>).toArray(String[]::<strong class="jxr_keyword">new</strong>)),
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>           ds.getDatabaseSchema().isEmpty() ? <span class="jxr_string">""</span> : ds.getDatabaseSchema() + <span class="jxr_string">"."</span>);
+<a class="jxr_linenumber" name="L621" href="#L621">621</a> 
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>           PreparedStatement stmt = conn.prepareStatement(querySql)) {
+<a class="jxr_linenumber" name="L624" href="#L624">624</a> 
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>         Object firstPK = featurePKs.getFirst();
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>         <strong class="jxr_keyword">boolean</strong> isUUID = firstPK instanceof UUID;
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>         <strong class="jxr_keyword">boolean</strong> isByteBuffer = firstPK instanceof ByteBuffer;
+<a class="jxr_linenumber" name="L628" href="#L628">628</a> 
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>         <strong class="jxr_keyword">switch</strong> (featureType.getFeatureSource().getJdbcConnection().getDbtype()) {
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>           <strong class="jxr_keyword">case</strong> ORACLE -&gt; {
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>               <strong class="jxr_keyword">if</strong> (isUUID) {
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>                 <em class="jxr_comment">// Oracle (RAW(16)): Comparisons are possible, but the values in the IN list must be</em>
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>                 <em class="jxr_comment">// correctly formatted binary literals (hextoraw('...')).</em>
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>                 stmt.setBytes(i + 1, asBytes((UUID) featurePKs.get(i)));
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>               } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isByteBuffer) {
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>                 <em class="jxr_comment">// unwrap ByteBuffer to byte[] for the query</em>
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>                 stmt.setBytes(i + 1, ((ByteBuffer) featurePKs.get(i)).array());
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>               } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>                 stmt.setObject(i + 1, featurePKs.get(i));
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>               }
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>             }
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>           }
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>           <strong class="jxr_keyword">case</strong> SQLSERVER -&gt; {
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>               <strong class="jxr_keyword">if</strong> (isUUID) {
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>                 <em class="jxr_comment">// use uppercase string representation for SQL Server UNIQUEIDENTIFIER</em>
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>                 stmt.setString(
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>                     i + 1, featurePKs.get(i).toString().toUpperCase(Locale.ROOT));
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>               } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>                 stmt.setObject(i + 1, featurePKs.get(i));
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>               }
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>             }
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>           }
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>           <strong class="jxr_keyword">case</strong> POSTGIS -&gt; {
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; featurePKs.size(); i++) {
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>               stmt.setObject(i + 1, featurePKs.get(i));
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>             }
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>           }
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>           <strong class="jxr_keyword">default</strong> -&gt;
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(<span class="jxr_string">"Unsupported database type: "</span>
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>                 + featureType
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>                     .getFeatureSource()
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>                     .getJdbcConnection()
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>                     .getDbtype());
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         }
+<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>         <strong class="jxr_keyword">try</strong> (ResultSet rs = stmt.executeQuery()) {
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>           <strong class="jxr_keyword">while</strong> (rs.next()) {
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>             AttachmentMetadata a = getAttachmentMetadata(rs);
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>             Object keyObject = rs.getObject(1);
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>             Comparable&lt;?&gt; comparableKey;
+<a class="jxr_linenumber" name="L673" href="#L673">673</a> 
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>             <strong class="jxr_keyword">if</strong> (isUUID
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>                 &amp;&amp; featureType
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>                     .getFeatureSource()
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>                     .getJdbcConnection()
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>                     .getDbtype()
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>                     .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>               <em class="jxr_comment">// convert RAW(16) back to UUID</em>
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>               byte[] rawBytes = rs.getBytes(1);
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>               ByteBuffer bb = ByteBuffer.wrap(rawBytes);
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>               comparableKey = <strong class="jxr_keyword">new</strong> UUID(bb.getLong(), bb.getLong());
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isUUID
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                 &amp;&amp; featureType
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>                     .getFeatureSource()
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>                     .getJdbcConnection()
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>                     .getDbtype()
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>                     .equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)) {
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>               <em class="jxr_comment">// convert uppercase string back to UUID</em>
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>               comparableKey = UUID.fromString(rs.getString(1));
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isByteBuffer) {
+<a class="jxr_linenumber" name="L693" href="#L693">693</a>               <em class="jxr_comment">// we need to use a key that is comparable, so convert byte[] to ByteBuffer</em>
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>               assert keyObject instanceof byte[];
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>               comparableKey = ByteBuffer.wrap((byte[]) keyObject);
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>               <em class="jxr_comment">// Most other returned PK types (String, Number, UUID) implement Comparable</em>
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>               comparableKey = (Comparable&lt;?&gt;) keyObject;
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>             }
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>             attachments.add(<strong class="jxr_keyword">new</strong> AttachmentMetadataListItem(comparableKey, a));
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>           }
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>         }
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>       } <strong class="jxr_keyword">catch</strong> (SQLException ex) {
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>         logger.error(<span class="jxr_string">"Failed to get attachments for %s"</span>.formatted(featureType.getName()), ex);
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>       }
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>       <strong class="jxr_keyword">if</strong> (ds != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>         ds.dispose();
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>       }
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>     }
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>     logger.debug(
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>         <span class="jxr_string">"Found {} attachments for {} features (features: {}, attachments: {})"</span>,
+<a class="jxr_linenumber" name="L713" href="#L713">713</a>         attachments.size(),
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>         featurePKs.size(),
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>         featurePKs,
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>         attachments.toArray());
+<a class="jxr_linenumber" name="L717" href="#L717">717</a> 
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>     <strong class="jxr_keyword">return</strong> attachments.stream()
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>         .collect(Collectors.groupingBy(
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>             AttachmentMetadataListItem::key,
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>             Collectors.mapping(AttachmentMetadataListItem::value, Collectors.toList())));
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>   }
+<a class="jxr_linenumber" name="L723" href="#L723">723</a> 
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L725" href="#L725">725</a> <em class="jxr_javadoccomment">   * Check if the given feature primary key is Comparable, and convert it if necessary (e.g. byte[] to ByteBuffer). We</em>
+<a class="jxr_linenumber" name="L726" href="#L726">726</a> <em class="jxr_javadoccomment">   * need the key to be Comparable as it is used as map key in {@link AttachmentMetadataListItem}. Currently supported</em>
+<a class="jxr_linenumber" name="L727" href="#L727">727</a> <em class="jxr_javadoccomment">   * types are:</em>
+<a class="jxr_linenumber" name="L728" href="#L728">728</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L729" href="#L729">729</a> <em class="jxr_javadoccomment">   * &lt;ul&gt;</em>
+<a class="jxr_linenumber" name="L730" href="#L730">730</a> <em class="jxr_javadoccomment">   *   &lt;li&gt;Comparable (String, Number, UUID, etc.) - returned as is</em>
+<a class="jxr_linenumber" name="L731" href="#L731">731</a> <em class="jxr_javadoccomment">   *   &lt;li&gt;byte[] - converted to ByteBuffer</em>
+<a class="jxr_linenumber" name="L732" href="#L732">732</a> <em class="jxr_javadoccomment">   * &lt;/ul&gt;</em>
+<a class="jxr_linenumber" name="L733" href="#L733">733</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L734" href="#L734">734</a> <em class="jxr_javadoccomment">   * Otherwise an IllegalArgumentException is thrown.</em>
+<a class="jxr_linenumber" name="L735" href="#L735">735</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L736" href="#L736">736</a> <em class="jxr_javadoccomment">   * @param featurePK the feature primary key (NOT {@code null}) to check</em>
+<a class="jxr_linenumber" name="L737" href="#L737">737</a> <em class="jxr_javadoccomment">   * @return the Comparable feature primary key (NOT {@code null})</em>
+<a class="jxr_linenumber" name="L738" href="#L738">738</a> <em class="jxr_javadoccomment">   * @throws IllegalArgumentException when the feature primary key is null, not Comparable, and no mapping is</em>
+<a class="jxr_linenumber" name="L739" href="#L739">739</a> <em class="jxr_javadoccomment">   *     specified</em>
+<a class="jxr_linenumber" name="L740" href="#L740">740</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> @NotNull Comparable&lt;?&gt; checkAndMakeFeaturePkComparable(@NotNull Object featurePK) {
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>     <strong class="jxr_keyword">if</strong> (featurePK instanceof Comparable&lt;?&gt;) {
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>       <strong class="jxr_keyword">return</strong> (Comparable&lt;?&gt;) featurePK;
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (featurePK instanceof byte[] pkBytes) {
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>       <em class="jxr_comment">// convert byte[] to ByteBuffer which is Comparable</em>
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>       <strong class="jxr_keyword">return</strong> ByteBuffer.wrap(pkBytes);
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Unexpected non-Comparable primary key type from database: "</span>
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>           + (featurePK != <strong class="jxr_keyword">null</strong> ? featurePK.getClass().getName() : <span class="jxr_string">"null"</span>));
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>     }
 <a class="jxr_linenumber" name="L751" href="#L751">751</a>   }
 <a class="jxr_linenumber" name="L752" href="#L752">752</a> 
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>   <strong class="jxr_keyword">public</strong> record AttachmentWithBinary(
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>       @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
-<a class="jxr_linenumber" name="L755" href="#L755">755</a> 
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>   <strong class="jxr_keyword">private</strong> record AttachmentMetadataListItem(@NotNull Object key, @NotNull AttachmentMetadata value) {}
-<a class="jxr_linenumber" name="L757" href="#L757">757</a> }
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> AttachmentMetadata getAttachmentMetadata(ResultSet rs) <strong class="jxr_keyword">throws</strong> SQLException {
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>     AttachmentMetadata a = <strong class="jxr_keyword">new</strong> AttachmentMetadata();
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>     <em class="jxr_comment">// attachment_id (handle UUID, RAW(16) as byte[] or string)</em>
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>     Object idObj = rs.getObject(<span class="jxr_string">"attachment_id"</span>);
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>     <strong class="jxr_keyword">if</strong> (idObj instanceof UUID u) {
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>       a.setAttachmentId(u);
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (idObj instanceof byte[] b) {
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>       ByteBuffer bb = ByteBuffer.wrap(b);
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>       a.setAttachmentId(<strong class="jxr_keyword">new</strong> UUID(bb.getLong(), bb.getLong()));
+<a class="jxr_linenumber" name="L762" href="#L762">762</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>       String s = rs.getString(<span class="jxr_string">"attachment_id"</span>);
+<a class="jxr_linenumber" name="L764" href="#L764">764</a>       <strong class="jxr_keyword">if</strong> (s != <strong class="jxr_keyword">null</strong> &amp;&amp; !s.isEmpty()) {
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>         a.setAttachmentId(UUID.fromString(s));
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>       }
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>     }
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>     a.setFileName(rs.getString(<span class="jxr_string">"file_name"</span>));
+<a class="jxr_linenumber" name="L769" href="#L769">769</a>     a.setAttributeName(rs.getString(<span class="jxr_string">"attribute_name"</span>));
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>     a.setDescription(rs.getString(<span class="jxr_string">"description"</span>));
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>     <strong class="jxr_keyword">long</strong> size = rs.getLong(<span class="jxr_string">"attachment_size"</span>);
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>     <strong class="jxr_keyword">if</strong> (!rs.wasNull()) {
+<a class="jxr_linenumber" name="L773" href="#L773">773</a>       a.setAttachmentSize(size);
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>     }
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>     a.setMimeType(rs.getString(<span class="jxr_string">"mime_type"</span>));
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>     java.sql.Timestamp ts = rs.getTimestamp(<span class="jxr_string">"created_at"</span>);
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>     <strong class="jxr_keyword">if</strong> (ts != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>       a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of(<span class="jxr_string">"UTC"</span>)));
+<a class="jxr_linenumber" name="L779" href="#L779">779</a>     }
+<a class="jxr_linenumber" name="L780" href="#L780">780</a>     a.setCreatedBy(rs.getString(<span class="jxr_string">"created_by"</span>));
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>     <strong class="jxr_keyword">return</strong> a;
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>   }
+<a class="jxr_linenumber" name="L783" href="#L783">783</a> 
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>   <strong class="jxr_keyword">public</strong> record AttachmentWithBinary(
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>       @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
+<a class="jxr_linenumber" name="L786" href="#L786">786</a> 
+<a class="jxr_linenumber" name="L787" href="#L787">787</a>   <strong class="jxr_keyword">private</strong> record AttachmentMetadataListItem(@NotNull Comparable&lt;?&gt; key, @NotNull AttachmentMetadata value) {}
+<a class="jxr_linenumber" name="L788" href="#L788">788</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

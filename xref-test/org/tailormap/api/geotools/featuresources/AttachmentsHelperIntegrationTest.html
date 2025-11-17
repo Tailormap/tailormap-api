@@ -286,64 +286,49 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>   @DisplayName(<span class="jxr_string">"Get attachments for a list of features of a type."</span>)
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>   <strong class="jxr_keyword">void</strong> testListAttachmentsForFeaturesByFeatureId() {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>       Object validFeaturePrimaryKey = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>       <strong class="jxr_keyword">if</strong> (featurePrimaryKey instanceof byte[] bytes) {
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>         <em class="jxr_comment">// byte[] does not implement equals/hashCode properly, but GeoTools uses byte[] for PKs in Oracle when</em>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <em class="jxr_comment">// UUID is used</em>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>         validFeaturePrimaryKey = ByteBuffer.wrap(bytes);
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>       } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (featurePrimaryKey instanceof Comparable&lt;?&gt; key) {
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>         validFeaturePrimaryKey = key;
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       }
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>       assertNotNull(validFeaturePrimaryKey);
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>       Map&lt;@NotNull Object, List&lt;AttachmentMetadata&gt;&gt; listAttachments =
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>           AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>               featureType, List.of(validFeaturePrimaryKey));
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>       assertNotNull(listAttachments);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>       assertEquals(1, listAttachments.size(), <span class="jxr_string">"Expected exactly one feature."</span>);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>       <strong class="jxr_keyword">if</strong> (featurePrimaryKey instanceof byte[] bytes) {
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <em class="jxr_comment">// byte[] does not implement equals/hashCode properly, but GeoTools uses byte[] for PKs in Oracle when</em>
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         <em class="jxr_comment">// UUID is used</em>
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>         assertNotNull(listAttachments.get(ByteBuffer.wrap(bytes)));
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         assertEquals(1, listAttachments.get(ByteBuffer.wrap(bytes)).size(), <span class="jxr_string">"Expected exactly one attachment."</span>);
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         assertNotNull(listAttachments.get(validFeaturePrimaryKey));
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         assertEquals(1, listAttachments.get(validFeaturePrimaryKey).size(), <span class="jxr_string">"Expected exactly one attachment."</span>);
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>       }
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException | IOException e) {
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>       fail(e);
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>     }
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>   }
-<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> <em class="jxr_javadoccomment">   * We would do this in @AfterAll, but because we're in a parameterized test class that fails so we need to do it in</em>
-<a class="jxr_linenumber" name="L312" href="#L312">312</a> <em class="jxr_javadoccomment">   * a regular test with the highest order.</em>
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L314" href="#L314">314</a> <em class="jxr_javadoccomment">   * @throws SQLException when SQL error occurs</em>
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>   @Order(Integer.MAX_VALUE)
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>   @Test
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>   @DisplayName(<span class="jxr_string">"Delete attachments table for feature type."</span>)
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <strong class="jxr_keyword">void</strong> deleteAttachmentsTableForFeatureType() <strong class="jxr_keyword">throws</strong> SQLException, IOException {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>           Statement stmt = conn.createStatement();
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>           ResultSet rs = stmt.executeQuery(
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>               <span class="jxr_string">"select count(*) from "</span> + schemaPrefix + featureTypeName + <span class="jxr_string">"_attachments"</span>)) {
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         <strong class="jxr_keyword">if</strong> (rs.next()) {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>           fail(<span class="jxr_string">"Attachments table '%s_attachments' still exists."</span>.formatted(featureTypeName));
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>       } <strong class="jxr_keyword">catch</strong> (SQLException e) {
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>         <em class="jxr_comment">// expected, table should not exist</em>
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>       }
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> 
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>     } <strong class="jxr_keyword">catch</strong> (SQLException | IOException e) {
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>       fail(e.getMessage());
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     }
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>   }
-<a class="jxr_linenumber" name="L338" href="#L338">338</a> }
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>       assertNotNull(featurePrimaryKey);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>       Comparable&lt;?&gt; featurePrimarySafeKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(featurePrimaryKey);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>       Map&lt;@NotNull Comparable&lt;?&gt;, List&lt;AttachmentMetadata&gt;&gt; listAttachments =
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>           AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>               featureType, List.of(featurePrimarySafeKey));
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>       assertNotNull(listAttachments);
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>       assertEquals(1, listAttachments.size(), <span class="jxr_string">"Expected exactly one feature."</span>);
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>       assertNotNull(listAttachments.get(featurePrimarySafeKey));
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>       assertEquals(1, listAttachments.get(featurePrimarySafeKey).size(), <span class="jxr_string">"Expected exactly one attachment."</span>);
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException | IOException e) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>       fail(e);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     }
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>   }
+<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L296" href="#L296">296</a> <em class="jxr_javadoccomment">   * We would do this in @AfterAll, but because we're in a parameterized test class that fails so we need to do it in</em>
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> <em class="jxr_javadoccomment">   * a regular test with the highest order.</em>
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L299" href="#L299">299</a> <em class="jxr_javadoccomment">   * @throws SQLException when SQL error occurs</em>
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>   @Order(Integer.MAX_VALUE)
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>   @Test
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @DisplayName(<span class="jxr_string">"Delete attachments table for feature type."</span>)
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>   <strong class="jxr_keyword">void</strong> deleteAttachmentsTableForFeatureType() <strong class="jxr_keyword">throws</strong> SQLException, IOException {
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>           Statement stmt = conn.createStatement();
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>           ResultSet rs = stmt.executeQuery(
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>               <span class="jxr_string">"select count(*) from "</span> + schemaPrefix + featureTypeName + <span class="jxr_string">"_attachments"</span>)) {
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         <strong class="jxr_keyword">if</strong> (rs.next()) {
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>           fail(<span class="jxr_string">"Attachments table '%s_attachments' still exists."</span>.formatted(featureTypeName));
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>         }
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>       } <strong class="jxr_keyword">catch</strong> (SQLException e) {
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         <em class="jxr_comment">// expected, table should not exist</em>
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>       }
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>     } <strong class="jxr_keyword">catch</strong> (SQLException | IOException e) {
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>       fail(e.getMessage());
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     }
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>   }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
