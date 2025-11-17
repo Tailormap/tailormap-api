@@ -58,6 +58,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.json">org.tailormap.api.persistence.json</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.security">org.tailormap.api.security</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -93,7 +95,13 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#applicationId(java.lang.Long)" class="member-name-link">applicationId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;applicationId)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#addAuthorizationRulesItem(org.tailormap.api.persistence.json.AuthorizationRule)" class="member-name-link">addAuthorizationRulesItem</a><wbr>(<a href="../AuthorizationRule.html" title="class in org.tailormap.api.persistence.json">AuthorizationRule</a>&nbsp;authorizationRulesItem)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#applicationId(java.lang.Long)" class="member-name-link">applicationId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;applicationId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#authorizationRules(java.util.List)" class="member-name-link">authorizationRules</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../AuthorizationRule.html" title="class in org.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#className(java.lang.String)" class="member-name-link">className</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;className)</code></div>
@@ -122,6 +130,22 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code><a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">PageTile.</span><code><a href="../PageTile.html#url(java.lang.String)" class="member-name-link">url</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.security">
+<h2>Uses of <a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a> in <a href="../../../security/package-summary.html">org.tailormap.api.security</a></h2>
+<div class="caption"><span>Methods in <a href="../../../security/package-summary.html">org.tailormap.api.security</a> with parameters of type <a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AuthorisationService.</span><code><a href="../../../security/AuthorisationService.html#userAllowedToViewPageTile(org.tailormap.api.persistence.json.PageTile)" class="member-name-link">userAllowedToViewPageTile</a><wbr>(<a href="../PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a>&nbsp;pageTile)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Verifies that the (authenticated) user may view/open the page tile.</div>
+</div>
 </div>
 </section>
 </li>

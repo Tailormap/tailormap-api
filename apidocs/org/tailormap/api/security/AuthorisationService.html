@@ -159,6 +159,16 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Verifies that the (authenticated) user may view the layer in context of the geoService.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userAllowedToViewPage(org.tailormap.api.persistence.Page)" class="member-name-link">userAllowedToViewPage</a><wbr>(<a href="../persistence/Page.html" title="class in org.tailormap.api.persistence">Page</a>&nbsp;page)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Verifies that the (authenticated) user may view/open the page.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userAllowedToViewPageTile(org.tailormap.api.persistence.json.PageTile)" class="member-name-link">userAllowedToViewPageTile</a><wbr>(<a href="../persistence/json/PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a>&nbsp;pageTile)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Verifies that the (authenticated) user may view/open the page tile.</div>
+</div>
 </div>
 </div>
 </div>
@@ -212,6 +222,32 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="userAllowedToViewPage(org.tailormap.api.persistence.Page)">
+<h3>userAllowedToViewPage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">userAllowedToViewPage</span><wbr><span class="parameters">(<a href="../persistence/Page.html" title="class in org.tailormap.api.persistence">Page</a>&nbsp;page)</span></div>
+<div class="block">Verifies that the (authenticated) user may view/open the page.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>page</code> - the Page to check</dd>
+<dt>Returns:</dt>
+<dd>the result from the access control checks.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="userAllowedToViewPageTile(org.tailormap.api.persistence.json.PageTile)">
+<h3>userAllowedToViewPageTile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">userAllowedToViewPageTile</span><wbr><span class="parameters">(<a href="../persistence/json/PageTile.html" title="class in org.tailormap.api.persistence.json">PageTile</a>&nbsp;pageTile)</span></div>
+<div class="block">Verifies that the (authenticated) user may view/open the page tile.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>pageTile</code> - the Page tile to check</dd>
+<dt>Returns:</dt>
+<dd>the result from the access control checks.</dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="userAllowedToViewApplication(org.tailormap.api.persistence.Application)">
 <h3>userAllowedToViewApplication</h3>
