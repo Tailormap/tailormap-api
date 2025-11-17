@@ -14,7 +14,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -31,6 +30,7 @@ import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -177,19 +177,16 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
     JDBCDataStore ds = null;
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+      JdbcClient client = JdbcClient.create(ds.getDataSource());
+      String sql = getCreateAttachmentsForFeatureTypeStatements(featureType, ds);
+      logger.debug("About to create attachments table using statement:\n{}", sql);
+      client.sql(sql).update();
+      logger.info("Attachment table created for FeatureType: {}", featureType.getName());
 
-      try (Connection conn = ds.getDataSource().getConnection();
-          Statement stmt = conn.createStatement()) {
-        String sql = getCreateAttachmentsForFeatureTypeStatements(featureType, ds);
-        logger.debug("About to create attachments table using statement:\n{}", sql);
-        stmt.execute(sql);
-        logger.info("Attachment table created for FeatureType: {}", featureType.getName());
-
-        sql = getCreateAttachmentsIndexForFeatureTypeStatements(featureType, ds);
-        logger.debug("About to create attachments table FK index using statement:\n{}", sql);
-        stmt.execute(sql);
-        logger.info("Attachment table FK index created for FeatureType: {}", featureType.getName());
-      }
+      sql = getCreateAttachmentsIndexForFeatureTypeStatements(featureType, ds);
+      logger.debug("About to create attachments table FK index using statement:\n{}", sql);
+      client.sql(sql).update();
+      logger.info("Attachment table FK index created for FeatureType: {}", featureType.getName());
     } finally {
       if (ds != null) {
         ds.dispose();
@@ -207,11 +204,8 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
       }
       String dropSql = MessageFormat.format("DROP TABLE {1}{0}_attachments", featureType.getName(), schemaPrefix);
       logger.debug("About to drop attachments table using statement:\n{}", dropSql);
-      try (Connection conn = ds.getDataSource().getConnection();
-          Statement stmt = conn.createStatement()) {
-        stmt.execute(dropSql);
-        logger.info("Attachment table dropped for FeatureType: {}", featureType.getName());
-      }
+      JdbcClient.create(ds.getDataSource()).sql(dropSql).update();
+      logger.info("Attachment table dropped for FeatureType: {}", featureType.getName());
     } finally {
       if (ds != null) {
         ds.dispose();
