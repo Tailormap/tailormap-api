@@ -1955,7 +1955,19 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(logo);
 
+    Page loggedIn = new Page();
+    loggedIn.setAuthorizationRules(ruleLoggedIn);
+    loggedIn.setName("loggedIn");
+    loggedIn.setType("page");
+    loggedIn.setContent("About Tailormap");
+    loggedIn.setContent("""
+# About Tailormap
+This is a page for logged in users.
+""");
+    pageRepository.save(loggedIn);
+
     Page about = new Page();
+    about.setAuthorizationRules(ruleAnonymousRead);
     about.setName("about");
     about.setType("page");
     about.setContent("About Tailormap");
@@ -1967,6 +1979,7 @@ This is a page about *Tailormap*. It doesn't say much yet.
     pageRepository.save(about);
 
     Page page = new Page();
+    page.setAuthorizationRules(ruleAnonymousRead);
     page.setName("home");
     page.setType("page");
     page.setTitle("Tailormap - Home");
@@ -1980,6 +1993,7 @@ from [B3Partners](https://www.b3partners.nl)!
     page.setClassName(null);
     page.setTiles(List.of(
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Default app")
             .applicationId(Optional.ofNullable(applicationRepository.findByName("default"))
@@ -1990,6 +2004,7 @@ from [B3Partners](https://www.b3partners.nl)!
             .filterRequireAuthorization(false)
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Secured app")
             .applicationId(Optional.ofNullable(applicationRepository.findByName("secured"))
@@ -1999,6 +2014,7 @@ from [B3Partners](https://www.b3partners.nl)!
             .content("Secure app, only shown if user has authorization")
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Secured app (unfiltered)")
             .applicationId(Optional.ofNullable(applicationRepository.findByName("secured"))
@@ -2008,11 +2024,13 @@ from [B3Partners](https://www.b3partners.nl)!
             .content("Secure app, tile shown to everyone")
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("About")
             .pageId(about.getId())
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("B3Partners")
             .url("https://www.b3partners.nl/")

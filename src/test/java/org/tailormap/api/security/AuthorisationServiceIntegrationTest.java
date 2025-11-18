@@ -20,9 +20,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.Page;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
+import org.tailormap.api.repository.PageRepository;
 
 @PostgresIntegrationTest
 class AuthorisationServiceIntegrationTest {
@@ -33,7 +35,10 @@ class AuthorisationServiceIntegrationTest {
   private GeoServiceRepository geoServiceRepository;
 
   @Autowired
-  AuthorisationService authorisationService;
+  private PageRepository pageRepository;
+
+  @Autowired
+  private AuthorisationService authorisationService;
 
   @ParameterizedTest
   @ValueSource(strings = {"secured", "secured-auth"})
@@ -131,5 +136,33 @@ class AuthorisationServiceIntegrationTest {
         .orElse(null);
     assertNotNull(terreindeelLayer, () -> "begroeidterreindeel layer should exist");
     assertTrue(authorisationService.userAllowedToViewGeoServiceLayer(geoService, terreindeelLayer));
+  }
+
+  @Test
+  void testAnonymousUserAllowedToViewAboutPage() {
+    Page page = pageRepository.findByName("about").orElseThrow();
+    assertTrue(
+        authorisationService.userAllowedToViewPage(page),
+        "Anonymous user should be allowed to view about page");
+  }
+
+  @Test
+  void testAnonymousUserNotAllowedToViewLoggedInPage() {
+    Page page = pageRepository.findByName("loggedIn").orElseThrow();
+    assertFalse(
+        authorisationService.userAllowedToViewPage(page),
+        "Anonymous user should not be allowed to view loggedIn page");
+  }
+
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"},
+      password = "foo")
+  @Test
+  void testLoggedInUserAllowedToViewLoggedInPage() {
+    Page page = pageRepository.findByName("loggedIn").orElseThrow();
+    assertTrue(
+        authorisationService.userAllowedToViewPage(page),
+        "Logged in user should be allowed to view loggedIn page");
   }
 }
