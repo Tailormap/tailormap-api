@@ -83,6 +83,9 @@ public class PageController {
 
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
+    if (!authorisationService.userAllowedToViewPage(page)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
     copyProperties(page, pageResponse);
     pageResponse.tiles(page.getTiles().stream()
         .map(this::convert)
@@ -143,6 +146,10 @@ public class PageController {
                     !authorisationService.userAllowedToViewApplication(application));
               },
               () -> result.shouldBeFiltered = true);
+    }
+
+    if (!tile.getAuthorizationRules().isEmpty() && !authorisationService.userAllowedToViewPageTile(tile)) {
+      result.shouldBeFiltered = true;
     }
 
     Optional.ofNullable(tile.getPageId())

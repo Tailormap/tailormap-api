@@ -421,9 +421,8 @@ END
       String insertSql = MessageFormat.format(
           """
 INSERT INTO {1}{0}_attachments (
-{0}_pk,
-attachment_id, file_name, attribute_name, description, attachment, attachment_size,
-mime_type, created_at, created_by) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
+{0}_pk, attachment_id, file_name, attribute_name, description, attachment, attachment_size,
+mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """,
           featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
 
@@ -437,6 +436,7 @@ mime_type, created_at, created_by) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)
             .getJdbcConnection()
             .getDbtype()
             .equals(JDBCConnectionProperties.DbtypeEnum.ORACLE)) {
+
           stmt.setBytes(2, asBytes(attachment.getAttachmentId()));
         } else {
           stmt.setObject(2, attachment.getAttachmentId());
@@ -583,17 +583,16 @@ FROM {1}{0}_attachments WHERE {0}_pk = ?
   /**
    * List attachments for multiple features grouped by their IDs. <br>
    * <strong>NOTE</strong>: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as
-   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}.
-   *
-   * <p><strong>TODO:</strong> <a href="https://b3partners.atlassian.net/browse/HTM-1771">HTM-1771</a>
+   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}. Use
+   * {@link #checkAndMakeFeaturePkComparable(Object)} to convert feature primary keys if necessary.
    *
    * @param featureType the feature type
    * @param featurePKs the feature primary keys
    * @return map of feature ID to list of attachments
    * @throws IOException when an IO error occurs connecting to the database
    */
-  public static Map<@NotNull Object, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
-      TMFeatureType featureType, List<Object> featurePKs) throws IOException {
+  public static Map<@NotNull Comparable<?>, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
+      TMFeatureType featureType, List<Comparable<?>> featurePKs) throws IOException {
     List<AttachmentMetadataListItem> attachments = new ArrayList<>();
     if (featurePKs == null || featurePKs.isEmpty()) {
       return new HashMap<>();
@@ -670,6 +669,8 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
           while (rs.next()) {
             AttachmentMetadata a = getAttachmentMetadata(rs);
             Object keyObject = rs.getObject(1);
+            Comparable<?> comparableKey;
+
             if (isUUID
                 && featureType
                     .getFeatureSource()
@@ -679,7 +680,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
               // convert RAW(16) back to UUID
               byte[] rawBytes = rs.getBytes(1);
               ByteBuffer bb = ByteBuffer.wrap(rawBytes);
-              keyObject = new UUID(bb.getLong(), bb.getLong());
+              comparableKey = new UUID(bb.getLong(), bb.getLong());
             } else if (isUUID
                 && featureType
                     .getFeatureSource()
@@ -687,15 +688,16 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
                     .getDbtype()
                     .equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)) {
               // convert uppercase string back to UUID
-              keyObject = UUID.fromString(rs.getString(1));
-            }
-
-            if (isByteBuffer) {
+              comparableKey = UUID.fromString(rs.getString(1));
+            } else if (isByteBuffer) {
               // we need to use a key that is comparable, so convert byte[] to ByteBuffer
               assert keyObject instanceof byte[];
-              keyObject = ByteBuffer.wrap((byte[]) keyObject);
+              comparableKey = ByteBuffer.wrap((byte[]) keyObject);
+            } else {
+              // Most other returned PK types (String, Number, UUID) implement Comparable
+              comparableKey = (Comparable<?>) keyObject;
             }
-            attachments.add(new AttachmentMetadataListItem(keyObject, a));
+            attachments.add(new AttachmentMetadataListItem(comparableKey, a));
           }
         }
       } catch (SQLException ex) {
@@ -717,6 +719,35 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
         .collect(Collectors.groupingBy(
             AttachmentMetadataListItem::key,
             Collectors.mapping(AttachmentMetadataListItem::value, Collectors.toList())));
+  }
+
+  /**
+   * Check if the given feature primary key is Comparable, and convert it if necessary (e.g. byte[] to ByteBuffer). We
+   * need the key to be Comparable as it is used as map key in {@link AttachmentMetadataListItem}. Currently supported
+   * types are:
+   *
+   * <ul>
+   *   <li>Comparable (String, Number, UUID, etc.) - returned as is
+   *   <li>byte[] - converted to ByteBuffer
+   * </ul>
+   *
+   * Otherwise an IllegalArgumentException is thrown.
+   *
+   * @param featurePK the feature primary key (NOT {@code null}) to check
+   * @return the Comparable feature primary key (NOT {@code null})
+   * @throws IllegalArgumentException when the feature primary key is null, not Comparable, and no mapping is
+   *     specified
+   */
+  public static @NotNull Comparable<?> checkAndMakeFeaturePkComparable(@NotNull Object featurePK) {
+    if (featurePK instanceof Comparable<?>) {
+      return (Comparable<?>) featurePK;
+    } else if (featurePK instanceof byte[] pkBytes) {
+      // convert byte[] to ByteBuffer which is Comparable
+      return ByteBuffer.wrap(pkBytes);
+    } else {
+      throw new IllegalArgumentException("Unexpected non-Comparable primary key type from database: "
+          + (featurePK != null ? featurePK.getClass().getName() : "null"));
+    }
   }
 
   private static AttachmentMetadata getAttachmentMetadata(ResultSet rs) throws SQLException {
@@ -753,5 +784,5 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
   public record AttachmentWithBinary(
       @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
 
-  private record AttachmentMetadataListItem(@NotNull Object key, @NotNull AttachmentMetadata value) {}
+  private record AttachmentMetadataListItem(@NotNull Comparable<?> key, @NotNull AttachmentMetadata value) {}
 }

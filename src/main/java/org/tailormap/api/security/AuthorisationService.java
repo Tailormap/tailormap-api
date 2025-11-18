@@ -21,10 +21,12 @@ import org.springframework.stereotype.Service;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.Page;
 import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import org.tailormap.api.persistence.json.PageTile;
 
 /**
  * Validates access control rules. Any call to userAllowedToViewApplication will verify that the currently logged-in
@@ -108,6 +110,42 @@ public class AuthorisationService {
     logger.trace(
         "Returning <EMPTY> because no rules matched for access: {}.", AuthorisationService.ACCESS_TYPE_VIEW);
     return Optional.empty();
+  }
+
+  /**
+   * Verifies that the (authenticated) user may view/open the page.
+   *
+   * @param page the Page to check
+   * @return the result from the access control checks.
+   */
+  public boolean userAllowedToViewPage(Page page) {
+    logger.trace("Checking if user is allowed to view page {}.", page.getName());
+    final boolean allowed =
+        isAuthorizedByRules(page.getAuthorizationRules()).equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+    logger.trace(
+        "User is{} allowed to view page: {} (isAuthorizedByRules={}).",
+        allowed ? "" : " not",
+        page.getName(),
+        allowed);
+    return allowed;
+  }
+
+  /**
+   * Verifies that the (authenticated) user may view/open the page tile.
+   *
+   * @param pageTile the Page tile to check
+   * @return the result from the access control checks.
+   */
+  public boolean userAllowedToViewPageTile(PageTile pageTile) {
+    logger.trace("Checking if user is allowed to view page tile {}.", pageTile.getTitle());
+    final boolean allowed = isAuthorizedByRules(pageTile.getAuthorizationRules())
+        .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+    logger.trace(
+        "User is{} allowed to view page tile: {} (isAuthorizedByRules={}).",
+        allowed ? "" : " not",
+        pageTile.getTitle(),
+        allowed);
+    return allowed;
   }
 
   /**

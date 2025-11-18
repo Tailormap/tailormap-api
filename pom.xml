@@ -64,7 +64,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-12.1.3</tag>
+        <tag>tailormap-api-12.4.0-rc.0</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -100,14 +100,14 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2025-10-13T09:36:57Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-11-14T10:40:24Z</project.build.outputTimestamp>
         <geotools.version>34.0</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.0</okhttp.version>
         <greenmail.version>2.1.7</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
-        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener 
+        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
         because Solr uses http libraries from the Jetty project
         -->
         <jetty.version>10.0.26</jetty.version>
@@ -126,14 +126,15 @@ SPDX-License-Identifier: MIT
         -->
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.19.0</commons-lang3.version>
-        <flyway.version>11.15.0</flyway.version>
+        <flyway.version>11.17.0</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.35.Final</hibernate.version>
+        <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <logback.version>1.5.19</logback.version>
-        <micrometer.version>1.15.5</micrometer.version>
+        <micrometer.version>1.16.0</micrometer.version>
         <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
-        <oracle-database.version>23.9.0.25.07</oracle-database.version>
+        <oracle-database.version>23.26.0.0.0</oracle-database.version>
         <postgresql.version>42.7.8</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
@@ -848,7 +849,7 @@ SPDX-License-Identifier: MIT
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
-                    <argLine>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                    <argLine>${surefireArgLine} -Xshare:off -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <excludes>
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
@@ -1103,7 +1104,7 @@ SPDX-License-Identifier: MIT
                            <target name="fix-generated-sources">
                                  HTM-1051 replace javax.validation with jakarta.validation in generated sources
                                 the current config still generates javax.validation, but we want jakarta.validation
-                                
+
                                 <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
                                     <replacetoken><![CDATA[import javax.validation.]]></replacetoken>
                                     <replacevalue><![CDATA[import jakarta.validation.]]></replacevalue>
@@ -1883,7 +1884,7 @@ SPDX-License-Identifier: MIT
                             </includes>
                             <!-- <excludedGroups>prometheus-service-testcase</excludedGroups>-->
                             <!--suppress UnresolvedMavenProperty -->
-                            <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                            <argLine>${failsafeArgLine} -Xshare:off -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
