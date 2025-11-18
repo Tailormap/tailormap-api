@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import com.google.common.base.Splitter;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,12 +13,15 @@ import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.util.factory.GeoTools;
 import org.slf4j.Logger;
@@ -31,7 +35,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
@@ -74,7 +78,7 @@ public class AttachmentsController {
    * @param fileData the attachment file data
    * @return the response entity
    */
-  @PutMapping(
+  @PostMapping(
       path = {
         "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments"
       },
@@ -94,7 +98,7 @@ public class AttachmentsController {
 
     TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
-    checkFeatureExists(tmFeatureType, featureId);
+    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);
 
     Set<@Valid AttachmentAttributeType> attachmentAttrSet =
         tmFeatureType.getSettings().getAttachmentAttributes();
@@ -102,31 +106,73 @@ public class AttachmentsController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not support attachments");
     }
 
-    AttachmentAttributeType attachmentAttributeType = attachmentAttrSet.stream()
-        .filter(attr -> (attr.getAttributeName().equals(attachment.getAttributeName())
-            && java.util.Arrays.stream(attr.getMimeType().split(","))
-                .map(String::trim)
-                .anyMatch(mime -> mime.equals(attachment.getMimeType()))
-            && (attr.getMaxAttachmentSize() == null || attr.getMaxAttachmentSize() >= fileData.length)))
+    AttachmentAttributeType attachmentAttribute = attachmentAttrSet.stream()
+        .filter(attr -> attr.getAttributeName().equals(attachment.getAttributeName()))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Layer does not support attachments for attribute "
-                + attachment.getAttributeName()
-                + " with mime type "
-                + attachment.getMimeType()
-                + " and size "
-                + fileData.length));
-    logger.debug("Using attachment attribute {}", attachmentAttributeType);
+            "Layer does not support attachments for attribute " + attachment.getAttributeName()));
+
+    if (attachmentAttribute.getMaxAttachmentSize() != null
+        && attachmentAttribute.getMaxAttachmentSize() < fileData.length) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Attachment size %d exceeds maximum of %d"
+              .formatted(fileData.length, attachmentAttribute.getMaxAttachmentSize()));
+    }
+
+    if (attachmentAttribute.getMimeType() != null) {
+      if (!validateMimeTypeAccept(
+          attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type or extension not allowed");
+      }
+    }
+
+    logger.debug("Using attachment attribute {}", attachmentAttribute);
 
     AttachmentMetadata response;
     try {
-      response = AttachmentsHelper.insertAttachment(tmFeatureType, attachment, featureId, fileData);
+      response = AttachmentsHelper.insertAttachment(tmFeatureType, attachment, primaryKey, fileData);
     } catch (IOException | SQLException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  /**
+   * Validate as <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file#accept">file
+   * input "accept" attribute</a>.
+   *
+   * @param acceptList comma-separated list of MIME types and file extensions to validate against
+   * @param fileName name of the file to validate
+   * @param mimeType MIME type of the file to validate
+   * @return true if the file's extension or MIME type matches one of the accepted types, false otherwise
+   */
+  private static boolean validateMimeTypeAccept(String acceptList, String fileName, String mimeType) {
+    Iterable<String> allowedMimeTypes =
+        Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
+    final Locale locale = Locale.ENGLISH;
+    for (String allowedType : allowedMimeTypes) {
+      if (allowedType.startsWith(".")) {
+        // Check file extension
+        if (fileName.toLowerCase(locale).endsWith(allowedType.toLowerCase(locale))) {
+          return true;
+        }
+      } else if (allowedType.endsWith("/*")) {
+        // Check mime type category (e.g. image/*)
+        String category = allowedType.substring(0, allowedType.length() - 1);
+        if (mimeType.startsWith(category)) {
+          return true;
+        }
+      } else {
+        // Check exact mime type match
+        if (mimeType.equals(allowedType)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -155,11 +201,11 @@ public class AttachmentsController {
     TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     checkFeatureTypeSupportsAttachments(tmFeatureType);
-    checkFeatureExists(tmFeatureType, featureId);
+    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);
 
     List<AttachmentMetadata> response;
     try {
-      response = AttachmentsHelper.listAttachmentsForFeature(tmFeatureType, featureId);
+      response = AttachmentsHelper.listAttachmentsForFeature(tmFeatureType, primaryKey);
     } catch (IOException | SQLException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
@@ -232,19 +278,24 @@ public class AttachmentsController {
     }
   }
 
-  private void checkFeatureExists(TMFeatureType tmFeatureType, String featureId) throws ResponseStatusException {
+  private Object getFeaturePrimaryKeyByFid(TMFeatureType tmFeatureType, String featureId)
+      throws ResponseStatusException {
     final Filter fidFilter = ff.id(ff.featureId(featureId));
     SimpleFeatureSource fs = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       Query query = new Query();
       query.setFilter(fidFilter);
-      if (fs.getCount(query) < 1) {
-        throw new ResponseStatusException(
-            HttpStatus.NOT_FOUND, "Feature with id " + featureId + " does not exist");
+      query.setPropertyNames(tmFeatureType.getPrimaryKeyAttribute());
+      try (SimpleFeatureIterator sfi = fs.getFeatures(query).features()) {
+        if (!sfi.hasNext()) {
+          throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "Feature with id %s does not exist".formatted(featureId));
+        }
+        return sfi.next().getAttribute(tmFeatureType.getPrimaryKeyAttribute());
       }
     } catch (IOException e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();

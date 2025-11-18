@@ -265,6 +265,12 @@ components:
           minItems: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
+        attachmentMetadata:
+          type: array
+          minItems: 0
+          uniqueItems: true
+          items:
+            $ref: './common-schemas.yaml#/components/schemas/AttachmentAttributeType'
         template:
           description: Template/description for a feature. Will replace placeholders by attribute values in the viewer
           type: string
@@ -968,6 +974,13 @@ paths:
       - description: Geometry output as part of the attributes, will be ignored if onlyGeometries is true
         in: query
         name: geometryInAttributes
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: withAttachments
+        in: query
+        description: 'When true, attachment metadata and attachments are included in the response.'
         required: false
         schema:
           type: boolean

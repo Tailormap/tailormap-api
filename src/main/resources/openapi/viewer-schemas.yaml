@@ -312,6 +312,15 @@ components:
           type: object
           minProperties: 1
           additionalProperties: true
+        attachments:
+          description: 'Metadata of feature attachments, only when supported by the layer or the service.
+			Use the `/attachment` endpoint to retrieve separate attachments'
+          readOnly: true
+          type: array
+          nullable: true
+          minLength: 0
+          items:
+            $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
       example:
         __fid: 1
         geometry: "POLYGON(...)"
