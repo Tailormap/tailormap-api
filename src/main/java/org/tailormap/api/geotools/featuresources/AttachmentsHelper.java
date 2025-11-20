@@ -31,6 +31,7 @@ import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -227,8 +228,7 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
    * @throws IOException If an error connecting to the database occurs
    * @throws IllegalArgumentException If the database type is not supported
    */
-  private static String getCreateAttachmentsForFeatureTypeStatements(
-      TMFeatureType featureType, @NotNull JDBCDataStore ds)
+  private static String getCreateAttachmentsForFeatureTypeStatements(TMFeatureType featureType, JDBCDataStore ds)
       throws IOException, IllegalArgumentException, SQLException {
 
     String fkColumnType = null;
@@ -581,18 +581,16 @@ FROM {1}{0}_attachments WHERE {0}_pk = ?
   }
 
   /**
-   * List attachments for multiple features grouped by their IDs. <br>
-   * <strong>NOTE</strong>: the featurePKs list should contain {@link Comparable} objects (e.g. no {@code byte[]}), as
-   * these are used as map keys. E.g. {@code byte[]} is converted to {@code ByteBuffer}. Use
-   * {@link #checkAndMakeFeaturePkComparable(Object)} to convert feature primary keys if necessary.
+   * List attachments for multiple features grouped by their FIDs. <br>
+   * <strong>NOTE</strong>: the featurePKs list should contain objects that can be used as primary keys.
    *
    * @param featureType the feature type
    * @param featurePKs the feature primary keys
    * @return map of feature ID to list of attachments
    * @throws IOException when an IO error occurs connecting to the database
    */
-  public static Map<@NotNull Comparable<?>, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
-      TMFeatureType featureType, List<Comparable<?>> featurePKs) throws IOException {
+  public static @NonNull Map<String, List<AttachmentMetadata>> listAttachmentsForFeaturesByFeatureId(
+      TMFeatureType featureType, List<Object> featurePKs) throws IOException {
     List<AttachmentMetadataListItem> attachments = new ArrayList<>();
     if (featurePKs == null || featurePKs.isEmpty()) {
       return new HashMap<>();
@@ -667,10 +665,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
 
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
-            AttachmentMetadata a = getAttachmentMetadata(rs);
             Object keyObject = rs.getObject(1);
-            Comparable<?> comparableKey;
-
             if (isUUID
                 && featureType
                     .getFeatureSource()
@@ -680,7 +675,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
               // convert RAW(16) back to UUID
               byte[] rawBytes = rs.getBytes(1);
               ByteBuffer bb = ByteBuffer.wrap(rawBytes);
-              comparableKey = new UUID(bb.getLong(), bb.getLong());
+              keyObject = new UUID(bb.getLong(), bb.getLong());
             } else if (isUUID
                 && featureType
                     .getFeatureSource()
@@ -688,20 +683,17 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
                     .getDbtype()
                     .equals(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)) {
               // convert uppercase string back to UUID
-              comparableKey = UUID.fromString(rs.getString(1));
+              keyObject = UUID.fromString(rs.getString(1));
             } else if (isByteBuffer) {
-              // we need to use a key that is comparable, so convert byte[] to ByteBuffer
               assert keyObject instanceof byte[];
-              comparableKey = ByteBuffer.wrap((byte[]) keyObject);
-            } else {
-              // Most other returned PK types (String, Number, UUID) implement Comparable
-              comparableKey = (Comparable<?>) keyObject;
+              keyObject = ByteBuffer.wrap((byte[]) keyObject);
             }
-            attachments.add(new AttachmentMetadataListItem(comparableKey, a));
+            attachments.add(new AttachmentMetadataListItem(
+                AttachmentsHelper.fidFromPK(featureType, keyObject), getAttachmentMetadata(rs)));
           }
         }
       } catch (SQLException ex) {
-        logger.error("Failed to get attachments for %s".formatted(featureType.getName()), ex);
+        logger.error("Failed to get attachments for {}", featureType.getName(), ex);
       }
     } finally {
       if (ds != null) {
@@ -717,36 +709,31 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
 
     return attachments.stream()
         .collect(Collectors.groupingBy(
-            AttachmentMetadataListItem::key,
+            AttachmentMetadataListItem::fid,
             Collectors.mapping(AttachmentMetadataListItem::value, Collectors.toList())));
   }
 
   /**
-   * Check if the given feature primary key is Comparable, and convert it if necessary (e.g. byte[] to ByteBuffer). We
-   * need the key to be Comparable as it is used as map key in {@link AttachmentMetadataListItem}. Currently supported
-   * types are:
+   * Constructs a Feature ID (FID) string from a feature type and primary key value. The FID format is
+   * "{featureTypeName}.{primaryKey}". For byte[] primary keys, the bytes are converted to UUID format.
    *
-   * <ul>
-   *   <li>Comparable (String, Number, UUID, etc.) - returned as is
-   *   <li>byte[] - converted to ByteBuffer
-   * </ul>
-   *
-   * Otherwise an IllegalArgumentException is thrown.
-   *
-   * @param featurePK the feature primary key (NOT {@code null}) to check
-   * @return the Comparable feature primary key (NOT {@code null})
-   * @throws IllegalArgumentException when the feature primary key is null, not Comparable, and no mapping is
-   *     specified
+   * @param featureType the feature type
+   * @param featurePK the feature primary key (supports String, Number, UUID, byte[], etc.)
+   * @return the constructed FID as a String
    */
-  public static @NotNull Comparable<?> checkAndMakeFeaturePkComparable(@NotNull Object featurePK) {
-    if (featurePK instanceof Comparable<?>) {
-      return (Comparable<?>) featurePK;
-    } else if (featurePK instanceof byte[] pkBytes) {
-      // convert byte[] to ByteBuffer which is Comparable
-      return ByteBuffer.wrap(pkBytes);
+  public static String fidFromPK(@NotNull TMFeatureType featureType, @NotNull Object featurePK) {
+    if (featurePK == null) {
+      throw new IllegalArgumentException("featurePK cannot be null");
+    }
+    if (featureType == null) {
+      throw new IllegalArgumentException("featureType cannot be null");
+    }
+    if (featurePK instanceof byte[] pkBytes) {
+      ByteBuffer bb = ByteBuffer.wrap(pkBytes);
+      UUID pkUUID = new UUID(bb.getLong(), bb.getLong());
+      return "%s.%s".formatted(featureType.getName(), pkUUID);
     } else {
-      throw new IllegalArgumentException("Unexpected non-Comparable primary key type from database: "
-          + (featurePK != null ? featurePK.getClass().getName() : "null"));
+      return "%s.%s".formatted(featureType.getName(), featurePK);
     }
   }
 
@@ -784,5 +771,5 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
   public record AttachmentWithBinary(
       @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
 
-  private record AttachmentMetadataListItem(@NotNull Comparable<?> key, @NotNull AttachmentMetadata value) {}
+  private record AttachmentMetadataListItem(@NotNull String fid, @NotNull AttachmentMetadata value) {}
 }

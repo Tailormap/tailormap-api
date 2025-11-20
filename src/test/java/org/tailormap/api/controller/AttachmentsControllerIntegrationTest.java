@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +31,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,6 +108,7 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  @ValueSource(strings = {layerBegroeidTerreindeelPostgis + "/feature/325f7d92cadf2d523853ef0b561dd9a5/attachments"})
   void addAttachment(String url) throws Exception {
     url = apiBasePath + url;
 
@@ -267,15 +268,15 @@ class AttachmentsControllerIntegrationTest {
       authorities = {ADMIN})
   void getFeaturesWithAttachments(String layerUrl, int x, int y, int distance, String expectedGmlId)
       throws Exception {
-    final String gmlIdKey =
-        switch (layerUrl) {
-          case TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -> "gmlid";
-          case TestUrls.layerWaterdeelOracle -> "GMLID";
-          case TestUrls
-              .layerKadastraalPerceel -> /* TODO this will fail below, so test expectations should be updated, the actual PK is hidden from attributes */
-            null;
-          default -> throw new IllegalArgumentException("Unknown URL: " + layerUrl);
-        };
+    String gmlIdKey = "gmlid";
+    switch (layerUrl) {
+      case TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -> {}
+      case TestUrls.layerWaterdeelOracle -> gmlIdKey = "GMLID";
+      case TestUrls.layerKadastraalPerceel -> {
+        expectedGmlId = "26250013470000";
+        gmlIdKey = "identificatie";
+      }
+    }
     final String getUrl = apiBasePath + layerUrl + "/features";
     mockMvc.perform(get(getUrl)
             .accept(MediaType.APPLICATION_JSON)
@@ -285,7 +286,6 @@ class AttachmentsControllerIntegrationTest {
             .param("distance", String.valueOf(distance))
             .param("withAttachments", "true"))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())

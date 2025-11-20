@@ -432,7 +432,7 @@ public class FeaturesController implements Constants {
     boolean ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != null
         && !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
 
-    List<Comparable<?>> featurePKs = new ArrayList<>();
+    List<Object> featurePKs = new ArrayList<>();
     Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
@@ -443,14 +443,14 @@ public class FeaturesController implements Constants {
         addFields = true;
         // transform found simplefeatures to list of Feature
         SimpleFeature feature = feats.next();
+
         // processedGeometry can be null
         String processedGeometry = GeometryProcessor.processGeometry(
             feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
             simplifyGeometry,
             true,
             transform);
-        Feature newFeat =
-            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
+        Feature newFeat = new Feature().fid(feature.getID()).geometry(processedGeometry);
 
         if (!onlyGeometries) {
           for (String attName : configuredAttributes.keySet()) {
@@ -465,9 +465,8 @@ public class FeaturesController implements Constants {
             newFeat.putAttributesItem(attName, value);
           }
           if (withAttachments && ftSupportsAttachments) {
-            Comparable<?> pk = AttachmentsHelper.checkAndMakeFeaturePkComparable(
-                feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
-            featurePKs.add(pk);
+            // Just add the PK as is, no conversion needed
+            featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
           }
         }
         featuresResponse.addFeaturesItem(newFeat);
@@ -499,13 +498,12 @@ public class FeaturesController implements Constants {
           featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));
 
       if (withAttachments) {
-        //  fetch all attachments for all features, grouped by feature id
-        Map<Comparable<?>, List<AttachmentMetadata>> attachmentsByFeatureId =
+        //  fetch all attachments for all features, grouped by feature fid
+        Map<String, List<AttachmentMetadata>> attachmentsByFeatureId =
             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
         //  add attachment data to features using feature.primaryKeyAttribute to match
         for (Feature feature : featuresResponse.getFeatures()) {
-          Comparable<?> primaryKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(
-              feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute()));
+          String primaryKey = feature.getFid();
           List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
           if (attachments != null) {
             feature.setAttachments(attachments);
