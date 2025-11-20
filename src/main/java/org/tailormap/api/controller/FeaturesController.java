@@ -82,7 +82,7 @@ public class FeaturesController implements Constants {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-
+  private final TMFeatureTypeHelper featureTypeHelper;
   private final FeatureSourceRepository featureSourceRepository;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
@@ -96,8 +96,11 @@ public class FeaturesController implements Constants {
   private boolean exactWfsCounts;
 
   public FeaturesController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      TMFeatureTypeHelper featureTypeHelper,
+      FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.featureTypeHelper = featureTypeHelper;
     this.featureSourceRepository = featureSourceRepository;
   }
 
@@ -492,7 +495,8 @@ public class FeaturesController implements Constants {
     }
     if (ftSupportsAttachments) {
       //  add attachment metadata
-      featuresResponse.setAttachmentMetadata(tmFeatureType.getSettings().getAttachmentAttributes());
+      featuresResponse.setAttachmentMetadata(
+          featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));
 
       if (withAttachments) {
         //  fetch all attachments for all features, grouped by feature id

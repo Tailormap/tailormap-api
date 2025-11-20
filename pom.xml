@@ -997,6 +997,7 @@ SPDX-License-Identifier: MIT
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
                                 <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
+                                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
