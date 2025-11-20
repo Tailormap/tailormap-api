@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerKadastraalPerceel;
 import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
 import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 import static org.tailormap.api.persistence.Group.ADMIN;
@@ -76,20 +77,18 @@ class AttachmentsControllerIntegrationTest {
 
   private static Stream<Arguments> testUrls() {
     return Stream.of(
-        Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"),
-        Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
-        Arguments.of(
-            "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/c9baca2a2f078038ace1b3a1acf8e0c8/attachments"));
+        Arguments.of(layerBegroeidTerreindeelPostgis + "/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"),
+        Arguments.of(layerWaterdeelOracle + "/feature/93294fda97a19c37080849c5c1fddbf3/attachments"),
+        Arguments.of(layerWegdeelSqlServer + "/feature/c9baca2a2f078038ace1b3a1acf8e0c8/attachments"),
+        Arguments.of(layerKadastraalPerceel + "/feature/NL.IMKAD.KadastraalObject.26250013470000/attachments"));
   }
 
   private static Stream<Arguments> getFeaturesTestUrls() {
     return Stream.of(
-        // docker host,table,url, feature count
         arguments(layerBegroeidTerreindeelPostgis, 132255, 458382, 10, "21f95499702e3a5d05230d2ae596ea1c"),
         arguments(layerWaterdeelOracle, 132139, 458390, 10, "93294fda97a19c37080849c5c1fddbf3"),
-        arguments(layerWegdeelSqlServer, 130819, 458989, 10, "c9baca2a2f078038ace1b3a1acf8e0c8"));
+        arguments(layerWegdeelSqlServer, 130819, 458989, 10, "c9baca2a2f078038ace1b3a1acf8e0c8"),
+        arguments(layerKadastraalPerceel, 131361, 459069, 3, "NL.IMKAD.KadastraalObject.26250013470000"));
   }
 
   private static final String layerNotEditableUrl =
@@ -272,6 +271,9 @@ class AttachmentsControllerIntegrationTest {
         switch (layerUrl) {
           case TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -> "gmlid";
           case TestUrls.layerWaterdeelOracle -> "GMLID";
+          case TestUrls
+              .layerKadastraalPerceel -> /* TODO this will fail below, so test expectations should be updated, the actual PK is hidden from attributes */
+            null;
           default -> throw new IllegalArgumentException("Unknown URL: " + layerUrl);
         };
     final String getUrl = apiBasePath + layerUrl + "/features";

@@ -1037,13 +1037,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               .addAttachmentAttributesItem(new AttachmentAttributeType()
                   .attributeName("bijlage")
                   .maxAttachmentSize(4_000_000L)
-                  .mimeType(".png, image/*"));
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
           try {
             AttachmentsHelper.createAttachmentTableForFeatureType(ft);
           } catch (IOException | SQLException e) {
             throw new RuntimeException("Failed to create attachments table for kadastraal_perceel", e);
           }
-          ;
           // hide primary key
           ft.getSettings().addHideAttributesItem("gml_id");
           // make some attributes editable
