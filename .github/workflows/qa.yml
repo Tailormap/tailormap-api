@@ -29,7 +29,7 @@ jobs:
           allow-dependencies-licenses: pkg:maven/org.eclipse.angus/jakarta.mail@2.0.4?type=jar
           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, MPL-2.0, LGPL-2.1-only, EPL-2.0, EPL-1.0
           fail-on-severity: low
-          comment-summary-in-pr: on-failure
+          comment-summary-in-pr: always
           allow-ghsas: GHSA-qh8g-58pp-2wxh
 
       - name: 'Set up JDK'
