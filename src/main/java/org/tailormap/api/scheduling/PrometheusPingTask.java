@@ -8,6 +8,7 @@ package org.tailormap.api.scheduling;
 import io.micrometer.core.annotation.Timed;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import org.jspecify.annotations.NonNull;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -15,7 +16,6 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.tailormap.api.prometheus.PrometheusService;
 
