@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.7</version>
+        <version>3.5.8</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -125,8 +125,8 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <awaitility.version>4.3.0</awaitility.version>
-        <commons-lang3.version>3.19.0</commons-lang3.version>
-        <flyway.version>11.17.0</flyway.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.36.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
@@ -139,7 +139,8 @@ SPDX-License-Identifier: MIT
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
         <!-- <spring-security.version>6.3.4</spring-security.version>-->
-        <!-- <quartz.version>2.5.0</quartz.version>-->
+        <!-- see https://b3partners.atlassian.net/browse/HTM-1778 -->
+        <quartz.version>2.5.0</quartz.version>
         <!-- <webjars-locator-core.version>0.59</webjars-locator-core.version>-->
         <!-- <xmlunit2.version>2.10.1</xmlunit2.version>-->
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
