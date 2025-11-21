@@ -14,17 +14,17 @@ updates:
     labels:
       - infrastructure
       - dependency
-    # stay on springboot 3.x / spring-security 6.x / hibernate 6.x
+    # stay on springboot 4.0.x / spring-security 7.0.x / hibernate 7.1.x / jetty 12.0.x (for SolrJ) for now
     ignore:
       - dependency-name: org.springframework.boot:spring-boot-starter-parent
         versions:
-          - '>= 4'
+          - '>= 4.1'
       - dependency-name: org.springframework.security:spring-security-test
         versions:
-          - '>= 7'
+          - '>= 7.1'
       - dependency-name: org.hibernate.orm.tooling:hibernate-enhance-maven-plugin
         versions:
-          - '>= 7'
+          - '>= 7.2'
       - dependency-name: org.eclipse.jetty.ee10:jetty-ee10-bom
         versions:
           - '>= 12.1'
