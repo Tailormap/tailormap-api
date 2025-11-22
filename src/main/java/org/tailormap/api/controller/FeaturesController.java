@@ -501,7 +501,7 @@ public class FeaturesController implements Constants {
         //  fetch all attachments for all features, grouped by feature fid
         Map<String, List<AttachmentMetadata>> attachmentsByFeatureId =
             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
-        //  add attachment data to features using feature.primaryKeyAttribute to match
+        //  add attachment data to features using the feature FID to match
         for (Feature feature : featuresResponse.getFeatures()) {
           String primaryKey = feature.getFid();
           List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
