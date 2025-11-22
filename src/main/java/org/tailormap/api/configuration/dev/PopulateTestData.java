@@ -1032,7 +1032,23 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     featureSources.get("postgis").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("kadastraal_perceel"))
         .findFirst()
-        .ifPresent(ft -> ft.getSettings().addHideAttributesItem("gml_id"));
+        .ifPresent(ft -> {
+          ft.getSettings()
+              .addAttachmentAttributesItem(new AttachmentAttributeType()
+                  .attributeName("bijlage")
+                  .maxAttachmentSize(4_000_000L)
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
+          try {
+            AttachmentsHelper.createAttachmentTableForFeatureType(ft);
+          } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to create attachments table for kadastraal_perceel", e);
+          }
+          // hide primary key
+          ft.getSettings().addHideAttributesItem("gml_id");
+          // make some attributes editable
+          ft.getSettings().addEditableAttributesItem("begin_geldigheid");
+          ft.getSettings().addEditableAttributesItem("tijdstip_registratie");
+        });
 
     featureSources.get("postgis_osm").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("osm_polygon"))

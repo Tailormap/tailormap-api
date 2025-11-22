@@ -41,7 +41,7 @@ class FeatureSourceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void refreshJdbcFeatureSourceCapabilities() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
-    final int expectedTotal = 38;
+    final int expectedTotal = 39;
 
     String host = "localhost";
     int port = 54322;

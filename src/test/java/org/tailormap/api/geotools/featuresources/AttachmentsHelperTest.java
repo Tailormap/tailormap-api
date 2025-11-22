@@ -5,26 +5,41 @@
  */
 package org.tailormap.api.geotools.featuresources;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static java.nio.ByteBuffer.wrap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.nio.ByteBuffer;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.tailormap.api.persistence.TMFeatureType;
 
 class AttachmentsHelperTest {
+  static final String ftName = "testFeatureType";
+  static final TMFeatureType featureType = org.mockito.Mockito.mock(TMFeatureType.class, invocation -> {
+    if ("getName".equals(invocation.getMethod().getName())) {
+      return ftName;
+    }
+    return org.mockito.Answers.RETURNS_DEFAULTS.answer(invocation);
+  });
+
   @Test
   void testCheckArrayOfByteObject() {
-    Object testData = new byte[] {1, 2, 3, 4, 5};
-    Comparable<?> result = AttachmentsHelper.checkAndMakeFeaturePkComparable(testData);
-    assertNotNull(result);
-    assertInstanceOf(ByteBuffer.class, result);
+    UUID uuid = UUID.randomUUID();
+    Object testData = new byte[16];
+    wrap((byte[]) testData).putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());
+    String result = AttachmentsHelper.fidFromPK(featureType, testData);
+    assertEquals(ftName + "." + uuid, result);
   }
 
   @Test
   void testCheckIntegerObject() {
     Object testData = 12345;
-    Comparable<?> result = AttachmentsHelper.checkAndMakeFeaturePkComparable(testData);
-    assertNotNull(result);
-    assertInstanceOf(Integer.class, result);
+    String result = AttachmentsHelper.fidFromPK(featureType, testData);
+    assertEquals(ftName + "." + testData, result);
+  }
+
+  @Test
+  void testCheckNull() {
+    assertThrows(IllegalArgumentException.class, () -> AttachmentsHelper.fidFromPK(featureType, null));
   }
 }

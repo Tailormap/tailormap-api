@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,7 +76,6 @@ class ApplicationEventHandlerIntegrationTest {
 
     mockMvc.perform(get(adminBasePath + "/graph/applications"))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.applications").isArray())
         .andExpect(jsonPath("$.applications[0].appId").value("5"));
@@ -109,7 +107,6 @@ class ApplicationEventHandlerIntegrationTest {
 
     mockMvc.perform(get(adminBasePath + "/graph/applayers/1"))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.applicationLayers").isArray())
         .andExpect(jsonPath("$.applicationLayers").isEmpty());

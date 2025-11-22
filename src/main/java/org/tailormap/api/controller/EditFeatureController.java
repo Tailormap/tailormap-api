@@ -300,11 +300,10 @@ public class EditFeatureController implements Constants {
                 .getAttachmentAttributes()
                 .isEmpty()) {
           //  add attachments
-          Comparable<?> primaryKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(
-              simpleFeature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
-          Map<Comparable<?>, List<AttachmentMetadata>> attachmentsByFeatureId =
+          Object primaryKey = simpleFeature.getAttribute(tmFeatureType.getPrimaryKeyAttribute());
+          Map<String, List<AttachmentMetadata>> attachmentsByFeatureId =
               AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, List.of(primaryKey));
-          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
+          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(simpleFeature.getID());
           if (attachments != null) {
             modelFeature.setAttachments(attachments);
           }
