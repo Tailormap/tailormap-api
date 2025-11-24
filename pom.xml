@@ -128,7 +128,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>7.1.8.Final</hibernate.version>
+        <hibernate.version>7.1.10.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <!--        <junit-jupiter.version>6.0.1</junit-jupiter.version>-->
         <!--        <logback.version>1.5.19</logback.version>-->
@@ -162,7 +162,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.30.2</swagger-ui.version>
-        <sentry.version>8.26.0</sentry.version>
+        <sentry.version>8.27.0</sentry.version>
         <errorProne.version>2.44.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -896,15 +896,14 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <!-- Required for lazy fetching of properties,
                 see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
                             <goal>enhance</goal>
                         </goals>
                         <configuration>
-                            <failOnError>true</failOnError>
                             <enableLazyInitialization>true</enableLazyInitialization>
                             <enableDirtyTracking>true</enableDirtyTracking>
                         </configuration>
