@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static org.tailormap.api.util.TMPasswordDeserializer.encoder;
 import static org.tailormap.api.util.TMPasswordDeserializer.validatePasswordStrength;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -49,6 +48,7 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.repository.TemporaryTokenRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.viewer.model.ErrorResponse;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 @Validated

@@ -17,8 +17,6 @@ import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EX
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.FEATURE_INFO;
 import static org.tailormap.api.security.AuthorisationService.ACCESS_TYPE_VIEW;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
@@ -114,6 +112,8 @@ import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ComponentConfig;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Populates entities to add services and applications to demo functionality, support development and use in integration
@@ -1768,7 +1768,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     configurationRepository.save(config);
   }
 
-  private void createConfigurationTestData() throws JsonProcessingException {
+  private void createConfigurationTestData() throws JacksonException {
     Configuration config = new Configuration();
     config.setKey("test");
     config.setAvailableForViewer(true);

@@ -10,6 +10,7 @@ import static io.sentry.quartz.SentryJobListener.SENTRY_SLUG_KEY;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.UUID;
+import org.jspecify.annotations.Nullable;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobBuilder;
@@ -25,7 +26,6 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 

@@ -5,8 +5,6 @@
  */
 package org.tailormap.api.controller.admin;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,6 +37,8 @@ import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.viewer.model.ErrorResponse;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 public class PrometheusDataController implements TagNames, InitializingBean {

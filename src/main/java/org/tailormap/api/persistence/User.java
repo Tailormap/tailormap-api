@@ -7,7 +7,6 @@ package org.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -35,6 +34,7 @@ import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
 import org.tailormap.api.util.TMPasswordDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @Audited
 @Entity

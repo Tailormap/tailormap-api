@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -22,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tailormap.api.security.InvalidPasswordException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /** Test for json serializing an deserializing {@link User}. */
 @JsonTest
@@ -60,7 +60,7 @@ class UserTest {
   }
 
   @Test
-  void testJsonDeserializeValidPassword() throws JsonProcessingException {
+  void testJsonDeserializeValidPassword() throws JacksonException {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"myValidSecret$@12\"}";
 
     User actualUser = this.mapper.readValue(jsonToDeserialize, User.class);

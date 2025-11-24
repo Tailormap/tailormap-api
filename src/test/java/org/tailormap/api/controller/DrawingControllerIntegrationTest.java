@@ -20,8 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -35,7 +33,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +42,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Drawing;
+import tools.jackson.databind.ObjectMapper;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -224,7 +223,7 @@ class DrawingControllerIntegrationTest {
     assertNotNull(body, "response body should not be null");
 
     final ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
+    // objectMapper.registerModule(new JavaTimeModule());
     Drawing drawing = Arrays.stream(objectMapper.readValue(body, Drawing[].class))
         // reduce to last drawing in collection
         .reduce((first, second) -> second)

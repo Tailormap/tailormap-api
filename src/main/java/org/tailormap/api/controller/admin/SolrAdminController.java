@@ -5,7 +5,6 @@
  */
 package org.tailormap.api.controller.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,6 +51,7 @@ import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.ErrorResponse;
+import tools.jackson.databind.ObjectMapper;
 
 /** Admin controller for Solr. */
 @RestController

@@ -31,12 +31,12 @@ Swagger annotations such as `@Operation` and `@ApiResponse`.
 ## Code Standards
 - **Java Version**: Use Java 21 features and syntax.
 - **GeoTools**: Use GeoTools 34.x for geospatial data handling.
-- **Hibernate**: Use Hibernate 6.6.x for ORM and database interactions.
-- **Spring Boot**: Use Spring Boot 3.5.x for building RESTful APIs.
+- **Hibernate**: Use Hibernate 7.1.x for ORM and database interactions.
+- **Spring Boot**: Use Spring Boot 4.0.x for building RESTful APIs.
 - **Spring Data JPA**: Use Spring Data JPA for database access and repository management.
 - **Spring Security**: Use Spring Security for authentication and authorization.
 - **Spring Boot Actuator**: Use Spring Boot Actuator for monitoring and management of the application.
-- **JUnit Jupiter**: Use JUnit 5 (Jupiter) for unit testing.
+- **JUnit Jupiter**: Use JUnit 6 (Jupiter) for unit testing.
 - **OpenAPI**: Use OpenAPI 3.0.3 for API documentation and definitions.
 - **Maven**: Use Maven for dependency management and project builds.
 

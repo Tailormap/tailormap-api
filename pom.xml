@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.8</version>
+        <version>4.0.0</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -110,7 +110,7 @@ SPDX-License-Identifier: MIT
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
         because Solr uses http libraries from the Jetty project
         -->
-        <jetty.version>10.0.26</jetty.version>
+        <!--    TODO fix this for solrj    <jetty.version>10.0.26</jetty.version>-->
         <solr.version>9.10.0</solr.version>
         <!--
         Spring Boot version overrides.
@@ -124,15 +124,16 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <awaitility.version>4.3.0</awaitility.version>
+        <!--        <awaitility.version>4.3.0</awaitility.version>-->
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.36.Final</hibernate.version>
+        <hibernate.version>7.1.10.Final</hibernate.version>
+        <jackson-bom.version>3.0.2</jackson-bom.version>
         <json-path.version>2.10.0</json-path.version>
-        <junit-jupiter.version>6.0.1</junit-jupiter.version>
-        <logback.version>1.5.19</logback.version>
-        <micrometer.version>1.16.0</micrometer.version>
+        <!--        <junit-jupiter.version>6.0.1</junit-jupiter.version>-->
+        <!--        <logback.version>1.5.19</logback.version>-->
+        <!--        <micrometer.version>1.16.0</micrometer.version>-->
         <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.26.0.0.0</oracle-database.version>
         <postgresql.version>42.7.8</postgresql.version>
@@ -162,7 +163,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.30.2</swagger-ui.version>
-        <sentry.version>8.26.0</sentry.version>
+        <sentry.version>8.27.0</sentry.version>
         <errorProne.version>2.44.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -183,15 +184,16 @@ SPDX-License-Identifier: MIT
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- override the jetty-ee10-bom import so we can downgrade jetty to a solrj compatible version,
-                 our spring-boot parent provides this import -->
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.30</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <!--            <dependency>-->
+            <!--            TODO fix this -->
+            <!--                &lt;!&ndash; override the jetty-ee10-bom import so we can downgrade jetty to a solrj compatible version,-->
+            <!--                 our spring-boot parent provides this import &ndash;&gt;-->
+            <!--                <groupId>org.eclipse.jetty.ee10</groupId>-->
+            <!--                <artifactId>jetty-ee10-bom</artifactId>-->
+            <!--                <version>12.0.30</version>-->
+            <!--                <type>pom</type>-->
+            <!--                <scope>import</scope>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-bom</artifactId>
@@ -224,14 +226,6 @@ SPDX-License-Identifier: MIT
             <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <!-- ? should be  <scope>test</scope> ... -->
@@ -258,7 +252,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-63</artifactId>
+            <artifactId>hypersistence-utils-hibernate-71</artifactId>
             <version>3.12.0</version>
         </dependency>
         <dependency>
@@ -286,7 +280,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+            <artifactId>sentry-spring-boot-4-starter</artifactId>
             <version>${sentry.version}</version>
         </dependency>
         <dependency>
@@ -454,7 +448,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -499,12 +492,22 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <!--                not actually used, in 4.0.0 renamed to spring-boot-starter-aspectj-->
+            <!--                see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#aop-starter-pom-->
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -516,10 +519,6 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
         <dependency>
@@ -528,11 +527,15 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -558,6 +561,14 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -628,6 +639,21 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
@@ -636,6 +662,11 @@ SPDX-License-Identifier: MIT
                     <artifactId>assertj-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -710,8 +741,8 @@ SPDX-License-Identifier: MIT
                     <version>7.17.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.hibernate.orm.tooling</groupId>
-                    <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                    <groupId>org.hibernate.orm</groupId>
+                    <artifactId>hibernate-maven-plugin</artifactId>
                     <version>${hibernate.version}</version>
                 </plugin>
                 <plugin>
@@ -866,17 +897,30 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <!-- Required for lazy fetching of properties,
                 see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
                             <goal>enhance</goal>
                         </goals>
                         <configuration>
-                            <failOnError>true</failOnError>
-                            <enableLazyInitialization>true</enableLazyInitialization>
-                            <enableDirtyTracking>true</enableDirtyTracking>
+                            <!-- default <enableLazyInitialization>true</enableLazyInitialization>-->
+                            <!-- default <enableDirtyTracking>true</enableDirtyTracking>-->
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.outputDirectory}/org/tailormap/api/persistence</directory>
+                                    <includes>
+                                        <include>*.class</include>
+                                    </includes>
+                                </fileSet>
+                                <fileSet>
+                                    <directory>${project.build.outputDirectory}/org/tailormap/api/persistence/json</directory>
+                                    <includes>
+                                        <include>*.class</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
                         </configuration>
                     </execution>
                 </executions>
@@ -1108,17 +1152,18 @@ SPDX-License-Identifier: MIT
                         </goals>
                         <phase>process-sources</phase>
                         <configuration>
-                            <!--
-                           <target name="fix-generated-sources">
-                                 HTM-1051 replace javax.validation with jakarta.validation in generated sources
-                                the current config still generates javax.validation, but we want jakarta.validation
-
+                            <target name="fix-generated-sources">
+                                <!--
+                                replace deprecated:
+                                 - org.springframework.lang.Nullable
+                                 not found: org.springframework.lang.NonNull
+                                 with org.jspecify.annotations.* in generated sources
+                                -->
                                 <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
-                                    <replacetoken><![CDATA[import javax.validation.]]></replacetoken>
-                                    <replacevalue><![CDATA[import jakarta.validation.]]></replacevalue>
+                                    <replacetoken><![CDATA[import org.springframework.lang.Nullable;]]></replacetoken>
+                                    <replacevalue><![CDATA[import org.jspecify.annotations.Nullable;]]></replacevalue>
                                 </replace>
                             </target>
-                            -->
                         </configuration>
                     </execution>
                     <execution>
@@ -1357,8 +1402,8 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.hamcrest:hamcrest-all</exclude>
                                         <!-- slf4j should be used instead -->
                                         <exclude>log4j:log4j</exclude>
-                                        <exclude>commons-logging:commons-logging</exclude>
-                                        <exclude>commons-logging:commons-logging-api</exclude>
+                                        <exclude>commons-logging:commons-logging.(,1.2]</exclude>
+                                        <exclude>commons-logging:commons-logging-api.(,1.2]</exclude>
                                         <exclude>org.apache.logging.log4j:log4j-core</exclude>
                                         <exclude>org.slf4j:slf4j-simple</exclude>
                                         <exclude>joda-time:joda-time</exclude>
@@ -1377,34 +1422,47 @@ SPDX-License-Identifier: MIT
                                     <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
                                     <bannedImport>org.junit.Assert.*</bannedImport>
                                 </RestrictImports>
+                                <RestrictImports>
+                                    <reason>Use Jackson 3 classes, eg. tools.jackson.databind.ObjectMapper</reason>
+                                    <bannedImports>
+                                        <bannedImport>com.fasterxml.jackson.core.**</bannedImport>
+                                        <bannedImport>com.fasterxml.jackson.databind.**</bannedImport>
+                                    </bannedImports>
+                                </RestrictImports>
                                 <banTransitiveDependencies>
                                     <excludes>
-                                        <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-webmvc</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-webmvc-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-data-jpa-test</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-data-rest</exclude>
                                         <exclude>org.springframework.data:spring-data-rest-webmvc</exclude>
                                         <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-actuator-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
-                                        <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-security-oauth2-client</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-quartz</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-jdbc</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-jdbc-test</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-flyway</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-mail</exclude>
                                         <exclude>org.springframework.data:spring-data-envers</exclude>
                                         <exclude>org.quartz-scheduler:quartz</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
                                         <exclude>jakarta.persistence:jakarta.persistence-api</exclude>
-                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-63</exclude>
+                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-71</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
-                                        <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-aspectj</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                                         <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
-                                        <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
+                                        <exclude>io.sentry:sentry-spring-boot-4-starter</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>
@@ -1413,7 +1471,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
                                         <exclude>com.squareup.okhttp3:*</exclude>
                                         <!-- lots of Jackson dependencies -->
-                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+                                        <exclude>tools.jackson.core:jackson-databind</exclude>
                                         <exclude>org.flywaydb:flyway-core</exclude>
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                         <exclude>org.apache.solr:solr-solrj</exclude>

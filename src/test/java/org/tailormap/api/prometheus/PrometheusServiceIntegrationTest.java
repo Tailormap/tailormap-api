@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -23,6 +22,7 @@ import org.junitpioneer.jupiter.DisableIfTestFails;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
+import tools.jackson.databind.JsonNode;
 
 @PostgresIntegrationTest
 @Stopwatch
@@ -46,7 +46,7 @@ class PrometheusServiceIntegrationTest {
     final String query = "scrape_duration_seconds";
     try {
       final JsonNode root = prometheusService.executeQuery(query);
-      assertEquals("success", root.path("status").asText());
+      assertEquals("success", root.path("status").asString());
       assertTrue(root.path("data").path("result").isArray(), "Results should be an array");
       assertThat(
           root.path("data").path("result").get(0).path("value").get(1).asDouble(), is(greaterThan(0.0)));
@@ -66,7 +66,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
 """;
     try {
       final JsonNode root = prometheusService.executeQuery(query);
-      assertEquals("success", root.path("status").asText());
+      assertEquals("success", root.path("status").asString());
       assertTrue(root.path("data").path("result").isArray(), "Results should be an array");
       assertThat(
           root.path("data").path("result").get(0).path("value").get(1).asDouble(), is(greaterThan(0.0)));
@@ -82,7 +82,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
     try {
       JsonNode result = prometheusService.executeQuery(query);
       // Even if the metric is unknown, prometheus will still return a valid response
-      assertEquals("success", result.path("status").asText());
+      assertEquals("success", result.path("status").asString());
       assertTrue(result.path("data").path("result").isArray(), "Results should be an array");
       assertEquals(0, result.path("data").path("result").size(), "Result should be empty for unknown metric");
     } catch (Exception e) {

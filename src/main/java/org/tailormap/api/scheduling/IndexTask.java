@@ -10,8 +10,6 @@ import static org.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum.TASK_P
 
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
@@ -21,6 +19,7 @@ import java.util.UUID;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrException;
+import org.jspecify.annotations.NonNull;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -30,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.ServerSentEvent;
@@ -42,6 +40,8 @@ import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
@@ -143,7 +143,7 @@ public class IndexTask extends QuartzJobBean implements Task {
         new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
     try {
       eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       logger.error("Error publishing indexing task progress event", e);
     }
   }
