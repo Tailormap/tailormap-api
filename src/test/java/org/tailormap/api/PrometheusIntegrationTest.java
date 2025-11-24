@@ -17,9 +17,6 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.NUMBER_OF_DAYS_REPLACE_TOKEN;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
@@ -37,6 +34,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.prometheus.PrometheusResultProcessor;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
 
 /**
  * Integration tests for the Prometheus service. These tests assume that the Prometheus server is running on
@@ -72,7 +72,7 @@ public class PrometheusIntegrationTest {
 
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-  void prometheusAppCountersOver90days() throws Exception {
+  void prometheusAppCountersOver90days() {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
             prometheusUrl + "/query?query=" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
@@ -85,7 +85,7 @@ public class PrometheusIntegrationTest {
 
     JsonNode root = new ObjectMapper().readTree(response.getBody());
     logger.debug("App usage response: {}", root.toPrettyString());
-    assertEquals("success", root.path("status").asText());
+    assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(countedApps, root.path("data").path("result").size());
     assertEquals(
@@ -95,7 +95,7 @@ public class PrometheusIntegrationTest {
             .get(0)
             .path("metric")
             .path("application")
-            .asText());
+            .asString());
     // Check that total count is greater than 0
     assertThat(root.path("data").path("result").get(0).path("value").get(1).asInt(), is(greaterThan(0)));
   }
@@ -115,7 +115,7 @@ public class PrometheusIntegrationTest {
 
     JsonNode root = new ObjectMapper().readTree(response.getBody());
     logger.debug("App usage last updated response: {}", root.toPrettyString());
-    assertEquals("success", root.path("status").asText());
+    assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
         countedApps,
@@ -129,7 +129,7 @@ public class PrometheusIntegrationTest {
             .get(0)
             .path("metric")
             .path("application")
-            .asText());
+            .asString());
     // Check that total count is greater than 0
     assertThat(root.path("data").path("result").get(0).path("value").get(1).asInt(), is(greaterThan(0)));
   }
@@ -152,7 +152,7 @@ public class PrometheusIntegrationTest {
 
     JsonNode root = new ObjectMapper().readTree(response.getBody());
     logger.debug("App usage last updated response: {}", root.toPrettyString());
-    assertEquals("success", root.path("status").asText());
+    assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
         2 * countedApps,
@@ -194,7 +194,7 @@ public class PrometheusIntegrationTest {
           combined.size(),
           () -> "Expected " + countedApps + " (countedApps) apps, but got " + combined.size());
       combined.forEach(metricsNode -> {
-        String appId = metricsNode.get(METRICS_APP_ID_TAG).asText();
+        String appId = metricsNode.get(METRICS_APP_ID_TAG).asString();
         logger.debug("Metrics for appId {}: {}", appId, metricsNode);
         assumingThat(
             "1".equals(appId),
@@ -204,7 +204,7 @@ public class PrometheusIntegrationTest {
                     "default",
                     metricsNode
                         .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-                        .asText())));
+                        .asString())));
         assumingThat(
             "5".equals(appId),
             () -> assertAll(
@@ -213,7 +213,7 @@ public class PrometheusIntegrationTest {
                     "austria",
                     metricsNode
                         .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-                        .asText())));
+                        .asString())));
 
         assertAll(
             () -> assertThat(metricsNode.get("totalCount").asInt(), is(greaterThan(0))),

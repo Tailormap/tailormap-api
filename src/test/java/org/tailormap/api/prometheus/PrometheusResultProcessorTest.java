@@ -13,15 +13,15 @@ import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_NAME_TAG;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 class PrometheusResultProcessorTest {
   private static final Logger logger =
@@ -136,7 +136,7 @@ class PrometheusResultProcessorTest {
                 () -> assertEquals("17", metric.get("total")),
                 () -> assertEquals("11577", metric.get("last_updated"))));
       });
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       fail("Failed to process JSON response: " + e.getMessage());
     }
   }
@@ -285,7 +285,7 @@ class PrometheusResultProcessorTest {
                 () -> assertEquals("5474", metric.get("lastUpdateSecondsAgo"))));
       });
 
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       fail("Failed to process JSON response: " + e.getMessage());
     }
   }

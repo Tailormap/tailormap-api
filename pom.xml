@@ -129,6 +129,7 @@ SPDX-License-Identifier: MIT
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>7.1.10.Final</hibernate.version>
+        <jackson-bom.version>3.0.2</jackson-bom.version>
         <json-path.version>2.10.0</json-path.version>
         <!--        <junit-jupiter.version>6.0.1</junit-jupiter.version>-->
         <!--        <logback.version>1.5.19</logback.version>-->
@@ -223,18 +224,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
@@ -502,15 +491,19 @@ SPDX-License-Identifier: MIT
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--        not actually used, in 4.0.0 renamed to spring-boot-starter-aspectj -->
-        <!--        see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#aop-starter-pom -->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-aop</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <!--                not actually used, in 4.0.0 renamed to spring-boot-starter-aspectj-->
+            <!--                see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#aop-starter-pom-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -568,6 +561,14 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -1421,12 +1422,20 @@ SPDX-License-Identifier: MIT
                                     <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
                                     <bannedImport>org.junit.Assert.*</bannedImport>
                                 </RestrictImports>
+                                <RestrictImports>
+                                    <reason>Use Jackson 3 classes, eg. tools.jackson.databind.ObjectMapper</reason>
+                                    <bannedImports>
+                                        <bannedImport>com.fasterxml.jackson.core.**</bannedImport>
+                                        <bannedImport>com.fasterxml.jackson.databind.**</bannedImport>
+                                    </bannedImports>
+                                </RestrictImports>
                                 <banTransitiveDependencies>
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-webmvc</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-webmvc-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa-test</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-data-rest</exclude>
                                         <exclude>org.springframework.data:spring-data-rest-webmvc</exclude>
                                         <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
@@ -1447,7 +1456,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>jakarta.persistence:jakarta.persistence-api</exclude>
                                         <exclude>io.hypersistence:hypersistence-utils-hibernate-71</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
-                                        <!--                                        <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>-->
+                                        <exclude>org.springframework.boot:spring-boot-starter-aspectj</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                                         <exclude>io.micrometer:micrometer-core</exclude>
@@ -1462,7 +1471,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
                                         <exclude>com.squareup.okhttp3:*</exclude>
                                         <!-- lots of Jackson dependencies -->
-                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+                                        <exclude>tools.jackson.core:jackson-databind</exclude>
                                         <exclude>org.flywaydb:flyway-core</exclude>
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                         <exclude>org.apache.solr:solr-solrj</exclude>

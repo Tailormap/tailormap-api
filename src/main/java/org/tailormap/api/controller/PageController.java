@@ -8,9 +8,6 @@ package org.tailormap.api.controller;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +30,9 @@ import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.PageResponse;
 import org.tailormap.api.viewer.model.ViewerMenuItem;
 import org.tailormap.api.viewer.model.ViewerPageTile;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @AppRestController
 public class PageController {
@@ -100,7 +100,7 @@ public class PageController {
         .map(jsonNode -> {
           try {
             return Arrays.asList(new ObjectMapper().treeToValue(jsonNode, MenuItem[].class));
-          } catch (IOException e) {
+          } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
           }
         })

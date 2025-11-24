@@ -11,10 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -33,6 +29,10 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.viewer.model.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
 class PersistentJsonArrayPropertyIntegrationTest {
@@ -127,7 +127,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
   }
 
   private static String getApplicationComponentsPatchBody(ObjectMapper objectMapper, Application app)
-      throws JsonProcessingException {
+      throws JacksonException {
     ObjectNode node = objectMapper.createObjectNode();
     node.set("components", objectMapper.convertValue(app, JsonNode.class).get("components"));
     String patchBody = objectMapper.writeValueAsString(node);

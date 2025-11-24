@@ -8,11 +8,6 @@ package org.tailormap.api.drawing;
 import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_ADMIN;
 import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_READ_ALL;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.security.TailormapUserDetails;
 import org.tailormap.api.viewer.model.Drawing;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Service for managing drawings.
@@ -82,7 +82,7 @@ public class DrawingService {
       public Map<String, Object> convert(@NonNull PGobject source) {
         try {
           return objectMapper.readValue(source.getValue(), Map.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
           throw new IllegalArgumentException("Failed to convert PGobject to Map", e);
         }
       }
@@ -105,7 +105,7 @@ public class DrawingService {
    */
   @Transactional
   public Drawing createDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
-      throws JsonProcessingException {
+      throws JacksonException {
 
     canCreateDrawing(authentication);
 
@@ -144,7 +144,7 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
   }
 
   private ObjectNode insertGeoJsonFeatureCollection(UUID drawingId, int srid, String featureCollectionToStore)
-      throws JsonProcessingException {
+      throws JacksonException {
     List<JsonNode> storedFeatures = jdbcClient
         .sql(
             """
@@ -183,7 +183,7 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
               }
               properties.remove("properties");
               return jsonNode;
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
               throw new RuntimeException(e);
             }
           }
@@ -205,7 +205,7 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
    */
   @Transactional
   public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
-      throws JsonProcessingException {
+      throws JacksonException {
 
     canSaveOrDeleteDrawing(drawing, authentication);
 
@@ -376,7 +376,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
               // merge/un-nest properties with nested properties, because we have a jsonb column
               // called "properties" and we are using the `ST_AsGeoJSON(::record,...)` function
               ArrayNode features = (ArrayNode) jsonNode.get("features");
-              features.elements().forEachRemaining(feature -> {
+              features.elements().forEach(feature -> {
                 ObjectNode properties = (ObjectNode) feature.get("properties");
                 JsonNode nestedProperties = properties.get("properties");
                 if (nestedProperties != null) {
@@ -389,7 +389,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
                 properties.remove("properties");
               });
               return jsonNode;
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
               throw new RuntimeException(e);
             }
           }

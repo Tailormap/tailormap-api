@@ -6,11 +6,11 @@
 
 package org.tailormap.api.controller.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 public class TestAdminController {

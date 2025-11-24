@@ -13,7 +13,6 @@ import static org.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum.ENTITY
 
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
@@ -28,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.tailormap.api.admin.model.EntityEvent;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.persistence.TMFeatureType;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class EntityEventPublisher {
