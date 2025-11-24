@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.controller;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.google.common.base.Splitter;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -121,11 +123,9 @@ public class AttachmentsController {
               .formatted(fileData.length, attachmentAttribute.getMaxAttachmentSize()));
     }
 
-    if (attachmentAttribute.getMimeType() != null) {
-      if (!validateMimeTypeAccept(
-          attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type or extension not allowed");
-      }
+    if (!validateMimeTypeAccept(
+        attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type or extension not allowed");
     }
 
     logger.debug("Using attachment attribute {}", attachmentAttribute);
@@ -150,6 +150,9 @@ public class AttachmentsController {
    * @return true if the file's extension or MIME type matches one of the accepted types, false otherwise
    */
   private static boolean validateMimeTypeAccept(String acceptList, String fileName, String mimeType) {
+    if (acceptList == null || isBlank(acceptList)) {
+      return true;
+    }
     Iterable<String> allowedMimeTypes =
         Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
     final Locale locale = Locale.ENGLISH;
