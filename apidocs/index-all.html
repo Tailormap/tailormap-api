@@ -830,10 +830,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#CATEGORY_SSO_IMAGE" class="member-name-link">CATEGORY_SSO_IMAGE</a> - Static variable in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#checkAndMakeFeaturePkComparable(java.lang.Object)" class="member-name-link">checkAndMakeFeaturePkComparable(Object)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
-<dd>
-<div class="block">Check if the given feature primary key is Comparable, and convert it if necessary (e.g. byte[] to ByteBuffer).</div>
-</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html#CHECKBOX" class="member-name-link">CHECKBOX</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterEditConfiguration.FilterToolEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FilterEditConfiguration.FilterToolEnum.html#CHECKBOX" class="member-name-link">CHECKBOX</a> - Enum constant in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.viewer.model">FilterEditConfiguration.FilterToolEnum</a></dt>
@@ -1804,6 +1800,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/Constants.html#FID" class="member-name-link">FID</a> - Static variable in interface org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#fidFromPK(org.tailormap.api.persistence.TMFeatureType,java.lang.Object)" class="member-name-link">fidFromPK(TMFeatureType, Object)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
+<dd>
+<div class="block">Constructs a Feature ID (FID) string from a feature type and primary key value.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerDetailsForm.html#fields(java.util.List)" class="member-name-link">fields(List&lt;FormField&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerDetailsForm.html" title="class in org.tailormap.api.viewer.model">LayerDetailsForm</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#fileName(java.lang.String)" class="member-name-link">fileName(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
@@ -6347,9 +6347,9 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeature(org.tailormap.api.persistence.TMFeatureType,java.lang.Object)" class="member-name-link">listAttachmentsForFeature(TMFeatureType, Object)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeaturesByFeatureId(org.tailormap.api.persistence.TMFeatureType,java.util.List)" class="member-name-link">listAttachmentsForFeaturesByFeatureId(TMFeatureType, List&lt;Comparable&lt;?&gt;&gt;)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
+<dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html#listAttachmentsForFeaturesByFeatureId(org.tailormap.api.persistence.TMFeatureType,java.util.List)" class="member-name-link">listAttachmentsForFeaturesByFeatureId(TMFeatureType, List&lt;Object&gt;)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper</a></dt>
 <dd>
-<div class="block">List attachments for multiple features grouped by their IDs.</div>
+<div class="block">List attachments for multiple features grouped by their FIDs.</div>
 </dd>
 <dt><a href="org/tailormap/api/controller/DrawingController.html#listDrawings()" class="member-name-link">listDrawings()</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/DrawingController.html" title="class in org.tailormap.api.controller">DrawingController</a></dt>
 <dd>

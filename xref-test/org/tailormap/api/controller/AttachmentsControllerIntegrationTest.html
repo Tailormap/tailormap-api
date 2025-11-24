@@ -16,13 +16,13 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.params.provider.Arguments.arguments;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.TestRequestProcessor.setServletPath;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.TestRequestProcessor.setServletPath;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerKadastraalPerceel;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.Group.ADMIN;
@@ -39,84 +39,84 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.ParameterizedTest;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.Arguments;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.MethodSource;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.junitpioneer.jupiter.Stopwatch;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.ClassPathResource;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.springframework.mock.web.MockMultipartFile;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.setup.MockMvcBuilders;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.context.WebApplicationContext;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.PostgresIntegrationTest;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  @PostgresIntegrationTest
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  @AutoConfigureMockMvc
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  @Stopwatch
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">class</strong> <a name="AttachmentsControllerIntegrationTest" href="../../../../org/tailormap/api/controller/AttachmentsControllerIntegrationTest.html#AttachmentsControllerIntegrationTest">AttachmentsControllerIntegrationTest</a> {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>    @Autowired
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">private</strong> WebApplicationContext context;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> MockMultipartFile attachmentMetadata = <strong class="jxr_keyword">new</strong> MockMultipartFile(
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>        <span class="jxr_string">"attachmentMetadata"</span>,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        <span class="jxr_string">"metadata.json"</span>,
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        <span class="jxr_string">"application/json"</span>,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <span class="jxr_string">"attributeName"</span>:<span class="jxr_string">"bijlage"</span>,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <span class="jxr_string">"mimeType"</span>:<span class="jxr_string">"image/svg+xml"</span>,
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <span class="jxr_string">"fileName"</span>:<span class="jxr_string">"lichtpunt.svg"</span>,
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <span class="jxr_string">"description"</span>:<span class="jxr_string">"A test SVG attachment"</span>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>            .getBytes(StandardCharsets.UTF_8));
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Stream&lt;Arguments&gt; testUrls() {
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">return</strong> Stream.of(
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          Arguments.of(
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>              <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"</span>),
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          Arguments.of(
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/feature/93294fda97a19c37080849c5c1fddbf3/attachments"</span>),
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          Arguments.of(
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/feature/c9baca2a2f078038ace1b3a1acf8e0c8/attachments"</span>));
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Stream&lt;Arguments&gt; getFeaturesTestUrls() {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">return</strong> Stream.of(
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <em class="jxr_comment">// docker host,table,url, feature count</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          arguments(layerBegroeidTerreindeelPostgis, 132255, 458382, 10, <span class="jxr_string">"21f95499702e3a5d05230d2ae596ea1c"</span>),
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          arguments(layerWaterdeelOracle, 132139, 458390, 10, <span class="jxr_string">"93294fda97a19c37080849c5c1fddbf3"</span>),
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          arguments(layerWegdeelSqlServer, 130819, 458989, 10, <span class="jxr_string">"c9baca2a2f078038ace1b3a1acf8e0c8"</span>));
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String layerNotEditableUrl =
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:bak/feature/dbbe3dd9c3e45f1261faf5f74c67e19e/attachments"</span>;
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String attachmentsNotSupportedUrl =
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/feature/299933373/attachments"</span>;
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> 
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   @BeforeAll
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   <strong class="jxr_keyword">void</strong> initialize() {
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>   @Order(1)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>   @ParameterizedTest
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.ValueSource;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.junitpioneer.jupiter.Stopwatch;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.ClassPathResource;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.mock.web.MockMultipartFile;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.setup.MockMvcBuilders;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.context.WebApplicationContext;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.PostgresIntegrationTest;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  @PostgresIntegrationTest
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  @AutoConfigureMockMvc
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @Stopwatch
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">class</strong> <a name="AttachmentsControllerIntegrationTest" href="../../../../org/tailormap/api/controller/AttachmentsControllerIntegrationTest.html#AttachmentsControllerIntegrationTest">AttachmentsControllerIntegrationTest</a> {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Autowired
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">private</strong> WebApplicationContext context;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> MockMultipartFile attachmentMetadata = <strong class="jxr_keyword">new</strong> MockMultipartFile(
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>        <span class="jxr_string">"attachmentMetadata"</span>,
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        <span class="jxr_string">"metadata.json"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <span class="jxr_string">"application/json"</span>,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <span class="jxr_string">"attributeName"</span>:<span class="jxr_string">"bijlage"</span>,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <span class="jxr_string">"mimeType"</span>:<span class="jxr_string">"image/svg+xml"</span>,
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <span class="jxr_string">"fileName"</span>:<span class="jxr_string">"lichtpunt.svg"</span>,
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <span class="jxr_string">"description"</span>:<span class="jxr_string">"A test SVG attachment"</span>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            .getBytes(StandardCharsets.UTF_8));
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Stream&lt;Arguments&gt; testUrls() {
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">return</strong> Stream.of(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          Arguments.of(layerBegroeidTerreindeelPostgis + <span class="jxr_string">"/feature/21f95499702e3a5d05230d2ae596ea1c/attachments"</span>),
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          Arguments.of(layerWaterdeelOracle + <span class="jxr_string">"/feature/93294fda97a19c37080849c5c1fddbf3/attachments"</span>),
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          Arguments.of(layerWegdeelSqlServer + <span class="jxr_string">"/feature/c9baca2a2f078038ace1b3a1acf8e0c8/attachments"</span>),
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          Arguments.of(layerKadastraalPerceel + <span class="jxr_string">"/feature/NL.IMKAD.KadastraalObject.26250013470000/attachments"</span>));
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>    }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Stream&lt;Arguments&gt; getFeaturesTestUrls() {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">return</strong> Stream.of(
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          arguments(layerBegroeidTerreindeelPostgis, 132255, 458382, 10, <span class="jxr_string">"21f95499702e3a5d05230d2ae596ea1c"</span>),
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          arguments(layerWaterdeelOracle, 132139, 458390, 10, <span class="jxr_string">"93294fda97a19c37080849c5c1fddbf3"</span>),
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          arguments(layerWegdeelSqlServer, 130819, 458989, 10, <span class="jxr_string">"c9baca2a2f078038ace1b3a1acf8e0c8"</span>),
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          arguments(layerKadastraalPerceel, 131361, 459069, 3, <span class="jxr_string">"NL.IMKAD.KadastraalObject.26250013470000"</span>));
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String layerNotEditableUrl =
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:bak/feature/dbbe3dd9c3e45f1261faf5f74c67e19e/attachments"</span>;
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String attachmentsNotSupportedUrl =
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/feature/299933373/attachments"</span>;
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>   @BeforeAll
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> initialize() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   @Order(1)
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   @ParameterizedTest
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   @ValueSource(strings = {layerBegroeidTerreindeelPostgis + <span class="jxr_string">"/feature/325f7d92cadf2d523853ef0b561dd9a5/attachments"</span>})
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>   <strong class="jxr_keyword">void</strong> addAttachment(String url) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     url = apiBasePath + url;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
@@ -276,90 +276,92 @@
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>       authorities = {ADMIN})
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>   <strong class="jxr_keyword">void</strong> getFeaturesWithAttachments(String layerUrl, <strong class="jxr_keyword">int</strong> x, <strong class="jxr_keyword">int</strong> y, <strong class="jxr_keyword">int</strong> distance, String expectedGmlId)
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>       <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>     <strong class="jxr_keyword">final</strong> String gmlIdKey =
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>         <strong class="jxr_keyword">switch</strong> (layerUrl) {
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>           <strong class="jxr_keyword">case</strong> TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -&gt; <span class="jxr_string">"gmlid"</span>;
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>           <strong class="jxr_keyword">case</strong> TestUrls.layerWaterdeelOracle -&gt; <span class="jxr_string">"GMLID"</span>;
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>           <strong class="jxr_keyword">default</strong> -&gt; <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Unknown URL: "</span> + layerUrl);
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         };
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>     <strong class="jxr_keyword">final</strong> String getUrl = apiBasePath + layerUrl + <span class="jxr_string">"/features"</span>;
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>     mockMvc.perform(get(getUrl)
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>             .accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>             .with(setServletPath(getUrl))
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>             .param(<span class="jxr_string">"x"</span>, String.valueOf(x))
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>             .param(<span class="jxr_string">"y"</span>, String.valueOf(y))
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>             .param(<span class="jxr_string">"distance"</span>, String.valueOf(distance))
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>             .param(<span class="jxr_string">"withAttachments"</span>, <span class="jxr_string">"true"</span>))
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         .andDo(print())
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes."</span> + gmlIdKey).value(expectedGmlId))
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name=='"</span> + gmlIdKey + <span class="jxr_string">"')]"</span>)
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>             .isNotEmpty())
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].maxAttachmentSize"</span>).value(4_000_000))
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         .andExpect(
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>             jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].mimeType"</span>).value(<span class="jxr_string">"image/jpeg, image/svg+xml, .png, image/*"</span>))
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].attributeName"</span>).value(<span class="jxr_string">"bijlage"</span>))
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attachments"</span>).isArray())
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attachments[0].fileName"</span>).value(<span class="jxr_string">"lichtpunt.svg"</span>));
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>   }
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>   @Order(Integer.MAX_VALUE)
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @ParameterizedTest
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>   <strong class="jxr_keyword">void</strong> deleteAttachment(String url) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     url = apiBasePath + url;
-<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <em class="jxr_comment">// First get the list of attachments to retrieve the attachmentId</em>
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>     String responseContent = mockMvc.perform(
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>             get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         .andReturn()
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>         .getResponse()
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         .getContentAsString();
-<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>     <em class="jxr_comment">// Extract attachmentId from the response (assuming it's the first attachment)</em>
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     String attachmentId = JsonPath.read(responseContent, <span class="jxr_string">"$.[0].attachmentId"</span>);
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>     <em class="jxr_comment">// Now get the actual attachment</em>
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>     String attachmentUrl = url.substring(0, url.indexOf(<span class="jxr_string">"/feature"</span>)) + <span class="jxr_string">"/attachment/"</span> + attachmentId;
-<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>     mockMvc.perform(delete(attachmentUrl)
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>             .with(setServletPath(attachmentUrl))
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>             .accept(MediaType.APPLICATION_OCTET_STREAM))
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         .andExpect(status().isNoContent());
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>   }
-<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>   @Order(2)
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>   @ParameterizedTest
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>   <strong class="jxr_keyword">void</strong> deleteAttachmentUnauthorised(String url) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>     url = apiBasePath + url;
-<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <em class="jxr_comment">// First get the list of attachments to retrieve the attachmentId</em>
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>     String responseContent = mockMvc.perform(
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>             get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         .andReturn()
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>         .getResponse()
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         .getContentAsString();
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>     <em class="jxr_comment">// Extract attachmentId from the response (assuming it's the first attachment)</em>
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>     String attachmentId = JsonPath.read(responseContent, <span class="jxr_string">"$.[0].attachmentId"</span>);
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <em class="jxr_comment">// Now get the actual attachment</em>
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     String attachmentUrl = url.substring(0, url.indexOf(<span class="jxr_string">"/feature"</span>)) + <span class="jxr_string">"/attachment/"</span> + attachmentId;
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     mockMvc.perform(delete(attachmentUrl)
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>             .with(setServletPath(attachmentUrl))
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>             .accept(MediaType.APPLICATION_OCTET_STREAM))
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         .andExpect(status().isUnauthorized());
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>   }
-<a class="jxr_linenumber" name="L354" href="#L354">354</a> }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>     String gmlIdKey = <span class="jxr_string">"gmlid"</span>;
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>     <strong class="jxr_keyword">switch</strong> (layerUrl) {
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       <strong class="jxr_keyword">case</strong> TestUrls.layerBegroeidTerreindeelPostgis, TestUrls.layerWegdeelSqlServer -&gt; {}
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>       <strong class="jxr_keyword">case</strong> TestUrls.layerWaterdeelOracle -&gt; gmlIdKey = <span class="jxr_string">"GMLID"</span>;
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       <strong class="jxr_keyword">case</strong> TestUrls.layerKadastraalPerceel -&gt; {
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>         expectedGmlId = <span class="jxr_string">"26250013470000"</span>;
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         gmlIdKey = <span class="jxr_string">"identificatie"</span>;
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>       }
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>     }
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>     <strong class="jxr_keyword">final</strong> String getUrl = apiBasePath + layerUrl + <span class="jxr_string">"/features"</span>;
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>     mockMvc.perform(get(getUrl)
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>             .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>             .with(setServletPath(getUrl))
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             .param(<span class="jxr_string">"x"</span>, String.valueOf(x))
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>             .param(<span class="jxr_string">"y"</span>, String.valueOf(y))
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>             .param(<span class="jxr_string">"distance"</span>, String.valueOf(distance))
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             .param(<span class="jxr_string">"withAttachments"</span>, <span class="jxr_string">"true"</span>))
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes."</span> + gmlIdKey).value(expectedGmlId))
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name=='"</span> + gmlIdKey + <span class="jxr_string">"')]"</span>)
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>             .isNotEmpty())
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].maxAttachmentSize"</span>).value(4_000_000))
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         .andExpect(
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].mimeType"</span>).value(<span class="jxr_string">"image/jpeg, image/svg+xml, .png, image/*"</span>))
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attachmentMetadata[0].attributeName"</span>).value(<span class="jxr_string">"bijlage"</span>))
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attachments"</span>).isArray())
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attachments[0].fileName"</span>).value(<span class="jxr_string">"lichtpunt.svg"</span>));
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>   }
+<a class="jxr_linenumber" name="L303" href="#L303">303</a> 
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>   @Order(Integer.MAX_VALUE)
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>   @ParameterizedTest
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>   <strong class="jxr_keyword">void</strong> deleteAttachment(String url) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     url = apiBasePath + url;
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>     <em class="jxr_comment">// First get the list of attachments to retrieve the attachmentId</em>
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     String responseContent = mockMvc.perform(
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>             get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>         .andReturn()
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         .getResponse()
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         .getContentAsString();
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     <em class="jxr_comment">// Extract attachmentId from the response (assuming it's the first attachment)</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     String attachmentId = JsonPath.read(responseContent, <span class="jxr_string">"$.[0].attachmentId"</span>);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     <em class="jxr_comment">// Now get the actual attachment</em>
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>     String attachmentUrl = url.substring(0, url.indexOf(<span class="jxr_string">"/feature"</span>)) + <span class="jxr_string">"/attachment/"</span> + attachmentId;
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     mockMvc.perform(delete(attachmentUrl)
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>             .with(setServletPath(attachmentUrl))
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>             .accept(MediaType.APPLICATION_OCTET_STREAM))
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         .andExpect(status().isNoContent());
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>   }
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>   @Order(2)
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>   @ParameterizedTest
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>   @MethodSource(<span class="jxr_string">"testUrls"</span>)
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>   <strong class="jxr_keyword">void</strong> deleteAttachmentUnauthorised(String url) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     url = apiBasePath + url;
+<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <em class="jxr_comment">// First get the list of attachments to retrieve the attachmentId</em>
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>     String responseContent = mockMvc.perform(
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>             get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>         .andReturn()
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         .getResponse()
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         .getContentAsString();
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> 
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <em class="jxr_comment">// Extract attachmentId from the response (assuming it's the first attachment)</em>
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>     String attachmentId = JsonPath.read(responseContent, <span class="jxr_string">"$.[0].attachmentId"</span>);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <em class="jxr_comment">// Now get the actual attachment</em>
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     String attachmentUrl = url.substring(0, url.indexOf(<span class="jxr_string">"/feature"</span>)) + <span class="jxr_string">"/attachment/"</span> + attachmentId;
+<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     mockMvc.perform(delete(attachmentUrl)
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>             .with(setServletPath(attachmentUrl))
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>             .accept(MediaType.APPLICATION_OCTET_STREAM))
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         .andExpect(status().isUnauthorized());
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>   }
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
