@@ -291,7 +291,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+            <artifactId>sentry-spring-boot-4-starter</artifactId>
             <version>${sentry.version}</version>
         </dependency>
         <dependency>
@@ -1439,7 +1439,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
-                                        <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
+                                        <exclude>io.sentry:sentry-spring-boot-4-starter</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>
