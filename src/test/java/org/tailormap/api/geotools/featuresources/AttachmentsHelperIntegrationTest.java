@@ -279,14 +279,18 @@ class AttachmentsHelperIntegrationTest {
   void testListAttachmentsForFeaturesByFeatureId() {
     try {
       assertNotNull(featurePrimaryKey);
-      Comparable<?> featurePrimarySafeKey = AttachmentsHelper.checkAndMakeFeaturePkComparable(featurePrimaryKey);
-      Map<@NotNull Comparable<?>, List<AttachmentMetadata>> listAttachments =
-          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(
-              featureType, List.of(featurePrimarySafeKey));
+      // No need to convert to Comparable, just use as is
+      Map<@NotNull String, List<AttachmentMetadata>> listAttachments =
+          AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(featureType, List.of(featurePrimaryKey));
       assertNotNull(listAttachments);
       assertEquals(1, listAttachments.size(), "Expected exactly one feature.");
-      assertNotNull(listAttachments.get(featurePrimarySafeKey));
-      assertEquals(1, listAttachments.get(featurePrimarySafeKey).size(), "Expected exactly one attachment.");
+      assertNotNull(listAttachments.get(AttachmentsHelper.fidFromPK(featureType, featurePrimaryKey)));
+      assertEquals(
+          1,
+          listAttachments
+              .get(AttachmentsHelper.fidFromPK(featureType, featurePrimaryKey))
+              .size(),
+          "Expected exactly one attachment.");
     } catch (RuntimeException | IOException e) {
       fail(e);
     }

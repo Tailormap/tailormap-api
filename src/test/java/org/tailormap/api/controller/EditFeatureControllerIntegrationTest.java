@@ -303,7 +303,8 @@ class EditFeatureControllerIntegrationTest {
         .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
         .andExpect(jsonPath("$.attributes.geom").value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
-        .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
+        .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"))
+        .andExpect(jsonPath("$.attachments").isEmpty());
   }
 
   @Test
@@ -472,7 +473,13 @@ class EditFeatureControllerIntegrationTest {
         .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
         .andExpect(jsonPath("$.attributes.geom").value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
-        .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
+        .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"))
+        // the attachment is added in
+        // org.tailormap.api.controller.AttachmentsControllerIntegrationTest#addAttachment()
+        .andExpect(jsonPath("$.attachments").isNotEmpty())
+        .andExpect(jsonPath("$.attachments").isArray())
+        .andExpect(jsonPath("$.attachments[0].attributeName").value("bijlage"))
+        .andExpect(jsonPath("$.attachments[0].description").value("A test SVG attachment"));
   }
 
   @Test
