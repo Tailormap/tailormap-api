@@ -904,8 +904,22 @@ SPDX-License-Identifier: MIT
                             <goal>enhance</goal>
                         </goals>
                         <configuration>
-                            <enableLazyInitialization>true</enableLazyInitialization>
-                            <enableDirtyTracking>true</enableDirtyTracking>
+                            <!-- default <enableLazyInitialization>true</enableLazyInitialization>-->
+                            <!-- default <enableDirtyTracking>true</enableDirtyTracking>-->
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.outputDirectory}/org/tailormap/api/persistence</directory>
+                                    <includes>
+                                        <include>*.class</include>
+                                    </includes>
+                                </fileSet>
+                                <fileSet>
+                                    <directory>${project.build.outputDirectory}/org/tailormap/api/persistence/json</directory>
+                                    <includes>
+                                        <include>*.class</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
                         </configuration>
                     </execution>
                 </executions>
