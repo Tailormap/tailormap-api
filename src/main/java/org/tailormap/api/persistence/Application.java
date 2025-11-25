@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.geotools.referencing.CRS;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -83,26 +84,31 @@ public class Application extends AuditMetadata {
   })
   private Bounds maxExtent;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private AppContent contentRoot = new AppContent();
 
   @JsonIgnore
   private transient AppContent oldContentRoot;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private AppSettings settings = new AppSettings();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<Component> components = new ArrayList<>();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private AppStyling styling = new AppStyling();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 

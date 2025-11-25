@@ -26,8 +26,9 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
@@ -94,11 +95,13 @@ public class TMFeatureSource extends AuditMetadata {
   @Column(length = 2048)
   private String url;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private JDBCConnectionProperties jdbcConnection;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private ServiceAuthentication authentication;
 
@@ -106,7 +109,8 @@ public class TMFeatureSource extends AuditMetadata {
   @JoinColumn(name = "linked_service")
   private GeoService linkedService;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  //  @Type(JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private TMServiceCaps serviceCapabilities;
 

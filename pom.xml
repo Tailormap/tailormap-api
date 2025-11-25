@@ -106,11 +106,13 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.3.2</okhttp.version>
         <greenmail.version>2.1.7</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
-        <!-- solr and jetty versions may need to match to prevent errors such as
-        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
-        because Solr uses http libraries from the Jetty project
+        <!-- solr and jetty versions may need to match to prevent errors such as:
+        - Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
+        - Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/api/Response$CompleteListener
+        because Solr uses old http libraries from the Jetty project
         -->
-        <!--    TODO fix this for solrj    <jetty.version>10.0.26</jetty.version>-->
+        <!--    TODO fix this for solrj     -->
+<!--        <jetty.version>10.0.26</jetty.version>-->
         <solr.version>9.10.0</solr.version>
         <!--
         Spring Boot version overrides.
@@ -194,6 +196,16 @@ SPDX-License-Identifier: MIT
             <!--                <type>pom</type>-->
             <!--                <scope>import</scope>-->
             <!--            </dependency>-->
+                        <dependency>
+<!--                        TODO fix this -->
+                            <!-- override the jetty-ee10-bom import so we can downgrade jetty to a solrj compatible version,
+                             our spring-boot parent provides this import -->
+                            <groupId>org.eclipse.jetty.ee11</groupId>
+                            <artifactId>jetty-ee11-bom</artifactId>
+                            <version>12.1.4</version>
+                            <type>pom</type>
+                            <scope>import</scope>
+                        </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-bom</artifactId>
@@ -246,15 +258,15 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-tsid</artifactId>
-            <!-- this version should match that of hypersistence-utils-hibernate-63 /
+            <!-- this version should match that of hypersistence-utils-hibernate-71 /
             hypersistence-utils-parent -->
             <version>2.1.4</version>
         </dependency>
-        <dependency>
-            <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-71</artifactId>
-            <version>3.12.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.hypersistence</groupId>-->
+<!--            <artifactId>hypersistence-utils-hibernate-71</artifactId>-->
+<!--            <version>3.12.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
@@ -304,6 +316,41 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>10.0.26</version>
+            <exclusions>
+<!--                <exclusion>-->
+<!--                    <groupId>org.eclipse.jetty</groupId>-->
+<!--                    <artifactId>jetty-alpn-client</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.eclipse.jetty</groupId>-->
+<!--                    <artifactId>jetty-http</artifactId>-->
+<!--                </exclusion>-->
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>10.0.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <version>10.0.26</version>
+        </dependency>
+        <dependency>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-alpn-client</artifactId>
+            <version>10.0.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-io</artifactId>
+            <version>10.0.26</version>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
@@ -489,6 +536,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
@@ -562,14 +613,14 @@ SPDX-License-Identifier: MIT
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>tools.jackson.core</groupId>-->
+<!--            <artifactId>jackson-core</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>tools.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
@@ -1436,8 +1487,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-rest</exclude>
-                                        <exclude>org.springframework.data:spring-data-rest-webmvc</exclude>
-                                        <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
@@ -1449,12 +1498,19 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-jdbc-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-flyway</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-mail</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-jackson</exclude>
+                                        <exclude>org.springframework.data:spring-data-rest-webmvc</exclude>
+                                        <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.data:spring-data-envers</exclude>
                                         <exclude>org.quartz-scheduler:quartz</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
                                         <exclude>jakarta.persistence:jakarta.persistence-api</exclude>
-                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-71</exclude>
+<!--                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-71</exclude>-->
+                                        <exclude>org.eclipse.jetty:jetty-client</exclude>
+                                        <exclude>org.eclipse.jetty:jetty-io</exclude>
+                                        <exclude>org.eclipse.jetty:jetty-http</exclude>
+                                        <exclude>org.eclipse.jetty:jetty-util</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aspectj</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
