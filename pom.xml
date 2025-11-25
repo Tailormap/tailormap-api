@@ -252,14 +252,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-tsid</artifactId>
-            <!-- this version should match that of hypersistence-utils-hibernate-63 /
-            hypersistence-utils-parent -->
             <version>2.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-63</artifactId>
-            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -864,8 +857,6 @@ SPDX-License-Identifier: MIT
                 </configuration>
             </plugin>
             <plugin>
-                <!-- Required for lazy fetching of properties,
-                see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
                 <groupId>org.hibernate.orm.tooling</groupId>
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
                 <executions>
@@ -1377,6 +1368,10 @@ SPDX-License-Identifier: MIT
                                     <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
                                     <bannedImport>org.junit.Assert.*</bannedImport>
                                 </RestrictImports>
+                                <RestrictImports>
+                                    <reason>Use Hibernate built-in types</reason>
+                                    <bannedImport>io.hypersistence.utils.hibernate.**</bannedImport>
+                                </RestrictImports>
                                 <banTransitiveDependencies>
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
@@ -1396,7 +1391,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
                                         <exclude>jakarta.persistence:jakarta.persistence-api</exclude>
-                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-63</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
