@@ -21,7 +21,8 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.tailormap.api.admin.model.SearchIndexSummary;
@@ -43,18 +44,18 @@ public class SearchIndex extends AuditMetadata implements Serializable {
 
   /** List of attribute names that were used when building the search index. */
   @JsonProperty("searchFieldsUsed")
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @Valid private List<String> searchFieldsUsed = new ArrayList<>();
 
   /** List of attribute names for display that were used when building the search index. */
   @JsonProperty("searchDisplayFieldsUsed")
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @Valid private List<String> searchDisplayFieldsUsed = new ArrayList<>();
 
   @JsonProperty("summary")
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @Valid private SearchIndexSummary summary;
 
@@ -64,7 +65,7 @@ public class SearchIndex extends AuditMetadata implements Serializable {
   private OffsetDateTime lastIndexed;
 
   @Valid @JsonProperty("schedule")
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private TaskSchedule schedule;
 

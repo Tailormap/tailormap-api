@@ -19,8 +19,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import org.tailormap.api.persistence.json.FeatureTypeSettings;
@@ -49,7 +50,7 @@ public class TMFeatureType extends AuditMetadata {
 
   private String title;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
 
@@ -67,11 +68,11 @@ public class TMFeatureType extends AuditMetadata {
   // XXX: multiple primary keys?
   private String primaryKeyAttribute;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private FeatureTypeSettings settings = new FeatureTypeSettings();
 
