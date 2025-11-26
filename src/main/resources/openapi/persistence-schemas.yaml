@@ -703,6 +703,13 @@ components:
           type: string
           nullable: true
           description: image to show on the tile
+        tileType:
+          type: string
+          description: type of tile, e.g. 'link', 'application', 'page'
+          enum:
+            - application
+            - page
+            - url
         applicationId:
           type: integer
           nullable: true
