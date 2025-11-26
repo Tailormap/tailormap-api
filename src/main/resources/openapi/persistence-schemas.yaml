@@ -705,7 +705,7 @@ components:
           description: image to show on the tile
         tileType:
           type: string
-          description: type of tile, e.g. 'link', 'application', 'page'
+          description: type of tile, e.g. 'url', 'application', 'page'
           enum:
             - application
             - page
