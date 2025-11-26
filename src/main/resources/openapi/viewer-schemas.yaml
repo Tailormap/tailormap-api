@@ -505,10 +505,10 @@ components:
           type: string
           nullable: true
           description: optional css classname for styling
-        applicationRequiresLogin:
+        requiresLogin:
           type: boolean
           nullable: true
-          description: indicates if the user will need to login for the linked application
+          description: indicates if the user will need to login for the linked application or page
         openInNewWindow:
           type: boolean
           nullable: true
