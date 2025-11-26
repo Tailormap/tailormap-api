@@ -2057,6 +2057,13 @@ from [B3Partners](https://www.b3partners.nl)!
             .url("https://www.b3partners.nl/")
             .openInNewWindow(true),
         new PageTile()
+            .authorizationRules(ruleLoggedIn)
+            .id(UUID.randomUUID().toString())
+            .title("Github repository")
+            .tileType(PageTile.TileTypeEnum.URL)
+            .url("https://github.com/Tailormap/tailormap-viewer")
+            .openInNewWindow(true),
+        new PageTile()
             .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .tileType(PageTile.TileTypeEnum.PAGE)

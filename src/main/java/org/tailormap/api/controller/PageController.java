@@ -186,6 +186,6 @@ public class PageController {
     if (pageTile.getUrl() != null) {
       return PageTile.TileTypeEnum.URL;
     }
-    return null;
+    return PageTile.TileTypeEnum.APPLICATION;
   }
 }

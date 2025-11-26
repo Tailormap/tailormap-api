@@ -65,6 +65,9 @@ class PageControllerIntegrationTest {
             jsonPath("$.tiles[?(@.pageUrl == '/page/loggedIn' && @.title == 'Secured page (unfiltered)')]")
                 .exists())
         .andExpect(jsonPath("$.tiles[?(@.pageUrl == '/page/loggedIn' && @.title == 'Secured page')]")
+            .doesNotHaveJsonPath())
+        .andExpect(jsonPath(
+                "$.tiles[?(@.url == 'https://github.com/Tailormap/tailormap-viewer' && @.title == 'Github repository')]")
             .doesNotHaveJsonPath());
   }
 
@@ -81,6 +84,9 @@ class PageControllerIntegrationTest {
         .andExpect(jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
             .exists())
         .andExpect(jsonPath("$.tiles[?(@.pageUrl == '/page/loggedIn' && @.title == 'Secured page')]")
+            .exists())
+        .andExpect(jsonPath(
+                "$.tiles[?(@.url == 'https://github.com/Tailormap/tailormap-viewer' && @.title == 'Github repository')]")
             .exists());
   }
 
