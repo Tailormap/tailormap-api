@@ -40,7 +40,8 @@ public class TMFeatureTypeHelper {
       return false;
     }
 
-    if (featureType.getInfo() == null || !Objects.equals(featureType.getInfo().getCrs(), application.getCrs())) {
+    if (featureType.getInfo() == null
+        || !Objects.equals(featureType.getInfo().getCrs(), application.getCrs())) {
       return false;
     }
 
