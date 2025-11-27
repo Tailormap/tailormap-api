@@ -605,9 +605,9 @@ components:
         filterGroups:
           description: List of filter groups to show in the application.
           type: array
+          minItems: 0
           items:
               $ref: './common-schemas.yaml#/components/schemas/FilterGroup'
-          minItems: 0
         layerSettings:
           title: AppLayerSettings
           description: Map of id of an AppTreeLayerNode to its' settings.
