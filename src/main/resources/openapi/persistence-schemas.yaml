@@ -525,6 +525,7 @@ components:
           AppTreeLayerNode: '#/components/schemas/AppTreeLayerNode'
       required:
         - id
+        - objectType
 
     AppTreeLevelNode:
       description: Node for organizing app layer referencing nodes in a folder tree.
