@@ -106,12 +106,8 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.3.2</okhttp.version>
         <greenmail.version>2.1.7</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
-        <!-- solr and jetty versions may need to match to prevent errors such as
-        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
-        because Solr uses http libraries from the Jetty project
-        -->
-        <jetty.version>10.0.26</jetty.version>
-        <solr.version>9.10.0</solr.version>
+        <!-- Solr 10 snapshots have not been published since 2025-10-15, 11.0.0-SNAPSHOT are current-->
+        <solr.version>10.0.0-SNAPSHOT</solr.version>
         <!--
         Spring Boot version overrides.
 
@@ -129,6 +125,7 @@ SPDX-License-Identifier: MIT
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.37.Final</hibernate.version>
+        <!-- <jackson-bom.version>2.20.1</jackson-bom.version>-->
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <logback.version>1.5.19</logback.version>
@@ -183,15 +180,6 @@ SPDX-License-Identifier: MIT
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- override the jetty-ee10-bom import so we can downgrade jetty to a solrj compatible version,
-                 our spring-boot parent provides this import -->
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.30</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-bom</artifactId>
@@ -308,28 +296,6 @@ SPDX-License-Identifier: MIT
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
             <version>${solr.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.solr</groupId>
-                    <artifactId>solr-solrj-zookeeper</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.solr</groupId>
-                    <artifactId>solr-solrj-streaming</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpmime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -644,6 +610,14 @@ SPDX-License-Identifier: MIT
             <id>OSGeo</id>
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>Apache Snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots/</url>
         </repository>
     </repositories>
     <pluginRepositories />
