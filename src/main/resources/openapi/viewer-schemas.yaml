@@ -318,7 +318,7 @@ components:
           readOnly: true
           type: array
           nullable: true
-          minLength: 0
+          minItems: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
       example:
