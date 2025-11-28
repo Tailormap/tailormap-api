@@ -1032,7 +1032,23 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     featureSources.get("postgis").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("kadastraal_perceel"))
         .findFirst()
-        .ifPresent(ft -> ft.getSettings().addHideAttributesItem("gml_id"));
+        .ifPresent(ft -> {
+          ft.getSettings()
+              .addAttachmentAttributesItem(new AttachmentAttributeType()
+                  .attributeName("bijlage")
+                  .maxAttachmentSize(4_000_000L)
+                  .mimeType("image/jpeg, image/svg+xml, .png, image/*"));
+          try {
+            AttachmentsHelper.createAttachmentTableForFeatureType(ft);
+          } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to create attachments table for kadastraal_perceel", e);
+          }
+          // hide primary key
+          ft.getSettings().addHideAttributesItem("gml_id");
+          // make some attributes editable
+          ft.getSettings().addEditableAttributesItem("begin_geldigheid");
+          ft.getSettings().addEditableAttributesItem("tijdstip_registratie");
+        });
 
     featureSources.get("postgis_osm").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("osm_polygon"))
@@ -1955,7 +1971,19 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(logo);
 
+    Page loggedIn = new Page();
+    loggedIn.setAuthorizationRules(ruleLoggedIn);
+    loggedIn.setName("loggedIn");
+    loggedIn.setType("page");
+    loggedIn.setContent("About Tailormap");
+    loggedIn.setContent("""
+# About Tailormap
+This is a page for logged in users.
+""");
+    pageRepository.save(loggedIn);
+
     Page about = new Page();
+    about.setAuthorizationRules(ruleAnonymousRead);
     about.setName("about");
     about.setType("page");
     about.setContent("About Tailormap");
@@ -1967,6 +1995,7 @@ This is a page about *Tailormap*. It doesn't say much yet.
     pageRepository.save(about);
 
     Page page = new Page();
+    page.setAuthorizationRules(ruleAnonymousRead);
     page.setName("home");
     page.setType("page");
     page.setTitle("Tailormap - Home");
@@ -1980,8 +2009,10 @@ from [B3Partners](https://www.b3partners.nl)!
     page.setClassName(null);
     page.setTiles(List.of(
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Default app")
+            .tileType(PageTile.TileTypeEnum.APPLICATION)
             .applicationId(Optional.ofNullable(applicationRepository.findByName("default"))
                 .map(Application::getId)
                 .orElse(null))
@@ -1990,8 +2021,10 @@ from [B3Partners](https://www.b3partners.nl)!
             .filterRequireAuthorization(false)
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Secured app")
+            .tileType(PageTile.TileTypeEnum.APPLICATION)
             .applicationId(Optional.ofNullable(applicationRepository.findByName("secured"))
                 .map(Application::getId)
                 .orElse(null))
@@ -1999,8 +2032,10 @@ from [B3Partners](https://www.b3partners.nl)!
             .content("Secure app, only shown if user has authorization")
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("Secured app (unfiltered)")
+            .tileType(PageTile.TileTypeEnum.APPLICATION)
             .applicationId(Optional.ofNullable(applicationRepository.findByName("secured"))
                 .map(Application::getId)
                 .orElse(null))
@@ -2008,14 +2043,41 @@ from [B3Partners](https://www.b3partners.nl)!
             .content("Secure app, tile shown to everyone")
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("About")
+            .tileType(PageTile.TileTypeEnum.PAGE)
             .pageId(about.getId())
             .openInNewWindow(false),
         new PageTile()
+            .authorizationRules(ruleAnonymousRead)
             .id(UUID.randomUUID().toString())
             .title("B3Partners")
+            .tileType(PageTile.TileTypeEnum.URL)
             .url("https://www.b3partners.nl/")
+            .openInNewWindow(true),
+        new PageTile()
+            .authorizationRules(ruleLoggedIn)
+            .id(UUID.randomUUID().toString())
+            .title("Github repository")
+            .tileType(PageTile.TileTypeEnum.URL)
+            .url("https://github.com/Tailormap/tailormap-viewer")
+            .openInNewWindow(true),
+        new PageTile()
+            .authorizationRules(ruleAnonymousRead)
+            .id(UUID.randomUUID().toString())
+            .tileType(PageTile.TileTypeEnum.PAGE)
+            .title("Secured page")
+            .pageId(loggedIn.getId())
+            .filterRequireAuthorization(true)
+            .openInNewWindow(true),
+        new PageTile()
+            .authorizationRules(ruleAnonymousRead)
+            .id(UUID.randomUUID().toString())
+            .tileType(PageTile.TileTypeEnum.PAGE)
+            .title("Secured page (unfiltered)")
+            .pageId(loggedIn.getId())
+            .filterRequireAuthorization(false)
             .openInNewWindow(true)));
     pageRepository.save(page);
 

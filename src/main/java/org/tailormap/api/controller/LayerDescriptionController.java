@@ -46,11 +46,15 @@ import org.tailormap.api.viewer.model.LayerDetailsForm;
 public class LayerDescriptionController {
 
   private final FeatureSourceRepository featureSourceRepository;
-
+  private final TMFeatureTypeHelper featureTypeHelper;
   private final FormRepository formRepository;
 
-  public LayerDescriptionController(FeatureSourceRepository featureSourceRepository, FormRepository formRepository) {
+  public LayerDescriptionController(
+      FeatureSourceRepository featureSourceRepository,
+      TMFeatureTypeHelper featureTypeHelper,
+      FormRepository formRepository) {
     this.featureSourceRepository = featureSourceRepository;
+    this.featureTypeHelper = featureTypeHelper;
     this.formRepository = formRepository;
   }
 
@@ -85,8 +89,8 @@ public class LayerDescriptionController {
             .map(TMGeometryType::fromValue)
             .orElse(null))
         .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft))
-        .attachmentAttributes(
-            tmft.getSettings().getAttachmentAttributes().stream().toList());
+        .attachmentAttributes(featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmft).stream()
+            .toList());
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 

@@ -28,9 +28,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.type.SqlTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -89,7 +90,7 @@ public class GeoService extends AuditMetadata {
    * Non-null when authentication is required for this service. Currently, the only authentication method is password
    * (HTTP Basic).
    */
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private ServiceAuthentication authentication;
 
@@ -119,15 +120,15 @@ public class GeoService extends AuditMetadata {
   @Column(length = 2048)
   private String advertisedUrl;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private TMServiceCaps serviceCapabilities;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<GeoServiceLayer> layers = new ArrayList<>();
 
@@ -137,7 +138,7 @@ public class GeoService extends AuditMetadata {
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for vendor-specific
    * capabilities etc.
    */
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private GeoServiceSettings settings = new GeoServiceSettings();
 

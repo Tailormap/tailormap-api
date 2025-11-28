@@ -6,25 +6,42 @@
 
 package org.tailormap.api.persistence.helper;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.AttachmentAttributeType;
 import org.tailormap.api.persistence.json.AttributeSettings;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 
+@Service
 public class TMFeatureTypeHelper {
+  private final MultipartConfigElement multipartConfigElement;
+
+  public TMFeatureTypeHelper(MultipartConfigElement multipartConfigElement) {
+    this.multipartConfigElement = multipartConfigElement;
+  }
+
   public static boolean isEditable(
       Application application, AppTreeLayerNode appTreeLayerNode, TMFeatureType featureType) {
     if (featureType == null) {
+      return false;
+    }
+
+    if (featureType.getInfo() == null
+        || !Objects.equals(featureType.getInfo().getCrs(), application.getCrs())) {
       return false;
     }
 
@@ -137,5 +154,18 @@ public class TMFeatureTypeHelper {
     return getNonHiddenAttributes(featureType, appLayerSettings).stream()
         .map(TMAttributeDescriptor::getName)
         .collect(Collectors.toSet());
+  }
+
+  public Set<@Valid AttachmentAttributeType> getAttachmentAttributesWithMaxFileUploadSize(TMFeatureType featureType) {
+    long maxFileSize = this.multipartConfigElement.getMaxFileSize();
+
+    return featureType.getSettings().getAttachmentAttributes().stream()
+        .map(att -> {
+          long attMaxFileSize = att.getMaxAttachmentSize() == null
+              ? maxFileSize
+              : Math.min(att.getMaxAttachmentSize(), maxFileSize);
+          return new AttachmentAttributeType(att.getAttributeName(), att.getMimeType(), attMaxFileSize);
+        })
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }

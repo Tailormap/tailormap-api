@@ -525,6 +525,7 @@ components:
           AppTreeLayerNode: '#/components/schemas/AppTreeLayerNode'
       required:
         - id
+        - objectType
 
     AppTreeLevelNode:
       description: Node for organizing app layer referencing nodes in a folder tree.
@@ -605,9 +606,9 @@ components:
         filterGroups:
           description: List of filter groups to show in the application.
           type: array
+          minItems: 0
           items:
               $ref: './common-schemas.yaml#/components/schemas/FilterGroup'
-          minItems: 0
         layerSettings:
           title: AppLayerSettings
           description: Map of id of an AppTreeLayerNode to its' settings.
@@ -703,6 +704,14 @@ components:
           type: string
           nullable: true
           description: image to show on the tile
+        tileType:
+          type: string
+          nullable: true
+          description: type of tile, e.g. 'url', 'application', 'page'
+          enum:
+            - application
+            - page
+            - url
         applicationId:
           type: integer
           nullable: true
@@ -729,6 +738,11 @@ components:
           type: boolean
           nullable: true
           description: indicates whether the link should be opened in a new window
+        authorizationRules:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AuthorizationRule'
 
     AdminAdditionalProperty:
       type: object

@@ -16,8 +16,9 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.json.FormField;
 import org.tailormap.api.persistence.json.FormOptions;
@@ -40,11 +41,11 @@ public class Form extends AuditMetadata {
 
   private String featureTypeName;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private FormOptions options = new FormOptions();
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   @NotNull private List<FormField> fields = new ArrayList<>();
 

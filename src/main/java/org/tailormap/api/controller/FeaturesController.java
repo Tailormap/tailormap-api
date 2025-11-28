@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +82,7 @@ public class FeaturesController implements Constants {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-
+  private final TMFeatureTypeHelper featureTypeHelper;
   private final FeatureSourceRepository featureSourceRepository;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
@@ -97,8 +96,11 @@ public class FeaturesController implements Constants {
   private boolean exactWfsCounts;
 
   public FeaturesController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      TMFeatureTypeHelper featureTypeHelper,
+      FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.featureTypeHelper = featureTypeHelper;
     this.featureSourceRepository = featureSourceRepository;
   }
 
@@ -441,14 +443,14 @@ public class FeaturesController implements Constants {
         addFields = true;
         // transform found simplefeatures to list of Feature
         SimpleFeature feature = feats.next();
+
         // processedGeometry can be null
         String processedGeometry = GeometryProcessor.processGeometry(
             feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
             simplifyGeometry,
             true,
             transform);
-        Feature newFeat =
-            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
+        Feature newFeat = new Feature().fid(feature.getID()).geometry(processedGeometry);
 
         if (!onlyGeometries) {
           for (String attName : configuredAttributes.keySet()) {
@@ -463,6 +465,7 @@ public class FeaturesController implements Constants {
             newFeat.putAttributesItem(attName, value);
           }
           if (withAttachments && ftSupportsAttachments) {
+            // Just add the PK as is, no conversion needed
             featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
           }
         }
@@ -491,23 +494,16 @@ public class FeaturesController implements Constants {
     }
     if (ftSupportsAttachments) {
       //  add attachment metadata
-      featuresResponse.setAttachmentMetadata(tmFeatureType.getSettings().getAttachmentAttributes());
+      featuresResponse.setAttachmentMetadata(
+          featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));
 
       if (withAttachments) {
-        //  fetch all attachments for all features, grouped by feature id
-
-        // wrap byte[] pk values in ByteBuffer objects to be used as Map keys
-        featurePKs = featurePKs.stream()
-            .map(pk -> pk instanceof byte[] pkBytes ? ByteBuffer.wrap(pkBytes) : pk)
-            .collect(Collectors.toList());
-
-        Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
+        //  fetch all attachments for all features, grouped by feature fid
+        Map<String, List<AttachmentMetadata>> attachmentsByFeatureId =
             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
-        //  add attachment data to features using feature.primaryKeyAttribute to match
+        //  add attachment data to features using the feature FID to match
         for (Feature feature : featuresResponse.getFeatures()) {
-          Object primaryKey = feature.getAttributes().get(tmFeatureType.getPrimaryKeyAttribute());
-
-          primaryKey = primaryKey instanceof byte[] pkBytes ? ByteBuffer.wrap(pkBytes) : primaryKey;
+          String primaryKey = feature.getFid();
           List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
           if (attachments != null) {
             feature.setAttachments(attachments);

@@ -83,6 +83,9 @@ public class PageController {
 
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
+    if (!authorisationService.userAllowedToViewPage(page)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
     copyProperties(page, pageResponse);
     pageResponse.tiles(page.getTiles().stream()
         .map(this::convert)
@@ -131,7 +134,8 @@ public class PageController {
     result.shouldBeFiltered = false;
     copyProperties(tile, viewerPageTile);
 
-    if (tile.getApplicationId() != null) {
+    PageTile.TileTypeEnum tileType = getTileTypeForPageTile(tile);
+    if (tileType == PageTile.TileTypeEnum.APPLICATION) {
       Optional.ofNullable(tile.getApplicationId())
           .flatMap(applicationRepository::findById)
           .filter(application -> !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
@@ -139,18 +143,49 @@ public class PageController {
           .ifPresentOrElse(
               application -> {
                 viewerPageTile.applicationUrl("/app/" + application.getName());
-                viewerPageTile.setApplicationRequiresLogin(
+                viewerPageTile.requiresLogin(
                     !authorisationService.userAllowedToViewApplication(application));
               },
               () -> result.shouldBeFiltered = true);
     }
 
-    Optional.ofNullable(tile.getPageId())
-        .flatMap(pageRepository::findById)
-        .ifPresent(linkedPage -> viewerPageTile.pageUrl("/page/" + linkedPage.getName()));
+    if (tileType == PageTile.TileTypeEnum.PAGE) {
+      Optional.ofNullable(tile.getPageId())
+          .flatMap(pageRepository::findById)
+          .filter(page -> !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+              || authorisationService.userAllowedToViewPage(page))
+          .ifPresentOrElse(
+              page -> {
+                viewerPageTile.pageUrl("/page/" + page.getName());
+                viewerPageTile.requiresLogin(!authorisationService.userAllowedToViewPage(page));
+              },
+              () -> result.shouldBeFiltered = true);
+    }
+
+    if (tileType == PageTile.TileTypeEnum.URL
+        && !tile.getAuthorizationRules().isEmpty()
+        && !authorisationService.userAllowedToViewPageTile(tile)) {
+      result.shouldBeFiltered = true;
+    }
 
     viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
 
     return result;
+  }
+
+  private PageTile.TileTypeEnum getTileTypeForPageTile(PageTile pageTile) {
+    if (pageTile.getTileType() != null) {
+      return pageTile.getTileType();
+    }
+    if (pageTile.getApplicationId() != null) {
+      return PageTile.TileTypeEnum.APPLICATION;
+    }
+    if (pageTile.getPageId() != null) {
+      return PageTile.TileTypeEnum.PAGE;
+    }
+    if (pageTile.getUrl() != null) {
+      return PageTile.TileTypeEnum.URL;
+    }
+    return PageTile.TileTypeEnum.APPLICATION;
   }
 }

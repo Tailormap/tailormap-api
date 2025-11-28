@@ -16,9 +16,11 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
@@ -49,9 +51,13 @@ public class Page extends AuditMetadata {
   /** CSS class name to apply to the page. */
   private String className;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private List<PageTile> tiles = new ArrayList<>();
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -115,5 +121,13 @@ public class Page extends AuditMetadata {
 
   public void setTiles(List<PageTile> tiles) {
     this.tiles = tiles;
+  }
+
+  public List<AuthorizationRule> getAuthorizationRules() {
+    return authorizationRules;
+  }
+
+  public void setAuthorizationRules(List<AuthorizationRule> authorizationRules) {
+    this.authorizationRules = authorizationRules;
   }
 }

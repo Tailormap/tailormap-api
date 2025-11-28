@@ -14,7 +14,6 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import org.geotools.api.data.FeatureStore;
@@ -302,11 +301,9 @@ public class EditFeatureController implements Constants {
                 .isEmpty()) {
           //  add attachments
           Object primaryKey = simpleFeature.getAttribute(tmFeatureType.getPrimaryKeyAttribute());
-          // wrap byte[] primary key in ByteBuffer for correct Map key lookup
-          primaryKey = primaryKey instanceof byte[] pkBytes ? ByteBuffer.wrap(pkBytes) : primaryKey;
-          Map<Object, List<AttachmentMetadata>> attachmentsByFeatureId =
+          Map<String, List<AttachmentMetadata>> attachmentsByFeatureId =
               AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, List.of(primaryKey));
-          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(primaryKey);
+          List<AttachmentMetadata> attachments = attachmentsByFeatureId.get(simpleFeature.getID());
           if (attachments != null) {
             modelFeature.setAttachments(attachments);
           }

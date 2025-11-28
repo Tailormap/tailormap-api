@@ -11,7 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
@@ -35,7 +36,7 @@ public class Configuration extends AuditMetadata {
   @Column(columnDefinition = "text")
   private String value;
 
-  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private JsonNode jsonValue;
 
