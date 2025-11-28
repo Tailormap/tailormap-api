@@ -79,7 +79,9 @@ class LayerExportControllerIntegrationTest {
                 "json",
                 "text/csv",
                 "text/xml; subtype=gml/2.1.2",
-                "text/xml; subtype=gml/3.2")));
+                "text/xml; subtype=gml/3.2",
+                "application/vnd.ogc.fg+json",
+                "application/geo+json")));
   }
 
   @Test
