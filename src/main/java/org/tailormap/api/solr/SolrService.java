@@ -5,9 +5,13 @@
  */
 package org.tailormap.api.solr;
 
+import io.micrometer.core.instrument.Metrics;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +63,15 @@ public class SolrService {
 
   public void setSolrUrl(String solrUrl) {
     this.solrUrl = solrUrl;
+  }
+
+  public boolean isSolrServiceAvailable() {
+    try (SolrClient client = getSolrClientForIndexing()) {
+      SolrPingResponse response = client.ping();
+      Metrics.timer("tailormap_solr_ping").record(response.getElapsedTime(), TimeUnit.MILLISECONDS);
+      return true;
+    } catch (SolrServerException | IOException e) {
+      return false;
+    }
   }
 }

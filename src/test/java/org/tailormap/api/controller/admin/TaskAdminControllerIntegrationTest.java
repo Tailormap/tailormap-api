@@ -70,14 +70,28 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(3))
+        .andExpect(jsonPath("$.tasks.length()").value(4))
         // value is any of the available task types
         .andExpect(jsonPath("$.tasks[0].type")
-            .value(anyOf(is(TaskType.INDEX.getValue()), is(TaskType.PROMETHEUS_PING.getValue()))))
+            .value(anyOf(
+                is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
+                is(TaskType.SOLR_PING.getValue()))))
         .andExpect(jsonPath("$.tasks[1].type")
-            .value(anyOf(is(TaskType.INDEX.getValue()), is(TaskType.PROMETHEUS_PING.getValue()))))
+            .value(anyOf(
+                is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
+                is(TaskType.SOLR_PING.getValue()))))
         .andExpect(jsonPath("$.tasks[2].type")
-            .value(anyOf(is(TaskType.INDEX.getValue()), is(TaskType.PROMETHEUS_PING.getValue()))))
+            .value(anyOf(
+                is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
+                is(TaskType.SOLR_PING.getValue()))))
+        .andExpect(jsonPath("$.tasks[3].type")
+            .value(anyOf(
+                is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
+                is(TaskType.SOLR_PING.getValue()))))
         .andReturn();
     final String body = result.getResponse().getContentAsString();
     String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
@@ -87,6 +101,9 @@ class TaskAdminControllerIntegrationTest {
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
 
     validUUID = JsonPath.read(body, "$.tasks[2].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    validUUID = JsonPath.read(body, "$.tasks[3].uuid");
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
   }
 

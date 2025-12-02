@@ -7,6 +7,7 @@ package org.tailormap.api.controller.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Metrics;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +17,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
@@ -25,6 +27,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -45,6 +48,7 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.scheduling.IndexTask;
+import org.tailormap.api.scheduling.SolrPingTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
@@ -55,7 +59,7 @@ import org.tailormap.api.viewer.model.ErrorResponse;
 
 /** Admin controller for Solr. */
 @RestController
-public class SolrAdminController {
+public class SolrAdminController implements InitializingBean {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -67,6 +71,9 @@ public class SolrAdminController {
 
   @Value("${tailormap-api.solr-query-timeout-seconds:7}")
   private int solrQueryTimeout;
+
+  @Value("${tailormap-api.solr-api-ping-cron:0 0/5 * 1/1 * ? *}")
+  private String solrPingCron;
 
   public SolrAdminController(
       @Autowired FeatureTypeRepository featureTypeRepository,
@@ -119,6 +126,7 @@ public class SolrAdminController {
     try (SolrClient solrClient = solrService.getSolrClientForSearching()) {
       final SolrPingResponse ping = solrClient.ping();
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
+      Metrics.timer("tailormap_solr_ping").record(ping.getElapsedTime(), TimeUnit.MILLISECONDS);
       return ResponseEntity.ok(new ObjectMapper()
           .createObjectNode()
           .put("status", ping.getResponse().get("status").toString())
@@ -333,5 +341,31 @@ public class SolrAdminController {
 
     logger.info("Index cleared for index {}", searchIndexId);
     return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    if (solrService.isSolrServiceAvailable()) {
+      logger.info("Solr is available, initializing SolrAdminController.");
+      try {
+        // there should be only one Solr ping task, so we delete any existing ones
+        taskManagerService.deleteTasksByGroupName(TaskType.SOLR_PING.getValue());
+        final UUID taskUuid = taskManagerService.createTask(
+            SolrPingTask.class,
+            new TMJobDataMap(Map.of(
+                Task.TYPE_KEY,
+                TaskType.SOLR_PING.getValue(),
+                Task.DESCRIPTION_KEY,
+                "Ping Solr service for availability.",
+                Task.PRIORITY_KEY,
+                58)),
+            solrPingCron);
+        logger.debug("Added Solr ping task with UUID: {}", taskUuid);
+      } catch (Exception e) {
+        logger.error("Error initializing Solr ping task", e);
+      }
+    } else {
+      logger.info("Solr is not available, /search endpoint will not be functional.");
+    }
   }
 }
