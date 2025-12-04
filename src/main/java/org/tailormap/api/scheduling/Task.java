@@ -37,11 +37,13 @@ public interface Task {
   String getDescription();
 
   /**
-   * Set the description of the task.
+   * Set the description of the task. The default is a no-op, which means the description is read-only.
    *
    * @param description the description
    */
-  void setDescription(String description);
+  default void setDescription(String description) {
+    // no-op
+  }
 
   /**
    * Handle the task progress event. Override this method to handle the progress of the task, e.g. by emitting

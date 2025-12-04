@@ -34,13 +34,13 @@ public class PrometheusPingTask extends QuartzJobBean implements Task {
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
     final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();
-    if (!prometheusService.isPrometheusAvailable()) {
+    if (prometheusService.isPrometheusAvailable()) {
+      persistedJobData.put(LAST_RESULT_KEY, "Prometheus is available. Check succeeded.");
+      context.setResult("Prometheus is available");
+    } else {
       logger.warn("PrometheusService is not available");
       persistedJobData.put(LAST_RESULT_KEY, "Prometheus is not available. Check failed.");
       context.setResult("Prometheus is not available");
-    } else {
-      persistedJobData.put(LAST_RESULT_KEY, "Prometheus is available. Check succeeded.");
-      context.setResult("Prometheus is available");
     }
     persistedJobData.put(EXECUTION_FINISHED_KEY, Instant.now());
   }
@@ -53,10 +53,5 @@ public class PrometheusPingTask extends QuartzJobBean implements Task {
   @Override
   public String getDescription() {
     return "Ping Prometheus to ensure it is available.";
-  }
-
-  @Override
-  public void setDescription(String description) {
-    // No-op, description is fixed for this task
   }
 }

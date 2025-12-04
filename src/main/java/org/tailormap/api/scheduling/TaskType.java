@@ -8,7 +8,7 @@ package org.tailormap.api.scheduling;
 public enum TaskType {
   INDEX("index"),
   PROMETHEUS_PING("prometheus_ping"),
-  ;
+  SOLR_PING("solr_ping");
 
   private final String value;
 
