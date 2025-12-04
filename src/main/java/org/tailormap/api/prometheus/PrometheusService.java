@@ -8,12 +8,14 @@ package org.tailormap.api.prometheus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Metrics;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,8 +47,10 @@ public class PrometheusService {
   /** Check if the Prometheus server is available by sending a simple query. */
   public boolean isPrometheusAvailable() {
     try {
+      long startTime = System.nanoTime();
       ResponseEntity<String> response =
           restTemplate.getForEntity(prometheusUrl + "/query?query=up", String.class);
+      Metrics.timer("tailormap_prometheus_ping").record(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
       if (response.getStatusCode() == HttpStatus.OK) {
         return true;
       } else {
