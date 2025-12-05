@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TailormapOidcUserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.security</a> &gt; <span class="el_source">TailormapOidcUserService.java</span></div><h1>TailormapOidcUserService.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.security;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.stereotype.Service;
+import org.tailormap.api.repository.GroupRepository;
+
+@Service
+public class TailormapOidcUserService extends OidcUserService {
+  private final GroupRepository groupRepository;
+
+<span class="nc" id="L27">  public TailormapOidcUserService(GroupRepository groupRepository) {</span>
+<span class="nc" id="L28">    this.groupRepository = groupRepository;</span>
+<span class="nc" id="L29">  }</span>
+
+  @Override
+  public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+<span class="nc" id="L33">    OidcUser user = super.loadUser(userRequest);</span>
+
+<span class="nc" id="L35">    List&lt;String&gt; groups = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L36">    Optional.ofNullable(userRequest.getIdToken().getClaimAsStringList(&quot;roles&quot;))</span>
+<span class="nc" id="L37">        .ifPresent(groups::addAll);</span>
+
+    // Add aliases for groups (with the same name as the role) as authorities, even if the group does not exist
+<span class="nc" id="L40">    Set&lt;String&gt; aliases = groupRepository.findAliasesForGroups(groups);</span>
+<span class="nc" id="L41">    groups.addAll(aliases);</span>
+
+    // Find all additional properties for the groups, taking aliases into account
+<span class="nc" id="L44">    Collection&lt;TailormapAdditionalProperty&gt; groupProperties =</span>
+<span class="nc" id="L45">        groupRepository.findAdditionalPropertiesByGroups(groups);</span>
+
+    // Adds OIDC_USER and SCOPE_* authorities
+<span class="nc" id="L48">    Collection&lt;GrantedAuthority&gt; authorities = new ArrayList&lt;&gt;(user.getAuthorities());</span>
+    // Add (aliased) group names as authorities
+<span class="nc" id="L50">    groups.stream().map(SimpleGrantedAuthority::new).forEach(authorities::add);</span>
+
+<span class="nc" id="L52">    String userNameAttributeName = userRequest</span>
+<span class="nc" id="L53">        .getClientRegistration()</span>
+<span class="nc" id="L54">        .getProviderDetails()</span>
+<span class="nc" id="L55">        .getUserInfoEndpoint()</span>
+<span class="nc" id="L56">        .getUserNameAttributeName();</span>
+
+<span class="nc" id="L58">    String oidcRegistrationName = userRequest.getClientRegistration().getClientName();</span>
+
+<span class="nc" id="L60">    return new TailormapOidcUser(</span>
+        authorities,
+<span class="nc" id="L62">        user.getIdToken(),</span>
+<span class="nc" id="L63">        user.getUserInfo(),</span>
+        userNameAttributeName,
+        oidcRegistrationName,
+        groupProperties);
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
