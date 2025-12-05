@@ -52,7 +52,7 @@ class IngestMetricsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testIngestSingleLayerSwitchedOnMetric() throws Exception {
+  void ingest_single_layer_switched_on_metric() throws Exception {
     final String url = apiBasePath
         + "/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/tailormap_applayer_switched_on";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -78,7 +78,7 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:snapshot-geoserve
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testIngestMultipleLayerSwitchedOnMetric() throws Exception {
+  void ingest_multiple_layer_switched_on_metric() throws Exception {
     final String url = apiBasePath
         + "/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel,lyr:openbasiskaart:osm/tailormap_applayer_switched_on";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -107,7 +107,7 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:openbasiskaart:os
   }
 
   @Test
-  void testIngestDisallowedMetric() throws Exception {
+  void ingest_disallowed_metric() throws Exception {
     final String url = apiBasePath
         + "/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/not_allowed";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -115,7 +115,7 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:openbasiskaart:os
   }
 
   @Test
-  void testIngestTestMetric() throws Exception {
+  void ingest_test_metric() throws Exception {
     final String url = apiBasePath
         + "/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/test_metric";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -123,7 +123,7 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:openbasiskaart:os
   }
 
   @Test
-  void testIngestMetricWithInvalidLayer() throws Exception {
+  void ingest_metric_with_invalid_layer() throws Exception {
     final String url =
         apiBasePath + "/app/default/metrics/ingest/lyr:service:does-not-exist/tailormap_applayer_switched_on";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -131,7 +131,7 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:openbasiskaart:os
   }
 
   @Test
-  void testIngestMetricWithoutLayers() throws Exception {
+  void ingest_metric_without_layers() throws Exception {
     final String url = apiBasePath + "/app/default/metrics/ingest/tailormap_applayer_switched_on";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError());

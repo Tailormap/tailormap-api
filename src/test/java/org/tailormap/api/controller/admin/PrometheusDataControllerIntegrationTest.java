@@ -50,7 +50,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationGraphicData() throws Exception {
+  void test_get_application_graphic_data() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applications"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -63,7 +63,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationGraphicData60Days() throws Exception {
+  void test_get_application_graphic_data_60_days() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applications?numberOfDays=60"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -76,7 +76,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationGraphicDataInvalidNumberOfDays() throws Exception {
+  void test_get_application_graphic_data_invalid_number_of_days() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applications?numberOfDays=0"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationLayersGraphicData() throws Exception {
+  void test_get_application_layers_graphic_data() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applayers/1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -102,7 +102,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationLayersGraphicData60Days() throws Exception {
+  void test_get_application_layers_graphic_data_60_days() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applayers/1?numberOfDays=60"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -116,7 +116,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationLayersGraphicDataAppDoesNotExist() throws Exception {
+  void test_get_application_layers_graphic_data_app_does_not_exist() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applayers/1000"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -128,7 +128,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationLayersGraphicDataInvalidAppId() throws Exception {
+  void test_get_application_layers_graphic_data_invalid_app_id() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applayers/0?numberOfDays=0"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -139,7 +139,7 @@ class PrometheusDataControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testGetApplicationLayersGraphicDataInvalidNumberOfDays() throws Exception {
+  void test_get_application_layers_graphic_data_invalid_number_of_days() throws Exception {
     mockMvc.perform(get(adminBasePath + "/graph/applayers/0"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

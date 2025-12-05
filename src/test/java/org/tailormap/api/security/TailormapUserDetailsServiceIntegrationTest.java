@@ -20,7 +20,7 @@ class TailormapUserDetailsServiceIntegrationTest {
   TailormapUserDetailsService userDetailsService;
 
   @Test
-  void testLoadUserByUsernameUserDoesNotExist() {
+  void load_user_by_username_user_does_not_exist() {
     UsernameNotFoundException thrown = assertThrows(
         UsernameNotFoundException.class,
         () -> userDetailsService.loadUserByUsername("doesnotexist"),

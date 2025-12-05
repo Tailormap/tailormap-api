@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 class GeoServiceProxyControllerTest {
 
   @Test
-  void buildOgcProxyRequestParams() {
+  void build_ogc_proxy_request_params() {
     String originalUrl = "https://service/path1?param=abc";
     String requestUrl = "https://api/path2?request=GetMap&other=value";
     assertEquals(

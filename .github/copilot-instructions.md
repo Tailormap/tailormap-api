@@ -53,6 +53,8 @@ implementation of the feature or fix.
 Do not suggest changes to the project's build system, such as switching to a different build tool.
 Never suggest code using deprecated libraries or methods.
 Use a 2-space indentation for Java code and try to follow the `palantir/palantir-java-format`.
+Use meaningful names for variables, methods, and classes that accurately describe their purpose.
+Use snake case method names in test classes, e.g., `should_return_true_when_input_is_valid()`.
 
 ## Modularity
 
@@ -77,6 +79,10 @@ Use a 2-space indentation for Java code and try to follow the `palantir/palantir
 - **Unit Tests**: Encourage the inclusion of unit tests for all new features and functions.
 - **Integration Tests**: Suggest integration tests to ensure that components work together as expected.
 - **Test-Driven Development**: Promote writing tests before implementing features to ensure requirements are met.
+
+### Running tests
+- Use `mvn test` to run all tests.
+- Use `mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true` to run all integration tests`
 
 ## Performance Considerations
 

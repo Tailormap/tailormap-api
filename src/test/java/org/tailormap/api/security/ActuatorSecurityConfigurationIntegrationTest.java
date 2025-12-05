@@ -50,7 +50,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
   private String basePath;
 
   @Test
-  void testUnAuthenticatedHealth() throws Exception {
+  void test_un_authenticated_health() throws Exception {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -61,7 +61,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testAuthenticatedHealth() throws Exception {
+  void test_authenticated_health() throws Exception {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -81,7 +81,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
   };
 
   @Test
-  void testUnAuthenticatedPrometheusFromInternet() throws Exception {
+  void test_un_authenticated_prometheus_from_internet() throws Exception {
     mockMvc.perform(get(basePath + "/prometheus")
             .accept(MediaType.TEXT_PLAIN)
             .with(internetRequest))
@@ -89,7 +89,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
   }
 
   @Test
-  void testUnAuthenticatedPrometheusFromLocalNetwork() throws Exception {
+  void test_un_authenticated_prometheus_from_local_network() throws Exception {
     mockMvc.perform(get(basePath + "/prometheus")
             .accept(MediaType.TEXT_PLAIN)
             .with(localNetworkRequest))
@@ -101,7 +101,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testAuthenticatedPrometheusFromInternet() throws Exception {
+  void test_authenticated_prometheus_from_internet() throws Exception {
     mockMvc.perform(get(basePath + "/prometheus")
             .accept(MediaType.TEXT_PLAIN)
             .with(internetRequest))

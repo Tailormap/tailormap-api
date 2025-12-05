@@ -83,7 +83,7 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  void testUnAuthenticatedDelete() throws Exception {
+  void test_unauthenticated_delete() throws Exception {
     final String url = apiBasePath
         + begroeidterreindeelUrlPostgis
         + "/"
@@ -96,7 +96,7 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  void testUnAuthenticatedPost() throws Exception {
+  void test_unauthenticated_post() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
 
     mockMvc.perform(post(url)
@@ -111,7 +111,7 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  void testUnAuthenticatedPatch() throws Exception {
+  void test_unauthenticated_patch() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
     mockMvc.perform(patch(url)
@@ -129,7 +129,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testNonEditablePatch() throws Exception {
+  void test_non_editable_patch() throws Exception {
     final String url = apiBasePath
         + begroeidterreindeelUrlPostgisNonEditable
         + "/"
@@ -153,7 +153,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchNonExistentAttribute() throws Exception {
+  void test_patch_non_existent_attribute() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
     mockMvc.perform(patch(url)
@@ -174,7 +174,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchHiddenAttribute() throws Exception {
+  void test_patch_hidden_attribute() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
@@ -203,7 +203,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchHiddenAttributeInAppLayerSettings() throws Exception {
+  void test_patch_hidden_attribute_in_app_layer_settings() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
@@ -231,7 +231,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchReadOnlyAttribute() throws Exception {
+  void test_patch_read_only_attribute() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
@@ -260,7 +260,7 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(1)
-  void testPostPG() throws Exception {
+  void test_post_pg() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     final String gmlid = "aaa"
         + StaticTestData.get("begroeidterreindeel__fid_edit")
@@ -312,7 +312,7 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(10)
-  void testDuplicatePrimaryKeyPG() throws Exception {
+  void test_duplicate_primary_key_pg() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     final String gmlid = "aaa"
         + StaticTestData.get("begroeidterreindeel__fid_edit")
@@ -355,7 +355,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPostMsSql() throws Exception {
+  void test_post_mssql() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver;
     final String gmlid = "b3p"
         + StaticTestData.get("wegdeel__fid_edit")
@@ -407,7 +407,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPostOrcl() throws Exception {
+  void test_post_orcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle;
     final String gmlid = "b3p"
         + StaticTestData.get("waterdeel__fid_edit")
@@ -454,7 +454,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchPG() throws Exception {
+  void test_patch_pg() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
     mockMvc.perform(patch(url)
@@ -486,7 +486,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchForeignCRSPG() throws Exception {
+  void test_patch_foreign_crs_pg() throws Exception {
     final String url = apiBasePath + osm_polygonUrlPostgis + "/" + StaticTestData.get("osm_polygon__fid_edit");
     final MvcResult result = mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -518,21 +518,19 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPostForeignCRSPG() throws Exception {
+  void test_post_foreign_crs_pg() throws Exception {
     final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
     final String osm_id = __fid.replace("osm_polygon.", "");
     final String url = apiBasePath + osm_polygonUrlPostgis;
+    final String json = String.format(
+        "{\"__fid\": \"%s\",\"attributes\" : { \"osm_id\":%s,\"building\":\"abandoned industrial complex\", \"way\" : \"%s\"}}",
+        __fid, osm_id, StaticTestData.get("osm_polygon__geom_edit_28992"));
+
     final MvcResult result = mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"__fid\": \""
-                + __fid
-                + "\",\"attributes\" : { \"osm_id\":"
-                + osm_id
-                + ",\"building\":\"abandoned industrial complex\", \"way\" : \""
-                + StaticTestData.get("osm_polygon__geom_edit_28992")
-                + "\"}}"))
+            .content(json))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(__fid))
@@ -554,7 +552,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchOrcl() throws Exception {
+  void test_patch_orcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle + "/" + StaticTestData.get("waterdeel__fid_edit");
     mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -576,7 +574,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchMsSql() throws Exception {
+  void test_patch_mssql() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver + "/" + StaticTestData.get("wegdeel__fid_edit");
     mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -599,7 +597,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPatchWFS() throws Exception {
+  void test_patch_wfs() throws Exception {
     final String url = apiBasePath + provinciesWFS + "/" + StaticTestData.get("utrecht__fid");
     mockMvc.perform(patch(url)
             .content("{\"attributes\":{\"naam\": \"Utereg\",\"code\":\"11\"}}")
@@ -613,7 +611,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testGetIsUnsupported() throws Exception {
+  void test_get_unsupported() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -625,7 +623,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testPutIsUnsupported() throws Exception {
+  void test_put_unsupported() throws Exception {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -637,7 +635,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteWhenLayerDoesNotExist() throws Exception {
+  void test_delete_when_layer_does_not_exist() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:doesnotexist:doesnotexist/edit/feature/does.not.1";
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
@@ -648,7 +646,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteNonExistentFeature() throws Exception {
+  void test_delete_non_existent_feature() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis + "/" + "xxxxxx";
     // geotools does not report back that the feature does not exist, nor the number of deleted
     // features, no error === success
@@ -661,7 +659,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteExistingFeatureMsSql() throws Exception {
+  void test_delete_existing_feature_mssql() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver + "/" + StaticTestData.get("wegdeel__fid_delete");
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is2xxSuccessful())
@@ -672,7 +670,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteExistingFeaturePG() throws Exception {
+  void test_delete_existing_feature_pg() throws Exception {
     final String url = apiBasePath
         + begroeidterreindeelUrlPostgis
         + "/"
@@ -686,7 +684,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteExistingFeatureOrcl() throws Exception {
+  void test_delete_existing_feature_orcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle + "/" + StaticTestData.get("waterdeel__fid_delete");
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is2xxSuccessful())
@@ -697,7 +695,7 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void testDeleteExistingFeatureWFS() throws Exception {
+  void test_delete_existing_feature_wfs() throws Exception {
     final String url = apiBasePath + provinciesWFS + StaticTestData.get("utrecht__fid");
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())

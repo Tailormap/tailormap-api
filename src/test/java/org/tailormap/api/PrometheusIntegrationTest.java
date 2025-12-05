@@ -62,7 +62,7 @@ public class PrometheusIntegrationTest {
   private String counterLastUpdatedQuery;
 
   @BeforeAll
-  static void checkIfPrometheusIsUpOnLocalhost() {
+  static void check_prometheus_is_up() {
     ResponseEntity<String> response =
         new RestTemplate().getForEntity("http://localhost:9090/query?query=up", String.class);
     assumeTrue(
@@ -72,7 +72,7 @@ public class PrometheusIntegrationTest {
 
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-  void prometheusAppCountersOver90days() throws Exception {
+  void prometheus_app_counters_over_90days() throws Exception {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
             prometheusUrl + "/query?query=" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
@@ -102,7 +102,7 @@ public class PrometheusIntegrationTest {
 
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-  void prometheusAppCountersLastUpdated() throws Exception {
+  void prometheus_app_counters_last_updated() throws Exception {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
             prometheusUrl + "/query?query="
@@ -136,7 +136,7 @@ public class PrometheusIntegrationTest {
 
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-  void prometheusAppCountersCombinedWithOr() throws Exception {
+  void prometheus_app_counters_combined_with_or() throws Exception {
     final String completeQuery = "label_replace(" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
         + ", \"type\", \"totalCount\", \"__name__\", \".*\")"
         + " or label_replace(" + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
@@ -163,7 +163,7 @@ public class PrometheusIntegrationTest {
 
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-  void prometheusAppCountersSeparateQueriedCombinedResults() {
+  void prometheus_app_counters_separate_queried_combined_results() {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
             prometheusUrl + "/query?query=" +

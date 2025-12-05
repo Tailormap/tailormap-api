@@ -31,7 +31,7 @@ class SearchIndexValidatorIntegrationTest {
   private FeatureSourceRepository featureSourceRepository;
 
   @BeforeEach
-  void setUp() {
+  void setup() {
     searchIndexValidator = new SearchIndexValidator(featureTypeRepository);
   }
 
@@ -43,7 +43,7 @@ class SearchIndexValidatorIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-  void testWFSFeatureType() {
+  void test_wfs_feature_type() {
     featureSourceRepository
         .getByTitle("WFS for Test GeoServer")
         .ifPresentOrElse(
@@ -69,7 +69,7 @@ class SearchIndexValidatorIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-  void testJDBCFeatureType() {
+  void test_jdbc_feature_type() {
     featureSourceRepository
         .getByTitle("PostGIS")
         .ifPresentOrElse(

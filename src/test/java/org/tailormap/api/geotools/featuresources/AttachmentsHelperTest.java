@@ -23,7 +23,7 @@ class AttachmentsHelperTest {
   });
 
   @Test
-  void testCheckArrayOfByteObject() {
+  void test_check_array_of_byte_object() {
     UUID uuid = UUID.randomUUID();
     Object testData = new byte[16];
     wrap((byte[]) testData).putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());
@@ -32,14 +32,14 @@ class AttachmentsHelperTest {
   }
 
   @Test
-  void testCheckIntegerObject() {
+  void test_check_integer_object() {
     Object testData = 12345;
     String result = AttachmentsHelper.fidFromPK(featureType, testData);
     assertEquals(ftName + "." + testData, result);
   }
 
   @Test
-  void testCheckNull() {
+  void test_check_null() {
     assertThrows(IllegalArgumentException.class, () -> AttachmentsHelper.fidFromPK(featureType, null));
   }
 }

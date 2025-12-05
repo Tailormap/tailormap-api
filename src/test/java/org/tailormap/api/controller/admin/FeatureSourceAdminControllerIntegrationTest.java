@@ -39,7 +39,7 @@ class FeatureSourceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void refreshJdbcFeatureSourceCapabilities() throws Exception {
+  void refresh_jdbc_feature_source_capabilities() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
     final int expectedTotal = 39;
 

@@ -45,7 +45,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   private MockMvc mockMvc;
 
   @Test
-  void searchPostgis() throws Exception {
+  void search_postgis() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void searchPostgisGroen() throws Exception {
+  void search_postgis_groen() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -92,7 +92,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void searchSQLServerStartAtItem10() throws Exception {
+  void search_sql_server_start_at_item_10() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void searchOracleLayerWithoutIndex() throws Exception {
+  void search_oracle_layer_without_index() throws Exception {
     final String url = apiBasePath + layerWaterdeelOracle + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -126,7 +126,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void testLayerDoesNotExist() throws Exception {
+  void test_layer_does_not_exist() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:doesnotexist/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void testLayerWithoutFeatureType() throws Exception {
+  void test_layer_without_feature_type() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void testBadRequestQuery() throws Exception {
+  void test_bad_request_query() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void testSpatialQueryDistance() throws Exception {
+  void test_spatial_query_distance() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void testSpatialQueryDistanceWithBbox() throws Exception {
+  void test_spatial_query_distance_with_bbox() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -238,7 +238,7 @@ A searchFields:655, 1
 (*A 655*), 1
 (*A 65*), 8
 """)
-  void testAanduiding(String qTerm, int totalCount) throws Exception {
+  void test_aanduiding(String qTerm, int totalCount) throws Exception {
     final String url = apiBasePath + layerKadastraalPerceel + "/search";
     final int documentsCount = Math.min(totalCount, 10);
 
@@ -261,7 +261,7 @@ A searchFields:655, 1
   }
 
   @Test
-  void testUnquotedWhitespace() throws Exception {
+  void test_unquoted_whitespace() throws Exception {
     final String url = apiBasePath + layerKadastraalPerceel + "/search";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))

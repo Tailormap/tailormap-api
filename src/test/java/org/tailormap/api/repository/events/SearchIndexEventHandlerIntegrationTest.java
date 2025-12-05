@@ -33,7 +33,7 @@ class SearchIndexEventHandlerIntegrationTest {
   @Test
   @Issue("HTM-1258")
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-  void testBeforeSaveSearchIndexEventHandler() {
+  void test_before_save_search_index_event_handler() {
     SearchIndex existingSearchIndexWithSchedule =
         searchIndexRepository.findById(1L).orElse(null);
 
