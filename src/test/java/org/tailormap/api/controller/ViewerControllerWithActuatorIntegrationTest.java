@@ -49,7 +49,7 @@ class ViewerControllerWithActuatorIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void checkPrometheusMetricsEndpointAfterAppRequest() throws Exception {
+  void check_prometheus_metrics_endpoint_after_app_request() throws Exception {
     // generate some application-use metrics by accessing the ViewerController
     final String path = apiBasePath + "/app/default";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))

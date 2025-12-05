@@ -60,7 +60,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void failingPingTest() throws Exception {
+  void failing_ping_test() throws Exception {
     mockMvc.perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -73,7 +73,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(2)
-  void failClearingIndex() throws Exception {
+  void fail_clearing_index() throws Exception {
     mockMvc.perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -86,7 +86,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(3)
-  void failRecreatingIndex() throws Exception {
+  void fail_recreating_index() throws Exception {
     mockMvc.perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

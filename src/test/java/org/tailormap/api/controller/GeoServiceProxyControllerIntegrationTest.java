@@ -99,7 +99,7 @@ class GeoServiceProxyControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void test_proxied_legend_from_capabilities_unauthorized() throws Exception {
+  void proxied_legend_from_capabilities_unauthorized() throws Exception {
     final String path = apiBasePath + begroeidterreindeelLegendUrl;
     mockMvc.perform(get(path).param("SCALE", "693745.6953993673").with(setServletPath(path)))
         .andExpect(status().isUnauthorized());
@@ -107,7 +107,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_proxied_legend_from_capabilities(TestInfo testInfo) throws Exception {
+  void proxied_legend_from_capabilities(TestInfo testInfo) throws Exception {
     final String path = apiBasePath + begroeidterreindeelLegendUrl;
     MvcResult result = mockMvc.perform(get(path)
             .param("SCALE", "693745.6953993673")
@@ -124,7 +124,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @Issue("https://b3partners.atlassian.net/browse/HTM-1451")
   @Test
   @WithMockUser(username = "user")
-  void test_proxied_legend_from_capabilities2(TestInfo testInfo) throws Exception {
+  void proxied_legend_from_capabilities2(TestInfo testInfo) throws Exception {
     final String path = apiBasePath + pdokWmsProvinciegebiedLegendUrl;
     MvcResult result = mockMvc.perform(get(path).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -193,7 +193,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_pdok_wms_GetCapabilities() throws Exception {
+  void pdok_wms_get_capabilities() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc.perform(get(path)
             .param("REQUEST", "GetCapabilities")
@@ -207,7 +207,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_pdok_wms_GetMap() throws Exception {
+  void pdok_wms_get_map() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc.perform(get(path)
             .param("REQUEST", "GetMap")
@@ -228,7 +228,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_pdok_wms_GetLegendGraphic() throws Exception {
+  void pdok_wms_get_legend_graphic() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc.perform(get(path)
             .param("REQUEST", "GetLegendGraphic")
@@ -245,7 +245,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+  void wms_secured_proxy_not_in_public_app() throws Exception {
     final String path = apiBasePath + "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
     mockMvc.perform(get(path)
             .param("REQUEST", "GetCapabilities")
@@ -273,7 +273,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_app_denied() throws Exception {
+  void wms_secured_app_denied() throws Exception {
     performLoggedInRequiredAppLayerProxyRequest()
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -283,7 +283,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_wms_secured_app_granted() throws Exception {
+  void wms_secured_app_granted() throws Exception {
     performLoggedInRequiredAppLayerProxyRequest()
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith("application/vnd.ogc.wms_xml"))
@@ -292,7 +292,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_obk_wmts_GetCapabilities() throws Exception {
+  void obk_wmts_get_capabilities() throws Exception {
     final String path = apiBasePath + obkUrl;
     mockMvc.perform(get(path)
             .param("SERVICE", "WMTS")
@@ -306,7 +306,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_obk_wmts_GetTile() throws Exception {
+  void obk_wmts_get_tile() throws Exception {
     final String path = apiBasePath + obkUrl;
     mockMvc.perform(get(path)
             .param("SERVICE", "WMTS")
@@ -328,7 +328,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_obk_wmts_GetTile_Conditional() throws Exception {
+  void obk_wmts_get_tile_conditional() throws Exception {
     final String path = apiBasePath + obkUrl;
 
     final DateTimeFormatter httpDateHeaderFormatter = DateTimeFormatter.ofPattern(
@@ -352,7 +352,7 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_3d_tiles_proxy() throws Exception {
+  void get_3d_tiles_proxy() throws Exception {
     final String path = apiBasePath
         + pdok3dBasisvoorzieningGebouwenUrl
         + "/"
@@ -362,28 +362,28 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void test_3d_tiles_proxy_subtree() throws Exception {
+  void get_3d_tiles_proxy_subtree() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/subtrees/0/0/0.subtree";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(username = "user")
-  void test_3d_tiles_proxy_tile() throws Exception {
+  void get_3d_tiles_proxy_tile() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/t/9/236/251.glb";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(username = "user")
-  void test_3d_tiles_proxy_no_path() throws Exception {
+  void get_3d_tiles_proxy_no_path() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isBadRequest());
   }
 
   @Test
   @WithMockUser(username = "user")
-  void test_3d_tiles_proxy_auth() throws Exception {
+  void get_3d_tiles_proxy_auth() throws Exception {
     final String path = apiBasePath
         + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
         + "/"
@@ -392,7 +392,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  void test_3d_tiles_proxy_no_user() throws Exception {
+  void get_3d_tiles_proxy_no_user() throws Exception {
     final String path = apiBasePath
         + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
         + "/"
@@ -403,7 +403,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   @WithMockUser(username = "user")
   @Transactional
-  void test_3d_tiles_proxy_bad_password() throws Exception {
+  void get_3d_tiles_proxy_bad_password() throws Exception {
     GeoService geoService =
         geoServiceRepository.findById("3d_utrecht_proxied_auth").orElseThrow();
     String originalPassword = geoService.getAuthentication().getPassword();

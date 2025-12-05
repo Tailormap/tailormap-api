@@ -46,7 +46,7 @@ class AuthorisationServiceIntegrationTest {
       username = "user",
       authorities = {"test-foo"},
       password = "user")
-  void testUserAllowedToViewApplication(String applicationId) {
+  void user_allowed_to_view_application(String applicationId) {
     Application app = applicationRepository.findByName(applicationId);
     assertNotNull(app, () -> "Application " + applicationId + " should exist");
     assertThat(
@@ -62,7 +62,7 @@ class AuthorisationServiceIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN},
       password = "tm-admin")
-  void testAdminUserAllowedToViewApplication(String applicationId) {
+  void admin_user_allowed_to_view_application(String applicationId) {
     Application app = applicationRepository.findByName(applicationId);
     assertNotNull(app, () -> "Application " + applicationId + " should exist");
     assertThat(
@@ -77,7 +77,7 @@ class AuthorisationServiceIntegrationTest {
       username = "user",
       authorities = {"test-baz"},
       password = "user")
-  void testUserNotAllowedToViewApplication() {
+  void user_not_allowed_to_view_application() {
     final String applicationId = "secured-auth";
     Application app = applicationRepository.findByName(applicationId);
     assertNotNull(app, () -> "Application " + applicationId + " should exist");
@@ -90,7 +90,7 @@ class AuthorisationServiceIntegrationTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"secured", "secured-auth"})
-  void testAnonymousUserNotAllowedToViewApplication(String applicationId) {
+  void anonymous_user_not_allowed_to_view_application(String applicationId) {
     Application app = applicationRepository.findByName(applicationId);
     assertNotNull(app, () -> "Application " + applicationId + " should exist");
     assertThat(
@@ -105,7 +105,7 @@ class AuthorisationServiceIntegrationTest {
       username = "foo",
       authorities = {"test-foo"},
       password = "foo")
-  void testFooUserNotAllowedToViewBGT() {
+  void foo_user_not_allowed_to_view_bgt() {
     final String applicationId = "secured-auth";
     Application app = applicationRepository.findByName(applicationId);
     assertNotNull(app, () -> "Application " + applicationId + " should exist");
@@ -139,7 +139,7 @@ class AuthorisationServiceIntegrationTest {
   }
 
   @Test
-  void testAnonymousUserAllowedToViewAboutPage() {
+  void anonymous_user_allowed_to_view_about_page() {
     Page page = pageRepository.findByName("about").orElseThrow();
     assertTrue(
         authorisationService.userAllowedToViewPage(page),
@@ -147,7 +147,7 @@ class AuthorisationServiceIntegrationTest {
   }
 
   @Test
-  void testAnonymousUserNotAllowedToViewLoggedInPage() {
+  void anonymous_user_not_allowed_to_view_logged_in_page() {
     Page page = pageRepository.findByName("loggedIn").orElseThrow();
     assertFalse(
         authorisationService.userAllowedToViewPage(page),
@@ -159,7 +159,7 @@ class AuthorisationServiceIntegrationTest {
       authorities = {"test-foo"},
       password = "foo")
   @Test
-  void testLoggedInUserAllowedToViewLoggedInPage() {
+  void logged_in_user_allowed_to_view_logged_in_page() {
     Page page = pageRepository.findByName("loggedIn").orElseThrow();
     assertTrue(
         authorisationService.userAllowedToViewPage(page),
