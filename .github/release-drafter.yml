@@ -36,7 +36,9 @@ categories:
       - infrastructure
     collapse-after: 10
   - title: 🔨 Dependency updates
-    label: dependency
+    labels: 
+      - dependency
+      - dependencies
     collapse-after: 10
 
 replacers:
