@@ -119,7 +119,7 @@ class AttachmentsHelperIntegrationTest {
   }
 
   @BeforeEach
-  void setUp() throws IOException {
+  void setup() throws IOException {
     featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             featureTypeName,
@@ -151,7 +151,7 @@ class AttachmentsHelperIntegrationTest {
   }
 
   @AfterEach
-  void tearDown() throws SQLException {
+  void teardown() throws SQLException {
     if (ds != null) {
       ds.dispose();
     }
@@ -160,7 +160,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(1)
   @Test
   @DisplayName("Create attachments table for feature type.")
-  void createAttachmentsTableForFeatureType() {
+  void create_attachments_table_for_feature_type() {
     try {
       AttachmentsHelper.createAttachmentTableForFeatureType(featureType);
 
@@ -184,7 +184,7 @@ class AttachmentsHelperIntegrationTest {
   @Test
   @DisplayName("Add an attachment to the first feature of a type.")
   @WithMockUser(username = "unittestuser")
-  void addAttachmentToFirstFeatureOfFeatureType() {
+  void add_attachment_to_first_feature_of_feature_type() {
     try {
       SimpleFeatureSource fs = ds.getFeatureSource(featureTypeName);
       Query query = new Query(featureTypeName);
@@ -230,7 +230,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(3)
   @Test
   @DisplayName("List all attachments for a single feature of a type.")
-  void listAttachmentsForFeatureType() {
+  void list_attachments_for_feature_type() {
     try {
       List<AttachmentMetadata> attachments =
           AttachmentsHelper.listAttachmentsForFeature(featureType, featurePrimaryKey);
@@ -248,7 +248,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(3)
   @Test
   @DisplayName("Retrieve binary attachment from feature type.")
-  void retrieveBinaryAttachmentFromFeatureType() {
+  void retrieve_binary_attachment_from_feature_type() {
     try {
       AttachmentsHelper.AttachmentWithBinary retrieved =
           AttachmentsHelper.getAttachment(featureType, attachmentAttributePKvalue);
@@ -276,7 +276,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(4)
   @Test
   @DisplayName("Get attachments for a list of features of a type.")
-  void testListAttachmentsForFeaturesByFeatureId() {
+  void test_list_attachments_for_features_by_feature_id() {
     try {
       assertNotNull(featurePrimaryKey);
       // No need to convert to Comparable, just use as is
@@ -305,7 +305,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(Integer.MAX_VALUE)
   @Test
   @DisplayName("Delete attachments table for feature type.")
-  void deleteAttachmentsTableForFeatureType() throws SQLException, IOException {
+  void delete_attachments_table_for_feature_type() throws SQLException, IOException {
     try {
       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
 

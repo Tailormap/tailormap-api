@@ -66,7 +66,7 @@ class ApplicationEventHandlerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(2)
-  void testApplicationDeleted() throws Exception {
+  void application_deleted() throws Exception {
     Application application = applicationRepository.findByName("default");
     assertEquals(1, application.getId(), "default application should have id 1");
     assumeTrue(prometheusService.isPrometheusAvailable(), "Prometheus must be available for this test");
@@ -86,7 +86,7 @@ class ApplicationEventHandlerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void testAllAppLayersRemoved() throws Exception {
+  void all_app_layers_removed() throws Exception {
     Application application = applicationRepository.findById(1L).orElseThrow();
     assumeTrue("default".equals(application.getName()), "Application with id 1 should be 'default'");
     assumeTrue(prometheusService.isPrometheusAvailable(), "Prometheus must be available for this test");

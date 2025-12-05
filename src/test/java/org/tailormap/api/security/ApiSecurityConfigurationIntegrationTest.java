@@ -36,7 +36,7 @@ class ApiSecurityConfigurationIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void anonymousSecuredAppTest() throws Exception {
+  void anonymous_secured_app_test() throws Exception {
     String path = apiBasePath + "/app/secured";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
@@ -49,7 +49,7 @@ class ApiSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "user",
       authorities = {Group.AUTHENTICATED})
-  void authenticatedSecuredAppTest() throws Exception {
+  void authenticated_secured_app_test() throws Exception {
     String path = apiBasePath + "/app/secured";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())

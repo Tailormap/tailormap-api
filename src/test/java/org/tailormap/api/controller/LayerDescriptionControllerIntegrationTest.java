@@ -69,7 +69,7 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  void appLayer_with_feature_type_but_no_editable_setting() throws Exception {
+  void app_layer_with_feature_type_but_no_editable_setting() throws Exception {
     final String path =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))

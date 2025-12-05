@@ -55,7 +55,7 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void pingTest() throws Exception {
+  void ping_test() throws Exception {
     mockMvc.perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +67,7 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void deleteNonExistentIndex() throws Exception {
+  void delete_non_existent_index() throws Exception {
     mockMvc.perform(delete(adminBasePath + "/index/snapshot-geoserver/1000").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
@@ -77,7 +77,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void refreshIndex4() throws Exception {
+  void refresh_index_4() throws Exception {
     // 4: bak
     mockMvc.perform(put(adminBasePath + "/index/4")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -92,7 +92,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(2)
-  void clearIndex4() throws Exception {
+  void clear_index_4() throws Exception {
     // 4: bak
     mockMvc.perform(delete(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
@@ -103,7 +103,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(3)
-  void recreateIndex4() throws Exception {
+  void recreate_index_4() throws Exception {
     // 4: bak
     mockMvc.perform(put(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
@@ -116,7 +116,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void indexWithoutSearchIndexConfigured() throws Exception {
+  void index_without_search_index_configured() throws Exception {
     mockMvc.perform(put(adminBasePath + "/index/100")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .accept(MediaType.APPLICATION_JSON))
@@ -127,7 +127,7 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void indexWithoutSchedule() throws Exception {
+  void index_without_schedule() throws Exception {
     // 3: Wegdeel
     mockMvc.perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())

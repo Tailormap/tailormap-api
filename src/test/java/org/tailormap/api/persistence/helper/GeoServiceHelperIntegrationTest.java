@@ -21,7 +21,7 @@ class GeoServiceHelperIntegrationTest {
   private GeoServiceRepository geoServiceRepository;
 
   @Test
-  void testGetLayerLegendUrlFromStyles() {
+  void test_get_layer_legend_url_from_styles() {
     GeoService service =
         geoServiceRepository.findById("demo").stream().findFirst().orElseThrow();
     GeoServiceLayer layer = service.findLayer("geomorfologie");

@@ -271,7 +271,7 @@ class UniqueValuesControllerIntegrationTest {
    */
   @Issue("https://b3partners.atlassian.net/browse/HTM-492")
   @Test
-  void unique_values_oracle_timestamp_HTM_492() throws Exception {
+  void unique_values_oracle_timestamp_htm_492() throws Exception {
     final String testUrl =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
     mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))

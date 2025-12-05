@@ -65,7 +65,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void listAllTasks() throws Exception {
+  void list_all_tasks() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void listTasksForExistingType() throws Exception {
+  void list_tasks_for_existing_type() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
             .accept(MediaType.APPLICATION_JSON))
@@ -135,7 +135,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void listTasksForNonExistentType() throws Exception {
+  void list_tasks_for_non_existent_type() throws Exception {
     mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, "does-not-exist")
             .accept(MediaType.APPLICATION_JSON))
@@ -149,7 +149,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void detailsOfTask() throws Exception {
+  void details_of_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
             .accept(MediaType.APPLICATION_JSON))
@@ -174,7 +174,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void startNonExistentTask() throws Exception {
+  void start_non_existent_task() throws Exception {
     mockMvc.perform(put(
                 adminBasePath + "/tasks/{type}/{uuid}/start",
                 TEST_TASK_TYPE,
@@ -189,7 +189,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void stopUnstoppableTask() throws Exception {
+  void stop_unstoppable_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
             .accept(MediaType.APPLICATION_JSON))
@@ -213,7 +213,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void deleteNonExistentTask() throws Exception {
+  void delete_non_existent_task() throws Exception {
     mockMvc.perform(delete(
                 adminBasePath + "/tasks/{type}/{uuid}",
                 TEST_TASK_TYPE,
@@ -229,7 +229,7 @@ class TaskAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(Integer.MAX_VALUE)
-  void deleteTask() throws Exception {
+  void delete_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
             .accept(MediaType.APPLICATION_JSON))
@@ -251,7 +251,7 @@ class TaskAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(Integer.MAX_VALUE)
-  void deleteSearchIndexTask() throws Exception {
+  void delete_search_index_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TaskType.INDEX.getValue())
             .accept(MediaType.APPLICATION_JSON))

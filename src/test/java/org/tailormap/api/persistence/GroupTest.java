@@ -26,7 +26,7 @@ class GroupTest {
   }
 
   @Test
-  void valid_GroupName() {
+  void valid_group_name() {
     Group group = new Group().setName("appGroups");
 
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
@@ -40,7 +40,7 @@ class GroupTest {
   }
 
   @Test
-  void blank_GroupName() {
+  void blank_group_name() {
     Group group = new Group().setName("");
 
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
@@ -49,7 +49,7 @@ class GroupTest {
   }
 
   @Test
-  void invalid_GroupName() {
+  void invalid_group_name() {
     Group group = new Group().setName("app Groups");
 
     Set<ConstraintViolation<Group>> violations = validator.validate(group);

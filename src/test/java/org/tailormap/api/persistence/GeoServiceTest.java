@@ -49,13 +49,13 @@ class GeoServiceTest {
   }
 
   @BeforeEach
-  void setGeoService() {
+  void setup() {
     geoService = new GeoService();
   }
 
   @ParameterizedTest(name = "#{index}: should sanitise url: {0}")
   @MethodSource("urlProvider")
-  void testSetUrl(final String input, final String expected) {
+  void test_set_url(final String input, final String expected) {
     geoService.setUrl(input);
     assertEquals(expected, geoService.getUrl(), () -> input + "not sanitised properly, expected " + expected);
   }

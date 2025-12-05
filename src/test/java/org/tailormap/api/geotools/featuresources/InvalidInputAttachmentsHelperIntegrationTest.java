@@ -29,7 +29,7 @@ class InvalidInputAttachmentsHelperIntegrationTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  void testInvalidAttachmentAttributes(String invalidInput) throws Exception {
+  void invalid_attachment_attributes(String invalidInput) throws Exception {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             "bak", featureSourceRepository.getByTitle("PostGIS").orElseThrow())
@@ -53,7 +53,7 @@ class InvalidInputAttachmentsHelperIntegrationTest {
   }
 
   @Test
-  void testNullFeatureType() {
+  void test_null_feature_type() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       AttachmentsHelper.createAttachmentTableForFeatureType(null);
     });

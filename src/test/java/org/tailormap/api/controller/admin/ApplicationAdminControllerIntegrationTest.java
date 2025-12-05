@@ -92,8 +92,7 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void testCreateApplications() throws Exception {
-
+  void create_applications() throws Exception {
     MvcResult result = mockMvc.perform(post(adminBasePath + "/applications")
             .contentType(MediaType.APPLICATION_JSON)
             .content(getTestApplicationJson(appName)))
@@ -116,7 +115,7 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void testCantCreateApplicationWithDuplicateName() throws Exception {
+  void cannot_create_application_with_duplicate_name() throws Exception {
     mockMvc.perform(post(adminBasePath + "/applications")
             .contentType(MediaType.APPLICATION_JSON)
             .content(getTestApplicationJson(appName)))
@@ -129,7 +128,7 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void testCantChangeApplicationNameToDuplicate() throws Exception {
+  void cannot_change_application_name_to_duplicate() throws Exception {
     mockMvc.perform(patch(adminBasePath + "/applications/" + createdAppId)
             .contentType(MediaType.APPLICATION_JSON)
             .content(getTestApplicationJson(otherAppName)))
@@ -142,7 +141,7 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void testChangeApplicationName() throws Exception {
+  void change_application_name() throws Exception {
     mockMvc.perform(patch(adminBasePath + "/applications/" + createdAppId)
             .contentType(MediaType.APPLICATION_JSON)
             .content(getTestApplicationJson("some-other-name")))
