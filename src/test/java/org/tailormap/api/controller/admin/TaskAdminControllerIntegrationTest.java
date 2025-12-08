@@ -20,9 +20,11 @@ import static org.tailormap.api.scheduling.Task.TYPE_KEY;
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +44,7 @@ import org.tailormap.api.scheduling.TaskType;
 @Stopwatch
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TaskAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
@@ -111,6 +114,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(1)
   void list_tasks_for_existing_type() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
@@ -228,7 +232,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @Order(Integer.MAX_VALUE)
+  @Order(Integer.MAX_VALUE - 1)
   void delete_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
@@ -236,7 +240,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(1))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andReturn();
 
     final String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
@@ -258,7 +262,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(2))
+        .andExpect(jsonPath("$.tasks.length()").value(1))
         .andReturn();
 
     final String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
