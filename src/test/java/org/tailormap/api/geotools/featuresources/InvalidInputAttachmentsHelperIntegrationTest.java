@@ -53,7 +53,7 @@ class InvalidInputAttachmentsHelperIntegrationTest {
   }
 
   @Test
-  void test_null_feature_type() {
+  void create_attachment_table_for_null_feature_type() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       AttachmentsHelper.createAttachmentTableForFeatureType(null);
     });

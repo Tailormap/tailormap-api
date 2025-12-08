@@ -43,7 +43,7 @@ class SearchIndexValidatorIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-  void test_wfs_feature_type() {
+  void wfs_feature_type() {
     featureSourceRepository
         .getByTitle("WFS for Test GeoServer")
         .ifPresentOrElse(
@@ -69,7 +69,7 @@ class SearchIndexValidatorIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-  void test_jdbc_feature_type() {
+  void jdbc_feature_type() {
     featureSourceRepository
         .getByTitle("PostGIS")
         .ifPresentOrElse(

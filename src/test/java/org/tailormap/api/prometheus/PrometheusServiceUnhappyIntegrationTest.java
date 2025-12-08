@@ -34,7 +34,7 @@ class PrometheusServiceUnhappyIntegrationTest {
   }
 
   @Test
-  void test_query_execution() {
+  void query_execution() {
     Exception exception =
         assertThrows(IOException.class, () -> prometheusService.executeQuery("scrape_duration_seconds"));
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));

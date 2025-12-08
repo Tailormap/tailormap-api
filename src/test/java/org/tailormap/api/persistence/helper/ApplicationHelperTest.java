@@ -56,7 +56,7 @@ class ApplicationHelperTest {
   ApplicationHelper applicationHelper;
 
   @Test
-  void test_app_with_crs_rd() {
+  void app_with_crs_rd() {
     Application a = new Application().setCrs("EPSG:28992");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);
@@ -77,7 +77,7 @@ class ApplicationHelperTest {
   }
 
   @Test
-  void test_app_with_crs_3857() {
+  void app_with_crs_3857() {
     Application a = new Application().setCrs("EPSG:3857");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);
@@ -98,7 +98,7 @@ class ApplicationHelperTest {
   }
 
   @Test
-  void test_app_with_crs_4326() {
+  void app_with_crs_4326() {
     Application a = new Application().setCrs("EPSG:4326");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);

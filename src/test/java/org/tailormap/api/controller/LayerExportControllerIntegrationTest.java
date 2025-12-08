@@ -219,7 +219,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+  void wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/export/download";
     mockMvc.perform(get(testUrl)
             .accept(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void test_invalid_output_format_not_accepted() throws Exception {
+  void invalid_output_format_not_accepted() throws Exception {
     final String testUrl = apiBasePath + layerBegroeidTerreindeelPostgis + "/export/download";
     mockMvc.perform(get(testUrl)
             .accept(MediaType.APPLICATION_JSON)

@@ -42,7 +42,7 @@ class UserControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void test_unauthenticated_get_user() throws Exception {
+  void unauthenticated_get_user() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
     mockMvc.perform(get(apiBasePath + "/user"))
@@ -56,7 +56,7 @@ class UserControllerIntegrationTest {
   }
 
   @Test
-  void test_authenticated_get_user() throws Exception {
+  void authenticated_get_user() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
     TailormapUserDetails principal = new TailormapUserDetails() {

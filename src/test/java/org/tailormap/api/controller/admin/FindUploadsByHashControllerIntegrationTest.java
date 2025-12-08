@@ -39,7 +39,7 @@ class FindUploadsByHashControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void test_upload_matches() throws Exception {
+  void validate_upload_matches() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
     String body =
         """

@@ -34,7 +34,7 @@ class JSR303ValidationIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void test_url_required() throws Exception {
+  void validate_url_required() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     String geoServicePOSTBody = new ObjectMapper()

@@ -40,7 +40,7 @@ class UserTest {
 
   /** Test that the password is not serialized. */
   @Test
-  void test_json_serialize() {
+  void json_serialize() {
     final User userToSerialize = new User()
         .setUsername("markimarks")
         .setPassword("{bcrypt}$2a$10$hOKiZqxsvDJXMN/LbYcOeeJwWtgkKvfv834P5RsouLFpl7a8e3am2");
@@ -51,7 +51,7 @@ class UserTest {
   }
 
   @Test
-  void test_json_deserialize_empty_password() {
+  void json_deserialize_empty_password() {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"\"}";
     assertThrows(
         InvalidPasswordException.class,
@@ -60,7 +60,7 @@ class UserTest {
   }
 
   @Test
-  void test_json_deserialize_valid_password() throws JsonProcessingException {
+  void json_deserialize_valid_password() throws JsonProcessingException {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"myValidSecret$@12\"}";
 
     User actualUser = this.mapper.readValue(jsonToDeserialize, User.class);

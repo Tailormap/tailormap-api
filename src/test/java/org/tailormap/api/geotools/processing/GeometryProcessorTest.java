@@ -112,7 +112,7 @@ class GeometryProcessorTest extends StaticTestData {
   }
 
   @Test
-  void test_linearize_curve_polygon_unsimplified() throws ParseException {
+  void linearize_curve_polygon_unsimplified() throws ParseException {
     final Geometry c = new WKTReader2().read(testData.getProperty("curvePolygon"));
     assertEquals(
         testData.getProperty("curvePolygonLinearized"),
@@ -121,7 +121,7 @@ class GeometryProcessorTest extends StaticTestData {
   }
 
   @Test
-  void don_not_simplify_multi_polygon() throws ParseException {
+  void do_not_simplify_multi_polygon() throws ParseException {
     final Geometry p = new WKTReader2().read(testData.getProperty("multiPolygon"));
     assertEquals(
         testData.getProperty("multiPolygon"),
@@ -130,7 +130,7 @@ class GeometryProcessorTest extends StaticTestData {
   }
 
   @Test
-  void test_linear_ring() throws ParseException {
+  void process_linear_ring() throws ParseException {
     final Geometry ring = new WKTReader2().read(testData.getProperty("linearRing"));
     assertEquals(
         testData.getProperty("lineString"),
@@ -139,7 +139,7 @@ class GeometryProcessorTest extends StaticTestData {
   }
 
   @Test
-  void test_json_output() throws ParseException {
+  void validate_json_output() throws ParseException {
     Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
     assertEquals(
         "{\"type\":\"Point\",\"coordinates\":[141247,458118]}",
@@ -159,7 +159,7 @@ class GeometryProcessorTest extends StaticTestData {
   }
 
   @Test
-  void test_wkt_input_output() {
+  void wkt_input_output() {
     assertEquals(
         testData.getProperty("RDpointWkt"),
         GeometryProcessor.geometryToWKT(GeometryProcessor.wktToGeometry(testData.getProperty("RDpointWkt"))));

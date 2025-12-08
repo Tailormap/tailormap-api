@@ -46,7 +46,7 @@ class FeatureTypeEventHandlerIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("titlesAndNamesForFeatureSourcesAndFeatureTypes")
-  void test_feature_type_event_handler_creates_attachment_tables(String fsTitle, String ftName) throws Exception {
+  void feature_type_event_handler_creates_attachment_tables(String fsTitle, String ftName) throws Exception {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             ftName, featureSourceRepository.getByTitle(fsTitle).orElseThrow())
@@ -87,7 +87,7 @@ class FeatureTypeEventHandlerIntegrationTest {
 
   @ParameterizedTest
   @MethodSource("titlesAndNamesForFeatureSourcesAndFeatureTypes")
-  void test_feature_type_event_handler_no_attachment_attributes(String fsTitle, String ftName) {
+  void feature_type_event_handler_no_attachment_attributes(String fsTitle, String ftName) {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             ftName, featureSourceRepository.getByTitle(fsTitle).orElseThrow())

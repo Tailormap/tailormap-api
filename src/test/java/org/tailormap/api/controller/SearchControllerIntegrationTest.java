@@ -126,7 +126,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void test_layer_does_not_exist() throws Exception {
+  void get_layer_does_not_exist() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:doesnotexist/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void test_layer_without_feature_type() throws Exception {
+  void get_layer_without_feature_type() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void test_bad_request_query() throws Exception {
+  void get_bad_request_query() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void test_spatial_query_distance() throws Exception {
+  void get_spatial_query_distance() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
   }
 
   @Test
-  void test_spatial_query_distance_with_bbox() throws Exception {
+  void get_spatial_query_distance_with_bbox() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -238,7 +238,7 @@ A searchFields:655, 1
 (*A 655*), 1
 (*A 65*), 8
 """)
-  void test_aanduiding(String qTerm, int totalCount) throws Exception {
+  void get_aanduiding(String qTerm, int totalCount) throws Exception {
     final String url = apiBasePath + layerKadastraalPerceel + "/search";
     final int documentsCount = Math.min(totalCount, 10);
 
@@ -261,7 +261,7 @@ A searchFields:655, 1
   }
 
   @Test
-  void test_unquoted_whitespace() throws Exception {
+  void get_unquoted_whitespace() throws Exception {
     final String url = apiBasePath + layerKadastraalPerceel + "/search";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))

@@ -16,7 +16,7 @@ class TMJobDataMapTest {
 
   /** Test the creation using a map with missing required parameters. */
   @Test
-  void test_invalid_map() {
+  void invalid_map() {
     assertThrows(
         IllegalArgumentException.class,
         () -> new TMJobDataMap(Map.of(Task.TYPE_KEY, "test")),
@@ -25,7 +25,7 @@ class TMJobDataMapTest {
 
   /** Test the creation using a map with all required parameters. */
   @Test
-  void test_map() {
+  void map() {
     TMJobDataMap jobDataMap = new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test"));
     assertNotNull(jobDataMap, "JobDataMap should not be null");
     assertEquals("NONE", jobDataMap.getState().name(), "State should be NONE");
@@ -34,7 +34,7 @@ class TMJobDataMapTest {
 
   /** Test the creation using a map with required parameters and negative priority. */
   @Test
-  void test_map_with_priority() {
+  void map_with_priority() {
     TMJobDataMap jobDataMap =
         new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test", Task.PRIORITY_KEY, -1));
     assertNotNull(jobDataMap, "JobDataMap should not be null");

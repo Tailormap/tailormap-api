@@ -276,7 +276,7 @@ class AttachmentsHelperIntegrationTest {
   @Order(4)
   @Test
   @DisplayName("Get attachments for a list of features of a type.")
-  void test_list_attachments_for_features_by_feature_id() {
+  void list_attachments_for_features_by_feature_id() {
     try {
       assertNotNull(featurePrimaryKey);
       // No need to convert to Comparable, just use as is

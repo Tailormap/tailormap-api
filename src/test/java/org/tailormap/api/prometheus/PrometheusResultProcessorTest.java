@@ -29,7 +29,7 @@ class PrometheusResultProcessorTest {
   private final PrometheusResultProcessor processor = new PrometheusResultProcessor();
 
   @Test
-  void test_combined_query_results_application() {
+  void combined_query_results_application() {
     final String jsonResponse =
         """
 {
@@ -142,7 +142,7 @@ class PrometheusResultProcessorTest {
   }
 
   @Test
-  void test_combined_query_results_application_layers() {
+  void combined_query_results_application_layers() {
     final String jsonResponse =
         """
 {
