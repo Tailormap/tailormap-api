@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">void</strong> checkPrometheusMetricsEndpointAfterAppRequest() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">void</strong> check_prometheus_metrics_endpoint_after_app_request() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// generate some application-use metrics by accessing the ViewerController</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">final</strong> String path = apiBasePath + <span class="jxr_string">"/app/default"</span>;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))

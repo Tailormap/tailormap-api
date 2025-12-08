@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>        username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">void</strong> testUpdateApplicationComponents() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">void</strong> post_update_application_components() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      ObjectMapper objectMapper = <strong class="jxr_keyword">new</strong> ObjectMapper();
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>

@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    @Order(2)
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">void</strong> testApplicationDeleted() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">void</strong> application_deleted() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      Application application = applicationRepository.findByName(<span class="jxr_string">"default"</span>);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      assertEquals(1, application.getId(), <span class="jxr_string">"default application should have id 1"</span>);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      assumeTrue(prometheusService.isPrometheusAvailable(), <span class="jxr_string">"Prometheus must be available for this test"</span>);
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    @Order(1)
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">void</strong> testAllAppLayersRemoved() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">void</strong> all_app_layers_removed() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      Application application = applicationRepository.findById(1L).orElseThrow();
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      assumeTrue(<span class="jxr_string">"default"</span>.equals(application.getName()), <span class="jxr_string">"Application with id 1 should be 'default'"</span>);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      assumeTrue(prometheusService.isPrometheusAvailable(), <span class="jxr_string">"Prometheus must be available for this test"</span>);

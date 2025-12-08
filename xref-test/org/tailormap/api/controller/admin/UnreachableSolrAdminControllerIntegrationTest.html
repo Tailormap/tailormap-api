@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>    @Order(1)
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">void</strong> failingPingTest() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">void</strong> failing_ping_test() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      mockMvc.perform(get(adminBasePath + <span class="jxr_string">"/index/ping"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          .andExpect(status().isInternalServerError())
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    @Order(2)
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">void</strong> failClearingIndex() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">void</strong> fail_clearing_index() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      mockMvc.perform(delete(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          .andExpect(status().isInternalServerError())
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    @Order(3)
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">void</strong> failRecreatingIndex() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">void</strong> fail_recreating_index() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      mockMvc.perform(put(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          .andExpect(status().isInternalServerError())
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))

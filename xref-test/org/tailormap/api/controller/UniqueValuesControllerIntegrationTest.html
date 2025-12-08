@@ -106,7 +106,7 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Test
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> test_hidden_attribute() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> get_hidden_attribute() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         + <span class="jxr_string">"/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/ligtInLandCode"</span>;
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -184,7 +184,7 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>   }
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>   @RetryingTest(2)
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>   <em class="jxr_comment">// https://b3partners.atlassian.net/browse/HTM-758</em>
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>   @Issue(<span class="jxr_string">"https://b3partners.atlassian.net/browse/HTM-758"</span>)
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>   <strong class="jxr_keyword">void</strong> unique_values_from_wfs() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + provinciesWfsUrl;
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     MvcResult result = mockMvc.perform(
@@ -279,7 +279,7 @@
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>   @Issue(<span class="jxr_string">"https://b3partners.atlassian.net/browse/HTM-492"</span>)
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>   @Test
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>   <strong class="jxr_keyword">void</strong> unique_values_oracle_timestamp_HTM_492() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>   <strong class="jxr_keyword">void</strong> unique_values_oracle_timestamp_htm_492() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>     <strong class="jxr_keyword">final</strong> String testUrl =
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         apiBasePath + <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE"</span>;
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>     mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
@@ -291,7 +291,7 @@
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>   }
 <a class="jxr_linenumber" name="L284" href="#L284">284</a> 
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>   @Test
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>   <strong class="jxr_keyword">void</strong> test_wms_secured_proxy_not_in_<strong class="jxr_keyword">public</strong>_app() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>   <strong class="jxr_keyword">void</strong> get_wms_secured_proxy_not_in_<strong class="jxr_keyword">public</strong>_app() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>     <strong class="jxr_keyword">final</strong> String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + <span class="jxr_string">"/unique/naam"</span>;
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>     mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>         .andExpect(status().isForbidden());

@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">void</strong> testIngestSingleLayerSwitchedOnMetric() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">void</strong> ingest_single_layer_switched_on_metric() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          + <span class="jxr_string">"/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/tailormap_applayer_switched_on"</span>;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -86,7 +86,7 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">void</strong> testIngestMultipleLayerSwitchedOnMetric() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">void</strong> ingest_multiple_layer_switched_on_metric() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          + <span class="jxr_string">"/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel,lyr:openbasiskaart:osm/tailormap_applayer_switched_on"</span>;
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -115,7 +115,7 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>   }
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Test
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">void</strong> testIngestDisallowedMetric() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">void</strong> ingest_disallowed_metric() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         + <span class="jxr_string">"/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/not_allowed"</span>;
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>   }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>   @Test
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">void</strong> testIngestTestMetric() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">void</strong> ingest_test_metric() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         + <span class="jxr_string">"/app/default/metrics/ingest/lyr:snapshot-geoserver:postgis:begroeidterreindeel/test_metric"</span>;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>   }
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>   @Test
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">void</strong> testIngestMetricWithInvalidLayer() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">void</strong> ingest_metric_with_invalid_layer() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         apiBasePath + <span class="jxr_string">"/app/default/metrics/ingest/lyr:service:does-not-exist/tailormap_applayer_switched_on"</span>;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>   @Test
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>   <strong class="jxr_keyword">void</strong> testIngestMetricWithoutLayers() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   <strong class="jxr_keyword">void</strong> ingest_metric_without_layers() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/metrics/ingest/tailormap_applayer_switched_on"</span>;
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         .andExpect(status().is4xxClientError());

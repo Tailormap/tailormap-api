@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>        username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">void</strong> testUrlRequired() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">void</strong> validate_url_required() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      String geoServicePOSTBody = <strong class="jxr_keyword">new</strong> ObjectMapper()

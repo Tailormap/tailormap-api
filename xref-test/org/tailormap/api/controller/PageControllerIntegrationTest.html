@@ -45,13 +45,13 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    @Test
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">void</strong> testPageNotFound() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">void</strong> get_page_does_not_exist() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/page/does-not-exist"</span>;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>      mockMvc.perform(get(url).with(setServletPath(url))).andExpect(status().isNotFound());
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Test
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">void</strong> testHomePageWithFilteredTile() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">void</strong> get_home_page_with_filtered_tile() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/page"</span>;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          .andExpect(status().isOk())
@@ -83,7 +83,7 @@
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>        authorities = {<span class="jxr_string">"admin"</span>})
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> testFilteredTileShownWhenAuthorized() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> get_filtered_tile_shown_when_authorized() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/page"</span>;
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          .andExpect(status().isOk())
@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>    }
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Test
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">void</strong> testMenuItems() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">void</strong> get_menu_items() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/page/home"</span>;
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      String aboutItemJsonPath = <span class="jxr_string">"$.menu[?(@.label == 'About')].pageUrl"</span>;
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>      String b3pWebsiteItemJsonPath = <span class="jxr_string">"$.menu[?(@.label == 'B3Partners website')]"</span>;

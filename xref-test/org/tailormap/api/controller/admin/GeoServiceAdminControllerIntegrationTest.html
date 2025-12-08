@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @WithMockUser(
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>        username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">void</strong> refreshCapabilities() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">void</strong> refresh_capabilities() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      String body = getResourceString(wmsTestCapabilities);
@@ -155,7 +155,7 @@
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>       username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>   <strong class="jxr_keyword">void</strong> refreshCapabilitiesSendsJsonValidationErrors() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   <strong class="jxr_keyword">void</strong> refresh_capabilities_sends_json_validation_errors() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
@@ -189,7 +189,7 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>       username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>   <strong class="jxr_keyword">void</strong> loadServiceWithServiceException() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>   <strong class="jxr_keyword">void</strong> load_service_with_service_exception() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> 
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> 
@@ -237,7 +237,7 @@
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>       username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>   <strong class="jxr_keyword">void</strong> loadServiceWithWrongCredentials() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>   <strong class="jxr_keyword">void</strong> load_service_with_wrong_credentials() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L235" href="#L235">235</a> 
@@ -267,7 +267,7 @@
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>       username = <span class="jxr_string">"admin"</span>,
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>   <strong class="jxr_keyword">void</strong> checkCorsHeaderIsSaved() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>   <strong class="jxr_keyword">void</strong> check_cors_header_is_saved() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L263" href="#L263">263</a> 
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 

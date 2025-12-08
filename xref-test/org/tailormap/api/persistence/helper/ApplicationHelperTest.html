@@ -64,7 +64,7 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>    ApplicationHelper applicationHelper;
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    @Test
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">void</strong> testAppWithCrsRD() {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">void</strong> app_with_crs_rd() {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      Application a = <strong class="jxr_keyword">new</strong> Application().setCrs(<span class="jxr_string">"EPSG:28992"</span>);
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      MapResponse mr = <strong class="jxr_keyword">new</strong> MapResponse();
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      applicationHelper.setCrsAndBounds(a, mr);
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>    @Test
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">void</strong> testAppWithCrs3857() {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">void</strong> app_with_crs_3857() {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      Application a = <strong class="jxr_keyword">new</strong> Application().setCrs(<span class="jxr_string">"EPSG:3857"</span>);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      MapResponse mr = <strong class="jxr_keyword">new</strong> MapResponse();
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      applicationHelper.setCrsAndBounds(a, mr);
@@ -106,7 +106,7 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Test
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> testAppWithCrs4326() {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> app_with_crs_4326() {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     Application a = <strong class="jxr_keyword">new</strong> Application().setCrs(<span class="jxr_string">"EPSG:4326"</span>);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     MapResponse mr = <strong class="jxr_keyword">new</strong> MapResponse();
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     applicationHelper.setCrsAndBounds(a, mr);

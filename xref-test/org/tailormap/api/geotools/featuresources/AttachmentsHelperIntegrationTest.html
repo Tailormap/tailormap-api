@@ -127,7 +127,7 @@
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>   }
 <a class="jxr_linenumber" name="L120" href="#L120">120</a> 
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>   @BeforeEach
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>   <strong class="jxr_keyword">void</strong> setUp() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   <strong class="jxr_keyword">void</strong> setup() <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     featureType = featureTypeRepository
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         .getTMFeatureTypeByNameAndFeatureSource(
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>             featureTypeName,
@@ -159,7 +159,7 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>   }
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>   @AfterEach
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> tearDown() <strong class="jxr_keyword">throws</strong> SQLException {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> teardown() <strong class="jxr_keyword">throws</strong> SQLException {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">if</strong> (ds != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>       ds.dispose();
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     }
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   @Order(1)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>   @Test
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>   @DisplayName(<span class="jxr_string">"Create attachments table for feature type."</span>)
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">void</strong> createAttachmentsTableForFeatureType() {
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">void</strong> create_attachments_table_<strong class="jxr_keyword">for</strong>_feature_type() {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>       AttachmentsHelper.createAttachmentTableForFeatureType(featureType);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
@@ -192,7 +192,7 @@
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>   @Test
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>   @DisplayName(<span class="jxr_string">"Add an attachment to the first feature of a type."</span>)
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>   @WithMockUser(username = <span class="jxr_string">"unittestuser"</span>)
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>   <strong class="jxr_keyword">void</strong> addAttachmentToFirstFeatureOfFeatureType() {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>   <strong class="jxr_keyword">void</strong> add_attachment_to_first_feature_of_feature_type() {
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>       SimpleFeatureSource fs = ds.getFeatureSource(featureTypeName);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>       Query query = <strong class="jxr_keyword">new</strong> Query(featureTypeName);
@@ -238,7 +238,7 @@
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>   @Order(3)
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>   @Test
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>   @DisplayName(<span class="jxr_string">"List all attachments for a single feature of a type."</span>)
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>   <strong class="jxr_keyword">void</strong> listAttachmentsForFeatureType() {
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>   <strong class="jxr_keyword">void</strong> list_attachments_<strong class="jxr_keyword">for</strong>_feature_type() {
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>       List&lt;AttachmentMetadata&gt; attachments =
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>           AttachmentsHelper.listAttachmentsForFeature(featureType, featurePrimaryKey);
@@ -256,7 +256,7 @@
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>   @Order(3)
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>   @Test
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>   @DisplayName(<span class="jxr_string">"Retrieve binary attachment from feature type."</span>)
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>   <strong class="jxr_keyword">void</strong> retrieveBinaryAttachmentFromFeatureType() {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>   <strong class="jxr_keyword">void</strong> retrieve_binary_attachment_from_feature_type() {
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>       AttachmentsHelper.AttachmentWithBinary retrieved =
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>           AttachmentsHelper.getAttachment(featureType, attachmentAttributePKvalue);
@@ -284,7 +284,7 @@
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>   @Order(4)
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>   @Test
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>   @DisplayName(<span class="jxr_string">"Get attachments for a list of features of a type."</span>)
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>   <strong class="jxr_keyword">void</strong> testListAttachmentsForFeaturesByFeatureId() {
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>   <strong class="jxr_keyword">void</strong> list_attachments_<strong class="jxr_keyword">for</strong>_features_by_feature_id() {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>       assertNotNull(featurePrimaryKey);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>       <em class="jxr_comment">// No need to convert to Comparable, just use as is</em>
@@ -313,7 +313,7 @@
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>   @Order(Integer.MAX_VALUE)
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>   @Test
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>   @DisplayName(<span class="jxr_string">"Delete attachments table for feature type."</span>)
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>   <strong class="jxr_keyword">void</strong> deleteAttachmentsTableForFeatureType() <strong class="jxr_keyword">throws</strong> SQLException, IOException {
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>   <strong class="jxr_keyword">void</strong> delete_attachments_table_<strong class="jxr_keyword">for</strong>_feature_type() <strong class="jxr_keyword">throws</strong> SQLException, IOException {
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
 <a class="jxr_linenumber" name="L311" href="#L311">311</a> 

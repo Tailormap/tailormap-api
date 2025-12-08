@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>    <strong class="jxr_keyword">private</strong> String counterLastUpdatedQuery;
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>    @BeforeAll
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> checkIfPrometheusIsUpOnLocalhost() {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> check_prometheus_is_up() {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      ResponseEntity&lt;String&gt; response =
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">new</strong> RestTemplate().getForEntity(<span class="jxr_string">"http://localhost:9090/query?query=up"</span>, String.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      assumeTrue(
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>    @Tag(<span class="jxr_string">"prometheus-service-testcase"</span>)
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>    @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">void</strong> prometheusAppCountersOver90days() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">void</strong> prometheus_app_counters_over_90days() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      ResponseEntity&lt;String&gt; response = <strong class="jxr_keyword">new</strong> RestTemplate()
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          .getForEntity(
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>              prometheusUrl + <span class="jxr_string">"/query?query="</span> + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, <span class="jxr_string">"90"</span>),
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Tag(<span class="jxr_string">"prometheus-service-testcase"</span>)
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">void</strong> prometheusAppCountersLastUpdated() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">void</strong> prometheus_app_counters_last_updated() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     ResponseEntity&lt;String&gt; response = <strong class="jxr_keyword">new</strong> RestTemplate()
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         .getForEntity(
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>             prometheusUrl + <span class="jxr_string">"/query?query="</span>
@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>   @Tag(<span class="jxr_string">"prometheus-service-testcase"</span>)
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>   <strong class="jxr_keyword">void</strong> prometheusAppCountersCombinedWithOr() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>   <strong class="jxr_keyword">void</strong> prometheus_app_counters_combined_with_or() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">final</strong> String completeQuery = <span class="jxr_string">"label_replace("</span> + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, <span class="jxr_string">"90"</span>)
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         + <span class="jxr_string">", \&quot;type\&quot;, \&quot;totalCount\&quot;, \&quot;__name__\&quot;, \&quot;.*\&quot;)"</span>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         + <span class="jxr_string">" or label_replace("</span> + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, <span class="jxr_string">"90"</span>)
@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   @Tag(<span class="jxr_string">"prometheus-service-testcase"</span>)
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>   <strong class="jxr_keyword">void</strong> prometheusAppCountersSeparateQueriedCombinedResults() {
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>   <strong class="jxr_keyword">void</strong> prometheus_app_counters_separate_queried_combined_results() {
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     ResponseEntity&lt;String&gt; response = <strong class="jxr_keyword">new</strong> RestTemplate()
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>         .getForEntity(
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>             prometheusUrl + <span class="jxr_string">"/query?query="</span> +

@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>    }
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    @Test
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">void</strong> testUnAuthenticatedDelete() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">void</strong> unauthenticated_delete() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          + begroeidterreindeelUrlPostgis
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          + <span class="jxr_string">"/"</span>
@@ -104,7 +104,7 @@
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>    }
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    @Test
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>    <strong class="jxr_keyword">void</strong> testUnAuthenticatedPost() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>    <strong class="jxr_keyword">void</strong> unauthenticated_post() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeelUrlPostgis;
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     mockMvc.perform(post(url)
@@ -119,7 +119,7 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>   }
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> 
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>   @Test
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">void</strong> testUnAuthenticatedPatch() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">void</strong> unauthenticated_patch() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     mockMvc.perform(patch(url)
@@ -137,7 +137,7 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>   <strong class="jxr_keyword">void</strong> testNonEditablePatch() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   <strong class="jxr_keyword">void</strong> non_editable_patch() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         + begroeidterreindeelUrlPostgisNonEditable
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         + <span class="jxr_string">"/"</span>
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>   <strong class="jxr_keyword">void</strong> testPatchNonExistentAttribute() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   <strong class="jxr_keyword">void</strong> patch_non_existent_attribute() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     mockMvc.perform(patch(url)
@@ -182,7 +182,7 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>   <strong class="jxr_keyword">void</strong> testPatchHiddenAttribute() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>   <strong class="jxr_keyword">void</strong> patch_hidden_attribute() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
@@ -211,7 +211,7 @@
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>   <strong class="jxr_keyword">void</strong> testPatchHiddenAttributeInAppLayerSettings() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>   <strong class="jxr_keyword">void</strong> patch_hidden_attribute_in_app_layer_settings() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> 
@@ -239,7 +239,7 @@
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>   <strong class="jxr_keyword">void</strong> testPatchReadOnlyAttribute() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>   <strong class="jxr_keyword">void</strong> patch_read_only_attribute() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L237" href="#L237">237</a> 
@@ -268,7 +268,7 @@
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>       authorities = {ADMIN})
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>   @Order(1)
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>   <strong class="jxr_keyword">void</strong> testPostPG() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>   <strong class="jxr_keyword">void</strong> post_pg_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeelUrlPostgis;
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>     <strong class="jxr_keyword">final</strong> String gmlid = <span class="jxr_string">"aaa"</span>
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>         + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>)
@@ -320,7 +320,7 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>       authorities = {ADMIN})
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>   @Order(10)
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>   <strong class="jxr_keyword">void</strong> testDuplicatePrimaryKeyPG() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>   <strong class="jxr_keyword">void</strong> post_duplicate_primary_key_pg() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeelUrlPostgis;
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>     <strong class="jxr_keyword">final</strong> String gmlid = <span class="jxr_string">"aaa"</span>
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>         + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>)
@@ -363,7 +363,7 @@
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>   <strong class="jxr_keyword">void</strong> testPostMsSql() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>   <strong class="jxr_keyword">void</strong> post_mssql_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + wegdeelUrlSqlserver;
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">final</strong> String gmlid = <span class="jxr_string">"b3p"</span>
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>         + StaticTestData.get(<span class="jxr_string">"wegdeel__fid_edit"</span>)
@@ -415,7 +415,7 @@
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>   <strong class="jxr_keyword">void</strong> testPostOrcl() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>   <strong class="jxr_keyword">void</strong> post_oracle_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle;
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">final</strong> String gmlid = <span class="jxr_string">"b3p"</span>
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>         + StaticTestData.get(<span class="jxr_string">"waterdeel__fid_edit"</span>)
@@ -462,7 +462,7 @@
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>   <strong class="jxr_keyword">void</strong> testPatchPG() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>   <strong class="jxr_keyword">void</strong> patch_pg_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>     <strong class="jxr_keyword">final</strong> String url =
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>     mockMvc.perform(patch(url)
@@ -494,7 +494,7 @@
 <a class="jxr_linenumber" name="L486" href="#L486">486</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>   <strong class="jxr_keyword">void</strong> testPatchForeignCRSPG() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>   <strong class="jxr_keyword">void</strong> patch_foreign_crs_pg_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + osm_polygonUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"osm_polygon__fid_edit"</span>);
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     <strong class="jxr_keyword">final</strong> MvcResult result = mockMvc.perform(patch(url)
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>             .accept(MediaType.APPLICATION_JSON)
@@ -526,192 +526,190 @@
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>   @WithMockUser(
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>       username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>   <strong class="jxr_keyword">void</strong> testPostForeignCRSPG() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>   <strong class="jxr_keyword">void</strong> post_foreign_crs_pg_feature() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>     <strong class="jxr_keyword">final</strong> String __fid = StaticTestData.get(<span class="jxr_string">"osm_polygon__fid_edit"</span>) + <span class="jxr_string">"1234"</span>;
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>     <strong class="jxr_keyword">final</strong> String osm_id = __fid.replace(<span class="jxr_string">"osm_polygon."</span>, <span class="jxr_string">""</span>);
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + osm_polygonUrlPostgis;
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">final</strong> MvcResult result = mockMvc.perform(post(url)
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>             .accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>             .with(setServletPath(url))
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>             .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>             .content(<span class="jxr_string">"{\&quot;__fid\&quot;: \&quot;"</span>
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>                 + __fid
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 + <span class="jxr_string">"\&quot;,\&quot;attributes\&quot; : { \&quot;osm_id\&quot;:"</span>
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>                 + osm_id
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>                 + <span class="jxr_string">",\&quot;building\&quot;:\&quot;abandoned industrial complex\&quot;, \&quot;way\&quot; : \&quot;"</span>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>                 + StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>)
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>                 + <span class="jxr_string">"\&quot;}}"</span>))
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(__fid))
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.building"</span>).value(<span class="jxr_string">"abandoned industrial complex"</span>))
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.z_order"</span>).isEmpty())
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         .andReturn();
-<a class="jxr_linenumber" name="L542" href="#L542">542</a> 
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>     <em class="jxr_comment">// check geometry equality</em>
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>     <strong class="jxr_keyword">final</strong> String body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>     <strong class="jxr_keyword">final</strong> Geometry inputGeometry =
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>         GeometryProcessor.wktToGeometry(StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>));
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>     <strong class="jxr_keyword">final</strong> Geometry geometry = GeometryProcessor.wktToGeometry(JsonPath.read(body, <span class="jxr_string">"$.geometry"</span>));
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>     assertTrue(geometry.equalsExact(inputGeometry, 1.0), <span class="jxr_string">"Geometry is not equal"</span>);
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>     <strong class="jxr_keyword">final</strong> Geometry way = GeometryProcessor.wktToGeometry(JsonPath.read(body, <span class="jxr_string">"$.attributes.way"</span>));
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>     assertTrue(way.equalsExact(inputGeometry, 1.0), <span class="jxr_string">"Geometry is not equal"</span>);
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>   }
-<a class="jxr_linenumber" name="L552" href="#L552">552</a> 
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>   @Test
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>   <strong class="jxr_keyword">void</strong> testPatchOrcl() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"waterdeel__fid_edit"</span>);
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>     mockMvc.perform(patch(url)
-<a class="jxr_linenumber" name="L560" href="#L560">560</a>             .accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>             .with(setServletPath(url))
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>             .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>             .content(<span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;INONDERZOEK\&quot;:true,\&quot;CLASS\&quot;:\&quot;woeste bergbeek\&quot;,\&quot;GEOM\&quot;:\&quot;"</span>
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>                 + StaticTestData.get(<span class="jxr_string">"waterdeel__edit_geom"</span>)
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>                 + <span class="jxr_string">"\&quot;}}"</span>))
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L567" href="#L567">567</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(StaticTestData.get(<span class="jxr_string">"waterdeel__fid_edit"</span>)))
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>         .andExpect(jsonPath(<span class="jxr_string">"$.geometry"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.GEOM"</span>).value(StaticTestData.get(<span class="jxr_string">"waterdeel__edit_geom"</span>)))
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.INONDERZOEK"</span>).value(<span class="jxr_string">"true"</span>))
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.CLASS"</span>).value(<span class="jxr_string">"woeste bergbeek"</span>));
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>   }
-<a class="jxr_linenumber" name="L574" href="#L574">574</a> 
-<a class="jxr_linenumber" name="L575" href="#L575">575</a>   @Test
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>   <strong class="jxr_keyword">void</strong> testPatchMsSql() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + wegdeelUrlSqlserver + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"wegdeel__fid_edit"</span>);
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>     mockMvc.perform(patch(url)
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>             .accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L583" href="#L583">583</a>             .with(setServletPath(url))
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>             .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>             .content(
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>                 <span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;inonderzoek\&quot;:true,\&quot;surfacematerial\&quot;:\&quot;weggemaaid grasland\&quot;,\&quot;geom\&quot;:\&quot;"</span>
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>                     + StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>                     + <span class="jxr_string">"\&quot;}}"</span>))
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__fid_edit"</span>)))
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>         .andExpect(jsonPath(<span class="jxr_string">"$.geometry"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)))
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.geom"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)))
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.inonderzoek"</span>).value(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.surfacematerial"</span>).value(<span class="jxr_string">"weggemaaid grasland"</span>));
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>   }
-<a class="jxr_linenumber" name="L597" href="#L597">597</a> 
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>   @Test
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>   <strong class="jxr_keyword">void</strong> testPatchWFS() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + provinciesWFS + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"utrecht__fid"</span>);
-<a class="jxr_linenumber" name="L604" href="#L604">604</a>     mockMvc.perform(patch(url)
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>             .content(<span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;naam\&quot;: \&quot;Utereg\&quot;,\&quot;code\&quot;:\&quot;11\&quot;}}"</span>)
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>             .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>             .accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L608" href="#L608">608</a>             .with(setServletPath(url)))
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>         .andExpect(status().is4xxClientError());
-<a class="jxr_linenumber" name="L610" href="#L610">610</a>   }
-<a class="jxr_linenumber" name="L611" href="#L611">611</a> 
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>   @Test
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L614" href="#L614">614</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L616" href="#L616">616</a>   <strong class="jxr_keyword">void</strong> testGetIsUnsupported() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L617" href="#L617">617</a>     <strong class="jxr_keyword">final</strong> String url =
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>         .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>         .andExpect(status().is(405));
-<a class="jxr_linenumber" name="L622" href="#L622">622</a>   }
-<a class="jxr_linenumber" name="L623" href="#L623">623</a> 
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>   @Test
-<a class="jxr_linenumber" name="L625" href="#L625">625</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>   <strong class="jxr_keyword">void</strong> testPutIsUnsupported() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L629" href="#L629">629</a>     <strong class="jxr_keyword">final</strong> String url =
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>         .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>         .andExpect(status().is(405));
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>   }
-<a class="jxr_linenumber" name="L635" href="#L635">635</a> 
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>   @Test
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>   <strong class="jxr_keyword">void</strong> testDeleteWhenLayerDoesNotExist() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/layer/lyr:doesnotexist:doesnotexist/edit/feature/does.not.1"</span>;
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>         .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>         .andExpect(status().is(404));
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>   }
-<a class="jxr_linenumber" name="L646" href="#L646">646</a> 
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>   @Test
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>   <strong class="jxr_keyword">void</strong> testDeleteNonExistentFeature() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + <span class="jxr_string">"xxxxxx"</span>;
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>     <em class="jxr_comment">// geotools does not report back that the feature does not exist, nor the number of deleted</em>
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <em class="jxr_comment">// features, no error === success</em>
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>         .andExpect(status().is(204));
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>   }
-<a class="jxr_linenumber" name="L659" href="#L659">659</a> 
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>   @Test
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>   <strong class="jxr_keyword">void</strong> testDeleteExistingFeatureMsSql() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + wegdeelUrlSqlserver + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"wegdeel__fid_delete"</span>);
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L668" href="#L668">668</a>         .andExpect(status().is(204));
-<a class="jxr_linenumber" name="L669" href="#L669">669</a>   }
-<a class="jxr_linenumber" name="L670" href="#L670">670</a> 
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>   @Test
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>   <strong class="jxr_keyword">void</strong> testDeleteExistingFeaturePG() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>         + begroeidterreindeelUrlPostgis
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>         + <span class="jxr_string">"/"</span>
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>         + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_delete"</span>);
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>         .andExpect(status().is(204));
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>   }
-<a class="jxr_linenumber" name="L684" href="#L684">684</a> 
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>   @Test
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>   <strong class="jxr_keyword">void</strong> testDeleteExistingFeatureOrcl() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"waterdeel__fid_delete"</span>);
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L692" href="#L692">692</a>         .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>         .andExpect(status().is(204));
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>   }
-<a class="jxr_linenumber" name="L695" href="#L695">695</a> 
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>   @Test
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>       username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>       authorities = {ADMIN})
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>   <strong class="jxr_keyword">void</strong> testDeleteExistingFeatureWFS() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + provinciesWFS + StaticTestData.get(<span class="jxr_string">"utrecht__fid"</span>);
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>         .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>         .andExpect(status().is(400));
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>   }
-<a class="jxr_linenumber" name="L706" href="#L706">706</a> }
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">final</strong> String json = String.format(
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>         <span class="jxr_string">"{\&quot;__fid\&quot;: \&quot;%s\&quot;,\&quot;attributes\&quot; : { \&quot;osm_id\&quot;:%s,\&quot;building\&quot;:\&quot;abandoned industrial complex\&quot;, \&quot;way\&quot; : \&quot;%s\&quot;}}"</span>,
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>         __fid, osm_id, StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>));
+<a class="jxr_linenumber" name="L528" href="#L528">528</a> 
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>     <strong class="jxr_keyword">final</strong> MvcResult result = mockMvc.perform(post(url)
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>             .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>             .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>             .content(json))
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(__fid))
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.building"</span>).value(<span class="jxr_string">"abandoned industrial complex"</span>))
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.z_order"</span>).isEmpty())
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         .andReturn();
+<a class="jxr_linenumber" name="L540" href="#L540">540</a> 
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>     <em class="jxr_comment">// check geometry equality</em>
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>     <strong class="jxr_keyword">final</strong> String body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>     <strong class="jxr_keyword">final</strong> Geometry inputGeometry =
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         GeometryProcessor.wktToGeometry(StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>));
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>     <strong class="jxr_keyword">final</strong> Geometry geometry = GeometryProcessor.wktToGeometry(JsonPath.read(body, <span class="jxr_string">"$.geometry"</span>));
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>     assertTrue(geometry.equalsExact(inputGeometry, 1.0), <span class="jxr_string">"Geometry is not equal"</span>);
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>     <strong class="jxr_keyword">final</strong> Geometry way = GeometryProcessor.wktToGeometry(JsonPath.read(body, <span class="jxr_string">"$.attributes.way"</span>));
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>     assertTrue(way.equalsExact(inputGeometry, 1.0), <span class="jxr_string">"Geometry is not equal"</span>);
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>   }
+<a class="jxr_linenumber" name="L550" href="#L550">550</a> 
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>   @Test
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>   <strong class="jxr_keyword">void</strong> patch_oracle_feature() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"waterdeel__fid_edit"</span>);
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>     mockMvc.perform(patch(url)
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>             .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>             .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>             .content(<span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;INONDERZOEK\&quot;:true,\&quot;CLASS\&quot;:\&quot;woeste bergbeek\&quot;,\&quot;GEOM\&quot;:\&quot;"</span>
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>                 + StaticTestData.get(<span class="jxr_string">"waterdeel__edit_geom"</span>)
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>                 + <span class="jxr_string">"\&quot;}}"</span>))
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(StaticTestData.get(<span class="jxr_string">"waterdeel__fid_edit"</span>)))
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>         .andExpect(jsonPath(<span class="jxr_string">"$.geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.GEOM"</span>).value(StaticTestData.get(<span class="jxr_string">"waterdeel__edit_geom"</span>)))
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.INONDERZOEK"</span>).value(<span class="jxr_string">"true"</span>))
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.CLASS"</span>).value(<span class="jxr_string">"woeste bergbeek"</span>));
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>   }
+<a class="jxr_linenumber" name="L572" href="#L572">572</a> 
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>   @Test
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>   <strong class="jxr_keyword">void</strong> patch_mssql_feature() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + wegdeelUrlSqlserver + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"wegdeel__fid_edit"</span>);
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>     mockMvc.perform(patch(url)
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>             .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>             .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>             .content(
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>                 <span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;inonderzoek\&quot;:true,\&quot;surfacematerial\&quot;:\&quot;weggemaaid grasland\&quot;,\&quot;geom\&quot;:\&quot;"</span>
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>                     + StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>                     + <span class="jxr_string">"\&quot;}}"</span>))
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>         .andExpect(jsonPath(<span class="jxr_string">"$.__fid"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__fid_edit"</span>)))
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>         .andExpect(jsonPath(<span class="jxr_string">"$.geometry"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)))
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.geom"</span>).value(StaticTestData.get(<span class="jxr_string">"wegdeel__geom_edit"</span>)))
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.inonderzoek"</span>).value(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.surfacematerial"</span>).value(<span class="jxr_string">"weggemaaid grasland"</span>));
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>   }
+<a class="jxr_linenumber" name="L595" href="#L595">595</a> 
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>   @Test
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>   <strong class="jxr_keyword">void</strong> patch_wfs_feature() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + provinciesWFS + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"utrecht__fid"</span>);
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>     mockMvc.perform(patch(url)
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>             .content(<span class="jxr_string">"{\&quot;attributes\&quot;:{\&quot;naam\&quot;: \&quot;Utereg\&quot;,\&quot;code\&quot;:\&quot;11\&quot;}}"</span>)
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>             .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>             .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>             .with(setServletPath(url)))
+<a class="jxr_linenumber" name="L607" href="#L607">607</a>         .andExpect(status().is4xxClientError());
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>   }
+<a class="jxr_linenumber" name="L609" href="#L609">609</a> 
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>   @Test
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>   <strong class="jxr_keyword">void</strong> get_is_unsupported() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>     <strong class="jxr_keyword">final</strong> String url =
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>         .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>         .andExpect(status().is(405));
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>   }
+<a class="jxr_linenumber" name="L621" href="#L621">621</a> 
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>   @Test
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>   <strong class="jxr_keyword">void</strong> put_is_unsupported() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>     <strong class="jxr_keyword">final</strong> String url =
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>         apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_edit"</span>);
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>         .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>         .andExpect(status().is(405));
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>   }
+<a class="jxr_linenumber" name="L633" href="#L633">633</a> 
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>   @Test
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>   <strong class="jxr_keyword">void</strong> delete_when_layer_does_not_exist() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/layer/lyr:doesnotexist:doesnotexist/edit/feature/does.not.1"</span>;
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>         .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>         .andExpect(status().is(404));
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>   }
+<a class="jxr_linenumber" name="L644" href="#L644">644</a> 
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>   @Test
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>   <strong class="jxr_keyword">void</strong> delete_non_existent_feature() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeelUrlPostgis + <span class="jxr_string">"/"</span> + <span class="jxr_string">"xxxxxx"</span>;
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>     <em class="jxr_comment">// geotools does not report back that the feature does not exist, nor the number of deleted</em>
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>     <em class="jxr_comment">// features, no error === success</em>
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         .andExpect(status().is(204));
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>   }
+<a class="jxr_linenumber" name="L657" href="#L657">657</a> 
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>   @Test
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>   <strong class="jxr_keyword">void</strong> delete_existing_feature_mssql() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + wegdeelUrlSqlserver + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"wegdeel__fid_delete"</span>);
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         .andExpect(status().is(204));
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>   }
+<a class="jxr_linenumber" name="L668" href="#L668">668</a> 
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>   @Test
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>   <strong class="jxr_keyword">void</strong> delete_existing_feature_pg() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>         + begroeidterreindeelUrlPostgis
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>         + <span class="jxr_string">"/"</span>
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>         + StaticTestData.get(<span class="jxr_string">"begroeidterreindeel__fid_delete"</span>);
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>         .andExpect(status().is(204));
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>   }
+<a class="jxr_linenumber" name="L682" href="#L682">682</a> 
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>   @Test
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>   <strong class="jxr_keyword">void</strong> delete_existing_feature_oracle() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle + <span class="jxr_string">"/"</span> + StaticTestData.get(<span class="jxr_string">"waterdeel__fid_delete"</span>);
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>         .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>         .andExpect(status().is(204));
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>   }
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> 
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>   @Test
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>       username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>       authorities = {ADMIN})
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>   <strong class="jxr_keyword">void</strong> delete_existing_feature_wfs() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + provinciesWFS + StaticTestData.get(<span class="jxr_string">"utrecht__fid"</span>);
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>         .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>         .andExpect(status().is(400));
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>   }
+<a class="jxr_linenumber" name="L704" href="#L704">704</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

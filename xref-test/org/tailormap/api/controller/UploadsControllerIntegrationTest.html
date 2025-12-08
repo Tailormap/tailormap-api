@@ -56,13 +56,13 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> MvcResult logoResult;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Test
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">void</strong> test404() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">void</strong> get_does_not_exist() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/something/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"</span>))
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          .andExpect(status().isNotFound());
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    }
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>    @Test
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">void</strong> testBadRequest() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">void</strong> get_with_bad_uuid() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/something/not-a-uuid/file.txt"</span>))
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          .andExpect(status().isBadRequest());
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>    }
@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>    @Test
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    @Order(1)
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>    @Transactional
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">void</strong> testExists() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">void</strong> get_valid_logo() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).getFirst();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      logoUrl = apiBasePath + <span class="jxr_string">"/uploads/%s/%s/file.txt"</span>.formatted(logo.getCategory(), logo.getId());
@@ -83,7 +83,7 @@
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>    @Test
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>    @Order(2)
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> testConditionalNotModified() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> get_conditional_not_modified() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      mockMvc.perform(get(logoUrl)
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>              .header(<span class="jxr_string">"If-Modified-Since"</span>, logoResult.getResponse().getHeader(<span class="jxr_string">"Last-Modified"</span>)))
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          .andExpect(status().isNotModified());
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    @Test
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    @Order(3)
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">void</strong> testConditionalModified() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">void</strong> get_conditional_modified() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      mockMvc.perform(get(logoUrl).header(<span class="jxr_string">"If-Modified-Since"</span>, <span class="jxr_string">"Wed, 12 Jun 2001 09:48:38 GMT"</span>))
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          .andExpect(content().bytes(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/gradient-logo.svg"</span>).getContentAsByteArray()));
@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    @Test
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Transactional
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">void</strong> testDrawingStyle() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">void</strong> get_drawing_style() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">final</strong> Upload theOnlyStyle =
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>   }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>   @Test
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">void</strong> testLatestUpload() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">void</strong> get_latest_upload() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/%s/latest"</span>.formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         .andExpect(content().contentType(<span class="jxr_string">"image/svg+xml"</span>))
@@ -133,7 +133,7 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>   }
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>   @Test
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>   <strong class="jxr_keyword">void</strong> testNonExistentLatestUpload() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>   <strong class="jxr_keyword">void</strong> get_non_existent_latest_upload() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/%s/latest"</span>.formatted(<span class="jxr_string">"non-existent-category"</span>)))
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         .andExpect(status().isNotFound());
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   }

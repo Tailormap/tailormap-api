@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">private</strong> FeatureSourceRepository featureSourceRepository;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    @BeforeEach
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">void</strong> setUp() {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">void</strong> setup() {
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      searchIndexValidator = <strong class="jxr_keyword">new</strong> SearchIndexValidator(featureTypeRepository);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>    }
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Test
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    @SuppressWarnings(<span class="jxr_string">"PMD.UnitTestShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">void</strong> testWFSFeatureType() {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">void</strong> wfs_feature_type() {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      featureSourceRepository
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          .getByTitle(<span class="jxr_string">"WFS for Test GeoServer"</span>)
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          .ifPresentOrElse(
@@ -77,7 +77,7 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Test
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>    @SuppressWarnings(<span class="jxr_string">"PMD.UnitTestShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">void</strong> testJDBCFeatureType() {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">void</strong> jdbc_feature_type() {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      featureSourceRepository
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          .getByTitle(<span class="jxr_string">"PostGIS"</span>)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          .ifPresentOrElse(

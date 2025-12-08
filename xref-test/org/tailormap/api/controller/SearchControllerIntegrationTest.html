@@ -53,7 +53,7 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>    @Test
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">void</strong> searchPostgis() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">void</strong> search_postgis() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerBegroeidTerreindeelPostgis + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    }
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Test
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">void</strong> searchPostgisGroen() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">void</strong> search_postgis_groen() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerBegroeidTerreindeelPostgis + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    @Test
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">void</strong> searchSQLServerStartAtItem10() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">void</strong> search_sql_server_start_at_item_10() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWegdeelSqlServer + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -124,7 +124,7 @@
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   }
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> 
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Test
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">void</strong> searchOracleLayerWithoutIndex() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">void</strong> search_oracle_layer_without_index() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWaterdeelOracle + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> 
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   }
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>   @Test
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">void</strong> testLayerDoesNotExist() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">void</strong> get_layer_does_not_exist() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:doesnotexist/search"</span>;
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>   }
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> 
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>   @Test
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <strong class="jxr_keyword">void</strong> testLayerWithoutFeatureType() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <strong class="jxr_keyword">void</strong> get_layer_without_feature_type() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:BGT/search"</span>;
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -159,7 +159,7 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>   }
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>   @Test
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> testBadRequestQuery() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> get_bad_request_query() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerBegroeidTerreindeelPostgis + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -172,7 +172,7 @@
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   }
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>   @Test
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>   <strong class="jxr_keyword">void</strong> testSpatialQueryDistance() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>   <strong class="jxr_keyword">void</strong> get_spatial_query_distance() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWegdeelSqlServer + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> 
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>   }
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>   @Test
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>   <strong class="jxr_keyword">void</strong> testSpatialQueryDistanceWithBbox() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>   <strong class="jxr_keyword">void</strong> get_spatial_query_distance_with_bbox() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWegdeelSqlServer + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -246,7 +246,7 @@
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> (*A 655*), 1
 <a class="jxr_linenumber" name="L239" href="#L239">239</a> (*A 65*), 8
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> <span class="jxr_string">""</span><span class="jxr_string">")
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">void</strong> testAanduiding(String qTerm, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">void</strong> get_aanduiding(String qTerm, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> documentsCount = Math.min(totalCount, 10);
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 
@@ -269,7 +269,7 @@
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> 
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>   @Test
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>   <strong class="jxr_keyword">void</strong> testUnquotedWhitespace() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>   <strong class="jxr_keyword">void</strong> get_unquoted_whitespace() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>             .with(setServletPath(url))

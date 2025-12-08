@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>        username = <span class="jxr_string">"user"</span>,
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>        authorities = {<span class="jxr_string">"test-foo"</span>},
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>        password = <span class="jxr_string">"user"</span>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">void</strong> testUserAllowedToViewApplication(String applicationId) {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">void</strong> user_allowed_to_view_application(String applicationId) {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      Application app = applicationRepository.findByName(applicationId);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      assertNotNull(app, () -&gt; <span class="jxr_string">"Application "</span> + applicationId + <span class="jxr_string">" should exist"</span>);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      assertThat(
@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>        authorities = {ADMIN},
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>        password = <span class="jxr_string">"tm-admin"</span>)
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">void</strong> testAdminUserAllowedToViewApplication(String applicationId) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">void</strong> admin_user_allowed_to_view_application(String applicationId) {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      Application app = applicationRepository.findByName(applicationId);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      assertNotNull(app, () -&gt; <span class="jxr_string">"Application "</span> + applicationId + <span class="jxr_string">" should exist"</span>);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      assertThat(
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>        username = <span class="jxr_string">"user"</span>,
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>        authorities = {<span class="jxr_string">"test-baz"</span>},
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>        password = <span class="jxr_string">"user"</span>)
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">void</strong> testUserNotAllowedToViewApplication() {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">void</strong> user_not_allowed_to_view_application() {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">final</strong> String applicationId = <span class="jxr_string">"secured-auth"</span>;
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      Application app = applicationRepository.findByName(applicationId);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      assertNotNull(app, () -&gt; <span class="jxr_string">"Application "</span> + applicationId + <span class="jxr_string">" should exist"</span>);
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>    @ParameterizedTest
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    @ValueSource(strings = {<span class="jxr_string">"secured"</span>, <span class="jxr_string">"secured-auth"</span>})
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    <strong class="jxr_keyword">void</strong> testAnonymousUserNotAllowedToViewApplication(String applicationId) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    <strong class="jxr_keyword">void</strong> anonymous_user_not_allowed_to_view_application(String applicationId) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      Application app = applicationRepository.findByName(applicationId);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      assertNotNull(app, () -&gt; <span class="jxr_string">"Application "</span> + applicationId + <span class="jxr_string">" should exist"</span>);
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      assertThat(
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>       username = <span class="jxr_string">"foo"</span>,
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>       authorities = {<span class="jxr_string">"test-foo"</span>},
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>       password = <span class="jxr_string">"foo"</span>)
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">void</strong> testFooUserNotAllowedToViewBGT() {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">void</strong> foo_user_not_allowed_to_view_bgt() {
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">final</strong> String applicationId = <span class="jxr_string">"secured-auth"</span>;
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     Application app = applicationRepository.findByName(applicationId);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     assertNotNull(app, () -&gt; <span class="jxr_string">"Application "</span> + applicationId + <span class="jxr_string">" should exist"</span>);
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>   }
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> 
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>   @Test
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <strong class="jxr_keyword">void</strong> testAnonymousUserAllowedToViewAboutPage() {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <strong class="jxr_keyword">void</strong> anonymous_user_allowed_to_view_about_page() {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     Page page = pageRepository.findByName(<span class="jxr_string">"about"</span>).orElseThrow();
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>     assertTrue(
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         authorisationService.userAllowedToViewPage(page),
@@ -155,7 +155,7 @@
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>   }
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>   @Test
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>   <strong class="jxr_keyword">void</strong> testAnonymousUserNotAllowedToViewLoggedInPage() {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   <strong class="jxr_keyword">void</strong> anonymous_user_not_allowed_to_view_logged_in_page() {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>     Page page = pageRepository.findByName(<span class="jxr_string">"loggedIn"</span>).orElseThrow();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     assertFalse(
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         authorisationService.userAllowedToViewPage(page),
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>       authorities = {<span class="jxr_string">"test-foo"</span>},
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>       password = <span class="jxr_string">"foo"</span>)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>   @Test
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>   <strong class="jxr_keyword">void</strong> testLoggedInUserAllowedToViewLoggedInPage() {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>   <strong class="jxr_keyword">void</strong> logged_in_user_allowed_to_view_logged_in_page() {
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     Page page = pageRepository.findByName(<span class="jxr_string">"loggedIn"</span>).orElseThrow();
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     assertTrue(
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         authorisationService.userAllowedToViewPage(page),

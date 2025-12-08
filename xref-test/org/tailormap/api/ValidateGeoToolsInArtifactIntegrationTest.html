@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">   * (factory providers) in the runnable jar.</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Test
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">void</strong> checkArtifact() {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">void</strong> check_artifact() {
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      logger.debug(<span class="jxr_string">"Checking Tailormap API artifact: {} for GeoTools artifacts."</span>, RUNNABLE_JAR);
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">try</strong> (ZipFile zipFile = <strong class="jxr_keyword">new</strong> ZipFile(RUNNABLE_JAR)) {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>        Enumeration&lt;? <strong class="jxr_keyword">extends</strong> ZipEntry&gt; e = zipFile.entries();
