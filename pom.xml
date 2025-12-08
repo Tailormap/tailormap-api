@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.4.0-SNAPSHOT</version>
+    <version>12.4.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-12.4.0-rc.0</tag>
+        <tag>tailormap-api-12.4.0</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2025-11-14T10:40:24Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-12-05T13:15:17Z</project.build.outputTimestamp>
         <geotools.version>34.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
@@ -124,8 +124,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.37.Final</hibernate.version>
-        <!-- <jackson-bom.version>2.20.1</jackson-bom.version>-->
+        <hibernate.version>6.6.38.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <logback.version>1.5.19</logback.version>
@@ -159,7 +158,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.30.3</swagger-ui.version>
-        <sentry.version>8.27.1</sentry.version>
+        <sentry.version>8.28.0</sentry.version>
         <errorProne.version>2.45.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -715,7 +714,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
