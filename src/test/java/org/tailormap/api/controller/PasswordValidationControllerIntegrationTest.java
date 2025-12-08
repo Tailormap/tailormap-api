@@ -53,7 +53,7 @@ class PasswordValidationControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void test(String password, String expected) throws Exception {
+  void validate_password(String password, String expected) throws Exception {
     mockMvc.perform(post(basePath + "/validate-password")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .param("password", password)

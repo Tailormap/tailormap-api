@@ -69,7 +69,7 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  void appLayer_with_feature_type_but_no_editable_setting() throws Exception {
+  void app_layer_with_feature_type_but_no_editable_setting() throws Exception {
     final String path =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
@@ -90,7 +90,7 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_app_denied() throws Exception {
+  void wms_secured_app_should_be_denied() throws Exception {
     final String path =
         apiBasePath + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
@@ -104,7 +104,7 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void test_wms_secured_app_granted_but_no_feature_type() throws Exception {
+  void wms_secured_app_granted_but_no_feature_type() throws Exception {
     final String path =
         apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
@@ -116,7 +116,7 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
-  void test_authorization_service_allow_but_layer_deny() throws Exception {
+  void authorization_service_allowed_but_layer_denied() throws Exception {
     final String bgtPath = apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
 
     mockMvc.perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
@@ -127,7 +127,7 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
-  void test_authorization_service_allow_and_layer_allow() throws Exception {
+  void authorization_service_allowed_and_layer_allowed() throws Exception {
 
     final String begroeidterreindeelPath = apiBasePath
         + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel/describe";
@@ -142,7 +142,7 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo", "test-baz"})
-  void test_authorization_application_layer_authorization_conflicting_allow_deny() throws Exception {
+  void authorization_application_layer_authorization_conflicting_allowed_denied() throws Exception {
     final String bgtPath = apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
 
     mockMvc.perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
@@ -153,7 +153,7 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "foo",
       authorities = {"test-bar"})
-  void test_authorization_access_to_layer_but_not_application() throws Exception {
+  void authorization_access_to_layer_but_not_application() throws Exception {
     final String bgtPath = apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
 
     mockMvc.perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
@@ -161,7 +161,7 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+  void wms_secured_proxy_not_in_public_app() throws Exception {
     final String path = apiBasePath + layerProxiedWithAuthInPublicApp + "/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isForbidden());

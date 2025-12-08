@@ -48,7 +48,7 @@ class LayerExportControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void shouldReturnExportCapabilitiesWithJDBCFeatureSource() throws Exception {
+  void should_return_export_capabilities_with_jdbc_feature_source() throws Exception {
     final String url = apiBasePath + layerWaterdeel + capabilitiesPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
@@ -85,7 +85,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldReturnExportCapabilitiesWithWFSFeatureSource() throws Exception {
+  void should_return_export_capabilities_with_wfs_feature_source() throws Exception {
     final String url = apiBasePath + layerProvinciesWfs + capabilitiesPath;
     mockMvc.perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -100,7 +100,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldExportGeoJSON() throws Exception {
+  void should_export_geo_json() throws Exception {
     final String url = apiBasePath + layerProvinciesWfs + downloadPath;
     mockMvc.perform(get(url).with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON)
@@ -115,7 +115,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldExportGeoPackage() throws Exception {
+  void should_export_geo_package() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -125,7 +125,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldExportGeoJSONWithFilter() throws Exception {
+  void should_export_geo_json_with_filter() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -141,7 +141,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldExportGeoJSONWithFilterAndSort() throws Exception {
+  void should_export_geo_json_with_filter_and_sort() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -173,7 +173,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void shouldNotExportHiddenAttributesInGeoJSONWhenRequested() throws Exception {
+  void should_not_export_hidden_attributes_in_geo_json_when_requested() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -188,7 +188,7 @@ class LayerExportControllerIntegrationTest {
 
   @Test
   @Issue("https://b3partners.atlassian.net/browse/SUPPORT-14840")
-  void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
+  void should_not_export_hidden_attributes_in_geo_json() throws Exception {
     final String url = apiBasePath + layerBakPostgis + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -219,7 +219,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+  void wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/export/download";
     mockMvc.perform(get(testUrl)
             .accept(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  void testInvalidOutputFormatNotAccepted() throws Exception {
+  void invalid_output_format_not_accepted() throws Exception {
     final String testUrl = apiBasePath + layerBegroeidTerreindeelPostgis + "/export/download";
     mockMvc.perform(get(testUrl)
             .accept(MediaType.APPLICATION_JSON)

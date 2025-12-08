@@ -49,7 +49,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void testUpdateApplicationComponents() throws Exception {
+  void post_update_application_components() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs

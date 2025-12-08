@@ -23,7 +23,7 @@ import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 class TMFeatureTypeHelperTest {
 
   @Test
-  void testGetConfiguredAttributes() {
+  void get_configured_attributes() {
     TMFeatureType ft = new TMFeatureType();
     final Function<String, TMAttributeDescriptor> att =
         (name) -> new TMAttributeDescriptor().name(name).comment("comment for " + name);

@@ -37,13 +37,13 @@ class PageControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void testPageNotFound() throws Exception {
+  void get_page_does_not_exist() throws Exception {
     final String url = apiBasePath + "/page/does-not-exist";
     mockMvc.perform(get(url).with(setServletPath(url))).andExpect(status().isNotFound());
   }
 
   @Test
-  void testHomePageWithFilteredTile() throws Exception {
+  void get_home_page_with_filtered_tile() throws Exception {
     final String url = apiBasePath + "/page";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class PageControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void testFilteredTileShownWhenAuthorized() throws Exception {
+  void get_filtered_tile_shown_when_authorized() throws Exception {
     final String url = apiBasePath + "/page";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class PageControllerIntegrationTest {
   }
 
   @Test
-  void testMenuItems() throws Exception {
+  void get_menu_items() throws Exception {
     final String url = apiBasePath + "/page/home";
     String aboutItemJsonPath = "$.menu[?(@.label == 'About')].pageUrl";
     String b3pWebsiteItemJsonPath = "$.menu[?(@.label == 'B3Partners website')]";

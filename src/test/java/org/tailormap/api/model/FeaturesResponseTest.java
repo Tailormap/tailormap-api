@@ -13,7 +13,7 @@ import org.tailormap.api.viewer.model.FeaturesResponse;
 
 class FeaturesResponseTest {
   @Test
-  void testRequiredFieldsNotNull() {
+  void required_fields_must_not_be_null() {
     FeaturesResponse fr = new FeaturesResponse();
     assertNotNull(fr.getFeatures(), "featurelist should not be null");
     assertNotNull(fr.getColumnMetadata(), "columnMetadata should not be null");

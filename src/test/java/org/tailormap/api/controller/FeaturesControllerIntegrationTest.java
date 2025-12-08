@@ -1014,7 +1014,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   @DefaultTimeZone("Europe/Amsterdam")
-  void filterTest(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
+  void filter_test(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
     if (!exactWfsCounts && appLayerUrl.equals(provinciesWfs)) {
       // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
@@ -1045,7 +1045,7 @@ class FeaturesControllerIntegrationTest {
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
   @MethodSource("differentFeatureSourcesProvider")
-  void onlyGeometries(String appLayerUrl) throws Exception {
+  void only_geometries(String appLayerUrl) throws Exception {
 
     appLayerUrl = apiBasePath + appLayerUrl;
 
@@ -1064,7 +1064,7 @@ class FeaturesControllerIntegrationTest {
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
   @MethodSource("differentFeatureSourcesProvider")
-  void ignore_skipGeometryOutput_with_onlyGeometries(String appLayerUrl) throws Exception {
+  void ignore_skip_geometry_output_with_only_geometries(String appLayerUrl) throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc.perform(get(appLayerUrl)
             .accept(MediaType.APPLICATION_JSON)
@@ -1099,7 +1099,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void givenOnly_XorY_shouldError() throws Exception {
+  void given_only_x_or_y_should_error() throws Exception {
     final String url = apiBasePath + provinciesWfs;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -1120,7 +1120,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void given_distance_NotGreaterThanZero() throws Exception {
+  void given_distance_not_greater_than_zero() throws Exception {
     final String url = apiBasePath + provinciesWfs;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -1147,7 +1147,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_error_when_calling_with_nonexistent_appId() throws Exception {
+  void should_error_when_calling_with_nonexistent_app_id() throws Exception {
     final String url = apiBasePath + "/app/400/layer/1/features";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound())
@@ -1159,7 +1159,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_not_find_when_called_without_appId() throws Exception {
+  void should_not_find_when_called_without_app_id() throws Exception {
     final String url = apiBasePath + "/app/layer/features";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound());

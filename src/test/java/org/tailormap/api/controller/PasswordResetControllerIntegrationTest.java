@@ -72,7 +72,7 @@ class PasswordResetControllerIntegrationTest {
    */
   @Test
   @Order(1)
-  void testRequestPasswordResetForFoo() throws Exception {
+  void request_password_reset_for_foo() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .param("email", "foo@example.com")
@@ -101,7 +101,7 @@ class PasswordResetControllerIntegrationTest {
 
   @Test
   @Order(2)
-  void testConfirmPasswordResetForFoo() throws Exception {
+  void confirm_password_reset_for_foo() throws Exception {
     final String confirmUrl = apiBasePath + "/user/reset-password";
     final TemporaryToken latestToken = temporaryTokenRepository.findAll().stream()
         .reduce((first, second) -> second)
@@ -121,7 +121,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @SuppressWarnings("UnusedMethod")
-  private static Stream<Arguments> testRequestPasswordResetLocalised() {
+  private static Stream<Arguments> localisedStrings() {
     return Stream.of(
         Arguments.of(
             "nl",
@@ -143,9 +143,8 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource
-  void testRequestPasswordResetLocalised(String locale, String expectedSubject, String expectedBody)
-      throws Exception {
+  @MethodSource("localisedStrings")
+  void request_password_reset_localised(String locale, String expectedSubject, String expectedBody) throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("email=foo@example.com")
@@ -171,7 +170,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestResetPasswordInvalidMail() throws Exception {
+  void request_reset_password_invalid_mail() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("email=tm-admin")
@@ -191,7 +190,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestResetPasswordEmpty() throws Exception {
+  void request_reset_password_empty() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("email=")
@@ -209,7 +208,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestPasswordWrongParameter() throws Exception {
+  void request_password_wrong_parameter() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("username=actuator")
@@ -221,7 +220,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestResetPasswordExpiredUser() throws Exception {
+  void request_reset_password_expired_user() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("email=expired@example.com")
@@ -244,7 +243,7 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestResetPasswordDisabledUser() throws Exception {
+  void request_reset_password_disabled_user() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("email=disabled@example.com")

@@ -109,7 +109,7 @@ class AttachmentsControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @ValueSource(strings = {layerBegroeidTerreindeelPostgis + "/feature/325f7d92cadf2d523853ef0b561dd9a5/attachments"})
-  void addAttachment(String url) throws Exception {
+  void add_attachment(String url) throws Exception {
     url = apiBasePath + url;
 
     byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
@@ -139,7 +139,7 @@ class AttachmentsControllerIntegrationTest {
   @Order(1)
   @ParameterizedTest
   @MethodSource("testUrls")
-  void addAttachmentUnauthorised(String url) throws Exception {
+  void add_attachment_unauthorised(String url) throws Exception {
     url = apiBasePath + url;
 
     byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
@@ -163,7 +163,7 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void addAttachmentsNotSupported() throws Exception {
+  void add_attachments_not_supported() throws Exception {
     String url = apiBasePath + attachmentsNotSupportedUrl;
 
     byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
@@ -189,7 +189,7 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void addAttachmentsToNonEditableLayer() throws Exception {
+  void add_attachments_to_non_editable_layer() throws Exception {
     String url = apiBasePath + layerNotEditableUrl;
 
     byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
@@ -213,7 +213,7 @@ class AttachmentsControllerIntegrationTest {
   @Order(2)
   @ParameterizedTest
   @MethodSource("testUrls")
-  void listAttachments(String url) throws Exception {
+  void list_attachments(String url) throws Exception {
     url = apiBasePath + url;
 
     mockMvc.perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
@@ -231,7 +231,7 @@ class AttachmentsControllerIntegrationTest {
   @Order(2)
   @ParameterizedTest
   @MethodSource("testUrls")
-  void getAttachment(String url) throws Exception {
+  void get_attachment(String url) throws Exception {
     url = apiBasePath + url;
 
     // First get the list of attachments to retrieve the attachmentId
@@ -266,7 +266,7 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void getFeaturesWithAttachments(String layerUrl, int x, int y, int distance, String expectedGmlId)
+  void get_features_with_attachments(String layerUrl, int x, int y, int distance, String expectedGmlId)
       throws Exception {
     String gmlIdKey = "gmlid";
     switch (layerUrl) {
@@ -307,7 +307,7 @@ class AttachmentsControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void deleteAttachment(String url) throws Exception {
+  void delete_attachment(String url) throws Exception {
     url = apiBasePath + url;
 
     // First get the list of attachments to retrieve the attachmentId
@@ -332,7 +332,7 @@ class AttachmentsControllerIntegrationTest {
   @Order(2)
   @ParameterizedTest
   @MethodSource("testUrls")
-  void deleteAttachmentUnauthorised(String url) throws Exception {
+  void delete_attachment_unauthorised(String url) throws Exception {
     url = apiBasePath + url;
 
     // First get the list of attachments to retrieve the attachmentId
