@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
+
 package org.tailormap.api.controller;
 
 import static org.tailormap.api.util.TMPasswordDeserializer.encoder;
@@ -21,20 +22,13 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,6 +42,7 @@ import org.tailormap.api.persistence.TemporaryToken;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.repository.TemporaryTokenRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.service.PasswordResetEmailService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestController
@@ -56,14 +51,10 @@ import org.tailormap.api.viewer.model.ErrorResponse;
 public class PasswordResetController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final JavaMailSender emailSender;
   private final UserRepository userRepository;
   private final TemporaryTokenRepository temporaryTokenRepository;
-  private final MessageSource messageSource;
   private final LocaleResolver localeResolver;
-
-  @Value("${tailormap-api.mail.from}")
-  private String mailFrom;
+  private final PasswordResetEmailService passwordResetEmailService;
 
   @Value("${tailormap-api.password-reset.enabled:false}")
   private boolean passwordResetEnabled;
@@ -75,16 +66,14 @@ public class PasswordResetController {
   private int passwordResetTokenExpirationMinutes;
 
   public PasswordResetController(
-      JavaMailSender emailSender,
       UserRepository userRepository,
       TemporaryTokenRepository temporaryTokenRepository,
-      MessageSource messageSource,
-      LocaleResolver localeResolver) {
-    this.emailSender = emailSender;
+      LocaleResolver localeResolver,
+      PasswordResetEmailService passwordResetEmailService) {
     this.userRepository = userRepository;
     this.temporaryTokenRepository = temporaryTokenRepository;
-    this.messageSource = messageSource;
     this.localeResolver = localeResolver;
+    this.passwordResetEmailService = passwordResetEmailService;
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
@@ -165,47 +154,12 @@ public class PasswordResetController {
   }
 
   private void sendPasswordResetEmail(String email, HttpServletRequest request) {
-    final String absoluteLinkPrefix =
+    String absoluteLinkPrefix =
         request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
-    final Locale locale = localeResolver.resolveLocale(request);
+    Locale locale = localeResolver.resolveLocale(request);
 
-    try (ExecutorService emailExecutor = Executors.newSingleThreadExecutor()) {
-      emailExecutor.execute(() -> {
-        try {
-          this.userRepository.findByEmail(email).ifPresent(user -> {
-            if (!user.isEnabledAndValidUntil()) return;
-
-            TemporaryToken token = new TemporaryToken(
-                TemporaryToken.TokenType.PASSWORD_RESET,
-                user.getUsername(),
-                passwordResetTokenExpirationMinutes);
-            token = temporaryTokenRepository.save(token);
-
-            String absoluteLink = absoluteLinkPrefix
-                + /* this is the route in the angular application */ "/user/password-reset/"
-                + token.getCombinedTokenAndExpirationAsBase64();
-
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mailFrom);
-            message.setTo(user.getEmail());
-            message.setSubject(
-                messageSource.getMessage("reset-password-request.email-subject", null, locale));
-            message.setText(messageSource.getMessage(
-                "reset-password-request.email-body", new Object[] {absoluteLink}, locale));
-
-            logger.trace("Sending message {}", message);
-            logger.info("Sending password reset email for user: {}", user.getUsername());
-            emailSender.send(message);
-          });
-        } catch (MailException e) {
-          logger.error("Failed to send password reset email", e);
-        } catch (Exception e) {
-          logger.error("Unexpected exception in password reset email thread", e);
-        }
-      });
-      emailExecutor.shutdown();
-    } catch (RejectedExecutionException e) {
-      logger.error("Failed to start password reset email thread", e);
-    }
+    // Delegate to async service — returns immediately
+    passwordResetEmailService.sendPasswordResetEmailAsync(
+        email, absoluteLinkPrefix, locale, passwordResetTokenExpirationMinutes);
   }
 }
