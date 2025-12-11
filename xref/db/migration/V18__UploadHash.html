@@ -14,30 +14,32 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> db.migration;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.util.UUID;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.digest.DigestUtils;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.flywaydb.core.api.migration.BaseJavaMigration;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.flywaydb.core.api.migration.Context;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.JdbcTemplate;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.SingleConnectionDataSource;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="V18__UploadHash" href="../../db/migration/V18__UploadHash.html#V18__UploadHash">V18__UploadHash</a> <strong class="jxr_keyword">extends</strong> BaseJavaMigration {
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>    @Override
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> migrate(Context context) {
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <strong class="jxr_keyword">var</strong> jdbcTemplate = <strong class="jxr_keyword">new</strong> JdbcTemplate(<strong class="jxr_keyword">new</strong> SingleConnectionDataSource(context.getConnection(), <strong class="jxr_keyword">true</strong>));
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>      jdbcTemplate.execute(<span class="jxr_string">"alter table upload add column hash char(40) null"</span>);
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">var</strong> rows = jdbcTemplate.queryForList(<span class="jxr_string">"select id, content from upload"</span>);
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">var</strong> row : rows) {
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>        UUID id = (UUID) row.get(<span class="jxr_string">"id"</span>);
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>        byte[] content = (byte[]) row.get(<span class="jxr_string">"content"</span>);
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>        <strong class="jxr_keyword">if</strong> (content != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>          String hash = DigestUtils.sha1Hex(content);
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>          jdbcTemplate.update(<span class="jxr_string">"update upload set hash = ? where id = ?"</span>, hash, id);
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>        }
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      }
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>    }
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  }
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.UUID;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.codec.digest.DigestUtils;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.flywaydb.core.api.migration.BaseJavaMigration;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.flywaydb.core.api.migration.Context;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.JdbcTemplate;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.SingleConnectionDataSource;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="V18__UploadHash" href="../../db/migration/V18__UploadHash.html#V18__UploadHash">V18__UploadHash</a> <strong class="jxr_keyword">extends</strong> BaseJavaMigration {
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    @Override
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> migrate(Context context) {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>      JdbcTemplate jdbcTemplate = <strong class="jxr_keyword">new</strong> JdbcTemplate(<strong class="jxr_keyword">new</strong> SingleConnectionDataSource(context.getConnection(), <strong class="jxr_keyword">true</strong>));
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      jdbcTemplate.execute(<span class="jxr_string">"alter table upload add column hash char(40) null"</span>);
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(<span class="jxr_string">"select id, content from upload"</span>);
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">var</strong> row : rows) {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>        UUID id = (UUID) row.get(<span class="jxr_string">"id"</span>);
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        byte[] content = (byte[]) row.get(<span class="jxr_string">"content"</span>);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>        <strong class="jxr_keyword">if</strong> (content != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          String hash = DigestUtils.sha1Hex(content);
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          jdbcTemplate.update(<span class="jxr_string">"update upload set hash = ? where id = ?"</span>, hash, id);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>        }
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
