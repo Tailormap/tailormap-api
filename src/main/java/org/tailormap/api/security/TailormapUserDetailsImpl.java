@@ -19,8 +19,8 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 
-/* Do not make public, use the interface */
-class TailormapUserDetailsImpl implements TailormapUserDetails {
+/* TODO Do not make public, use the interface  */
+public class TailormapUserDetailsImpl implements TailormapUserDetails {
 
   @Serial
   private static final long serialVersionUID = 1L;
