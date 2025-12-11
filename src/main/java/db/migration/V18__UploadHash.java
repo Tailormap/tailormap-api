@@ -6,6 +6,8 @@
 
 package db.migration;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
@@ -16,10 +18,10 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 public class V18__UploadHash extends BaseJavaMigration {
   @Override
   public void migrate(Context context) {
-    var jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));
     jdbcTemplate.execute("alter table upload add column hash char(40) null");
 
-    var rows = jdbcTemplate.queryForList("select id, content from upload");
+    List<Map<String, Object>> rows = jdbcTemplate.queryForList("select id, content from upload");
     for (var row : rows) {
       UUID id = (UUID) row.get("id");
       byte[] content = (byte[]) row.get("content");
