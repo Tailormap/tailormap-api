@@ -1378,7 +1378,7 @@ SPDX-License-Identifier: MIT
                                     </bannedImports>
                                 </RestrictImports>
                                 <RestrictImports>
-                                    <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
+                                    <reason>Use JUnit 6 instead of JUnit 4 or older</reason>
                                     <bannedImport>org.junit.Assert.*</bannedImport>
                                 </RestrictImports>
                                 <RestrictImports>
