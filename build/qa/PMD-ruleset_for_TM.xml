@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          name="Maven PMD Plugin Ruleset"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Maven PMD Plugin Ruleset for Tailormap. See
         https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
     </description>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets"/>
-    <rule ref="category/java/bestpractices.xml/UnnecessaryWarningSuppression" />
+    <rule ref="category/java/bestpractices.xml/UnnecessaryWarningSuppression"/>
     <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
@@ -108,19 +108,6 @@ SPDX-License-Identifier: MIT
         </properties>
     </rule>
     <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/>
-    <rule name="slf4j-use-methodhandles-lookup" language="java"
-          message="Use MethodHandles.lookup().lookupClass() to get logger"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
-        <description>Use MethodHandles.lookup().lookupClass() to get logger</description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-          //VariableInitializer[Expression//PrimaryPrefix/Name[@Image='LoggerFactory.getLogger'] and not(Expression//PrimarySuffix//PrimaryPrefix/Name[@Image='MethodHandles.lookup'])]
-          ]]></value>
-            </property>
-        </properties>
-    </rule>
     <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
         <properties>
             <property name="extraAssertMethodNames" value="andExpect"/>
@@ -164,6 +151,32 @@ SPDX-License-Identifier: MIT
              //Name[pmd-java:typeIs('org.junit.Before')] |
              //Name[pmd-java:typeIs('org.junit.After')]
              ]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="TestMethodNaming" language="java"
+          message="Test method names should use lower-case letters, digits and underscores only and not start with 'test'"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+            Ensure all test methods annotated with eg. @Test/@ParameterizedTest/@RetryingTest/etc follow the project's
+            JUnit5 test naming pattern: only lower-case letters, digits and underscores (regex: ^[a-z0-9_]+$) are
+            allowed in method names and method names do not start with 'test'.
+            This rule matches both simple and fully-qualified annotation names that end with '...Test'.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //MethodDeclaration[
+                          .//Annotation[fn:matches(@SimpleName,'.*test$')]
+                          and (
+                            not(fn:matches(@Name,'^[a-z0-9_]+$'))
+                            or fn:matches(@Name,'^test')
+                          )
+                        ]
+                    ]]>
                 </value>
             </property>
         </properties>

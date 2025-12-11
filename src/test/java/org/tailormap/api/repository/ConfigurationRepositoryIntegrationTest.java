@@ -29,7 +29,7 @@ class ConfigurationRepositoryIntegrationTest {
 
   @Test
   @Order(1)
-  void it_should_findByConfigKeyDefaultApplication() {
+  void it_should_find_by_config_key_default_application() {
     final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
     assertNotNull(c);
     assertEquals("default", c.getValue());

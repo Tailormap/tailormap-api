@@ -28,27 +28,27 @@ class PrometheusServiceUnhappyIntegrationTest {
   private PrometheusService prometheusService;
 
   @Test
-  void isPrometheusAvailable() {
+  void is_prometheus_available() {
     boolean isAvailable = prometheusService.isPrometheusAvailable();
     assertFalse(isAvailable, "Prometheus server should not be available");
   }
 
   @Test
-  void testQueryExecution() {
+  void query_execution() {
     Exception exception =
         assertThrows(IOException.class, () -> prometheusService.executeQuery("scrape_duration_seconds"));
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }
 
   @Test
-  void deleteMetric() {
+  void delete_metric() {
     Exception exception =
         assertThrows(IOException.class, () -> prometheusService.deleteMetric("scrape_samples_scraped"));
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }
 
   @Test
-  void cleanTombstones() {
+  void clean_tombstones() {
     Exception exception = assertThrows(IOException.class, () -> prometheusService.cleanTombstones());
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }

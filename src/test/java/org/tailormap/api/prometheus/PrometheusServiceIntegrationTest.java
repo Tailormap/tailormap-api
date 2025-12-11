@@ -35,14 +35,14 @@ class PrometheusServiceIntegrationTest {
 
   @Test
   @Order(1)
-  void isPrometheusAvailable() {
+  void is_prometheus_available() {
     boolean isAvailable = prometheusService.isPrometheusAvailable();
     assertTrue(isAvailable, "Prometheus server should be available");
   }
 
   @Test
   @Order(2)
-  void testQueryExecution() {
+  void query_execution() {
     final String query = "scrape_duration_seconds";
     try {
       final JsonNode root = prometheusService.executeQuery(query);
@@ -57,7 +57,7 @@ class PrometheusServiceIntegrationTest {
 
   @Test
   @Order(2)
-  void testQueryExecutionLargeQuery() {
+  void query_execution_large_query() {
     final String query =
         """
 label_replace(floor(increase(tailormap_app_request_total[90d])), "type", "total", "__name__", ".*")\s
@@ -77,7 +77,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
 
   @Test
   @Order(2)
-  void testQueryExecutionWithUnknownMetric() {
+  void query_execution_with_unknown_metric() {
     final String query = "unknown_metric_name";
     try {
       JsonNode result = prometheusService.executeQuery(query);
@@ -92,7 +92,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
 
   @Test
   @Order(2)
-  void testQueryExecutionWithEmptyQuery() {
+  void query_execution_with_empty_query() {
     try {
       prometheusService.executeQuery("");
       fail("Expected an exception for empty query");
@@ -103,7 +103,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
 
   @Test
   @Order(4)
-  void deleteMetric() {
+  void delete_metric() {
     final String delete = "scrape_samples_scraped";
     try {
       prometheusService.deleteMetric(delete);
@@ -114,7 +114,7 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
 
   @Test
   @Order(4)
-  void cleanTombstones() {
+  void clean_tombstones() {
     try {
       prometheusService.cleanTombstones();
     } catch (Exception e) {

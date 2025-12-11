@@ -70,7 +70,7 @@ class GeoServiceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void refreshCapabilities() throws Exception {
+  void refresh_capabilities() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     String body = getResourceString(wmsTestCapabilities);
@@ -147,7 +147,7 @@ class GeoServiceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void refreshCapabilitiesSendsJsonValidationErrors() throws Exception {
+  void refresh_capabilities_sends_json_validation_errors() throws Exception {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -181,7 +181,7 @@ class GeoServiceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void loadServiceWithServiceException() throws Exception {
+  void load_service_with_service_exception() throws Exception {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -229,7 +229,7 @@ class GeoServiceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void loadServiceWithWrongCredentials() throws Exception {
+  void load_service_with_wrong_credentials() throws Exception {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -259,7 +259,7 @@ class GeoServiceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void checkCorsHeaderIsSaved() throws Exception {
+  void check_cors_header_is_saved() throws Exception {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 

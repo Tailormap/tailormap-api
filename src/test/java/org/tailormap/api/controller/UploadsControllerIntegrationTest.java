@@ -48,13 +48,13 @@ class UploadsControllerIntegrationTest {
   private static MvcResult logoResult;
 
   @Test
-  void test404() throws Exception {
+  void get_does_not_exist() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/something/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"))
         .andExpect(status().isNotFound());
   }
 
   @Test
-  void testBadRequest() throws Exception {
+  void get_with_bad_uuid() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
         .andExpect(status().isBadRequest());
   }
@@ -62,7 +62,7 @@ class UploadsControllerIntegrationTest {
   @Test
   @Order(1)
   @Transactional
-  void testExists() throws Exception {
+  void get_valid_logo() throws Exception {
     Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).getFirst();
 
     logoUrl = apiBasePath + "/uploads/%s/%s/file.txt".formatted(logo.getCategory(), logo.getId());
@@ -75,7 +75,7 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Order(2)
-  void testConditionalNotModified() throws Exception {
+  void get_conditional_not_modified() throws Exception {
     mockMvc.perform(get(logoUrl)
             .header("If-Modified-Since", logoResult.getResponse().getHeader("Last-Modified")))
         .andExpect(status().isNotModified());
@@ -83,7 +83,7 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Order(3)
-  void testConditionalModified() throws Exception {
+  void get_conditional_modified() throws Exception {
     mockMvc.perform(get(logoUrl).header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))
         .andExpect(status().isOk())
         .andExpect(content().bytes(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray()));
@@ -91,7 +91,7 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Transactional
-  void testDrawingStyle() throws Exception {
+  void get_drawing_style() throws Exception {
     final Upload theOnlyStyle =
         uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
 
@@ -115,7 +115,7 @@ class UploadsControllerIntegrationTest {
   }
 
   @Test
-  void testLatestUpload() throws Exception {
+  void get_latest_upload() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
@@ -125,7 +125,7 @@ class UploadsControllerIntegrationTest {
   }
 
   @Test
-  void testNonExistentLatestUpload() throws Exception {
+  void get_non_existent_latest_upload() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted("non-existent-category")))
         .andExpect(status().isNotFound());
   }
