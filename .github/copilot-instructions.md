@@ -81,7 +81,7 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 - **Test-Driven Development**: Promote writing tests before implementing features to ensure requirements are met.
 
 ### Running tests
-- Use `mvn test` to run all tests.
+- Use `mvn test` to run all unit tests.
 - Use `mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true` to run all integration tests`
 
 ## Performance Considerations
