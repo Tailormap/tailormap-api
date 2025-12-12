@@ -8,4 +8,9 @@ package org.tailormap.api.security;
 
 import java.io.Serializable;
 
-public record TailormapAdditionalProperty(String key, Boolean isPublic, Object value) implements Serializable {}
+public record TailormapAdditionalProperty(
+    String key,
+    Boolean isPublic,
+    //    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+    Object value)
+    implements Serializable {}
