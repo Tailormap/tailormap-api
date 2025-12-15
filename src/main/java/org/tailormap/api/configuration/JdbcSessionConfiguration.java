@@ -32,7 +32,6 @@ import org.springframework.session.jdbc.JdbcIndexedSessionRepository;
  * href="https://github.com/spring-projects/spring-session/issues/529#issuecomment-2761671945">here</a>.
  */
 @Configuration(proxyBeanMethods = false)
-// @EnableJdbcHttpSession
 public class JdbcSessionConfiguration implements BeanClassLoaderAware {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -71,22 +70,17 @@ AND ATTRIBUTE_NAME = ?
         .build();
 
     ObjectMapper copy = objectMapper
-            .copy()
-            .configure(
-                StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(), logger.isDebugEnabled())
-            .configure(SerializationFeature.INDENT_OUTPUT, true)
-            .registerModules(SecurityJackson2Modules.getModules(this.classLoader))
-            .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
-        //            .setPolymorphicTypeValidator(ptv)
-        // Register mixin and explicit NamedType for TailormapUserDetailsImpl so Jackson can deserialize it
-        //        .addMixIn(
-        //            org.tailormap.api.security.TailormapUserDetailsImpl.class,
-        //            org.tailormap.api.security.TailormapUserDetailsMixin.class)
-        ;
+        .copy()
+        .configure(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(), logger.isDebugEnabled())
+        .configure(SerializationFeature.INDENT_OUTPUT, true)
+        .registerModules(SecurityJackson2Modules.getModules(this.classLoader))
+        .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 
     copy.registerSubtypes(new NamedType(
         org.tailormap.api.security.TailormapUserDetailsImpl.class,
         "org.tailormap.api.security.TailormapUserDetailsImpl"));
+    copy.registerSubtypes(new NamedType(
+        org.tailormap.api.security.TailormapOidcUser.class, "org.tailormap.api.security.TailormapOidcUser"));
 
     GenericConversionService converter = new GenericConversionService();
     // Object -> byte[] (serialize to JSON bytes)

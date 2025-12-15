@@ -6,6 +6,9 @@
 
 package org.tailormap.api.security;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +18,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserDetails {
   @Serial
   private static final long serialVersionUID = 1L;
@@ -23,13 +27,15 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
 
   private final String oidcRegistrationName;
 
+  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
   public TailormapOidcUser(
-      Collection<? extends GrantedAuthority> authorities,
-      OidcIdToken idToken,
-      OidcUserInfo userInfo,
-      String nameAttributeKey,
-      String oidcRegistrationName,
-      Collection<TailormapAdditionalProperty> additionalGroupProperties) {
+      @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities,
+      @JsonProperty("idToken") OidcIdToken idToken,
+      @JsonProperty("userInfo") OidcUserInfo userInfo,
+      @JsonProperty("nameAttributeKey") String nameAttributeKey,
+      @JsonProperty("oidcRegistrationName") String oidcRegistrationName,
+      @JsonProperty("additionalGroupProperties")
+          Collection<TailormapAdditionalProperty> additionalGroupProperties) {
     super(authorities, idToken, userInfo, nameAttributeKey);
     this.oidcRegistrationName = oidcRegistrationName;
     this.additionalGroupProperties = Collections.unmodifiableCollection(additionalGroupProperties);
