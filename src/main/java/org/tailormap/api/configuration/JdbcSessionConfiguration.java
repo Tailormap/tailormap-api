@@ -71,8 +71,10 @@ AND ATTRIBUTE_NAME = ?
 
     ObjectMapper copy = objectMapper
         .copy()
-        .configure(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(), logger.isDebugEnabled())
-        .configure(SerializationFeature.INDENT_OUTPUT, true)
+        .configure(
+            StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(),
+            (logger.isDebugEnabled() || logger.isTraceEnabled()))
+        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))
         .registerModules(SecurityJackson2Modules.getModules(this.classLoader))
         .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 

@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -39,11 +38,6 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
     super(authorities, idToken, userInfo, nameAttributeKey);
     this.oidcRegistrationName = oidcRegistrationName;
     this.additionalGroupProperties = Collections.unmodifiableCollection(additionalGroupProperties);
-  }
-
-  @Override
-  public Collection<TailormapAdditionalProperty> getAdditionalProperties() {
-    return List.of();
   }
 
   @Override
