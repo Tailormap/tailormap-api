@@ -33,7 +33,7 @@ class ConfigurationControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  void testNotExist() throws Exception {
+  void get_not_exist() throws Exception {
     mockMvc.perform(get(apiBasePath + "/config/doesNotExist"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -42,7 +42,7 @@ class ConfigurationControllerIntegrationTest {
   }
 
   @Test
-  void testNotAvailableForViewer() throws Exception {
+  void get_not_available_for_viewer() throws Exception {
     mockMvc.perform(get(apiBasePath + "/config/default-app"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -51,7 +51,7 @@ class ConfigurationControllerIntegrationTest {
   }
 
   @Test
-  void test() throws Exception {
+  void get_config_test() throws Exception {
     mockMvc.perform(get(apiBasePath + "/config/test"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -7,36 +7,38 @@ template: |
   ## Uncategorised changes
 
   $CHANGES
-  
+
 categories:
-  - title: 🚀 New features and improvements
+  - title: '🚀 New features and improvements'
     labels:
-      - enhancement
-      - feature
-  - title: ⛓️‍💥 Breaking changes
-    label: breaking
-  - title: 🔨 Security fixes en updates
+      - 'enhancement'
+      - 'feature'
+  - title: '⛓️‍💥 Breaking changes'
+    label: 'breaking'
+  - title: '🔨 Security fixes en updates'
     labels:
-      - security
-  - title: 🐛 Bug Fixes
+      - 'security'
+  - title: '🐛 Bug Fixes'
     labels:
-      - bug
-      - fix
-      - bugfix
-      - regression
-  - title: 📖 Documentation updates
-    label: documentation
-  - title: 🚨 Removed / ⚠️ Deprecated
+      - 'bug'
+      - 'fix'
+      - 'bugfix'
+      - 'regression'
+  - title: '📖 Documentation updates'
+    label: 'documentation'
+  - title: '🚨 Removed / ⚠️ Deprecated'
     labels: 
-      - removed
-      - deprecated
-  - title: 🚦 Tests and Infrastructure
+      - 'removed'
+      - 'deprecated'
+  - title: '🚦 Tests and Infrastructure'
     labels:
-      - tests
-      - infrastructure
+      - 'tests'
+      - 'infrastructure'
     collapse-after: 10
-  - title: 🔨 Dependency updates
-    label: dependency
+  - title: '🔨 Dependency updates'
+    labels: 
+      - 'dependency'
+      - 'dependencies'
     collapse-after: 10
 
 replacers:

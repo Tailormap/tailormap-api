@@ -38,15 +38,15 @@ class TMFeatureTypeHelperIntegrationTest {
     application = applicationRepository.findByName("default");
   }
 
-  static Stream<Arguments> testIsEditable() {
+  static Stream<Arguments> editables() {
     return Stream.of(
         arguments("PostGIS", "begroeidterreindeel", "postgis:begroeidterreindeel", true),
         arguments("PostGIS OSM", "osm_polygon", "postgis:osm_polygon", false));
   }
 
   @ParameterizedTest
-  @MethodSource
-  void testIsEditable(String featureSourceTitle, String featureTypeName, String layerName, boolean expectedEditable) {
+  @MethodSource("editables")
+  void is_editable(String featureSourceTitle, String featureTypeName, String layerName, boolean expectedEditable) {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             featureTypeName,

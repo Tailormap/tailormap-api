@@ -10,11 +10,11 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.8</version>
+        <version>3.5.9</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.4.0-SNAPSHOT</version>
+    <version>12.4.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-12.4.0-rc.0</tag>
+        <tag>tailormap-api-12.4.0</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -100,11 +100,11 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2025-11-14T10:40:24Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-12-05T13:15:17Z</project.build.outputTimestamp>
         <geotools.version>34.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
-        <greenmail.version>2.1.7</greenmail.version>
+        <greenmail.version>2.1.8</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
@@ -128,7 +128,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.17.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.37.Final</hibernate.version>
+        <hibernate.version>6.6.39.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <logback.version>1.5.19</logback.version>
@@ -155,13 +155,14 @@ SPDX-License-Identifier: MIT
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+        <pmd.version>7.19.0</pmd.version>
         <versions-maven-plugin.version>2.20.1</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.1.9</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.30.3</swagger-ui.version>
-        <sentry.version>8.27.1</sentry.version>
+        <sentry.version>8.29.0</sentry.version>
         <errorProne.version>2.45.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -187,7 +188,7 @@ SPDX-License-Identifier: MIT
                  our spring-boot parent provides this import -->
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.30</version>
+                <version>12.0.31</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -456,7 +457,7 @@ SPDX-License-Identifier: MIT
             <!-- required for ch.rasc:sse-eventbus:2.0.1 where it is listed as provided -->
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
-            <version>2.11.7</version>
+            <version>2.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.locationtech.jts</groupId>
@@ -709,6 +710,18 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${maven-pmd-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-core</artifactId>
+                            <version>${pmd.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-java</artifactId>
+                            <version>${pmd.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.owasp</groupId>
@@ -740,7 +753,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -1364,7 +1377,7 @@ SPDX-License-Identifier: MIT
                                     </bannedImports>
                                 </RestrictImports>
                                 <RestrictImports>
-                                    <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
+                                    <reason>Use JUnit 6 instead of JUnit 4 or older</reason>
                                     <bannedImport>org.junit.Assert.*</bannedImport>
                                 </RestrictImports>
                                 <RestrictImports>

@@ -55,7 +55,7 @@ class UniqueValuesAdminControllerIntegrationTest {
   private long featureTypeId;
 
   @BeforeEach
-  void setUp() {
+  void setup() {
     featureTypeId = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             "bak",

@@ -40,7 +40,7 @@ class UserTest {
 
   /** Test that the password is not serialized. */
   @Test
-  void testJsonSerialize() {
+  void json_serialize() {
     final User userToSerialize = new User()
         .setUsername("markimarks")
         .setPassword("{bcrypt}$2a$10$hOKiZqxsvDJXMN/LbYcOeeJwWtgkKvfv834P5RsouLFpl7a8e3am2");
@@ -51,7 +51,7 @@ class UserTest {
   }
 
   @Test
-  void testJsonDeserializeEmptyPassword() {
+  void json_deserialize_empty_password() {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"\"}";
     assertThrows(
         InvalidPasswordException.class,
@@ -60,7 +60,7 @@ class UserTest {
   }
 
   @Test
-  void testJsonDeserializeValidPassword() throws JsonProcessingException {
+  void json_deserialize_valid_password() throws JsonProcessingException {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"myValidSecret$@12\"}";
 
     User actualUser = this.mapper.readValue(jsonToDeserialize, User.class);
@@ -75,7 +75,7 @@ class UserTest {
   }
 
   @Test
-  void valid_Username() {
+  void valid_username() {
     User user = new User().setUsername("markimarks").setPassword("myValidSecret$@12");
 
     Set<ConstraintViolation<User>> violations = validator.validate(user);
@@ -89,7 +89,7 @@ class UserTest {
   }
 
   @Test
-  void blank_Username() {
+  void blank_username() {
     User user = new User().setUsername("").setPassword("myValidSecret$@12");
 
     Set<ConstraintViolation<User>> violations = validator.validate(user);
@@ -98,7 +98,7 @@ class UserTest {
   }
 
   @Test
-  void invalid_Username() {
+  void invalid_username() {
     User user = new User().setUsername("app user").setPassword("myValidSecret$@12");
 
     Set<ConstraintViolation<User>> violations = validator.validate(user);

@@ -98,7 +98,7 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  void test_hidden_attribute() throws Exception {
+  void get_hidden_attribute() throws Exception {
     final String url = apiBasePath
         + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/ligtInLandCode";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -176,7 +176,7 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @RetryingTest(2)
-  // https://b3partners.atlassian.net/browse/HTM-758
+  @Issue("https://b3partners.atlassian.net/browse/HTM-758")
   void unique_values_from_wfs() throws Exception {
     final String url = apiBasePath + provinciesWfsUrl;
     MvcResult result = mockMvc.perform(
@@ -271,7 +271,7 @@ class UniqueValuesControllerIntegrationTest {
    */
   @Issue("https://b3partners.atlassian.net/browse/HTM-492")
   @Test
-  void unique_values_oracle_timestamp_HTM_492() throws Exception {
+  void unique_values_oracle_timestamp_htm_492() throws Exception {
     final String testUrl =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
     mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
@@ -283,7 +283,7 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+  void get_wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/unique/naam";
     mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
         .andExpect(status().isForbidden());
