@@ -104,7 +104,7 @@ SPDX-License-Identifier: MIT
         <geotools.version>34.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
-        <greenmail.version>2.1.7</greenmail.version>
+        <greenmail.version>2.1.8</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener
