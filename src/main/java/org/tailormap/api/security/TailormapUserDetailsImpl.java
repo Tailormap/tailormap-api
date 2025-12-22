@@ -5,6 +5,9 @@
  */
 package org.tailormap.api.security;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -19,8 +22,8 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 
-/* Do not make public, use the interface */
-class TailormapUserDetailsImpl implements TailormapUserDetails {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TailormapUserDetailsImpl implements TailormapUserDetails {
 
   @Serial
   private static final long serialVersionUID = 1L;
@@ -32,8 +35,29 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
   private final boolean enabled;
   private final String organisation;
 
-  private final Collection<TailormapAdditionalProperty> additionalProperties = new ArrayList<>();
-  private final Collection<TailormapAdditionalProperty> additionalGroupProperties = new ArrayList<>();
+  private Collection<TailormapAdditionalProperty> additionalProperties = new ArrayList<>();
+  private Collection<TailormapAdditionalProperty> additionalGroupProperties = new ArrayList<>();
+
+  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+  TailormapUserDetailsImpl(
+      @JsonProperty("authorities") Collection<GrantedAuthority> authorities,
+      @JsonProperty("validUntil") ZonedDateTime validUntil,
+      @JsonProperty("username") String username,
+      @JsonProperty("organisation") String organisation,
+      @JsonProperty("password") String password,
+      @JsonProperty("enabled") boolean enabled,
+      @JsonProperty("additionalProperties") Collection<TailormapAdditionalProperty> additionalProperties,
+      @JsonProperty("additionalGroupProperties")
+          Collection<TailormapAdditionalProperty> additionalGroupProperties) {
+    this.authorities = authorities;
+    this.username = username;
+    this.password = password;
+    this.validUntil = validUntil;
+    this.enabled = enabled;
+    this.organisation = organisation;
+    this.additionalProperties = additionalProperties;
+    this.additionalGroupProperties = additionalGroupProperties;
+  }
 
   public TailormapUserDetailsImpl(User user, GroupRepository groupRepository) {
     authorities = new HashSet<>();
@@ -61,10 +85,12 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
       }
     }
 
-    // For group properties, look in the database with a list of authorities instead of user.getGroups(), so
-    // aliasForGroup is taken into account
-    this.additionalGroupProperties.addAll(groupRepository.findAdditionalPropertiesByGroups(
-        authorities.stream().map(GrantedAuthority::getAuthority).toList()));
+    if (groupRepository != null) {
+      // For group properties, look in the database with a list of authorities instead of user.getGroups(), so
+      // aliasForGroup is taken into account
+      this.additionalGroupProperties.addAll(groupRepository.findAdditionalPropertiesByGroups(
+          authorities.stream().map(GrantedAuthority::getAuthority).toList()));
+    }
   }
 
   @Override
