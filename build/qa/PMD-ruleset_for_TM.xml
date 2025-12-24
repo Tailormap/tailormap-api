@@ -6,10 +6,10 @@ SPDX-License-Identifier: MIT
 -->
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         name="Maven PMD Plugin Ruleset"
+         name="Tailormap PMD Ruleset"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-    <description>Maven PMD Plugin Ruleset for Tailormap. See
-        https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
+    <description>PMD Plugin Ruleset for Tailormap API. See
+        https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html for options
     </description>
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
     <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
@@ -19,12 +19,7 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
     <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
-    <rule ref="category/java/bestpractices.xml/UseTryWithResources">
-        <properties>
-            <property name="violationSuppressXPath"
-                      value="./FinallyStatement//Name[substring-after(@Image, '.') = 'close' or substring-after(@Image, '.') = 'closeQuietly'][pmd-java:typeIs('java.lang.AutoCloseable') and fn:substring-before(@Image, '.') = ancestor::MethodDeclaration/MethodDeclarator//VariableDeclaratorId/@Name]"/>
-        </properties>
-    </rule>
+    <rule ref="category/java/bestpractices.xml/UseTryWithResources"/>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
@@ -47,6 +42,14 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
+    <rule ref="category/java/codestyle.xml/UseExplicitTypes">
+        <properties>
+            <property name="allowLiterals" value="false"/>
+            <property name="allowCtors" value="false"/>
+            <property name="allowCasts" value="false"/>
+            <property name="allowLoopVariable" value="true"/>
+        </properties>
+    </rule>
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
@@ -116,42 +119,27 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"/>
     <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion"/>
-    <rule name="DisallowJunit3"
-          language="java"
-          message="Avoid using JUnit3"
+    <rule name="DisallowJunit3" language="java" message="Using JUnit3 is not allowed"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
-        <description>
-            Don't use JUnit3, use JUnit5 instead
-        </description>
-        <priority>3</priority>
+        <description>Don't use JUnit3, use JUnit 6 instead</description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
-                <value>
-                    <![CDATA[
-             //Name[pmd-java:typeIs('junit.framework.TestCase')] |
-             //Name[pmd-java:typeIs('junit.framework.TestSuite')]
-             ]]>
-                </value>
+                <value><![CDATA[
+             //Name[pmd-java:typeIs('junit.framework.TestCase')] | //Name[pmd-java:typeIs('junit.framework.TestSuite')]
+             ]]></value>
             </property>
         </properties>
     </rule>
-    <rule name="DisallowJunit4"
-          language="java"
-          message="Avoid using JUnit4"
+    <rule name="DisallowJunit4" language="java" message="Using JUnit4 is not allowed"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
-        <description>
-            Don't use JUnit4, use JUnit5 instead
-        </description>
-        <priority>3</priority>
+        <description>Don't use JUnit4, use JUnit 6 instead</description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
-                <value>
-                    <![CDATA[
-             //Name[pmd-java:typeIs('org.junit.Test')] |
-             //Name[pmd-java:typeIs('org.junit.Before')] |
-             //Name[pmd-java:typeIs('org.junit.After')]
-             ]]>
-                </value>
+                <value><![CDATA[
+             //Name[pmd-java:typeIs('org.junit.Test')] | //Name[pmd-java:typeIs('org.junit.Before')] | //Name[pmd-java:typeIs('org.junit.After')]
+             ]]></value>
             </property>
         </properties>
     </rule>
@@ -167,8 +155,7 @@ SPDX-License-Identifier: MIT
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>
-                    <![CDATA[
+                <value><![CDATA[
                         //MethodDeclaration[
                           .//Annotation[fn:matches(@SimpleName,'.*test$')]
                           and (
@@ -176,8 +163,7 @@ SPDX-License-Identifier: MIT
                             or fn:matches(@Name,'^test')
                           )
                         ]
-                    ]]>
-                </value>
+                    ]]></value>
             </property>
         </properties>
     </rule>
