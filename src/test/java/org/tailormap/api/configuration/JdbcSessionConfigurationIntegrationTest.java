@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
+import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.security.TailormapAdditionalProperty;
@@ -60,11 +62,14 @@ class JdbcSessionConfigurationIntegrationTest {
     Session session = sessionRepository.createSession();
     String sessionId = session.getId();
 
+    Set<Group> groups = Set.of(new Group()
+        .setName("testgroup")
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty("groupkey", true, "groupvalue"))));
     User user = new User()
         .setUsername("test-user")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("key1", true, "value1")));
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty("key1", true, "value1")))
+        .setGroups(groups);
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
-    userDetails.getAdditionalGroupProperties().add(new TailormapAdditionalProperty("groupkey", true, "groupvalue"));
 
     Authentication auth = new UsernamePasswordAuthenticationToken(
         userDetails, null, List.of(new SimpleGrantedAuthority("USER")));
