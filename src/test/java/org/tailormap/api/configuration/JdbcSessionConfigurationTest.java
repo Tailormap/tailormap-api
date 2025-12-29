@@ -9,7 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -22,6 +26,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.security.TailormapAdditionalProperty;
@@ -43,11 +48,15 @@ class JdbcSessionConfigurationTest {
 
   @Test
   void should_serialize_and_deserialize_security_context_with_tm_userdetails_round_trip() {
+    Set<Group> groups = Set.of(new Group()
+        .setName("admin")
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty("grouptest", true, "group"))));
     User user = new User()
         .setUsername("tm-admin")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("usertest", true, "user")));
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty("usertest", true, "user")))
+        .setOrganisation("Tailormap")
+        .setGroups(groups);
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
-    userDetails.getAdditionalGroupProperties().add(new TailormapAdditionalProperty("grouptest", true, "group"));
 
     Authentication auth = new UsernamePasswordAuthenticationToken(
         userDetails, null, List.of(new SimpleGrantedAuthority("admin")));
@@ -72,8 +81,20 @@ class JdbcSessionConfigurationTest {
     assertEquals(userDetails.getAuthorities(), userDetailsBack.getAuthorities());
     assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
     assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
-    assertEquals(userDetails.getAdditionalProperties(), userDetailsBack.getAdditionalProperties());
-    assertEquals(userDetails.getAdditionalGroupProperties(), userDetailsBack.getAdditionalGroupProperties());
+    Collection<String> in = userDetails.getAdditionalProperties().stream()
+        .map(Objects::toString)
+        .collect(Collectors.toList());
+    Collection<String> out = userDetailsBack.getAdditionalProperties().stream()
+        .map(Objects::toString)
+        .collect(Collectors.toList());
+    assertEquals(in, out);
+    Set<String> ag = userDetails.getAdditionalGroupProperties().stream()
+        .map(Object::toString)
+        .collect(Collectors.toSet());
+    Set<String> bg = userDetailsBack.getAdditionalGroupProperties().stream()
+        .map(Object::toString)
+        .collect(Collectors.toSet());
+    assertEquals(ag, bg);
     assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
     assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
     assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());
