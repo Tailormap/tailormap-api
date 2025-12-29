@@ -38,18 +38,30 @@ import org.tailormap.api.security.TailormapUserDetailsImpl;
 @AutoConfigureMockMvc
 class JdbcSessionConfigurationIntegrationTest {
 
+  private static final String SELECT_ATTRIBUTE_BYTES_SQL =
+      "SELECT ATTRIBUTE_BYTES FROM SPRING_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID = ? AND ATTRIBUTE_NAME = ?";
+
   @Autowired
   private FindByIndexNameSessionRepository<? extends Session> sessionRepository;
 
   @Autowired
   private DataSource dataSource;
 
+  private String getAttributeBytes(String sessionId, String attributeName) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    return jdbcTemplate.queryForObject(
+        SELECT_ATTRIBUTE_BYTES_SQL,
+        (rs, rowNum) -> rs.getString("ATTRIBUTE_BYTES"),
+        sessionId,
+        attributeName);
+  }
+
   @Test
   void should_create_session_attribute_using_postgresql_convert_from_and_jsonb() {
     // Create a session with a complex object as an attribute
     Session session = sessionRepository.createSession();
     String sessionId = session.getId();
-    
+
     User user = new User()
         .setUsername("test-user")
         .setAdditionalProperties(List.of(new AdminAdditionalProperty("key1", true, "value1")));
@@ -64,27 +76,20 @@ class JdbcSessionConfigurationIntegrationTest {
     sessionRepository.save(session);
 
     // Verify the attribute was stored as JSONB in the database using the custom CREATE query
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    String sql = "SELECT ATTRIBUTE_BYTES FROM SPRING_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID = ? AND ATTRIBUTE_NAME = ?";
-    
-    String jsonbContent = jdbcTemplate.queryForObject(
-        sql,
-        (rs, rowNum) -> rs.getString("ATTRIBUTE_BYTES"),
-        session.getId(),
-        "SPRING_SECURITY_CONTEXT");
+    String jsonbContent = getAttributeBytes(session.getId(), "SPRING_SECURITY_CONTEXT");
 
     assertNotNull(jsonbContent, "JSONB content should not be null");
     assertTrue(jsonbContent.contains("test-user"), "JSON should contain username");
     assertTrue(jsonbContent.contains("UsernamePasswordAuthenticationToken"), "JSON should contain authentication type");
-    
+
     // Verify we can retrieve the session and the attribute is correctly deserialized
     Session retrievedSession = sessionRepository.findById(sessionId);
     assertNotNull(retrievedSession, "Session should be retrievable");
-    
+
     SecurityContextImpl retrievedCtx = retrievedSession.getAttribute("SPRING_SECURITY_CONTEXT");
     assertNotNull(retrievedCtx, "Security context should be retrievable");
     assertNotNull(retrievedCtx.getAuthentication(), "Authentication should be present");
-    
+
     TailormapUserDetailsImpl retrievedUserDetails = 
         (TailormapUserDetailsImpl) retrievedCtx.getAuthentication().getPrincipal();
     assertEquals("test-user", retrievedUserDetails.getUsername(), "Username should match");
@@ -124,14 +129,7 @@ class JdbcSessionConfigurationIntegrationTest {
     sessionRepository.save(retrievedSession);
 
     // Verify the attribute was updated as JSONB in the database using the custom UPDATE query
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    String sql = "SELECT ATTRIBUTE_BYTES FROM SPRING_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID = ? AND ATTRIBUTE_NAME = ?";
-    
-    String jsonbContent = jdbcTemplate.queryForObject(
-        sql,
-        (rs, rowNum) -> rs.getString("ATTRIBUTE_BYTES"),
-        sessionId,
-        "SPRING_SECURITY_CONTEXT");
+    String jsonbContent = getAttributeBytes(sessionId, "SPRING_SECURITY_CONTEXT");
 
     assertNotNull(jsonbContent, "Updated JSONB content should not be null");
     assertTrue(jsonbContent.contains("updated-user"), "JSON should contain updated username");
@@ -140,10 +138,10 @@ class JdbcSessionConfigurationIntegrationTest {
     // Verify we can retrieve the updated session
     Session finalSession = sessionRepository.findById(sessionId);
     assertNotNull(finalSession, "Updated session should be retrievable");
-    
+
     SecurityContextImpl finalCtx = finalSession.getAttribute("SPRING_SECURITY_CONTEXT");
     assertNotNull(finalCtx, "Updated security context should be retrievable");
-    
+
     TailormapUserDetailsImpl finalUserDetails = 
         (TailormapUserDetailsImpl) finalCtx.getAuthentication().getPrincipal();
     assertEquals("updated-user", finalUserDetails.getUsername(), "Username should be updated");
@@ -168,7 +166,7 @@ class JdbcSessionConfigurationIntegrationTest {
 
     // Add second attribute - custom data
     session.setAttribute("CUSTOM_DATA", "test-value");
-    
+
     // Add third attribute - timestamp
     session.setAttribute("LOGIN_TIME", Instant.now().toEpochMilli());
 
@@ -189,10 +187,10 @@ class JdbcSessionConfigurationIntegrationTest {
 
     SecurityContextImpl retrievedCtx = retrievedSession.getAttribute("SPRING_SECURITY_CONTEXT");
     assertNotNull(retrievedCtx, "Security context should be retrievable");
-    
+
     String customData = retrievedSession.getAttribute("CUSTOM_DATA");
     assertEquals("test-value", customData, "Custom data should match");
-    
+
     Long loginTime = retrievedSession.getAttribute("LOGIN_TIME");
     assertNotNull(loginTime, "Login time should be retrievable");
   }
@@ -221,12 +219,12 @@ class JdbcSessionConfigurationIntegrationTest {
 
     SecurityContextImpl retrievedCtx = retrievedSession.getAttribute("SPRING_SECURITY_CONTEXT");
     assertNotNull(retrievedCtx, "Security context should be retrievable");
-    
+
     TailormapUserDetailsImpl retrievedUserDetails = 
         (TailormapUserDetailsImpl) retrievedCtx.getAuthentication().getPrincipal();
     assertEquals("user-with-\"quotes\"", retrievedUserDetails.getUsername(), 
         "Username with special characters should match");
-    
+
     AdminAdditionalProperty prop = (AdminAdditionalProperty) retrievedUserDetails.getAdditionalProperties().get(0);
     assertEquals("key with spaces", prop.getKey(), "Key with spaces should match");
     assertTrue(prop.getValue().contains("'quotes'"), "Value should contain single quotes");
@@ -237,7 +235,7 @@ class JdbcSessionConfigurationIntegrationTest {
   void should_verify_jsonb_storage_type_in_database() {
     // Verify that the ATTRIBUTE_BYTES column actually uses JSONB type
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    
+
     String dataTypeSql = """
         SELECT data_type 
         FROM information_schema.columns 
