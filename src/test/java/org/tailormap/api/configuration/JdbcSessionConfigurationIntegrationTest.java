@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +29,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
+import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetailsImpl;
 
@@ -36,37 +39,58 @@ import org.tailormap.api.security.TailormapUserDetailsImpl;
  */
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
+@SuppressWarnings("unchecked")
 class JdbcSessionConfigurationIntegrationTest {
 
   private static final String SELECT_ATTRIBUTE_BYTES_SQL =
-      "SELECT ATTRIBUTE_BYTES FROM SPRING_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID = ? AND ATTRIBUTE_NAME = ?";
+      """
+select jsonb_pretty(attribute_bytes) as attribute from spring_session_attributes
+where attribute_name = 'SPRING_SECURITY_CONTEXT'
+and session_primary_id = (select primary_id from spring_session where session_id = ?)
+""";
+
+  /** this is in fact a org.springframework.session.jdbc.JdbcIndexedSessionRepository. */
+  @Autowired
+  @SuppressWarnings("rawtypes")
+  private FindByIndexNameSessionRepository sessionRepository;
 
   @Autowired
-  private FindByIndexNameSessionRepository<Session> sessionRepository;
+  private GroupRepository groupRepository;
 
   @Autowired
   private DataSource dataSource;
 
-  private String getAttributeBytes(String sessionId, String attributeName) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+  /** this is in fact a org.springframework.session.jdbc.JdbcIndexedSessionRepository.JdbcSession. */
+  private Session session;
+
+  private String sessionId;
+  private JdbcTemplate jdbcTemplate;
+
+  private String getAttribute(String sessionId) {
     return jdbcTemplate.queryForObject(
-        SELECT_ATTRIBUTE_BYTES_SQL, (rs, rowNum) -> rs.getString("ATTRIBUTE_BYTES"), sessionId, attributeName);
+        SELECT_ATTRIBUTE_BYTES_SQL, (rs, rowNum) -> rs.getString("attribute"), sessionId);
+  }
+
+  @BeforeEach
+  void setUp() {
+    session = sessionRepository.createSession();
+    sessionId = session.getId();
+    jdbcTemplate = new JdbcTemplate(dataSource);
+  }
+
+  @AfterEach
+  void tearDown() {
+    jdbcTemplate.update("DELETE FROM spring_session WHERE session_id=?", sessionId);
   }
 
   @Test
   void should_create_session_attribute_using_postgresql_convert_from_and_jsonb() {
-    // Create a session with a complex object as an attribute
-    Session session = sessionRepository.createSession();
-    String sessionId = session.getId();
-
-    Set<Group> groups = Set.of(new Group()
-        .setName("testgroup")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("groupkey", true, "groupvalue"))));
     User user = new User()
         .setUsername("test-user")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("key1", true, "value1")))
-        .setGroups(groups);
-    TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty("userkey", true, "uservalue")))
+        .setGroups(Set.of(new Group().setName("test-bar")));
+    // Note: group additional properties are normally loaded from the database via GroupRepository
+    TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, groupRepository);
 
     Authentication auth =
         new UsernamePasswordAuthenticationToken(userDetails, null, List.of(new SimpleGrantedAuthority("USER")));
@@ -75,16 +99,13 @@ class JdbcSessionConfigurationIntegrationTest {
     session.setAttribute("SPRING_SECURITY_CONTEXT", ctx);
     sessionRepository.save(session);
 
-    // Verify the attribute was stored as JSONB in the database using the custom CREATE query
-    String jsonbContent = getAttributeBytes(session.getId(), "SPRING_SECURITY_CONTEXT");
-
+    String jsonbContent = getAttribute(session.getId());
     assertNotNull(jsonbContent, "JSONB content should not be null");
     assertTrue(jsonbContent.contains("test-user"), "JSON should contain username");
     assertTrue(
         jsonbContent.contains("UsernamePasswordAuthenticationToken"),
         "JSON should contain authentication type");
 
-    // Verify we can retrieve the session and the attribute is correctly deserialized
     Session retrievedSession = sessionRepository.findById(sessionId);
     assertNotNull(retrievedSession, "Session should be retrievable");
 
@@ -96,15 +117,11 @@ class JdbcSessionConfigurationIntegrationTest {
         (TailormapUserDetailsImpl) retrievedCtx.getAuthentication().getPrincipal();
     assertEquals("test-user", retrievedUserDetails.getUsername(), "Username should match");
     assertEquals(1, retrievedUserDetails.getAdditionalProperties().size(), "Should have one additional property");
-    assertEquals(1, retrievedUserDetails.getAdditionalGroupProperties().size(), "Should have one group property");
+    assertEquals(2, retrievedUserDetails.getAdditionalGroupProperties().size(), "Should have two group properties");
   }
 
   @Test
   void should_update_session_attribute_using_postgresql_encode_and_jsonb() {
-    // Create a session with an initial attribute
-    Session session = sessionRepository.createSession();
-    String sessionId = session.getId();
-
     User user = new User().setUsername("initial-user");
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
     Authentication auth =
@@ -114,7 +131,6 @@ class JdbcSessionConfigurationIntegrationTest {
     session.setAttribute("SPRING_SECURITY_CONTEXT", ctx);
     sessionRepository.save(session);
 
-    // Update the attribute with a different user
     Session retrievedSession = sessionRepository.findById(sessionId);
     assertNotNull(retrievedSession, "Session should exist");
 
@@ -128,15 +144,12 @@ class JdbcSessionConfigurationIntegrationTest {
 
     retrievedSession.setAttribute("SPRING_SECURITY_CONTEXT", updatedCtx);
     sessionRepository.save(retrievedSession);
-
-    // Verify the attribute was updated as JSONB in the database using the custom UPDATE query
-    String jsonbContent = getAttributeBytes(sessionId, "SPRING_SECURITY_CONTEXT");
+    String jsonbContent = getAttribute(sessionId);
 
     assertNotNull(jsonbContent, "Updated JSONB content should not be null");
     assertTrue(jsonbContent.contains("updated-user"), "JSON should contain updated username");
     assertTrue(jsonbContent.contains("ADMIN"), "JSON should contain updated authority");
 
-    // Verify we can retrieve the updated session
     Session finalSession = sessionRepository.findById(sessionId);
     assertNotNull(finalSession, "Updated session should be retrievable");
 
@@ -151,18 +164,13 @@ class JdbcSessionConfigurationIntegrationTest {
         "newkey",
         finalUserDetails.getAdditionalProperties().stream()
             .findFirst()
-            .get()
+            .orElseThrow()
             .key(),
         "Property key should match");
   }
 
   @Test
   void should_handle_multiple_attributes_in_same_session() {
-    // Create a session with multiple attributes
-    Session session = sessionRepository.createSession();
-    String sessionId = session.getId();
-
-    // Add first attribute - security context
     User user = new User().setUsername("multi-attr-user");
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
     Authentication auth =
@@ -170,24 +178,20 @@ class JdbcSessionConfigurationIntegrationTest {
     SecurityContextImpl ctx = new SecurityContextImpl(auth);
     session.setAttribute("SPRING_SECURITY_CONTEXT", ctx);
 
-    // Add second attribute - custom data
     session.setAttribute("CUSTOM_DATA", "test-value");
-
-    // Add third attribute - timestamp
     session.setAttribute("LOGIN_TIME", Instant.now().toEpochMilli());
-
     sessionRepository.save(session);
 
-    // Verify all attributes are stored correctly
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     Integer attributeCount = jdbcTemplate.queryForObject(
-        "SELECT COUNT(*) FROM SPRING_SESSION_ATTRIBUTES WHERE SESSION_PRIMARY_ID = ?",
+        """
+select count(*) from spring_session_attributes
+where session_primary_id = (select primary_id from spring_session where session_id = ?)
+""",
         Integer.class,
         sessionId);
 
     assertEquals(3, attributeCount, "Should have three attributes");
 
-    // Retrieve and verify each attribute
     Session retrievedSession = sessionRepository.findById(sessionId);
     assertNotNull(retrievedSession, "Session should be retrievable");
 
@@ -203,9 +207,6 @@ class JdbcSessionConfigurationIntegrationTest {
 
   @Test
   void should_handle_jsonb_queries_with_special_characters() {
-    // Test that special JSON characters are properly escaped
-    Session session = sessionRepository.createSession();
-    String sessionId = session.getId();
 
     User user = new User()
         .setUsername("user-with-\"quotes\"")
@@ -219,7 +220,6 @@ class JdbcSessionConfigurationIntegrationTest {
     session.setAttribute("SPRING_SECURITY_CONTEXT", ctx);
     sessionRepository.save(session);
 
-    // Verify the data with special characters is stored and retrievable
     Session retrievedSession = sessionRepository.findById(sessionId);
     assertNotNull(retrievedSession, "Session should be retrievable");
 
@@ -235,7 +235,7 @@ class JdbcSessionConfigurationIntegrationTest {
 
     TailormapAdditionalProperty prop = retrievedUserDetails.getAdditionalProperties().stream()
         .findFirst()
-        .get();
+        .orElseThrow();
     assertEquals("key with spaces", prop.key(), "Key with spaces should match");
     assertTrue(((String) prop.value()).contains("'quotes'"), "Value should contain single quotes");
     assertTrue(((String) prop.value()).contains("\"double quotes\""), "Value should contain double quotes");
@@ -243,9 +243,6 @@ class JdbcSessionConfigurationIntegrationTest {
 
   @Test
   void should_verify_jsonb_storage_type_in_database() {
-    // Verify that the ATTRIBUTE_BYTES column actually uses JSONB type
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-
     String dataTypeSql =
         """
 SELECT data_type
@@ -255,6 +252,7 @@ AND column_name = 'attribute_bytes'
 """;
 
     String dataType = jdbcTemplate.queryForObject(dataTypeSql, String.class);
+    assertNotNull(dataType, "Data type should not be null");
     assertEquals("jsonb", dataType.toLowerCase(java.util.Locale.ROOT), "ATTRIBUTE_BYTES should be JSONB type");
   }
 }

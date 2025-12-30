@@ -62,6 +62,7 @@ AND ATTRIBUTE_NAME = ?
         .allowIfSubType("org.tailormap.api.security.")
         .allowIfSubType("org.springframework.security.")
         .allowIfBaseType("java.util.")
+        .allowIfSubType(java.lang.Number.class)
         .build();
 
     ObjectMapper copy = objectMapper
