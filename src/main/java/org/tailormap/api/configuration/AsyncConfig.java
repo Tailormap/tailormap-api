@@ -23,6 +23,8 @@ public class AsyncConfig {
     executor.setMaxPoolSize(1);
     executor.setQueueCapacity(10);
     executor.setThreadNamePrefix("pwd-reset-");
+    executor.setWaitForTasksToCompleteOnShutdown(true);
+    executor.setAwaitTerminationSeconds(30);
     executor.initialize();
     return executor;
   }
