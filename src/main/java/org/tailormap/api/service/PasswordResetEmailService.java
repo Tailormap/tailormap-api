@@ -54,7 +54,7 @@ public class PasswordResetEmailService {
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
       if (emailSender.isEmpty()) {
-        logger.warn("Cannot send password reset email: JavaMailSender is not configured");
+        logger.warn("Cannot send password reset email for {}: JavaMailSender is not configured", email);
         return;
       }
 
@@ -80,7 +80,8 @@ public class PasswordResetEmailService {
       logger.info("Sending password reset email for user: {}", user.getUsername());
       emailSender
           .orElseThrow(
-              () -> new IllegalStateException("JavaMailSender is not available but was checked earlier"))
+              () -> new IllegalStateException(
+                  "JavaMailSender was unexpectedly null after isEmpty() check passed - this indicates a concurrency issue or coding error"))
           .send(message); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
