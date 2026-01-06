@@ -7,6 +7,7 @@
 package org.tailormap.api.service;
 
 import java.util.Locale;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PasswordResetEmailService {
 
   private static final Logger logger = LoggerFactory.getLogger(PasswordResetEmailService.class);
 
-  private final JavaMailSender emailSender;
+  private final Optional<JavaMailSender> emailSender;
   private final UserRepository userRepository;
   private final TemporaryTokenRepository temporaryTokenRepository;
   private final MessageSource messageSource;
@@ -35,12 +36,13 @@ public class PasswordResetEmailService {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
+  @Autowired(required = false)
   public PasswordResetEmailService(
-      @Autowired(required = false) JavaMailSender emailSender,
+      JavaMailSender emailSender,
       UserRepository userRepository,
       TemporaryTokenRepository temporaryTokenRepository,
       MessageSource messageSource) {
-    this.emailSender = emailSender;
+    this.emailSender = Optional.ofNullable(emailSender);
     this.userRepository = userRepository;
     this.temporaryTokenRepository = temporaryTokenRepository;
     this.messageSource = messageSource;
@@ -51,7 +53,7 @@ public class PasswordResetEmailService {
   public void sendPasswordResetEmailAsync(
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
-      if (emailSender == null) {
+      if (!emailSender.isPresent()) {
         logger.warn("Cannot send password reset email: JavaMailSender is not configured");
         return;
       }
@@ -76,7 +78,7 @@ public class PasswordResetEmailService {
           messageSource.getMessage("reset-password-request.email-body", new Object[] {absoluteLink}, locale));
 
       logger.info("Sending password reset email for user: {}", user.getUsername());
-      emailSender.send(message); // blocking, but run in async thread
+      emailSender.get().send(message); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
     }
