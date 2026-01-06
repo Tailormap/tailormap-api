@@ -6,14 +6,15 @@
 package org.tailormap.api.solr;
 
 import io.micrometer.core.instrument.Metrics;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SolrService {
@@ -38,7 +39,7 @@ public class SolrService {
    * @return the Solr client
    */
   public SolrClient getSolrClientForIndexing() {
-    return new Http2SolrClient.Builder(this.solrUrl + this.solrCoreName)
+    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)
         .withFollowRedirects(true)
         .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)
         .withRequestTimeout(solrRequestTimeout, TimeUnit.SECONDS)
@@ -55,7 +56,7 @@ public class SolrService {
    * @return the Solr client
    */
   public SolrClient getSolrClientForSearching() {
-    return new Http2SolrClient.Builder(this.solrUrl + this.solrCoreName)
+    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)
         .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)
         .withFollowRedirects(true)
         .build();
