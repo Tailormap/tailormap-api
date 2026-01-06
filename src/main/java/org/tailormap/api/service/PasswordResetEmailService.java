@@ -54,7 +54,7 @@ public class PasswordResetEmailService {
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
       if (emailSender.isEmpty()) {
-        logger.warn("Cannot send password reset email for {}: JavaMailSender is not configured", email);
+        logger.warn("Cannot send password reset email: JavaMailSender is not configured");
         return;
       }
 
