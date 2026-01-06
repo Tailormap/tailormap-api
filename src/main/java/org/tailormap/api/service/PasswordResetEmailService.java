@@ -53,7 +53,7 @@ public class PasswordResetEmailService {
   public void sendPasswordResetEmailAsync(
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
-      if (!emailSender.isPresent()) {
+      if (emailSender.isEmpty()) {
         logger.warn("Cannot send password reset email: JavaMailSender is not configured");
         return;
       }
@@ -78,7 +78,10 @@ public class PasswordResetEmailService {
           messageSource.getMessage("reset-password-request.email-body", new Object[] {absoluteLink}, locale));
 
       logger.info("Sending password reset email for user: {}", user.getUsername());
-      emailSender.get().send(message); // blocking, but run in async thread
+      emailSender
+          .orElseThrow(
+              () -> new IllegalStateException("JavaMailSender is not available but was checked earlier"))
+          .send(message); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
     }
