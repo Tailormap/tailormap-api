@@ -9,6 +9,7 @@ package org.tailormap.api.service;
 import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,7 +36,7 @@ public class PasswordResetEmailService {
   private String mailFrom;
 
   public PasswordResetEmailService(
-      JavaMailSender emailSender,
+      @Autowired(required = false) JavaMailSender emailSender,
       UserRepository userRepository,
       TemporaryTokenRepository temporaryTokenRepository,
       MessageSource messageSource) {
@@ -50,6 +51,11 @@ public class PasswordResetEmailService {
   public void sendPasswordResetEmailAsync(
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
+      if (emailSender == null) {
+        logger.warn("Cannot send password reset email: JavaMailSender is not configured");
+        return;
+      }
+
       User user = userRepository.findByEmail(email).orElse(null);
       if (user == null || !user.isEnabledAndValidUntil()) {
         return;
