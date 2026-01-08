@@ -10,6 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,6 +27,7 @@ import org.tailormap.api.security.ApiSecurityConfiguration;
       JPAConfiguration.class,
       DataSourceAutoConfiguration.class,
       HibernateJpaAutoConfiguration.class,
+      MailSenderAutoConfiguration.class,
       ActuatorSecurityConfiguration.class,
       ApiSecurityConfiguration.class,
     })

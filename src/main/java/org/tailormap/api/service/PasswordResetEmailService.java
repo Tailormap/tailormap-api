@@ -7,14 +7,18 @@
 package org.tailormap.api.service;
 
 import java.util.Locale;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.persistence.TemporaryToken;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.repository.TemporaryTokenRepository;
@@ -25,7 +29,7 @@ public class PasswordResetEmailService {
 
   private static final Logger logger = LoggerFactory.getLogger(PasswordResetEmailService.class);
 
-  private final JavaMailSender emailSender;
+  private final Optional<JavaMailSender> emailSender;
   private final UserRepository userRepository;
   private final TemporaryTokenRepository temporaryTokenRepository;
   private final MessageSource messageSource;
@@ -33,21 +37,28 @@ public class PasswordResetEmailService {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
+  @Autowired(required = false)
   public PasswordResetEmailService(
-      JavaMailSender emailSender,
+      @Nullable JavaMailSender emailSender,
       UserRepository userRepository,
       TemporaryTokenRepository temporaryTokenRepository,
       MessageSource messageSource) {
-    this.emailSender = emailSender;
+    this.emailSender = Optional.ofNullable(emailSender);
     this.userRepository = userRepository;
     this.temporaryTokenRepository = temporaryTokenRepository;
     this.messageSource = messageSource;
   }
 
   @Async("passwordResetTaskExecutor")
+  @Transactional
   public void sendPasswordResetEmailAsync(
       String email, String absoluteLinkPrefix, Locale locale, int tokenExpiryMinutes) {
     try {
+      if (emailSender.isEmpty()) {
+        logger.warn("Cannot send password reset email: JavaMailSender is not configured");
+        return;
+      }
+
       User user = userRepository.findByEmail(email).orElse(null);
       if (user == null || !user.isEnabledAndValidUntil()) {
         return;
@@ -68,7 +79,11 @@ public class PasswordResetEmailService {
           messageSource.getMessage("reset-password-request.email-body", new Object[] {absoluteLink}, locale));
 
       logger.info("Sending password reset email for user: {}", user.getUsername());
-      emailSender.send(message); // blocking, but run in async thread
+      emailSender
+          .orElseThrow(
+              () -> new IllegalStateException(
+                  "JavaMailSender was unexpectedly null after isEmpty() check passed - this indicates a concurrency issue or coding error"))
+          .send(message); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
     }
