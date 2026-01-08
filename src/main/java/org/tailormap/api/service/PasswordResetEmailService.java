@@ -79,11 +79,7 @@ public class PasswordResetEmailService {
           messageSource.getMessage("reset-password-request.email-body", new Object[] {absoluteLink}, locale));
 
       logger.info("Sending password reset email for user: {}", user.getUsername());
-      emailSender
-          .orElseThrow(
-              () -> new IllegalStateException(
-                  "JavaMailSender was unexpectedly null after isEmpty() check passed - this indicates a concurrency issue or coding error"))
-          .send(message); // blocking, but run in async thread
+      emailSender.get().send(message); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
     }
