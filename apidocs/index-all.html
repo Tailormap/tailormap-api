@@ -506,6 +506,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/GeoService.html#assignId()" class="member-name-link">assignId()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/AsyncConfig.html" class="type-name-link" title="class in org.tailormap.api.configuration">AsyncConfig</a> - Class in <a href="org/tailormap/api/configuration/package-summary.html">org.tailormap.api.configuration</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/AsyncConfig.html#%3Cinit%3E()" class="member-name-link">AsyncConfig()</a> - Constructor for class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/AsyncConfig.html" title="class in org.tailormap.api.configuration">AsyncConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.AttachmentWithBinary.html#attachment()" class="member-name-link">attachment()</a> - Method in record class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/AttachmentsHelper.AttachmentWithBinary.html" title="class in org.tailormap.api.geotools.featuresources">AttachmentsHelper.AttachmentWithBinary</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>attachment</code> record component.</div>
@@ -6753,6 +6757,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/events/package-summary.html">org.tailormap.api.security.events</a> - package org.tailormap.api.security.events</dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/package-summary.html">org.tailormap.api.service</a> - package org.tailormap.api.service</dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/solr/package-summary.html">org.tailormap.api.solr</a> - package org.tailormap.api.solr</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/package-summary.html">org.tailormap.api.util</a> - package org.tailormap.api.util</dt>
@@ -6848,7 +6854,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/PasswordResetController.html" class="type-name-link" title="class in org.tailormap.api.controller">PasswordResetController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/PasswordResetController.html#%3Cinit%3E(org.springframework.mail.javamail.JavaMailSender,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.context.MessageSource,org.springframework.web.servlet.LocaleResolver)" class="member-name-link">PasswordResetController(JavaMailSender, UserRepository, TemporaryTokenRepository, MessageSource, LocaleResolver)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/PasswordResetController.html" title="class in org.tailormap.api.controller">PasswordResetController</a></dt>
+<dt><a href="org/tailormap/api/controller/PasswordResetController.html#%3Cinit%3E(org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.web.servlet.LocaleResolver,org.tailormap.api.service.PasswordResetEmailService)" class="member-name-link">PasswordResetController(UserRepository, TemporaryTokenRepository, LocaleResolver, PasswordResetEmailService)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/PasswordResetController.html" title="class in org.tailormap.api.controller">PasswordResetController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/PasswordResetEmailService.html" class="type-name-link" title="class in org.tailormap.api.service">PasswordResetEmailService</a> - Class in <a href="org/tailormap/api/service/package-summary.html">org.tailormap.api.service</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/PasswordResetEmailService.html#%3Cinit%3E(org.springframework.mail.javamail.JavaMailSender,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.context.MessageSource)" class="member-name-link">PasswordResetEmailService(JavaMailSender, UserRepository, TemporaryTokenRepository, MessageSource)</a> - Constructor for class org.tailormap.api.service.<a href="org/tailormap/api/service/PasswordResetEmailService.html" title="class in org.tailormap.api.service">PasswordResetEmailService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/AsyncConfig.html#passwordResetTaskExecutor()" class="member-name-link">passwordResetTaskExecutor()</a> - Method in class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/AsyncConfig.html" title="class in org.tailormap.api.configuration">AsyncConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/PasswordValidationController.html" class="type-name-link" title="class in org.tailormap.api.controller">PasswordValidationController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
@@ -7184,6 +7196,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/AttributeValueSettings.html#selectable(java.lang.Boolean)" class="member-name-link">selectable(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttributeValueSettings.html" title="class in org.tailormap.api.persistence.json">AttributeValueSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttributeValueSettings.html#selectable(java.lang.Boolean)" class="member-name-link">selectable(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeValueSettings.html" title="class in org.tailormap.api.viewer.model">AttributeValueSettings</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/PasswordResetEmailService.html#sendPasswordResetEmailAsync(java.lang.String,java.lang.String,java.util.Locale,int)" class="member-name-link">sendPasswordResetEmailAsync(String, String, Locale, int)</a> - Method in class org.tailormap.api.service.<a href="org/tailormap/api/service/PasswordResetEmailService.html" title="class in org.tailormap.api.service">PasswordResetEmailService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/ServerConfigController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">ServerConfigController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>

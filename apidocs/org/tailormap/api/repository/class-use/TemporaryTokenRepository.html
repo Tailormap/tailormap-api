@@ -58,6 +58,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.controller">org.tailormap.api.controller</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.service">org.tailormap.api.service</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -84,11 +86,27 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../controller/PasswordResetController.html#%3Cinit%3E(org.springframework.mail.javamail.JavaMailSender,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.context.MessageSource,org.springframework.web.servlet.LocaleResolver)" class="member-name-link">PasswordResetController</a><wbr>(org.springframework.mail.javamail.JavaMailSender&nbsp;emailSender,
+<div class="col-second even-row-color"><code><a href="../../controller/PasswordResetController.html#%3Cinit%3E(org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.web.servlet.LocaleResolver,org.tailormap.api.service.PasswordResetEmailService)" class="member-name-link">PasswordResetController</a><wbr>(<a href="../UserRepository.html" title="interface in org.tailormap.api.repository">UserRepository</a>&nbsp;userRepository,
+ <a href="../TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a>&nbsp;temporaryTokenRepository,
+ org.springframework.web.servlet.LocaleResolver&nbsp;localeResolver,
+ <a href="../../service/PasswordResetEmailService.html" title="class in org.tailormap.api.service">PasswordResetEmailService</a>&nbsp;passwordResetEmailService)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.service">
+<h2>Uses of <a href="../TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a> in <a href="../../service/package-summary.html">org.tailormap.api.service</a></h2>
+<div class="caption"><span>Constructors in <a href="../../service/package-summary.html">org.tailormap.api.service</a> with parameters of type <a href="../TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../service/PasswordResetEmailService.html#%3Cinit%3E(org.springframework.mail.javamail.JavaMailSender,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.TemporaryTokenRepository,org.springframework.context.MessageSource)" class="member-name-link">PasswordResetEmailService</a><wbr>(org.springframework.mail.javamail.JavaMailSender&nbsp;emailSender,
  <a href="../UserRepository.html" title="interface in org.tailormap.api.repository">UserRepository</a>&nbsp;userRepository,
  <a href="../TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a>&nbsp;temporaryTokenRepository,
- org.springframework.context.MessageSource&nbsp;messageSource,
- org.springframework.web.servlet.LocaleResolver&nbsp;localeResolver)</code></div>
+ org.springframework.context.MessageSource&nbsp;messageSource)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
