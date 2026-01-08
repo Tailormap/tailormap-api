@@ -79,7 +79,7 @@ public class PasswordResetEmailService {
           messageSource.getMessage("reset-password-request.email-body", new Object[] {absoluteLink}, locale));
 
       logger.info("Sending password reset email for user: {}", user.getUsername());
-      emailSender.get().send(message); // blocking, but run in async thread
+      emailSender.ifPresent((sender) -> sender.send(message)); // blocking, but run in async thread
     } catch (Exception e) {
       logger.error("Failed to send password reset email", e);
     }
