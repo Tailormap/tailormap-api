@@ -61,8 +61,10 @@ AND ATTRIBUTE_NAME = ?
     BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
         .allowIfSubType("org.tailormap.api.security.")
         .allowIfSubType("org.springframework.security.")
-        .allowIfBaseType("java.util.")
+        .allowIfSubType("java.util.")
         .allowIfSubType(java.lang.Number.class)
+        .allowIfSubType("java.time.")
+        .allowIfBaseType(Object.class)
         .build();
 
     ObjectMapper copy = objectMapper
@@ -105,7 +107,6 @@ AND ATTRIBUTE_NAME = ?
             new String(source, StandardCharsets.UTF_8));
         return copy.readValue(source, Object.class);
       } catch (IOException e) {
-
         String preview;
         try {
           String content = new String(source, StandardCharsets.UTF_8);
@@ -119,7 +120,6 @@ AND ATTRIBUTE_NAME = ?
             source.length,
             preview,
             e);
-
         throw new RuntimeException("Unable to deserialize Spring Session.", e);
       }
     });

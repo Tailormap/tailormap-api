@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,11 +40,14 @@ class JdbcSessionConfigurationTest {
 
   private ConversionService conversionService;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+
   @BeforeEach
   void setUp() {
     JdbcSessionConfiguration cfg = new JdbcSessionConfiguration();
     cfg.setBeanClassLoader(this.getClass().getClassLoader());
-    conversionService = cfg.springSessionConversionService(new ObjectMapper());
+    conversionService = cfg.springSessionConversionService(objectMapper);
   }
 
   @Test
@@ -136,7 +140,13 @@ class JdbcSessionConfigurationTest {
     assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
     assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
     assertEquals(userDetails.getAdditionalProperties(), userDetailsBack.getAdditionalProperties());
-    assertEquals(userDetails.getAdditionalGroupProperties(), userDetailsBack.getAdditionalGroupProperties());
+    assertEquals(
+        userDetails.getAdditionalGroupProperties().stream()
+            .map(Object::toString)
+            .collect(Collectors.toSet()),
+        userDetailsBack.getAdditionalGroupProperties().stream()
+            .map(Object::toString)
+            .collect(Collectors.toSet()));
     assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
     assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
     assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());

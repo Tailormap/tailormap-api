@@ -6,11 +6,10 @@
 
 package org.tailormap.api.security;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -24,25 +23,24 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
 
   private final String oidcRegistrationName;
 
-  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
   public TailormapOidcUser(
-      @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities,
-      @JsonProperty("idToken") OidcIdToken idToken,
-      @JsonProperty("userInfo") OidcUserInfo userInfo,
-      @JsonProperty("nameAttributeKey") String nameAttributeKey,
-      @JsonProperty("oidcRegistrationName") String oidcRegistrationName,
-      @JsonProperty("additionalGroupProperties")
-          Collection<TailormapAdditionalProperty> additionalGroupProperties) {
+      Collection<? extends GrantedAuthority> authorities,
+      OidcIdToken idToken,
+      OidcUserInfo userInfo,
+      String nameAttributeKey,
+      String oidcRegistrationName,
+      Collection<TailormapAdditionalProperty> additionalGroupProperties) {
     super(authorities, idToken, userInfo, nameAttributeKey);
     this.oidcRegistrationName = oidcRegistrationName;
     if (additionalGroupProperties != null) {
+      this.additionalGroupProperties.clear();
       this.additionalGroupProperties.addAll(additionalGroupProperties);
     }
   }
 
   @Override
   public Collection<TailormapAdditionalProperty> getAdditionalGroupProperties() {
-    return additionalGroupProperties;
+    return Collections.unmodifiableCollection(additionalGroupProperties);
   }
 
   @Override
