@@ -145,7 +145,7 @@ services:
 
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.8.1
+    image: prom/prometheus:v3.9.1
     environment:
       TZ: Europe/Amsterdam
     volumes:
