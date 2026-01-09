@@ -6,6 +6,8 @@
 package org.tailormap.api.util;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.Inet6Address;
@@ -69,7 +71,7 @@ public class HttpProxyUtil {
     if (username != null && password != null) {
       String toEncode = username + ":" + password;
       String encoded = Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
-      requestBuilder.header("Authorization", "Basic " + encoded);
+      requestBuilder.header(AUTHORIZATION, "Basic " + encoded);
     }
   }
 
@@ -91,8 +93,8 @@ public class HttpProxyUtil {
             .toLowerCase(Locale.ROOT)
             .contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
 
-      // The original request could have some parameters in the URL and some in the body, but in the proxied
-      // request we put all parameters in the body
+      // The original request could have had some parameters in the URL and some in the body. However, in the
+      // proxied request we put all parameters in the body
       // Make sure to not decode the query so '+' stays encoded as "%2B" and does not become a space
       String query = uri.getRawQuery();
       URI uriWithoutQuery = URI.create(uri.toString().split("\\?", 2)[0]);
@@ -101,7 +103,7 @@ public class HttpProxyUtil {
       if (isNotEmpty(query)) {
         requestBuilder
             .POST(HttpRequest.BodyPublishers.ofString(query))
-            .header("Content-Type", "application/x-www-form-urlencoded");
+            .header(CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
       } else {
         requestBuilder.uri(uri);
       }
