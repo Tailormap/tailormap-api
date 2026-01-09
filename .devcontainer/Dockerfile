@@ -4,7 +4,7 @@
 FROM mcr.microsoft.com/devcontainers/java:21
 
 ARG INSTALL_MAVEN="true"
-ARG MAVEN_VERSION="3.9.11"
+ARG MAVEN_VERSION="3.9.12"
 
 ARG INSTALL_GRADLE="false"
 ARG GRADLE_VERSION=""

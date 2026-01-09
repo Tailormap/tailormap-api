@@ -8,6 +8,8 @@ package org.tailormap.api.controller;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -20,6 +22,9 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import jakarta.mail.internet.MimeMessage;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 import org.awaitility.Awaitility;
@@ -33,6 +38,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,9 +54,13 @@ import org.tailormap.api.repository.TemporaryTokenRepository;
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PasswordResetControllerIntegrationTest {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private static final String MAIL_EMAIL = "tailormap@tailormap.com";
   private static final String MAIL_USER = "tailormap";
   private static final String MAIL_PASSWORD = "tailormap";
+  private static final String SUCCESS_MESSAGE = "Your password reset request is being processed";
 
   @RegisterExtension
   static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -81,7 +92,7 @@ class PasswordResetControllerIntegrationTest {
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
 
     // we need some time here to wait for the email thread to complete
     Awaitility.await().atMost(5, SECONDS).until(() -> temporaryTokenRepository.findAll().stream()
@@ -154,7 +165,7 @@ class PasswordResetControllerIntegrationTest {
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
 
     // we need some time here to wait for the email thread to complete
     Awaitility.await().atMost(5, SECONDS).until(() -> temporaryTokenRepository.findAll().stream()
@@ -199,7 +210,7 @@ class PasswordResetControllerIntegrationTest {
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
 
     Awaitility.await()
         .pollDelay(3, SECONDS)
@@ -229,7 +240,7 @@ class PasswordResetControllerIntegrationTest {
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
     Awaitility.await()
         .pollDelay(5, SECONDS)
         .untilAsserted(() -> assertEquals(
@@ -252,7 +263,7 @@ class PasswordResetControllerIntegrationTest {
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
     Awaitility.await()
         .pollDelay(5, SECONDS)
         .untilAsserted(() -> assertEquals(
@@ -263,5 +274,66 @@ class PasswordResetControllerIntegrationTest {
         .pollDelay(3, SECONDS)
         .untilAsserted(() -> assertEquals(
             0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
+  }
+
+  /**
+   * Test that password reset request response times are consistent across different email addresses (existing users,
+   * disabled users, expired users, and non-existent users) to prevent timing attacks that could enumerate valid user
+   * accounts.
+   *
+   * @throws Exception in case of errors
+   */
+  @Test
+  void should_have_negligible_response_time_difference_for_password_reset_requests() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    // Test emails: includes known users (user, foo, disabled, expired) and random non-existent addresses
+    final List<String> testEmails = List.of(
+        "twice@b3p.nl", // non-existent, request twice for code warmup
+        "nonexistent456@example.com", // non-existent
+        "unknownuser999@example.com", // non-existent
+        "user@example.com", // valid user
+        "foo@example.com", // valid user
+        "disabled@example.com", // disabled user
+        "expired@example.com", // expired user
+        "random123@b3p.nl", // non-existent
+        "doesnotexist789@example.com", // non-existent
+        "twice@b3p.nl" // non-existent, request twice for code warmup
+        );
+
+    final List<Long> responseTimes = new ArrayList<>();
+    final long maxTimeDifferenceMs = 200; // Allow up to 200ms difference between requests
+
+    for (final String email : testEmails) {
+      final long startTime = System.nanoTime();
+      mockMvc.perform(post(url)
+              .content("email=" + email)
+              .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+              .accept(MediaType.APPLICATION_JSON)
+              .with(setServletPath(url))
+              .with(csrf()))
+          .andExpect(status().isAccepted())
+          .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+
+      long responseTimeMs = (System.nanoTime() - startTime) / 1_000_000;
+      logger.debug("Password reset response time for {}: {} ms", email, responseTimeMs);
+      responseTimes.add(responseTimeMs);
+    }
+    // ignore first warmup request
+    responseTimes.removeFirst();
+
+    // Verify response times are reasonably consistent
+    final long minTime =
+        responseTimes.stream().mapToLong(Long::longValue).min().orElse(0);
+    assertThat("Minimum response time should be at least 1ms", minTime, greaterThanOrEqualTo(1L));
+
+    final long maxTime =
+        responseTimes.stream().mapToLong(Long::longValue).max().orElse(0);
+    assertThat("Maximum response time should be at least 1ms", maxTime, greaterThanOrEqualTo(1L));
+    final long timeDifference = maxTime - minTime;
+
+    assertThat(
+        "Response times should be reasonably consistent to prevent timing attacks",
+        timeDifference,
+        lessThan(maxTimeDifferenceMs));
   }
 }
