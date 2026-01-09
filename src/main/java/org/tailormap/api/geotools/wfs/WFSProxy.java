@@ -6,6 +6,7 @@
 package org.tailormap.api.geotools.wfs;
 
 import static org.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
+import static org.tailormap.api.util.HttpProxyUtil.configureProxyRequestBuilderForUri;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
@@ -24,7 +25,9 @@ public class WFSProxy {
     // XXX not sure when this httpClient is closed... ignore for now
     final HttpClient httpClient = HttpClient.newBuilder().build();
 
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+
+    configureProxyRequestBuilderForUri(requestBuilder, wfsRequest, request);
 
     addForwardedForRequestHeaders(requestBuilder, request);
 

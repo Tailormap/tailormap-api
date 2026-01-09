@@ -9,6 +9,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
+import static org.tailormap.api.util.HttpProxyUtil.configureProxyRequestBuilderForUri;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
@@ -35,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -252,7 +255,9 @@ public class GeoServiceProxyController {
     // XXX not sure when this httpClient is closed... ignore for now
     final HttpClient httpClient = builder.build();
 
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+
+    configureProxyRequestBuilderForUri(requestBuilder, uri, request);
 
     addForwardedForRequestHeaders(requestBuilder, request);
 
