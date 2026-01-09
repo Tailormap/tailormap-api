@@ -939,6 +939,7 @@ SPDX-License-Identifier: MIT
                     <fork>true</fork>
                     <compilerArgs combine.children="append">
                         <arg>-XDcompilePolicy=simple</arg>
+                        <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
                         <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} \
                             -Xep:DeadException:WARN \
