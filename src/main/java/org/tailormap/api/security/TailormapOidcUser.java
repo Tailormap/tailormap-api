@@ -33,7 +33,6 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
     super(authorities, idToken, userInfo, nameAttributeKey);
     this.oidcRegistrationName = oidcRegistrationName;
     if (additionalGroupProperties != null) {
-      this.additionalGroupProperties.clear();
       this.additionalGroupProperties.addAll(additionalGroupProperties);
     }
   }
