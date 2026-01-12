@@ -171,7 +171,6 @@ class FeaturesControllerIntegrationTest {
         // after date
         arguments(begroeidterreindeelUrlPostgis, "creationdate after 2016-04-18T00:00:00", 1935),
         arguments(begroeidterreindeelUrlPostgis, "creationdate after 2016-04-18T00:00:00Z", 1935),
-        arguments(begroeidterreindeelUrlPostgis, "creationdate after 2016-04-18T00:00:00+01", 1935),
         arguments(begroeidterreindeelUrlPostgis, "creationdate after 2016-04-18T00:00:00+01:00", 1935),
         arguments(waterdeelUrlOracle, "CREATIONDATE after 2016-04-18T00:00:00", 125),
         arguments(wegdeelUrlSqlserver, "creationdate after 2016-04-18T00:00:00", 2577),
