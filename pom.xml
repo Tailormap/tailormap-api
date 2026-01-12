@@ -1696,6 +1696,7 @@ SPDX-License-Identifier: MIT
                     <name>OWASP Dependency Check</name>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <autoUpdate>${dependencyCheckAutoUpdate}</autoUpdate>
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
                 </configuration>
             </plugin>
         </plugins>
