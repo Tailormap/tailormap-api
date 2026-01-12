@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrometheusPingTask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.scheduling</a> &gt; <span class="el_source">PrometheusPingTask.java</span></div><h1>PrometheusPingTask.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.scheduling;
+
+import io.micrometer.core.annotation.Timed;
+import java.lang.invoke.MethodHandles;
+import java.time.Instant;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.prometheus.PrometheusService;
+
+@DisallowConcurrentExecution
+@PersistJobDataAfterExecution
+public class PrometheusPingTask extends QuartzJobBean implements Task {
+<span class="nc" id="L25">  private static final Logger logger =</span>
+<span class="nc" id="L26">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+  private final PrometheusService prometheusService;
+
+<span class="nc" id="L29">  public PrometheusPingTask(PrometheusService prometheusService) {</span>
+<span class="nc" id="L30">    this.prometheusService = prometheusService;</span>
+<span class="nc" id="L31">  }</span>
+
+  @Timed(value = &quot;prometheusServiceTask&quot;, description = &quot;Time taken to ping prometheus&quot;)
+  @Override
+  protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
+<span class="nc" id="L36">    final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">    if (prometheusService.isPrometheusAvailable()) {</span>
+<span class="nc" id="L38">      persistedJobData.put(LAST_RESULT_KEY, &quot;Prometheus is available. Check succeeded.&quot;);</span>
+<span class="nc" id="L39">      context.setResult(&quot;Prometheus is available&quot;);</span>
+    } else {
+<span class="nc" id="L41">      logger.warn(&quot;PrometheusService is not available&quot;);</span>
+<span class="nc" id="L42">      persistedJobData.put(LAST_RESULT_KEY, &quot;Prometheus is not available. Check failed.&quot;);</span>
+<span class="nc" id="L43">      context.setResult(&quot;Prometheus is not available&quot;);</span>
+    }
+<span class="nc" id="L45">    persistedJobData.put(EXECUTION_FINISHED_KEY, Instant.now());</span>
+<span class="nc" id="L46">  }</span>
+
+  @Override
+  public TaskType getType() {
+<span class="nc" id="L50">    return TaskType.PROMETHEUS_PING;</span>
+  }
+
+  @Override
+  public String getDescription() {
+<span class="nc" id="L55">    return &quot;Ping Prometheus to ensure it is available.&quot;;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

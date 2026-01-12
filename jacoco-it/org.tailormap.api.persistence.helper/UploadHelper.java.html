@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UploadHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence.helper</a> &gt; <span class="el_source">UploadHelper.java</span></div><h1>UploadHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.persistence.helper;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import org.tailormap.api.controller.UploadsController;
+import org.tailormap.api.repository.UploadRepository;
+
+@Service
+public class UploadHelper {
+
+  private final UploadRepository uploadRepository;
+
+<span class="fc" id="L21">  public UploadHelper(UploadRepository uploadRepository) {</span>
+<span class="fc" id="L22">    this.uploadRepository = uploadRepository;</span>
+<span class="fc" id="L23">  }</span>
+
+  public String getUrlForImage(String imageId, String category) {
+<span class="nc bnc" id="L26" title="All 2 branches missed.">    if (imageId == null) {</span>
+<span class="nc" id="L27">      return null;</span>
+    }
+    try {
+<span class="nc" id="L30">      UUID uuid = UUID.fromString(imageId);</span>
+<span class="nc" id="L31">      return getUrlForImage(uuid, category);</span>
+<span class="nc" id="L32">    } catch (IllegalArgumentException e) {</span>
+      // Illegal UUID, return null
+<span class="nc" id="L34">      return null;</span>
+    }
+  }
+
+  public String getUrlForImage(UUID imageId, String category) {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (imageId == null) {</span>
+<span class="nc" id="L40">      return null;</span>
+    }
+<span class="nc" id="L42">    return uploadRepository</span>
+<span class="nc" id="L43">        .findByIdAndCategory(imageId, category)</span>
+<span class="nc" id="L44">        .map(upload -&gt; linkTo(UploadsController.class)</span>
+<span class="nc" id="L45">            .slash(&quot;api&quot;)</span>
+<span class="nc" id="L46">            .slash(&quot;uploads&quot;)</span>
+<span class="nc" id="L47">            .slash(category)</span>
+<span class="nc" id="L48">            .slash(imageId.toString())</span>
+<span class="nc" id="L49">            .slash(upload.getFilename())</span>
+<span class="nc" id="L50">            .toString())</span>
+<span class="nc" id="L51">        .orElse(null);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
