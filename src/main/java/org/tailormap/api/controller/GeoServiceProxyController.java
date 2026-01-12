@@ -252,7 +252,16 @@ public class GeoServiceProxyController {
     // example.com/buildings/subtrees/... or example.com/buildings/t/...
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
     String baseUrl = originalServiceUrl.build(true).toUriString();
-    String pathToContent = request.getRequestURI().split("/proxy/tiles3d/", 2)[1];
+    String[] parts = request.getRequestURI().split("/proxy/tiles3d/", 2);
+    if (parts.length < 2) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid 3D tiles proxy path");
+    }
+    String pathToContent = parts[1];
+
+    // Prevent path traversal
+    if (pathToContent.contains("..") || pathToContent.contains("\\")) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid 3D tiles content path");
+    }
 
     // Return service URL when the request is for the JSON file describing the tileset
     if (Objects.equals(pathToContent, TILES3D_DESCRIPTION_PATH)) {
