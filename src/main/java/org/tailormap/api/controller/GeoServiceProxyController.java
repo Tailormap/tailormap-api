@@ -5,10 +5,29 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
+import static org.springframework.http.HttpHeaders.CONTENT_RANGE;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.ETAG;
+import static org.springframework.http.HttpHeaders.EXPIRES;
+import static org.springframework.http.HttpHeaders.IF_MATCH;
+import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
+import static org.springframework.http.HttpHeaders.IF_NONE_MATCH;
+import static org.springframework.http.HttpHeaders.IF_RANGE;
+import static org.springframework.http.HttpHeaders.IF_UNMODIFIED_SINCE;
+import static org.springframework.http.HttpHeaders.LAST_MODIFIED;
+import static org.springframework.http.HttpHeaders.PRAGMA;
+import static org.springframework.http.HttpHeaders.RANGE;
+import static org.springframework.http.HttpHeaders.REFERER;
+import static org.springframework.http.HttpHeaders.USER_AGENT;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
+import static org.tailormap.api.util.HttpProxyUtil.configureProxyRequestBuilderForUri;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
@@ -62,8 +81,8 @@ import org.tailormap.api.security.AuthorisationService;
  *
  * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the same origin.
  *
- * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many more features but can
- * not be used in a non-reactive application.
+ * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many more features but
+ * cannot be used in a non-reactive application.
  */
 @AppRestController
 @Validated
@@ -73,10 +92,15 @@ public class GeoServiceProxyController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final AuthorisationService authorisationService;
+  private final HttpClient httpClient;
+
   public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
   public GeoServiceProxyController(AuthorisationService authorisationService) {
     this.authorisationService = authorisationService;
+
+    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
+    this.httpClient = builder.build();
   }
 
   @RequestMapping(
@@ -246,13 +270,10 @@ public class GeoServiceProxyController {
     return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
 
-  @SuppressWarnings("PMD.CloseResource")
-  private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
-    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
-    // XXX not sure when this httpClient is closed... ignore for now
-    final HttpClient httpClient = builder.build();
+  private ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
+    configureProxyRequestBuilderForUri(requestBuilder, uri, request);
 
     addForwardedForRequestHeaders(requestBuilder, request);
 
@@ -260,15 +281,15 @@ public class GeoServiceProxyController {
         requestBuilder,
         request,
         Set.of(
-            "Accept",
-            "If-Modified-Since",
-            "If-Unmodified-Since",
-            "If-Match",
-            "If-None-Match",
-            "If-Range",
-            "Range",
-            "Referer",
-            "User-Agent"));
+            ACCEPT,
+            IF_MODIFIED_SINCE,
+            IF_UNMODIFIED_SINCE,
+            IF_MATCH,
+            IF_NONE_MATCH,
+            IF_RANGE,
+            RANGE,
+            REFERER,
+            USER_AGENT));
 
     if (service.getAuthentication() != null
         && service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
@@ -281,9 +302,9 @@ public class GeoServiceProxyController {
     try {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
-          httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+          this.httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
 
-      // If the server does not accept our credentials it might 'hide' the layer or even send a 401
+      // If the server does not accept our credentials, it might 'hide' the layer or even send a 401
       // Unauthorized status. We do not send the WWW-Authenticate header back, so the client will
       // get the error but not an authorization popup.
       // It would be nice if proxy (auth) errors were logged and available in the admin interface.
@@ -293,15 +314,15 @@ public class GeoServiceProxyController {
       HttpHeaders headers = passthroughResponseHeaders(
           response.headers(),
           Set.of(
-              "Content-Type",
-              "Content-Length",
-              "Content-Range",
-              "Content-Disposition",
-              "Cache-Control",
-              "Expires",
-              "Last-Modified",
-              "ETag",
-              "Pragma"));
+              CONTENT_TYPE,
+              CONTENT_LENGTH,
+              CONTENT_RANGE,
+              CONTENT_DISPOSITION,
+              CACHE_CONTROL,
+              EXPIRES,
+              LAST_MODIFIED,
+              ETAG,
+              PRAGMA));
       return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
