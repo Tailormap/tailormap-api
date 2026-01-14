@@ -124,19 +124,27 @@ loadScripts(document, 'script');</script>
  jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#passthroughRequestHeaders(java.net.http.HttpRequest.Builder,jakarta.servlet.http.HttpServletRequest,java.util.Set)" class="member-name-link">passthroughRequestHeaders</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#configureProxyRequestBuilderForUri(java.net.http.HttpRequest.Builder,java.net.URI,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">configureProxyRequestBuilderForUri</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
+ jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">If the original request was a POST with x-www-urlencoded content type, configure the requestBuilder for a proxy
+ request to do a POST request with all parameters in the body to handle large POST parameters.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#passthroughRequestHeaders(java.net.http.HttpRequest.Builder,jakarta.servlet.http.HttpServletRequest,java.util.Set)" class="member-name-link">passthroughRequestHeaders</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
  jakarta.servlet.http.HttpServletRequest&nbsp;request,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;headers)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.springframework.http.HttpHeaders</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#passthroughResponseHeaders(java.net.http.HttpHeaders,java.util.Set)" class="member-name-link">passthroughResponseHeaders</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpHeaders.html" title="class or interface in java.net.http" class="external-link">HttpHeaders</a>&nbsp;upstreamHeaders,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;allowedResponseHeaders)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#setHttpBasicAuthenticationHeader(java.net.http.HttpRequest.Builder,java.lang.String,java.lang.String)" class="member-name-link">setHttpBasicAuthenticationHeader</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.springframework.http.HttpHeaders</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#passthroughResponseHeaders(java.net.http.HttpHeaders,java.util.Set)" class="member-name-link">passthroughResponseHeaders</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpHeaders.html" title="class or interface in java.net.http" class="external-link">HttpHeaders</a>&nbsp;upstreamHeaders,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;allowedResponseHeaders)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#setHttpBasicAuthenticationHeader(java.net.http.HttpRequest.Builder,java.lang.String,java.lang.String)" class="member-name-link">setHttpBasicAuthenticationHeader</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;password)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -196,6 +204,22 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setHttpBasicAuthenticationHeader</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;password)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="configureProxyRequestBuilderForUri(java.net.http.HttpRequest.Builder,java.net.URI,jakarta.servlet.http.HttpServletRequest)">
+<h3>configureProxyRequestBuilderForUri</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">configureProxyRequestBuilderForUri</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html" title="class or interface in java.net.http" class="external-link">HttpRequest.Builder</a>&nbsp;requestBuilder,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
+ jakarta.servlet.http.HttpServletRequest&nbsp;request)</span></div>
+<div class="block">If the original request was a POST with x-www-urlencoded content type, configure the requestBuilder for a proxy
+ request to do a POST request with all parameters in the body to handle large POST parameters.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>requestBuilder</code> - builder for proxy request</dd>
+<dd><code>uri</code> - URI of the proxy target, including query parameters</dd>
+<dd><code>request</code> - the original request to be proxied</dd>
+</dl>
 </section>
 </li>
 </ul>
