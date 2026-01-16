@@ -7,9 +7,9 @@
 package org.tailormap.api.security;
 
 import java.io.Serial;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -19,7 +19,7 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
   @Serial
   private static final long serialVersionUID = 1L;
 
-  private final Collection<TailormapAdditionalProperty> additionalGroupProperties;
+  private final Collection<TailormapAdditionalProperty> additionalGroupProperties = new ArrayList<>();
 
   private final String oidcRegistrationName;
 
@@ -32,17 +32,14 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
       Collection<TailormapAdditionalProperty> additionalGroupProperties) {
     super(authorities, idToken, userInfo, nameAttributeKey);
     this.oidcRegistrationName = oidcRegistrationName;
-    this.additionalGroupProperties = Collections.unmodifiableCollection(additionalGroupProperties);
-  }
-
-  @Override
-  public Collection<TailormapAdditionalProperty> getAdditionalProperties() {
-    return List.of();
+    if (additionalGroupProperties != null) {
+      this.additionalGroupProperties.addAll(additionalGroupProperties);
+    }
   }
 
   @Override
   public Collection<TailormapAdditionalProperty> getAdditionalGroupProperties() {
-    return additionalGroupProperties;
+    return Collections.unmodifiableCollection(additionalGroupProperties);
   }
 
   @Override
