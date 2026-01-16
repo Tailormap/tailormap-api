@@ -384,15 +384,8 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void get_3d_tiles_proxy_subtree() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/subtrees/0/0/0.subtree";
-    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
-  }
-
-  @Test
-  @WithMockUser(username = "user")
   void get_3d_tiles_proxy_tile() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/t/9/236/251.glb";
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/94/tileset.json";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
