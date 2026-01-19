@@ -2,7 +2,7 @@ name: 'Ubuntu QA Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.11'
+  MAVEN_VERSION: '3.9.12'
 
 concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -27,8 +27,10 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           allow-dependencies-licenses: pkg:maven/org.eclipse.angus/jakarta.mail@2.0.4?type=jar
-          deny-licenses: GPL-2.0+, AGPL-3.0+
-          comment-summary-in-pr: on-failure
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, MPL-2.0, LGPL-2.1-only, EPL-2.0, EPL-1.0
+          fail-on-severity: low
+          comment-summary-in-pr: always
+          allow-ghsas: GHSA-qh8g-58pp-2wxh
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v5

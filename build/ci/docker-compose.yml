@@ -124,6 +124,7 @@ services:
       TZ: Europe/Amsterdam
       SOLR_OPTS: '$SOLR_OPTS -Dsolr.environment=dev,label=Tailormap+Development,color=#6236FF'
       SOLR_DELETE_UNKNOWN_CORES: true
+      SOLR_MODE: user-managed
     volumes:
       - solr-data:/var/solr
     ports:
@@ -144,7 +145,7 @@ services:
 
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.8.1
+    image: prom/prometheus:v3.9.1
     environment:
       TZ: Europe/Amsterdam
     volumes:

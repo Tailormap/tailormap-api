@@ -217,6 +217,21 @@ mvn -Pdeveloping,postgresql verify -Dspring-boot.run.profiles=dev,populate-testd
 
 ## Releasing
 
+### Prerequisites
+
+Add a `gh-pages` server to your Maven settings.xml that uses your SSH key for authentication and `git` as a username.
+For example:
+
+```xml
+<server>
+    <id>gh-pages</id>
+    <passphrase>XXXXX lots of XXXXs in my passphrase!</passphrase>
+    <privateKey>~/.ssh/id_rsa</privateKey>
+    <username>git</username>
+</server>
+```
+
+### Release procedure
 Use the regular Maven release cycle of `mvn release:prepare` followed by `mvn release:perform`. Please make sure that
 you use `tailormap-api-<VERSION>` as a tag so that the release notes are automatically created.
 For example:
