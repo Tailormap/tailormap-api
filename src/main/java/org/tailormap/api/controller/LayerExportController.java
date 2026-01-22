@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
@@ -38,7 +40,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
@@ -68,6 +69,7 @@ public class LayerExportController {
   private List<String> allowedOutputFormats;
 
   private final FeatureSourceRepository featureSourceRepository;
+  private final WFSProxy wfsProxy = new WFSProxy();
 
   public LayerExportController(FeatureSourceRepository featureSourceRepository) {
     this.featureSourceRepository = featureSourceRepository;
@@ -114,7 +116,7 @@ public class LayerExportController {
   @Transactional
   @RequestMapping(
       path = "download",
-      method = {RequestMethod.GET, RequestMethod.POST})
+      method = {GET, POST})
   @Counted(value = "export_download", description = "Count of layer downloads")
   public ResponseEntity<?> download(
       @ModelAttribute GeoService service,
@@ -174,9 +176,9 @@ public class LayerExportController {
       attributes = new HashSet<>(nonHiddenAttributes);
     }
 
-    // Empty attributes means we won't specify propNames in GetFeature request, but if we do select
-    // only some property names we need the geometry attribute which is not in the 'attributes'
-    // request param so spatial export formats don't have the geometry missing.
+    // Empty attributes means we won't specify propNames in the GetFeature request. However, if we do select only
+    // some property names, we need the geometry attribute which is not in the 'attributes' request param so spatial
+    // export formats don't have the geometry missing.
     if (!attributes.isEmpty() && tmft.getDefaultGeometryAttribute() != null) {
       attributes.add(tmft.getDefaultGeometryAttribute());
     }
@@ -238,7 +240,7 @@ public class LayerExportController {
     try {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
-          WFSProxy.proxyWfsRequest(wfsGetFeature, wfsTypeName.username(), wfsTypeName.password(), request);
+          wfsProxy.proxyWfsRequest(wfsGetFeature, wfsTypeName.username(), wfsTypeName.password(), request);
 
       logger.info(
           "Layer download response code: {}, content type: {}, disposition: {}",

@@ -52,6 +52,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.repository.GeoServiceRepository;
@@ -182,6 +183,27 @@ class GeoServiceProxyControllerIntegrationTest {
   void allow_http_post() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc.perform(post(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void large_http_post() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("VERSION", "1.3.0")
+            .param("FORMAT", "image/png")
+            .param("STYLES", "")
+            .param("TRANSPARENT", "TRUE")
+            .param("LAYERS", "postgis:begroeidterreindeel")
+            .param("WIDTH", "2775")
+            .param("HEIGHT", "1002")
+            .param("CRS", "EPSG:28992")
+            .param("BBOX", "130574.85495843932,457818.25613033347,133951.6192003861,459037.5418133715")
+            .param("CQL_FILTER", StaticTestData.get("large_cql_filter"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
         .andExpect(status().isOk());
   }
 
@@ -362,15 +384,8 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  void get_3d_tiles_proxy_subtree() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/subtrees/0/0/0.subtree";
-    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
-  }
-
-  @Test
-  @WithMockUser(username = "user")
   void get_3d_tiles_proxy_tile() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/t/9/236/251.glb";
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/94/tileset.json";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 

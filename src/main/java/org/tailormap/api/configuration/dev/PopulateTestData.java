@@ -750,7 +750,7 @@ public class PopulateTestData {
                       .featureSourceId(featureSources
                           .get("pdok-kadaster-bestuurlijkegebieden")
                           .getId())
-                      .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                      .featureTypeName("brk-bestuurlijke-gebieden:Provinciegebied"))
                   .title("Provinciegebied (WFS)"));
       geoServiceRepository.save(geoService);
     });
@@ -766,7 +766,7 @@ public class PopulateTestData {
                       .featureSourceId(featureSources
                           .get("pdok-kadaster-bestuurlijkegebieden")
                           .getId())
-                      .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                      .featureTypeName("brk-bestuurlijke-gebieden:Provinciegebied"))
                   .title("Provinciegebied (WFS, proxied met auth)"));
       geoServiceRepository.save(geoService);
     });
@@ -862,7 +862,7 @@ https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communit
     }
 
     featureSources.get("pdok-kadaster-bestuurlijkegebieden").getFeatureTypes().stream()
-        .filter(ft -> ft.getName().equals("bestuurlijkegebieden:Provinciegebied"))
+        .filter(ft -> ft.getName().equals("brk-bestuurlijke-gebieden:Provinciegebied"))
         .findFirst()
         .ifPresent(ft -> {
           ft.getSettings().addHideAttributesItem("identificatie");

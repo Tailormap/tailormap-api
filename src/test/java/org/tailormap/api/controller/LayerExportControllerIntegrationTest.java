@@ -5,7 +5,9 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
@@ -138,6 +141,42 @@ class LayerExportControllerIntegrationTest {
         .andExpect(jsonPath("$.features.length()").value(1))
         .andExpect(jsonPath("$.features[0].geometry.type").value("Polygon"))
         .andExpect(jsonPath("$.features[0].properties.BRONHOUDER").value("G1904"));
+  }
+
+  @Test
+  void should_export_large_filter_using_post() throws Exception {
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
+
+    mockMvc.perform(post(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf())
+            .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isOk())
+        // GeoServer returns application/json;charset=UTF-8; but this is deprecated
+        // .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.type").value("FeatureCollection"))
+        .andExpect(jsonPath("$.features.length()").value(18))
+        .andExpect(jsonPath("$.features[0].geometry.type").value("Polygon"));
+  }
+
+  @Test
+  void should_export_large_filter_using_post_and_plus_in_output_format() throws Exception {
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
+
+    mockMvc.perform(post(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf())
+            // Test using an outputFormat with a '+' that should be encoded to "%2B" and not be interpreted
+            // as a space
+            .param("outputFormat", "application/geopackage+sqlite3")
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/geopackage+sqlite3"));
   }
 
   @Test
