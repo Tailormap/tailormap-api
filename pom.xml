@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2025-12-05T13:15:17Z</project.build.outputTimestamp>
-        <geotools.version>34.1</geotools.version>
+        <geotools.version>34.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
         <greenmail.version>2.1.8</greenmail.version>
@@ -111,7 +111,7 @@ SPDX-License-Identifier: MIT
         because Solr uses http libraries from the Jetty project
         -->
         <jetty.version>10.0.26</jetty.version>
-        <solr.version>9.10.0</solr.version>
+        <solr.version>9.10.1</solr.version>
         <!--
         Spring Boot version overrides.
 
@@ -128,7 +128,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.20.0</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.40.Final</hibernate.version>
+        <hibernate.version>6.6.41.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <logback.version>1.5.23</logback.version>
@@ -155,13 +155,13 @@ SPDX-License-Identifier: MIT
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <pmd.version>7.20.0</pmd.version>
-        <versions-maven-plugin.version>2.20.1</versions-maven-plugin.version>
+        <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.31.0</swagger-ui.version>
-        <sentry.version>8.30.0</sentry.version>
+        <sentry.version>8.31.0</sentry.version>
         <errorProne.version>2.46.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -699,7 +699,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.18.0</version>
+                    <version>7.19.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.hibernate.orm.tooling</groupId>
@@ -1266,7 +1266,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <java>
                         <palantirJavaFormat>
