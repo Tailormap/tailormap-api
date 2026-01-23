@@ -6,15 +6,14 @@
 package org.tailormap.api.solr;
 
 import io.micrometer.core.instrument.Metrics;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class SolrService {
