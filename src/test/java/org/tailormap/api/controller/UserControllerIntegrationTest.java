@@ -6,6 +6,8 @@
 package org.tailormap.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +25,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
 
@@ -37,6 +43,12 @@ class UserControllerIntegrationTest {
 
   @Autowired
   UserController userController;
+
+  @MockitoBean
+  private OIDCRepository oidcRepository;
+
+  @Value("${tailormap-api.password-reset.enabled}")
+  boolean passwordResetEnabled;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -117,5 +129,36 @@ class UserControllerIntegrationTest {
         .andExpect(jsonPath("$.groupProperties.length()").value(1))
         .andExpect(jsonPath("$.groupProperties[0].key").value("group-property"))
         .andExpect(jsonPath("$.groupProperties[0].value").value(true));
+  }
+
+  @Test
+  void should_return_login_configuration_with_sso_links_and_password_reset_enabled() throws Exception {
+    UUID imageId = UUID.randomUUID();
+    ClientRegistration clientRegistration = mock(ClientRegistration.class);
+    when(clientRegistration.getRegistrationId()).thenReturn("test-registration");
+    when(clientRegistration.getClientName()).thenReturn("Test Client");
+    OIDCRepository.OIDCRegistrationMetadata metadata = mock(OIDCRepository.OIDCRegistrationMetadata.class);
+    when(metadata.getShowForViewer()).thenReturn(true);
+    when(metadata.getImage()).thenReturn(imageId);
+    when(oidcRepository.iterator()).thenReturn(List.of(clientRegistration).iterator());
+    when(oidcRepository.getMetadataForRegistrationId("test-registration")).thenReturn(metadata);
+
+    mockMvc.perform(get(apiBasePath + "/login/configuration"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.ssoLinks.length()").value(1))
+        .andExpect(jsonPath("$.ssoLinks[0].name").value("Test Client"))
+        .andExpect(jsonPath("$.ssoLinks[0].url").value("/api/oauth2/authorization/test-registration"))
+        .andExpect(jsonPath("$.ssoLinks[0].showForViewer").value(true))
+        .andExpect(jsonPath("$.enablePasswordReset").value(passwordResetEnabled));
+  }
+
+  @Test
+  void should_return_empty_login_configuration_when_no_sso_links() throws Exception {
+    mockMvc.perform(get(apiBasePath + "/login/configuration"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.ssoLinks").isEmpty())
+        .andExpect(jsonPath("$.enablePasswordReset").value(passwordResetEnabled));
   }
 }
