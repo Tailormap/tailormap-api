@@ -60,11 +60,12 @@ jobs:
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/surefire-reports/TEST-*.xml
+          report-type: test_results
 
       - name: 'Build javadoc'
         run: mvn javadoc:javadoc
@@ -123,16 +124,17 @@ jobs:
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/failsafe-reports/TEST-*.xml
+          report-type: test_results
 
   # Upload event file so test results can be processed for the PR
   # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
   event_file:
     name: "Event File"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: write
@@ -215,7 +217,7 @@ jobs:
 
   deploy:
     name: 'Deploy stack'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: publish
     permissions:
       actions: write
@@ -280,7 +282,7 @@ jobs:
     name: 'Maven cache cleanup'
     if: ${{ always() }}
     needs: [ build, publish, postgresql-test ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
     steps:

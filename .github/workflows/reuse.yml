@@ -9,11 +9,10 @@ permissions:
 jobs:
   test:
     name: 'Check compliance'
+    # we cannot use ubuntu-slim as the REUSE action needs a docker daemon to run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
       - name: 'REUSE Compliance Check'
         uses: fsfe/reuse-action@v6
-        with:
-          args: lint
