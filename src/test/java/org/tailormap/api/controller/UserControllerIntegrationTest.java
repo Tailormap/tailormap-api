@@ -133,7 +133,6 @@ class UserControllerIntegrationTest {
 
   @Test
   void should_return_login_configuration_with_sso_links_and_password_reset_enabled() throws Exception {
-    //    final UUID imageId = UUID.randomUUID();
     ClientRegistration clientRegistration = mock(ClientRegistration.class);
     when(clientRegistration.getRegistrationId()).thenReturn("test-registration");
     when(clientRegistration.getClientName()).thenReturn("Test Client");
