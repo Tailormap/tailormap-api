@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update_release_draft:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: 'Update release Draft'
     permissions:
       contents: write
@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   contributors:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: 'Update Contributors'
     permissions:
       pull-requests: write
