@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence.helper</a> &gt; <span class="el_source">ApplicationHelper.java</span></div><h1>ApplicationHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.persistence.helper;
+
+import static java.util.stream.Collectors.toSet;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.LEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
+
+import jakarta.persistence.EntityManager;
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.lang3.ObjectUtils;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.referencing.util.CRSUtilities;
+import org.geotools.referencing.wkt.Formattable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.tailormap.api.controller.GeoServiceProxyController;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.Configuration;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.SearchIndex;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.json.AppContent;
+import org.tailormap.api.persistence.json.AppLayerSettings;
+import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.AppTreeLevelNode;
+import org.tailormap.api.persistence.json.AppTreeNode;
+import org.tailormap.api.persistence.json.Bounds;
+import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import org.tailormap.api.persistence.json.ServicePublishingSettings;
+import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import org.tailormap.api.repository.ApplicationRepository;
+import org.tailormap.api.repository.ConfigurationRepository;
+import org.tailormap.api.repository.FeatureSourceRepository;
+import org.tailormap.api.repository.GeoServiceRepository;
+import org.tailormap.api.repository.SearchIndexRepository;
+import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.viewer.model.AppLayer;
+import org.tailormap.api.viewer.model.LayerSearchIndex;
+import org.tailormap.api.viewer.model.LayerTreeNode;
+import org.tailormap.api.viewer.model.MapResponse;
+import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
+
+@Service
+public class ApplicationHelper {
+<span class="nc" id="L65">  private static final Logger logger =</span>
+<span class="nc" id="L66">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+  private static final String DEFAULT_WEB_MERCATOR_CRS = &quot;EPSG:3857&quot;;
+
+  private final GeoServiceHelper geoServiceHelper;
+  private final GeoServiceRepository geoServiceRepository;
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
+  private final FeatureSourceRepository featureSourceRepository;
+  private final EntityManager entityManager;
+  private final AuthorisationService authorisationService;
+  private final SearchIndexRepository searchIndexRepository;
+
+  public ApplicationHelper(
+      GeoServiceHelper geoServiceHelper,
+      GeoServiceRepository geoServiceRepository,
+      ConfigurationRepository configurationRepository,
+      ApplicationRepository applicationRepository,
+      FeatureSourceRepository featureSourceRepository,
+      EntityManager entityManager,
+      AuthorisationService authorisationService,
+<span class="nc" id="L86">      SearchIndexRepository searchIndexRepository) {</span>
+<span class="nc" id="L87">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L88">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L89">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L90">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L91">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L92">    this.entityManager = entityManager;</span>
+<span class="nc" id="L93">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L94">    this.searchIndexRepository = searchIndexRepository;</span>
+<span class="nc" id="L95">  }</span>
+
+  public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (baseAppName == null) {</span>
+<span class="nc" id="L99">      baseAppName = Optional.ofNullable(service.getSettings().getPublishing())</span>
+<span class="nc" id="L100">          .map(ServicePublishingSettings::getBaseApp)</span>
+<span class="nc" id="L101">          .orElseGet(() -&gt; configurationRepository.get(Configuration.DEFAULT_BASE_APP));</span>
+    }
+
+<span class="nc" id="L104">    Application baseApp = null;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    if (baseAppName != null) {</span>
+<span class="nc" id="L106">      baseApp = applicationRepository.findByName(baseAppName);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">      if (baseApp != null) {</span>
+        // Caller may be changing the app content to add layers from this service, detach so those
+        // aren't saved
+<span class="nc" id="L110">        entityManager.detach(baseApp);</span>
+      }
+    }
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">    Application app = baseApp != null ? baseApp : new Application().setContentRoot(new AppContent());</span>
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    if (projection != null) {</span>
+      // TODO: filter layers by projection parameter (layer.crs must inherit crs from parent layers)
+<span class="nc" id="L118">      throw new UnsupportedOperationException(&quot;Projection filtering not yet supported&quot;);</span>
+    } else {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">      if (baseApp != null) {</span>
+<span class="nc" id="L121">        projection = baseApp.getCrs();</span>
+      } else {
+<span class="nc" id="L123">        projection = DEFAULT_WEB_MERCATOR_CRS;</span>
+      }
+    }
+
+<span class="nc" id="L127">    app.setName(service.getId()).setTitle(service.getTitle()).setCrs(projection);</span>
+
+<span class="nc" id="L129">    return app;</span>
+  }
+
+  @Transactional
+  public MapResponse toMapResponse(Application app) {
+<span class="nc" id="L134">    MapResponse mapResponse = new MapResponse();</span>
+<span class="nc" id="L135">    setCrsAndBounds(app, mapResponse);</span>
+<span class="nc" id="L136">    setLayers(app, mapResponse);</span>
+<span class="nc" id="L137">    return mapResponse;</span>
+  }
+
+  public void setCrsAndBounds(Application a, MapResponse mapResponse) {
+<span class="nc" id="L141">    CoordinateReferenceSystem gtCrs = a.getGeoToolsCoordinateReferenceSystem();</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">    if (gtCrs == null) {</span>
+<span class="nc" id="L143">      throw new IllegalArgumentException(&quot;Invalid CRS: &quot; + a.getCrs());</span>
+    }
+
+<span class="nc" id="L146">    TMCoordinateReferenceSystem crs = new TMCoordinateReferenceSystem()</span>
+<span class="nc" id="L147">        .code(a.getCrs())</span>
+<span class="nc" id="L148">        .definition(((Formattable) gtCrs).toWKT(0))</span>
+<span class="nc" id="L149">        .bounds(GeoToolsHelper.fromCRS(gtCrs))</span>
+<span class="nc" id="L150">        .unit(Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))</span>
+<span class="nc" id="L151">            .map(Objects::toString)</span>
+<span class="nc" id="L152">            .orElse(null));</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    Bounds maxExtent = a.getMaxExtent() != null ? a.getMaxExtent() : crs.getBounds();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">    Bounds initialExtent = a.getInitialExtent() != null ? a.getInitialExtent() : maxExtent;</span>
+
+<span class="nc" id="L157">    mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);</span>
+<span class="nc" id="L158">  }</span>
+
+  private void setLayers(Application app, MapResponse mr) {
+<span class="nc" id="L161">    new MapResponseLayerBuilder(app, mr).buildLayers();</span>
+<span class="nc" id="L162">  }</span>
+
+  private String getProxyUrl(GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
+<span class="nc" id="L165">    String baseProxyUrl = linkTo(</span>
+            GeoServiceProxyController.class,
+<span class="nc" id="L167">            Map.of(</span>
+                &quot;viewerKind&quot;, &quot;app&quot;, // XXX
+<span class="nc" id="L169">                &quot;viewerName&quot;, application.getName(),</span>
+<span class="nc" id="L170">                &quot;appLayerId&quot;, appTreeLayerNode.getId()))</span>
+<span class="nc" id="L171">        .toString();</span>
+
+<span class="nc" id="L173">    String protocolPath = &quot;/&quot; + geoService.getProtocol().getValue();</span>
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    if (geoService.getProtocol() == TILES3D) {</span>
+<span class="nc" id="L176">      return baseProxyUrl + protocolPath + &quot;/&quot; + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;</span>
+    }
+<span class="nc" id="L178">    return baseProxyUrl + protocolPath;</span>
+  }
+
+  private String getLegendProxyUrl(Application application, AppTreeLayerNode appTreeLayerNode) {
+<span class="nc" id="L182">    return linkTo(</span>
+            GeoServiceProxyController.class,
+<span class="nc" id="L184">            Map.of(</span>
+                &quot;viewerKind&quot;,
+                &quot;app&quot;,
+                &quot;viewerName&quot;,
+<span class="nc" id="L188">                application.getName(),</span>
+                &quot;appLayerId&quot;,
+<span class="nc" id="L190">                appTreeLayerNode.getId()))</span>
+<span class="nc" id="L191">        + &quot;/&quot; + LEGEND.getValue();</span>
+  }
+
+  private class MapResponseLayerBuilder {
+    private final Application app;
+    private final MapResponse mapResponse;
+    // XXX not needed if we have GeoServiceLayer.getService().getName()
+<span class="nc" id="L198">    private final Map&lt;GeoServiceLayer, String&gt; serviceLayerServiceIds = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L200">    MapResponseLayerBuilder(Application app, MapResponse mapResponse) {</span>
+<span class="nc" id="L201">      this.app = app;</span>
+<span class="nc" id="L202">      this.mapResponse = mapResponse;</span>
+<span class="nc" id="L203">    }</span>
+
+    void buildLayers() {
+<span class="nc bnc" id="L206" title="All 2 branches missed.">      if (app.getContentRoot() != null) {</span>
+<span class="nc" id="L207">        buildBackgroundLayers();</span>
+<span class="nc" id="L208">        buildOverlayLayers();</span>
+<span class="nc" id="L209">        buildTerrainLayers();</span>
+      }
+<span class="nc" id="L211">    }</span>
+
+    private void buildBackgroundLayers() {
+<span class="nc bnc" id="L214" title="All 2 branches missed.">      if (app.getContentRoot().getBaseLayerNodes() != null) {</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        for (AppTreeNode node : app.getContentRoot().getBaseLayerNodes()) {</span>
+<span class="nc" id="L216">          addAppTreeNodeItem(node, mapResponse.getBaseLayerTreeNodes());</span>
+<span class="nc" id="L217">        }</span>
+
+<span class="nc" id="L219">        Set&lt;String&gt; validLayerIds =</span>
+<span class="nc" id="L220">            mapResponse.getAppLayers().stream().map(AppLayer::getId).collect(toSet());</span>
+<span class="nc" id="L221">        List&lt;LayerTreeNode&gt; initialLayerTreeNodes = mapResponse.getBaseLayerTreeNodes();</span>
+
+<span class="nc" id="L223">        mapResponse.setBaseLayerTreeNodes(cleanLayerTreeNodes(validLayerIds, initialLayerTreeNodes));</span>
+      }
+<span class="nc" id="L225">    }</span>
+
+    private void buildOverlayLayers() {
+<span class="nc bnc" id="L228" title="All 2 branches missed.">      if (app.getContentRoot().getLayerNodes() != null) {</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {</span>
+<span class="nc" id="L230">          addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());</span>
+<span class="nc" id="L231">        }</span>
+<span class="nc" id="L232">        Set&lt;String&gt; validLayerIds =</span>
+<span class="nc" id="L233">            mapResponse.getAppLayers().stream().map(AppLayer::getId).collect(toSet());</span>
+<span class="nc" id="L234">        List&lt;LayerTreeNode&gt; initialLayerTreeNodes = mapResponse.getLayerTreeNodes();</span>
+
+<span class="nc" id="L236">        mapResponse.setLayerTreeNodes(cleanLayerTreeNodes(validLayerIds, initialLayerTreeNodes));</span>
+      }
+<span class="nc" id="L238">    }</span>
+
+    /**
+     * Cleans the layer tree nodes by removing references to non-existing layers and removing level nodes without
+     * children, thus preventing exposure of application internals to unauthorized users.
+     *
+     * @param validLayerIds the ids of the layers that exist
+     * @param initialLayerTreeNodes the initial list of layer tree nodes
+     * @return the cleaned list of layer tree nodes
+     */
+    private List&lt;LayerTreeNode&gt; cleanLayerTreeNodes(
+        Set&lt;String&gt; validLayerIds, List&lt;LayerTreeNode&gt; initialLayerTreeNodes) {
+<span class="nc" id="L250">      List&lt;String&gt; levelNodes = initialLayerTreeNodes.stream()</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">          .filter(n -&gt; n.getAppLayerId() == null)</span>
+<span class="nc" id="L252">          .map(LayerTreeNode::getId)</span>
+<span class="nc" id="L253">          .toList();</span>
+
+<span class="nc" id="L255">      List&lt;LayerTreeNode&gt; newLayerTreeNodes = initialLayerTreeNodes.stream()</span>
+<span class="nc" id="L256">          .peek(n -&gt; {</span>
+<span class="nc" id="L257">            n.getChildrenIds()</span>
+<span class="nc" id="L258">                .removeIf(childId -&gt;</span>
+                    /* remove invalid layers from the children */
+<span class="nc bnc" id="L260" title="All 4 branches missed.">                    !validLayerIds.contains(childId) &amp;&amp; !levelNodes.contains(childId));</span>
+<span class="nc" id="L261">          })</span>
+<span class="nc" id="L262">          .filter(n -&gt;</span>
+              /* remove level nodes without children */
+<span class="nc bnc" id="L264" title="All 2 branches missed.">              !(n.getAppLayerId() == null</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">                  &amp;&amp; (n.getChildrenIds() != null</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">                      &amp;&amp; n.getChildrenIds().isEmpty())))</span>
+<span class="nc" id="L267">          .toList();</span>
+
+<span class="nc" id="L269">      List&lt;String&gt; cleanLevelNodeIds = newLayerTreeNodes.stream()</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">          .filter(n -&gt; n.getAppLayerId() == null)</span>
+<span class="nc" id="L271">          .map(LayerTreeNode::getId)</span>
+<span class="nc" id="L272">          .toList();</span>
+
+<span class="nc" id="L274">      return newLayerTreeNodes.stream()</span>
+<span class="nc" id="L275">          .peek(n -&gt; {</span>
+<span class="nc" id="L276">            n.getChildrenIds()</span>
+<span class="nc" id="L277">                .removeIf(childId -&gt;</span>
+                    /* remove invalid layers from the children */
+<span class="nc bnc" id="L279" title="All 4 branches missed.">                    !cleanLevelNodeIds.contains(childId) &amp;&amp; levelNodes.contains(childId));</span>
+<span class="nc" id="L280">          })</span>
+<span class="nc" id="L281">          .toList();</span>
+    }
+
+    private void buildTerrainLayers() {
+<span class="nc bnc" id="L285" title="All 2 branches missed.">      if (app.getContentRoot().getTerrainLayerNodes() != null) {</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        for (AppTreeNode node : app.getContentRoot().getTerrainLayerNodes()) {</span>
+<span class="nc" id="L287">          addAppTreeNodeItem(node, mapResponse.getTerrainLayerTreeNodes());</span>
+<span class="nc" id="L288">        }</span>
+      }
+<span class="nc" id="L290">    }</span>
+
+    private void addAppTreeNodeItem(AppTreeNode node, List&lt;LayerTreeNode&gt; layerTreeNodeList) {
+<span class="nc" id="L293">      LayerTreeNode layerTreeNode = new LayerTreeNode();</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">      if (&quot;AppTreeLayerNode&quot;.equals(node.getObjectType())) {</span>
+<span class="nc" id="L295">        AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;</span>
+<span class="nc" id="L296">        layerTreeNode.setId(appTreeLayerNode.getId());</span>
+<span class="nc" id="L297">        layerTreeNode.setAppLayerId(appTreeLayerNode.getId());</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        if (!addAppLayerItem(appTreeLayerNode)) {</span>
+<span class="nc" id="L299">          return;</span>
+        }
+        // This name is not displayed in the frontend, the title from the appLayer node is used
+<span class="nc" id="L302">        layerTreeNode.setName(appTreeLayerNode.getLayerName());</span>
+<span class="nc" id="L303">        layerTreeNode.setDescription(appTreeLayerNode.getDescription());</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">      } else if (&quot;AppTreeLevelNode&quot;.equals(node.getObjectType())) {</span>
+<span class="nc" id="L305">        AppTreeLevelNode appTreeLevelNode = (AppTreeLevelNode) node;</span>
+<span class="nc" id="L306">        layerTreeNode.setId(appTreeLevelNode.getId());</span>
+<span class="nc" id="L307">        layerTreeNode.setChildrenIds(appTreeLevelNode.getChildrenIds());</span>
+<span class="nc" id="L308">        layerTreeNode.setRoot(Boolean.TRUE.equals(appTreeLevelNode.getRoot()));</span>
+        // The name for a level node does show in the frontend
+<span class="nc" id="L310">        layerTreeNode.setName(appTreeLevelNode.getTitle());</span>
+<span class="nc" id="L311">        layerTreeNode.setDescription(appTreeLevelNode.getDescription());</span>
+      }
+<span class="nc" id="L313">      layerTreeNodeList.add(layerTreeNode);</span>
+<span class="nc" id="L314">    }</span>
+
+    private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
+<span class="nc" id="L317">      ServiceLayerInfo layerInfo = findServiceLayer(layerRef);</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">      if (layerInfo == null) {</span>
+<span class="nc" id="L319">        return false;</span>
+      }
+<span class="nc" id="L321">      GeoService service = layerInfo.service();</span>
+<span class="nc" id="L322">      GeoServiceLayer serviceLayer = layerInfo.serviceLayer();</span>
+
+      // Some settings can be set on the app layer level, layer level or service level (default
+      // layer settings). These settings should be used in-order: from app layer if set, otherwise
+      // from layer level, from default layer setting or the default.
+
+      // An empty (blank) string means it is not set. To explicitly clear a layer level string
+      // setting for an app, an admin should set the app layer setting to spaces.
+
+      // The JSON wrapper classes have &quot;null&quot; values as defaults, which means not-set. The defaults
+      // (such as tilingDisabled being true) are applied below, although the frontend would also
+      // treat null as non-truthy.
+
+      // When default layer settings or settings for a specific layer are missing, construct new
+      // settings objects so no null check is needed. All properties are initialized to null
+      // (not-set) by default.
+<span class="nc" id="L338">      GeoServiceDefaultLayerSettings defaultLayerSettings = Optional.ofNullable(</span>
+<span class="nc" id="L339">              service.getSettings().getDefaultLayerSettings())</span>
+<span class="nc" id="L340">          .orElseGet(GeoServiceDefaultLayerSettings::new);</span>
+<span class="nc" id="L341">      GeoServiceLayerSettings serviceLayerSettings =</span>
+<span class="nc" id="L342">          Optional.ofNullable(layerInfo.layerSettings()).orElseGet(GeoServiceLayerSettings::new);</span>
+
+<span class="nc" id="L344">      AppLayerSettings appLayerSettings = app.getAppLayerSettings(layerRef);</span>
+
+<span class="nc" id="L346">      String title = Objects.requireNonNullElse(</span>
+<span class="nc" id="L347">          nullIfEmpty(appLayerSettings.getTitle()),</span>
+          // Get title from layer settings, title from capabilities or the layer name -- never
+          // null
+<span class="nc" id="L350">          service.getTitleWithSettingsOverrides(layerRef.getLayerName()));</span>
+
+      // These settings can be overridden per appLayer
+
+<span class="nc" id="L354">      String description = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L355">          nullIfEmpty(appLayerSettings.getDescription()),</span>
+<span class="nc" id="L356">          nullIfEmpty(serviceLayerSettings.getDescription()),</span>
+<span class="nc" id="L357">          nullIfEmpty(defaultLayerSettings.getDescription()));</span>
+
+<span class="nc" id="L359">      String attribution = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L360">          nullIfEmpty(appLayerSettings.getAttribution()),</span>
+<span class="nc" id="L361">          nullIfEmpty(serviceLayerSettings.getAttribution()),</span>
+<span class="nc" id="L362">          nullIfEmpty(defaultLayerSettings.getAttribution()));</span>
+
+      // These settings can't be overridden per appLayer but can be set on a per-layer and
+      // service-level default basis
+
+<span class="nc" id="L367">      boolean tilingDisabled = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L368">          serviceLayerSettings.getTilingDisabled(), defaultLayerSettings.getTilingDisabled(), true);</span>
+<span class="nc" id="L369">      Integer tilingGutter = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L370">          serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);</span>
+<span class="nc" id="L371">      boolean hiDpiDisabled = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L372">          serviceLayerSettings.getHiDpiDisabled(), defaultLayerSettings.getHiDpiDisabled(), true);</span>
+<span class="nc" id="L373">      TileLayerHiDpiMode hiDpiMode = ObjectUtils.firstNonNull(</span>
+<span class="nc" id="L374">          serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);</span>
+      // Do not get from defaultLayerSettings because a default wouldn't make sense
+<span class="nc" id="L376">      String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();</span>
+
+<span class="nc" id="L378">      TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);</span>
+
+<span class="nc" id="L380">      boolean proxied = service.getSettings().getUseProxy();</span>
+
+<span class="nc" id="L382">      String legendImageUrl = serviceLayerSettings.getLegendImageId();</span>
+<span class="nc" id="L383">      AppLayer.LegendTypeEnum legendType = AppLayer.LegendTypeEnum.STATIC;</span>
+
+<span class="nc bnc" id="L385" title="All 4 branches missed.">      if (legendImageUrl == null &amp;&amp; serviceLayer.getStyles() != null) {</span>
+        // no user defined legend image, try to get legend image from styles
+<span class="nc" id="L387">        legendImageUrl = Optional.ofNullable(</span>
+<span class="nc" id="L388">                GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer))</span>
+<span class="nc" id="L389">            .map(URI::toString)</span>
+<span class="nc" id="L390">            .orElse(null);</span>
+
+<span class="nc bnc" id="L392" title="All 2 branches missed.">        if (legendImageUrl != null) {</span>
+          // Check whether the legend is dynamic or static based on the original legend URL, before it is
+          // possibly replaced by URL to the proxy controller
+<span class="nc bnc" id="L395" title="All 2 branches missed.">          legendType = &quot;GetLegendGraphic&quot;.equalsIgnoreCase(getWmsRequest(legendImageUrl))</span>
+<span class="nc" id="L396">              ? AppLayer.LegendTypeEnum.DYNAMIC</span>
+<span class="nc" id="L397">              : AppLayer.LegendTypeEnum.STATIC;</span>
+
+<span class="nc bnc" id="L399" title="All 2 branches missed.">          if (proxied) {</span>
+            // service styles provides a legend image, but we need to proxy it
+<span class="nc" id="L401">            legendImageUrl = getLegendProxyUrl(app, layerRef);</span>
+          }
+        }
+      }
+
+<span class="nc" id="L406">      SearchIndex searchIndex = null;</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">      if (appLayerSettings.getSearchIndexId() != null) {</span>
+<span class="nc" id="L408">        searchIndex = searchIndexRepository</span>
+<span class="nc" id="L409">            .findById(appLayerSettings.getSearchIndexId())</span>
+<span class="nc" id="L410">            .orElse(null);</span>
+      }
+
+<span class="nc" id="L413">      boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);</span>
+
+<span class="nc" id="L415">      mapResponse.addAppLayersItem(new AppLayer()</span>
+<span class="nc" id="L416">          .id(layerRef.getId())</span>
+<span class="nc" id="L417">          .serviceId(serviceLayerServiceIds.get(serviceLayer))</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">          .layerName(layerRef.getLayerName())</span>
+<span class="nc" id="L419">          .hasAttributes(tmft != null)</span>
+<span class="nc" id="L420">          .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))</span>
+<span class="nc bnc" id="L421" title="All 2 branches missed.">          .url(proxied ? getProxyUrl(service, app, layerRef) : null)</span>
+          // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
+          // gt-wms Layer class?
+<span class="nc" id="L424">          .maxScale(serviceLayer.getMaxScale())</span>
+<span class="nc" id="L425">          .minScale(serviceLayer.getMinScale())</span>
+<span class="nc" id="L426">          .title(title)</span>
+<span class="nc" id="L427">          .tilingDisabled(tilingDisabled)</span>
+<span class="nc" id="L428">          .tilingGutter(tilingGutter)</span>
+<span class="nc" id="L429">          .hiDpiDisabled(hiDpiDisabled)</span>
+<span class="nc" id="L430">          .hiDpiMode(hiDpiMode)</span>
+<span class="nc" id="L431">          .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
+<span class="nc" id="L432">          .minZoom(serviceLayerSettings.getMinZoom())</span>
+<span class="nc" id="L433">          .maxZoom(serviceLayerSettings.getMaxZoom())</span>
+<span class="nc" id="L434">          .tileSize(serviceLayerSettings.getTileSize())</span>
+<span class="nc" id="L435">          .tileGridExtent(serviceLayerSettings.getTileGridExtent())</span>
+<span class="nc" id="L436">          .opacity(appLayerSettings.getOpacity())</span>
+<span class="nc" id="L437">          .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())</span>
+<span class="nc" id="L438">          .searchIndex(</span>
+<span class="nc bnc" id="L439" title="All 2 branches missed.">              searchIndex != null</span>
+                  ? new LayerSearchIndex()
+<span class="nc" id="L441">                      .id(searchIndex.getId())</span>
+<span class="nc" id="L442">                      .name(searchIndex.getName())</span>
+<span class="nc" id="L443">                  : null)</span>
+<span class="nc" id="L444">          .legendImageUrl(legendImageUrl)</span>
+<span class="nc" id="L445">          .legendType(legendType)</span>
+<span class="nc" id="L446">          .visible(layerRef.getVisible())</span>
+<span class="nc" id="L447">          .attribution(attribution)</span>
+<span class="nc" id="L448">          .description(description)</span>
+<span class="nc" id="L449">          .webMercatorAvailable(webMercatorAvailable)</span>
+<span class="nc" id="L450">          .tileset3dStyle(appLayerSettings.getTileset3dStyle())</span>
+<span class="nc" id="L451">          .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));</span>
+
+<span class="nc" id="L453">      return true;</span>
+    }
+
+    private ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
+<span class="nc" id="L457">      GeoService service =</span>
+<span class="nc" id="L458">          geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">      if (service == null) {</span>
+<span class="nc" id="L460">        logger.warn(</span>
+            &quot;App {} references layer \&quot;{}\&quot; of missing service {}&quot;,
+<span class="nc" id="L462">            app.getId(),</span>
+<span class="nc" id="L463">            layerRef.getLayerName(),</span>
+<span class="nc" id="L464">            layerRef.getServiceId());</span>
+<span class="nc" id="L465">        return null;</span>
+      }
+
+<span class="nc bnc" id="L468" title="All 2 branches missed.">      if (!authorisationService.userAllowedToViewGeoService(service)) {</span>
+<span class="nc" id="L469">        return null;</span>
+      }
+
+<span class="nc" id="L472">      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());</span>
+
+<span class="nc bnc" id="L474" title="All 2 branches missed.">      if (serviceLayer == null) {</span>
+<span class="nc" id="L475">        logger.warn(</span>
+            &quot;App {} references layer \&quot;{}\&quot; not found in capabilities of service {}&quot;,
+<span class="nc" id="L477">            app.getId(),</span>
+<span class="nc" id="L478">            layerRef.getLayerName(),</span>
+<span class="nc" id="L479">            service.getId());</span>
+<span class="nc" id="L480">        return null;</span>
+      }
+
+<span class="nc bnc" id="L483" title="All 2 branches missed.">      if (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {</span>
+<span class="nc" id="L484">        logger.debug(</span>
+<span class="nc" id="L485">            &quot;User not allowed to view layer {} of service {}&quot;, serviceLayer.getName(), service.getId());</span>
+<span class="nc" id="L486">        return null;</span>
+      }
+
+<span class="nc" id="L489">      serviceLayerServiceIds.put(serviceLayer, service.getId());</span>
+
+<span class="nc" id="L491">      if (mapResponse.getServices().stream()</span>
+<span class="nc" id="L492">          .filter(s -&gt; s.getId().equals(service.getId()))</span>
+<span class="nc" id="L493">          .findAny()</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">          .isEmpty()) {</span>
+<span class="nc" id="L495">        mapResponse.addServicesItem(service.toJsonPojo(geoServiceHelper));</span>
+      }
+
+<span class="nc" id="L498">      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());</span>
+<span class="nc" id="L499">      return new ServiceLayerInfo(service, serviceLayer, layerSettings);</span>
+    }
+
+    private boolean isWebMercatorAvailable(
+        GeoService service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
+<span class="nc bnc" id="L504" title="All 2 branches missed.">      if (service.getProtocol() == XYZ) {</span>
+<span class="nc" id="L505">        return DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());</span>
+      }
+<span class="nc bnc" id="L507" title="All 4 branches missed.">      if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {</span>
+<span class="nc" id="L508">        return false;</span>
+      }
+<span class="nc bnc" id="L510" title="All 2 branches missed.">      if (hiDpiSubstituteLayer != null) {</span>
+<span class="nc" id="L511">        GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);</span>
+<span class="nc bnc" id="L512" title="All 2 branches missed.">        if (hiDpiSubstituteServiceLayer != null</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">            &amp;&amp; !this.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, null)) {</span>
+<span class="nc" id="L514">          return false;</span>
+        }
+      }
+<span class="nc bnc" id="L517" title="All 2 branches missed.">      while (serviceLayer != null) {</span>
+<span class="nc" id="L518">        Set&lt;String&gt; layerCrs = serviceLayer.getCrs();</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">        if (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {</span>
+<span class="nc" id="L520">          return true;</span>
+        }
+<span class="nc bnc" id="L522" title="All 2 branches missed.">        if (serviceLayer.getRoot()) {</span>
+<span class="nc" id="L523">          break;</span>
+        }
+<span class="nc" id="L525">        serviceLayer = service.getParentLayer(serviceLayer.getId());</span>
+<span class="nc" id="L526">      }</span>
+<span class="nc" id="L527">      return false;</span>
+    }
+
+<span class="nc" id="L530">    record ServiceLayerInfo(</span>
+        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
