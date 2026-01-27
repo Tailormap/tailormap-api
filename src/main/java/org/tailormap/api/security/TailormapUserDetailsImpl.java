@@ -5,11 +5,13 @@
  */
 package org.tailormap.api.security;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,8 +21,14 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 
-/* Do not make public, use the interface */
-class TailormapUserDetailsImpl implements TailormapUserDetails {
+/**
+ * Internal {@link TailormapUserDetails} implementation.
+ *
+ * <p>Do not use this class directly; always depend on the {@link TailormapUserDetails} interface instead. This class is
+ * {@code public} only to support JSON/session deserialization (e.g. by Jackson / Spring Session). Changing its
+ * visibility back to package-private would break that deserialization.
+ */
+public class TailormapUserDetailsImpl implements TailormapUserDetails {
 
   @Serial
   private static final long serialVersionUID = 1L;
@@ -34,6 +42,43 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
 
   private final Collection<TailormapAdditionalProperty> additionalProperties = new ArrayList<>();
   private final Collection<TailormapAdditionalProperty> additionalGroupProperties = new ArrayList<>();
+
+  /**
+   * Constructor for Jackson deserialization.
+   *
+   * @param authorities the authorities
+   * @param username the username
+   * @param password the password
+   * @param validUntil the valid until date
+   * @param enabled whether the user is enabled
+   * @param organisation the organisation
+   * @param additionalProperties the additional properties
+   * @param additionalGroupProperties the additional group properties
+   */
+  @SuppressWarnings("unused")
+  TailormapUserDetailsImpl(
+      @JsonProperty("authorities") Collection<GrantedAuthority> authorities,
+      @JsonProperty("username") String username,
+      @JsonProperty("password") String password,
+      @JsonProperty("validUntil") ZonedDateTime validUntil,
+      @JsonProperty("enabled") boolean enabled,
+      @JsonProperty("organisation") String organisation,
+      @JsonProperty("additionalProperties") Collection<TailormapAdditionalProperty> additionalProperties,
+      @JsonProperty("additionalGroupProperties")
+          Collection<TailormapAdditionalProperty> additionalGroupProperties) {
+    this.authorities = authorities;
+    this.username = username;
+    this.password = password;
+    this.validUntil = validUntil;
+    this.enabled = enabled;
+    this.organisation = organisation;
+    if (additionalProperties != null) {
+      this.additionalProperties.addAll(additionalProperties);
+    }
+    if (additionalGroupProperties != null) {
+      this.additionalGroupProperties.addAll(additionalGroupProperties);
+    }
+  }
 
   public TailormapUserDetailsImpl(User user, GroupRepository groupRepository) {
     authorities = new HashSet<>();
@@ -61,10 +106,12 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
       }
     }
 
-    // For group properties, look in the database with a list of authorities instead of user.getGroups(), so
-    // aliasForGroup is taken into account
-    this.additionalGroupProperties.addAll(groupRepository.findAdditionalPropertiesByGroups(
-        authorities.stream().map(GrantedAuthority::getAuthority).toList()));
+    if (groupRepository != null) {
+      // For group properties, look in the database with a list of authorities instead of user.getGroups(), so
+      // aliasForGroup is taken into account
+      this.additionalGroupProperties.addAll(groupRepository.findAdditionalPropertiesByGroups(
+          authorities.stream().map(GrantedAuthority::getAuthority).toList()));
+    }
   }
 
   @Override
@@ -99,11 +146,11 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
 
   @Override
   public Collection<TailormapAdditionalProperty> getAdditionalProperties() {
-    return additionalProperties;
+    return Collections.unmodifiableCollection(additionalProperties);
   }
 
   @Override
   public Collection<TailormapAdditionalProperty> getAdditionalGroupProperties() {
-    return additionalGroupProperties;
+    return Collections.unmodifiableCollection(additionalGroupProperties);
   }
 }
