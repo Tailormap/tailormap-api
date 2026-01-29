@@ -62,18 +62,14 @@ class AttachmentsControllerIntegrationTest {
   private MockMvc mockMvc;
 
   private static final MockMultipartFile attachmentMetadata = new MockMultipartFile(
-      "attachmentMetadata",
-      "metadata.json",
-      "application/json",
-      """
+      "attachmentMetadata", "metadata.json", "application/json", """
 {
 "attributeName":"bijlage",
 "mimeType":"image/svg+xml",
 "fileName":"lichtpunt.svg",
 "description":"A test SVG attachment"
 }
-"""
-          .getBytes(StandardCharsets.UTF_8));
+""".getBytes(StandardCharsets.UTF_8));
 
   private static Stream<Arguments> testUrls() {
     return Stream.of(

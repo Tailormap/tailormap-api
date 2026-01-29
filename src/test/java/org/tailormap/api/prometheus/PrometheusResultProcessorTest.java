@@ -30,8 +30,7 @@ class PrometheusResultProcessorTest {
 
   @Test
   void combined_query_results_application() {
-    final String jsonResponse =
-        """
+    final String jsonResponse = """
 {
 "status": "success",
 "data": {
@@ -143,8 +142,7 @@ class PrometheusResultProcessorTest {
 
   @Test
   void combined_query_results_application_layers() {
-    final String jsonResponse =
-        """
+    final String jsonResponse = """
 {
 "status" : "success",
 "data" : {

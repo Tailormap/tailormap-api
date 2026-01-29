@@ -44,10 +44,7 @@ public class IngestMetricsController implements TagNames {
    * @return a ResponseEntity with status 204 No Content if successful, or 400 Bad Request if the metric is not
    *     allowed
    */
-  @Operation(
-      summary = "Ingest a metric for the given application layer(s)",
-      description =
-          """
+  @Operation(summary = "Ingest a metric for the given application layer(s)", description = """
 Ingests a metric for the given application layer(s), the metric will be published through the actuator endpoint as
 a Micrometer counter. All application layers in the appLayerIds that are part of the application will be processed.
 The metric must be one of the allowed metrics defined in the application configuration.""")
