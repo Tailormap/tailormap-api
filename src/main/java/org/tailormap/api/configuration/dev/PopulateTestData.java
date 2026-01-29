@@ -520,7 +520,7 @@ public class PopulateTestData {
         new GeoService()
             .setId("pdok-kadaster-bestuurlijkegebieden")
             .setProtocol(WMS)
-            .setUrl("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
             .setAuthorizationRules(ruleAnonymousRead)
             .setSettings(new GeoServiceSettings()
                 .defaultLayerSettings(new GeoServiceDefaultLayerSettings()
@@ -537,7 +537,7 @@ public class PopulateTestData {
         new GeoService()
             .setId("bestuurlijkegebieden-proxied")
             .setProtocol(WMS)
-            .setUrl("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
             .setAuthorizationRules(ruleAnonymousRead)
             // The service actually doesn't require authentication, but also doesn't mind it
             // Just for testing that proxied services with auth are not available in public
@@ -731,7 +731,7 @@ public class PopulateTestData {
         new TMFeatureSource()
             .setProtocol(TMFeatureSource.Protocol.WFS)
             .setUrl(
-                "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
+                "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
             .setTitle("Bestuurlijke gebieden")
             .setNotes(
                 "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
