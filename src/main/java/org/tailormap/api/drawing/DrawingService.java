@@ -116,8 +116,7 @@ public class DrawingService {
         OffsetDateTime.now(ZoneId.systemDefault()));
 
     Drawing storedDrawing = jdbcClient
-        .sql(
-            """
+        .sql("""
 INSERT INTO data.drawing (name, description, domain_data, access, created_at, created_by,srid)
 VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
 """)
@@ -146,8 +145,7 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
   private ObjectNode insertGeoJsonFeatureCollection(UUID drawingId, int srid, String featureCollectionToStore)
       throws JsonProcessingException {
     List<JsonNode> storedFeatures = jdbcClient
-        .sql(
-            """
+        .sql("""
 WITH jsonData AS (SELECT :featureCollectionToStore::json AS featureCollection)
 INSERT INTO data.drawing_feature (drawing_id, geometry, properties)
 SELECT :drawingId::uuid AS drawing_id,
@@ -225,8 +223,7 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
     drawing.setVersion(drawing.getVersion() + 1);
 
     Drawing updatedDrawing = jdbcClient
-        .sql(
-            """
+        .sql("""
 UPDATE data.drawing SET
 id=:id,
 name=:name,
@@ -353,8 +350,7 @@ WHERE id = :id RETURNING *""")
    */
   private JsonNode getFeatureCollection(UUID drawingId, int srid) {
     return jdbcClient
-        .sql(
-            """
+        .sql("""
 SELECT row_to_json(featureCollection) from (
 SELECT
 'FeatureCollection' AS type,

@@ -42,8 +42,7 @@ import org.tailormap.api.security.TailormapUserDetailsImpl;
 @SuppressWarnings("unchecked")
 class JdbcSessionConfigurationIntegrationTest {
 
-  private static final String SELECT_ATTRIBUTE_BYTES_SQL =
-      """
+  private static final String SELECT_ATTRIBUTE_BYTES_SQL = """
 select jsonb_pretty(attribute_bytes) as attribute from spring_session_attributes
 where attribute_name = 'SPRING_SECURITY_CONTEXT'
 and session_primary_id = (select primary_id from spring_session where session_id = ?)
@@ -182,13 +181,10 @@ and session_primary_id = (select primary_id from spring_session where session_id
     session.setAttribute("LOGIN_TIME", Instant.now().toEpochMilli());
     sessionRepository.save(session);
 
-    Integer attributeCount = jdbcTemplate.queryForObject(
-        """
+    Integer attributeCount = jdbcTemplate.queryForObject("""
 select count(*) from spring_session_attributes
 where session_primary_id = (select primary_id from spring_session where session_id = ?)
-""",
-        Integer.class,
-        sessionId);
+""", Integer.class, sessionId);
 
     assertEquals(3, attributeCount, "Should have three attributes");
 
@@ -243,8 +239,7 @@ where session_primary_id = (select primary_id from spring_session where session_
 
   @Test
   void should_verify_jsonb_storage_type_in_database() {
-    String dataTypeSql =
-        """
+    String dataTypeSql = """
 SELECT data_type
 FROM information_schema.columns
 WHERE table_name = 'spring_session_attributes'

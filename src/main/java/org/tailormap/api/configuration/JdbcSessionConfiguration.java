@@ -31,14 +31,12 @@ public class JdbcSessionConfiguration implements BeanClassLoaderAware {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final String CREATE_SESSION_ATTRIBUTE_QUERY =
-      """
+  private static final String CREATE_SESSION_ATTRIBUTE_QUERY = """
 INSERT INTO %TABLE_NAME%_ATTRIBUTES (SESSION_PRIMARY_ID, ATTRIBUTE_NAME, ATTRIBUTE_BYTES)
 VALUES (?, ?, convert_from(?, 'UTF8')::jsonb)
 """;
 
-  private static final String UPDATE_SESSION_ATTRIBUTE_QUERY =
-      """
+  private static final String UPDATE_SESSION_ATTRIBUTE_QUERY = """
 UPDATE %TABLE_NAME%_ATTRIBUTES
 SET ATTRIBUTE_BYTES = encode(?, 'escape')::jsonb
 WHERE SESSION_PRIMARY_ID = ?
