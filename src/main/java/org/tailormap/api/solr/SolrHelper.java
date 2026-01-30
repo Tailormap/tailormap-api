@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import org.apache.solr.client.solrj.RemoteSolrException;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.RemoteExecutionException;
+import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.request.schema.FieldTypeDefinition;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -527,7 +527,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       SchemaResponse.FieldResponse isField = fieldCheck.process(solrClient);
       logger.debug("Field {} exists", isField.getField());
       return true;
-    } catch (SolrServerException | RemoteExecutionException e) {
+    } catch (SolrServerException | RemoteSolrException e) {
       logger.debug("Field {} does not exist or could not be retrieved. Assuming it does not exist.", fieldName);
     } catch (IOException e) {
       logger.error("Tried getting field: {}, but failed.", fieldName, e);
@@ -574,7 +574,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       SchemaResponse.FieldTypeResponse isFieldType = fieldTypeCheck.process(solrClient);
       logger.debug("Field type {} exists", isFieldType.getFieldType());
       return;
-    } catch (SolrServerException | RemoteExecutionException e) {
+    } catch (SolrServerException | RemoteSolrException e) {
       logger.debug(
           "Field type {} does not exist or could not be retrieved. Assuming it does not exist.",
           SOLR_SPATIAL_FIELDNAME);

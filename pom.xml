@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
         <greenmail.version>2.1.8</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- Solr 10 snapshots have not been published since 2025-10-15, 11.0.0-SNAPSHOT are current-->
-        <solr.version>10.0.0-SNAPSHOT</solr.version>
+        <solr.version>10.0.0</solr.version>
         <!--
         Spring Boot version overrides.
 
@@ -606,13 +606,21 @@ SPDX-License-Identifier: MIT
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
+        <!--        <repository>-->
+        <!--            <snapshots>-->
+        <!--                <enabled>true</enabled>-->
+        <!--            </snapshots>-->
+        <!--            <id>Apache Snapshots</id>-->
+        <!--            <name>Apache Snapshot Repository</name>-->
+        <!--            <url>https://repository.apache.org/snapshots/</url>-->
+        <!--        </repository>-->
         <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <id>Apache Snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>https://repository.apache.org/snapshots/</url>
+            <id>Apache solr-10.0.0-RC3</id>
+            <name>Apache solr-10.0.0-RC3 Repository</name>
+            <url>https://dist.apache.org/repos/dist/dev/solr/solr-10.0.0-RC3-rev-016965ccedaea5bb1261bd772bc4dadd528abbac/solr/10.0.0/maven/</url>
         </repository>
     </repositories>
     <pluginRepositories />
