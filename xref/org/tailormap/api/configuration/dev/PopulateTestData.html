@@ -528,7 +528,7 @@
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>         <strong class="jxr_keyword">new</strong> GeoService()
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>             .setId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>             .setProtocol(WMS)
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>             .setUrl(<span class="jxr_string">"https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS"</span>)
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>             .setUrl(<span class="jxr_string">"https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS"</span>)
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>             .setAuthorizationRules(ruleAnonymousRead)
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>             .setSettings(<strong class="jxr_keyword">new</strong> GeoServiceSettings()
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>                 .defaultLayerSettings(<strong class="jxr_keyword">new</strong> GeoServiceDefaultLayerSettings()
@@ -545,7 +545,7 @@
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>         <strong class="jxr_keyword">new</strong> GeoService()
 <a class="jxr_linenumber" name="L538" href="#L538">538</a>             .setId(<span class="jxr_string">"bestuurlijkegebieden-proxied"</span>)
 <a class="jxr_linenumber" name="L539" href="#L539">539</a>             .setProtocol(WMS)
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>             .setUrl(<span class="jxr_string">"https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS"</span>)
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>             .setUrl(<span class="jxr_string">"https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS"</span>)
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>             .setAuthorizationRules(ruleAnonymousRead)
 <a class="jxr_linenumber" name="L542" href="#L542">542</a>             <em class="jxr_comment">// The service actually doesn't require authentication, but also doesn't mind it</em>
 <a class="jxr_linenumber" name="L543" href="#L543">543</a>             <em class="jxr_comment">// Just for testing that proxied services with auth are not available in public</em>
@@ -739,7 +739,7 @@
 <a class="jxr_linenumber" name="L731" href="#L731">731</a>         <strong class="jxr_keyword">new</strong> TMFeatureSource()
 <a class="jxr_linenumber" name="L732" href="#L732">732</a>             .setProtocol(TMFeatureSource.Protocol.WFS)
 <a class="jxr_linenumber" name="L733" href="#L733">733</a>             .setUrl(
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 <span class="jxr_string">"https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?service=WFS&amp;VERSION=2.0.0"</span>)
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 <span class="jxr_string">"https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&amp;VERSION=2.0.0"</span>)
 <a class="jxr_linenumber" name="L735" href="#L735">735</a>             .setTitle(<span class="jxr_string">"Bestuurlijke gebieden"</span>)
 <a class="jxr_linenumber" name="L736" href="#L736">736</a>             .setNotes(
 <a class="jxr_linenumber" name="L737" href="#L737">737</a>                 <span class="jxr_string">"Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."</span>));

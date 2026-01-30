@@ -470,8 +470,8 @@
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].__fid"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"26"</span>))
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Zuid-Holland"</span>))
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"28"</span>))
 <a class="jxr_linenumber" name="L467" href="#L467">467</a>         .andExpectAll(provinciesWFSResultMatchers());
 <a class="jxr_linenumber" name="L468" href="#L468">468</a> 
 <a class="jxr_linenumber" name="L469" href="#L469">469</a>     <em class="jxr_comment">// page 1, sort by naam, invalid direction</em>
@@ -497,8 +497,8 @@
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].__fid"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"26"</span>))
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Zuid-Holland"</span>))
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"28"</span>))
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         .andExpectAll(provinciesWFSResultMatchers());
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>   }
 <a class="jxr_linenumber" name="L496" href="#L496">496</a> 
@@ -532,8 +532,8 @@
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].__fid"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"26"</span>))
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.naam"</span>).value(<span class="jxr_string">"Zuid-Holland"</span>))
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[9].attributes.code"</span>).value(<span class="jxr_string">"28"</span>))
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>         .andExpectAll(provinciesWFSResultMatchers());
 <a class="jxr_linenumber" name="L530" href="#L530">530</a> 
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>     <em class="jxr_comment">// page 1, sort descending by naam</em>
@@ -553,8 +553,8 @@
 <a class="jxr_linenumber" name="L545" href="#L545">545</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L546" href="#L546">546</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L547" href="#L547">547</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.code"</span>).value(<span class="jxr_string">"26"</span>))
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.naam"</span>).value(<span class="jxr_string">"Zuid-Holland"</span>))
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.code"</span>).value(<span class="jxr_string">"28"</span>))
 <a class="jxr_linenumber" name="L550" href="#L550">550</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[8]"</span>).isMap())
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[8]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[8].__fid"</span>).isNotEmpty())
@@ -875,8 +875,8 @@
 <a class="jxr_linenumber" name="L867" href="#L867">867</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> x = 141247;
 <a class="jxr_linenumber" name="L868" href="#L868">868</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> y = 458118;
 <a class="jxr_linenumber" name="L869" href="#L869">869</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> distance = 5;
-<a class="jxr_linenumber" name="L870" href="#L870">870</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> expected1stCoordinate = 130179.9;
-<a class="jxr_linenumber" name="L871" href="#L871">871</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> expected2ndCoordinate = 430066.3;
+<a class="jxr_linenumber" name="L870" href="#L870">870</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> expected1stCoordinate = 167362.2;
+<a class="jxr_linenumber" name="L871" href="#L871">871</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">double</strong> expected2ndCoordinate = 450268.7;
 <a class="jxr_linenumber" name="L872" href="#L872">872</a>     <strong class="jxr_keyword">final</strong> String expectedNaam = <span class="jxr_string">"Utrecht"</span>;
 <a class="jxr_linenumber" name="L873" href="#L873">873</a>     <strong class="jxr_keyword">final</strong> String expectedCode = <span class="jxr_string">"26"</span>;
 <a class="jxr_linenumber" name="L874" href="#L874">874</a>     <strong class="jxr_keyword">final</strong> String expectedFid = StaticTestData.get(<span class="jxr_string">"utrecht__fid"</span>);
