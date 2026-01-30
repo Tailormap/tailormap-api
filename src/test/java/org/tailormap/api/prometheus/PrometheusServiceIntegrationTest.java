@@ -58,8 +58,7 @@ class PrometheusServiceIntegrationTest {
   @Test
   @Order(2)
   void query_execution_large_query() {
-    final String query =
-        """
+    final String query = """
 label_replace(floor(increase(tailormap_app_request_total[90d])), "type", "total", "__name__", ".*")\s
 or\s
 label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[90d:1m])), "type", "last_updated", "__name__", ".*")

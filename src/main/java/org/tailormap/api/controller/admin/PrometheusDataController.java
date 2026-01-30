@@ -122,13 +122,7 @@ public class PrometheusDataController implements TagNames, InitializingBean {
   @ApiResponse(
       responseCode = "200",
       description = "Array of application metrics with totals and last updated times.",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 {"applications":[
 {"lastUpdateSecondsAgo":"85746","appName":"default","appId":"1","totalCount":"4003"},
 {"lastUpdateSecondsAgo":"1345","appName":"test","appId":"5","totalCount":"5"}
@@ -173,13 +167,7 @@ public class PrometheusDataController implements TagNames, InitializingBean {
   @ApiResponse(
       responseCode = "200",
       description = "Array of application layer metrics with totals and last updated times.",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 {"applicationLayers":[
 {"lastUpdateSecondsAgo":"3748","appLayerName":"osm","appName":"default","appId":"1","appLayerId":"lyr:openbasiskaart:osm","totalCount":"1973","appLayerTitle":"Openbasiskaart"},
 {"lastUpdateSecondsAgo":"3748","appLayerName":"postgis:bak","appName":"default","appId":"1","appLayerId":"lyr:snapshot-geoserver:postgis:bak","totalCount":"2361","appLayerTitle":null},
