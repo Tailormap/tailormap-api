@@ -75,8 +75,7 @@ public final class AttachmentsHelper {
     if (!schemaPrefix.isEmpty()) {
       schemaPrefix += ".";
     }
-    return MessageFormat.format(
-        """
+    return MessageFormat.format("""
 CREATE TABLE IF NOT EXISTS {4}{0}_attachments (
 {0}_pk          {2}{3}        NOT NULL REFERENCES {4}{0}({1}) ON DELETE CASCADE,
 attachment_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -88,8 +87,7 @@ attachment_size INTEGER      NOT NULL,
 mime_type       VARCHAR(100),
 created_at      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 created_by      VARCHAR(255) NOT NULL)
-""",
-        tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
+""", tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
   }
 
   private static String getSQLServerCreateAttachmentsTableStatement(
@@ -97,8 +95,7 @@ created_by      VARCHAR(255) NOT NULL)
     if (!schemaPrefix.isEmpty()) {
       schemaPrefix += ".";
     }
-    return MessageFormat.format(
-        """
+    return MessageFormat.format("""
 IF OBJECT_ID(N''{4}{0}_attachments'', ''U'') IS NULL
 BEGIN
 CREATE TABLE {4}{0}_attachments (
@@ -113,8 +110,7 @@ attachment_size INT              NOT NULL,
 created_at      DATETIMEOFFSET   NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 created_by      NVARCHAR(255)    NOT NULL)
 END
-""",
-        tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
+""", tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
   }
 
   private static String getOracleCreateAttachmentsTableStatement(
@@ -123,8 +119,7 @@ END
       schemaPrefix += ".";
     }
     // Oracle supports  IF NOT EXISTS since 19.28
-    return MessageFormat.format(
-        """
+    return MessageFormat.format("""
 CREATE TABLE IF NOT EXISTS {4}{0}_ATTACHMENTS (
 {0}_PK          {2}{3}      NOT NULL REFERENCES {4}{0}({1}) ON DELETE CASCADE,
 ATTACHMENT_ID   RAW(16)       DEFAULT SYS_GUID() PRIMARY KEY,
@@ -136,8 +131,7 @@ MIME_TYPE       VARCHAR2(100),
 ATTACHMENT_SIZE INT           NOT NULL,
 CREATED_AT      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 CREATED_BY      VARCHAR2(255) NOT NULL)
-""",
-        tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
+""", tableName, pkColumnName, fkColumnType, typeModifier, schemaPrefix);
   }
 
   /**
@@ -365,14 +359,12 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
             featureType.getName(), schemaPrefix);
       }
       case SQLSERVER -> {
-        return MessageFormat.format(
-            """
+        return MessageFormat.format("""
 IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = ''{0}_attachments_fk'' AND object_id = OBJECT_ID(N''{1}{0}_attachments''))
 BEGIN
 CREATE INDEX {0}_attachments_fk ON {1}{0}_attachments({0}_pk)
 END
-""",
-            featureType.getName(), schemaPrefix);
+""", featureType.getName(), schemaPrefix);
       }
       case ORACLE -> {
         return MessageFormat.format(
@@ -423,8 +415,7 @@ END
 INSERT INTO {1}{0}_attachments (
 {0}_pk, attachment_id, file_name, attribute_name, description, attachment, attachment_size,
 mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""",
-          featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
+""", featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
 
       logger.debug("Insert attachment SQL: {}", insertSql);
       try (Connection conn = ds.getDataSource().getConnection();
@@ -463,8 +454,7 @@ mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   }
 
   public static void deleteAttachment(UUID attachmentId, TMFeatureType featureType) throws IOException, SQLException {
-    String deleteSql = MessageFormat.format(
-        """
+    String deleteSql = MessageFormat.format("""
 DELETE FROM {0}_attachments WHERE attachment_id = ?
 """, featureType.getName());
     JDBCDataStore ds = null;
@@ -511,8 +501,7 @@ mime_type,
 created_at,
 created_by
 FROM {1}{0}_attachments WHERE {0}_pk = ?
-""",
-          featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
+""", featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(querySql)) {
 
@@ -769,7 +758,9 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
   }
 
   public record AttachmentWithBinary(
-      @NotNull AttachmentMetadata attachmentMetadata, @NotNull ByteBuffer attachment) {}
+      @NotNull AttachmentMetadata attachmentMetadata,
+      @NotNull ByteBuffer attachment) {}
 
-  private record AttachmentMetadataListItem(@NotNull String fid, @NotNull AttachmentMetadata value) {}
+  private record AttachmentMetadataListItem(
+      @NotNull String fid, @NotNull AttachmentMetadata value) {}
 }

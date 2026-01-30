@@ -520,7 +520,7 @@ public class PopulateTestData {
         new GeoService()
             .setId("pdok-kadaster-bestuurlijkegebieden")
             .setProtocol(WMS)
-            .setUrl("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
             .setAuthorizationRules(ruleAnonymousRead)
             .setSettings(new GeoServiceSettings()
                 .defaultLayerSettings(new GeoServiceDefaultLayerSettings()
@@ -537,7 +537,7 @@ public class PopulateTestData {
         new GeoService()
             .setId("bestuurlijkegebieden-proxied")
             .setProtocol(WMS)
-            .setUrl("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
             .setAuthorizationRules(ruleAnonymousRead)
             // The service actually doesn't require authentication, but also doesn't mind it
             // Just for testing that proxied services with auth are not available in public
@@ -731,7 +731,7 @@ public class PopulateTestData {
         new TMFeatureSource()
             .setProtocol(TMFeatureSource.Protocol.WFS)
             .setUrl(
-                "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
+                "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
             .setTitle("Bestuurlijke gebieden")
             .setNotes(
                 "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
@@ -804,8 +804,7 @@ public class PopulateTestData {
               .layerSettings(Map.of(
                   "postgis:begroeidterreindeel",
                   new GeoServiceLayerSettings()
-                      .description(
-                          """
+                      .description("""
 This layer shows data from https://www.postgis.net/
 
 https://postgis.net/brand.svg""")
@@ -833,8 +832,7 @@ https://postgis.net/brand.svg""")
                   new GeoServiceLayerSettings()
                       .attribution(
                           "CC BY 4.0 [BGT/Kadaster](https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319)")
-                      .description(
-                          """
+                      .description("""
 This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).
 
 https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png""")
@@ -870,12 +868,10 @@ https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communit
           ft.getSettings().addHideAttributesItem("fuuid");
           ft.getSettings().putAttributeSettingsItem("naam", new AttributeSettings().title("Naam"));
           ft.getSettings()
-              .setTemplate(
-                  new FeatureTypeTemplate()
-                      .templateLanguage("simple")
-                      .markupLanguage("markdown")
-                      .template(
-                          """
+              .setTemplate(new FeatureTypeTemplate()
+                  .templateLanguage("simple")
+                  .markupLanguage("markdown")
+                  .template("""
 ### Provincie
 Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
@@ -1999,8 +1995,7 @@ This is a page about *Tailormap*. It doesn't say much yet.
     page.setName("home");
     page.setType("page");
     page.setTitle("Tailormap - Home");
-    page.setContent(
-        """
+    page.setContent("""
 # Welcome to Tailormap!
 
 This page is only visible when you implement a frontend to display pages, or get it (including a simple CMS)
@@ -2102,23 +2097,17 @@ from [B3Partners](https://www.b3partners.nl)!
   private void insertTestDrawing() {
     // note that the drawing uuid is hardcoded and used in the DrawingControllerIntegrationTest
     try {
-      this.jdbcClient
-          .sql(
-              """
+      this.jdbcClient.sql("""
 INSERT INTO data.drawing (id,name,description,domain_data,"access",created_by,created_at,updated_by,updated_at,srid,"version") VALUES
 ('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'Testcase','A private access drawing that is inserted as part of the testdata','{"items": 1, "domain": "test drawings"}','private','tm-admin','2025-02-27 17:53:36.095164+01','tm-admin','2025-02-27 17:54:19.384961+01',28992,1);
-""")
-          .update();
+""").update();
 
-      this.jdbcClient
-          .sql(
-              """
+      this.jdbcClient.sql("""
 INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
 ('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '394e0d4a-b374-4d00-94c8-1758ea70e9d9'::uuid, 'SRID=28992;POLYGON ((131982.01 458929.27, 131957.31 458755.45, 132072.39 458736.69, 132099.06 458910.51, 131982.01 458929.27))'::public.geometry, '{"type": "POLYGON", "style": {"label": "", "marker": "circle", "fillColor": "rgb(117, 117, 117)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(98, 54, 255)", "strokeWidth": 3, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}}'::jsonb),
 ('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '89fc320c-41a3-4635-8d98-39d822339692'::uuid, 'SRID=28992;POINT (131897.55 458971.24)'::public.geometry, '{"type": "CIRCLE", "style": {"label": "CIRCLE", "marker": "circle", "fillColor": "rgb(117, 117, 117)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(98, 54, 255)", "strokeWidth": 3, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}, "radius": 14.989999999990687}'::jsonb),
 ('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '5d6252cc-25b6-4a43-9053-0779b86895a7'::uuid, 'SRID=28992;LINESTRING (131920.76 458754.96, 131923.73 458783.1, 131930.15 458793.97, 131945.95 458912.98, 131967.68 458946.06)'::public.geometry, '{"type": "LINE", "style": {"label": "", "marker": "circle", "fillColor": "rgb(255, 82, 82)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(255, 82, 82)", "strokeWidth": 13, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}}'::jsonb)
-""")
-          .update();
+""").update();
     } catch (Exception any) {
       logger.error("Error inserting test drawing in data schema, some tests may fail", any);
     }

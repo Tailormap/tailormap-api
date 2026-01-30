@@ -36,7 +36,7 @@ services:
     networks:
       - tailormap-ci
     healthcheck:
-      test: su postgres -c pg_isready
+      test: pg_isready -U tailormap
       interval: 15s
       timeout: 5s
       retries: 5
@@ -61,7 +61,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 1m
-      test: su postgres -c pg_isready
+      test: pg_isready -U geodata
     restart: unless-stopped
 
   sqlserver:
@@ -148,6 +148,8 @@ services:
     image: prom/prometheus:v3.9.1
     environment:
       TZ: Europe/Amsterdam
+    depends_on:
+      - solr
     volumes:
       - ./compose-config-files/prometheus.yaml:/prometheus.yaml:ro
       - prometheus-data:/prometheus

@@ -57,7 +57,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/surefire-reports/TEST-*.xml
-          report-type: test_results
+          report_type: test_results
 
       - name: 'Cleanup snapshots'
         run: |

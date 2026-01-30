@@ -65,7 +65,7 @@ jobs:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/surefire-reports/TEST-*.xml
-          report-type: test_results
+          report_type: test_results
 
       - name: 'Build javadoc'
         run: mvn javadoc:javadoc
@@ -128,7 +128,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/failsafe-reports/TEST-*.xml
-          report-type: test_results
+          report_type: test_results
 
   # Upload event file so test results can be processed for the PR
   # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches

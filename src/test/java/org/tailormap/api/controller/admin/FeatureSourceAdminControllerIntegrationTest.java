@@ -57,8 +57,7 @@ class FeatureSourceAdminControllerIntegrationTest {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute("drop table if exists test");
 
-    String featureSourcePOSTBody =
-        """
+    String featureSourcePOSTBody = """
 {
 "title": "My Test Source",
 "protocol": "JDBC",
@@ -76,8 +75,7 @@ class FeatureSourceAdminControllerIntegrationTest {
 "username": "%s",
 "password": "%s"
 }
-}"""
-            .formatted(port, host, database, user, password);
+}""".formatted(port, host, database, user, password);
 
     MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources")
             .contentType(MediaType.APPLICATION_JSON)
