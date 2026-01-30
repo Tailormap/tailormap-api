@@ -16,34 +16,37 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.io.Serializable;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Stream;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.core.userdetails.UserDetails;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a> <strong class="jxr_keyword">extends</strong> Serializable, UserDetails {
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>    Collection&lt;TailormapAdditionalProperty&gt; getAdditionalProperties();
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>    Collection&lt;TailormapAdditionalProperty&gt; getAdditionalGroupProperties();
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">   * Returns true if any user or group Boolean property with the given key is true. If beside a true value, there are</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">   * also properties with the same key but with any other value than true, the true value has precedence.</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">   * @param key the key to look for</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">   * @return true if a Boolean property with the key is present with a true value</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">boolean</strong> hasTruePropertyForKey(String key) {
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">return</strong> streamAllPropertiesForKey(key).anyMatch(Boolean.TRUE::equals);
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>    }
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">default</strong> Stream&lt;Object&gt; streamAllPropertiesForKey(String key) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">return</strong> Stream.concat(getAdditionalProperties().stream(), getAdditionalGroupProperties().stream())
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          .filter(p -&gt; p.key().equals(key))
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>          .map(TailormapAdditionalProperty::value);
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    }
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    String getOrganisation();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Stream;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.core.userdetails.UserDetails;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a> <strong class="jxr_keyword">extends</strong> Serializable, UserDetails {
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>    <strong class="jxr_keyword">default</strong> Collection&lt;TailormapAdditionalProperty&gt; getAdditionalProperties() {
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>      <strong class="jxr_keyword">return</strong> Collections.emptyList();
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    Collection&lt;TailormapAdditionalProperty&gt; getAdditionalGroupProperties();
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">   * Returns true if any user or group Boolean property with the given key is true. If beside a true value, there are</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">   * also properties with the same key but with any other value than true, the true value has precedence.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">   * @param key the key to look for</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">   * @return true if a Boolean property with the key is present with a true value</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">boolean</strong> hasTruePropertyForKey(String key) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">return</strong> streamAllPropertiesForKey(key).anyMatch(Boolean.TRUE::equals);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">default</strong> Stream&lt;Object&gt; streamAllPropertiesForKey(String key) {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">return</strong> Stream.concat(getAdditionalProperties().stream(), getAdditionalGroupProperties().stream())
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          .filter(p -&gt; p.key().equals(key))
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          .map(TailormapAdditionalProperty::value);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    }
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    String getOrganisation();
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
