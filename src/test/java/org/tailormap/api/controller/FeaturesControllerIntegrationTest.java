@@ -462,8 +462,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
@@ -489,8 +489,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
@@ -524,8 +524,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
@@ -545,8 +545,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("28"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
@@ -867,8 +867,8 @@ class FeaturesControllerIntegrationTest {
     final double x = 141247;
     final double y = 458118;
     final double distance = 5;
-    final double expected1stCoordinate = 130179.9;
-    final double expected2ndCoordinate = 430066.3;
+    final double expected1stCoordinate = 167362.2;
+    final double expected2ndCoordinate = 450268.7;
     final String expectedNaam = "Utrecht";
     final String expectedCode = "26";
     final String expectedFid = StaticTestData.get("utrecht__fid");
