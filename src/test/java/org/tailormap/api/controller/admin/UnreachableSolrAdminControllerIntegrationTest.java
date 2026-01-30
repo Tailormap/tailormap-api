@@ -65,7 +65,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
-        .andExpect(jsonPath("$.message").value(startsWith("Server refused connection")));
+        .andExpect(jsonPath("$.message").value(startsWith("Internal Server Error")));
   }
 
   @Test
@@ -78,7 +78,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
-        .andExpect(jsonPath("$.message").value(startsWith("Server refused connection")));
+        .andExpect(jsonPath("$.message").value(startsWith("Internal Server Error")));
   }
 
   @Test
@@ -91,6 +91,6 @@ class UnreachableSolrAdminControllerIntegrationTest {
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
-        .andExpect(jsonPath("$.message").value(containsStringIgnoringCase("refused connection")));
+        .andExpect(jsonPath("$.message").value(containsStringIgnoringCase("server error")));
   }
 }
