@@ -226,58 +226,56 @@
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   * @throws Exception when an error occurs</em>
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   @ParameterizedTest(name = <span class="jxr_string">"query Kadastraal Perceel for : {0} -&gt; hits {1}"</span>)
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>   @CsvSource(
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>       textBlock =
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>           <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L224" href="#L224">224</a> *CTR*, 995
-<a class="jxr_linenumber" name="L225" href="#L225">225</a> CTR*, 995
-<a class="jxr_linenumber" name="L226" href="#L226">226</a> CTR0*, 995
-<a class="jxr_linenumber" name="L227" href="#L227">227</a> CTR00, 995
-<a class="jxr_linenumber" name="L228" href="#L228">228</a> CTR00*, 995
-<a class="jxr_linenumber" name="L229" href="#L229">229</a> *CTR00*, 995
-<a class="jxr_linenumber" name="L230" href="#L230">230</a> (CTR00), 995
-<a class="jxr_linenumber" name="L231" href="#L231">231</a> (CTR00 ), 995
-<a class="jxr_linenumber" name="L232" href="#L232">232</a> (CTR00 *), 995
-<a class="jxr_linenumber" name="L233" href="#L233">233</a> (*CTR00 *), 995
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> (CTR00 A*), 304
-<a class="jxr_linenumber" name="L235" href="#L235">235</a> (*CTR00 A*), 304
-<a class="jxr_linenumber" name="L236" href="#L236">236</a> (A 655), 1
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> A searchFields:655, 1
-<a class="jxr_linenumber" name="L238" href="#L238">238</a> (*A 655*), 1
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> (*A 65*), 8
-<a class="jxr_linenumber" name="L240" href="#L240">240</a> <span class="jxr_string">""</span><span class="jxr_string">")
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">void</strong> get_aanduiding(String qTerm, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> documentsCount = Math.min(totalCount, 10);
-<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>             .with(setServletPath(url))
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>             .param(<span class="jxr_string">"q"</span>, qTerm)
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>         .andExpect(jsonPath(<span class="jxr_string">"$.start"</span>).value(0))
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(both(greaterThan(0)).and(lessThanOrEqualTo(totalCount))))
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents"</span>).isArray())
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents.length()"</span>).value(documentsCount))
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>).isString())
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>)
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             .value(containsString(<span class="jxr_string">"kadastraal_perceel.NL.IMKAD.KadastraalObject"</span>)))
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].displayValues"</span>).isArray())
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0]."</span> + INDEX_GEOM_FIELD).value(startsWithIgnoringCase(<span class="jxr_string">"POINT"</span>)))
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .andExpect(jsonPath(<span class="jxr_string">"$.maxScore"</span>).isEmpty());
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>   @Test
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>   <strong class="jxr_keyword">void</strong> get_unquoted_whitespace() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>             .with(setServletPath(url))
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>             .param(<span class="jxr_string">"q"</span>, <span class="jxr_string">"A 655"</span>)
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         .andExpect(status().isNoContent());
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>   }
-<a class="jxr_linenumber" name="L272" href="#L272">272</a> }
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   @CsvSource(textBlock = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> *CTR*, 995
+<a class="jxr_linenumber" name="L223" href="#L223">223</a> CTR*, 995
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> CTR0*, 995
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> CTR00, 995
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> CTR00*, 995
+<a class="jxr_linenumber" name="L227" href="#L227">227</a> *CTR00*, 995
+<a class="jxr_linenumber" name="L228" href="#L228">228</a> (CTR00), 995
+<a class="jxr_linenumber" name="L229" href="#L229">229</a> (CTR00 ), 995
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> (CTR00 *), 995
+<a class="jxr_linenumber" name="L231" href="#L231">231</a> (*CTR00 *), 995
+<a class="jxr_linenumber" name="L232" href="#L232">232</a> (CTR00 A*), 304
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> (*CTR00 A*), 304
+<a class="jxr_linenumber" name="L234" href="#L234">234</a> (A 655), 1
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> A searchFields:655, 1
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> (*A 655*), 1
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> (*A 65*), 8
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> <span class="jxr_string">""</span><span class="jxr_string">")
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   <strong class="jxr_keyword">void</strong> get_aanduiding(String qTerm, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> documentsCount = Math.min(totalCount, 10);
+<a class="jxr_linenumber" name="L242" href="#L242">242</a> 
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>             .param(<span class="jxr_string">"q"</span>, qTerm)
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>         .andExpect(jsonPath(<span class="jxr_string">"$.start"</span>).value(0))
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(both(greaterThan(0)).and(lessThanOrEqualTo(totalCount))))
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents"</span>).isArray())
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents.length()"</span>).value(documentsCount))
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>).isString())
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>)
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             .value(containsString(<span class="jxr_string">"kadastraal_perceel.NL.IMKAD.KadastraalObject"</span>)))
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].displayValues"</span>).isArray())
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0]."</span> + INDEX_GEOM_FIELD).value(startsWithIgnoringCase(<span class="jxr_string">"POINT"</span>)))
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .andExpect(jsonPath(<span class="jxr_string">"$.maxScore"</span>).isEmpty());
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>   }
+<a class="jxr_linenumber" name="L260" href="#L260">260</a> 
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>   @Test
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>   <strong class="jxr_keyword">void</strong> get_unquoted_whitespace() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             .param(<span class="jxr_string">"q"</span>, <span class="jxr_string">"A 655"</span>)
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         .andExpect(status().isNoContent());
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>   }
+<a class="jxr_linenumber" name="L270" href="#L270">270</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
