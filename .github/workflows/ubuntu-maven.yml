@@ -187,7 +187,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+    if: ${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/pull/1583/merge' ) && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
       - uses: actions/checkout@v6
 
@@ -205,7 +205,7 @@ jobs:
 
       - name: 'Build and Push'
         # no need to run any QC or tests
-        # note deploy will deploy both Maven artifact as well as Docker image
+        # note deploy will deploy both Maven artifact and Docker image
         env:
           B3P_DEPLOY_ACTOR: ${{ secrets.B3P_DEPLOY_ACTOR }}
           B3P_DEPLOY_TOKEN: ${{ secrets.B3P_DEPLOY_TOKEN }}
@@ -243,7 +243,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     services:
       postgres:
-        image: postgis/postgis:17-3.5-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_USER: tailormap
           POSTGRES_PASSWORD: tailormap
