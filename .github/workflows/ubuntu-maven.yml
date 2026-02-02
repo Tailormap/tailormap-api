@@ -187,7 +187,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    if: ${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/pull/1583/merge' ) && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+    if: ${{ ( github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') ) || ( github.ref == 'refs/pull/1583/merge' && github.head_ref == 'HTM-1870_paketo_bp' && github.event_name == 'pull_request' ) }}
     steps:
       - uses: actions/checkout@v6
 
