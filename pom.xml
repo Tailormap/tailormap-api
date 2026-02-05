@@ -61,6 +61,7 @@ SPDX-License-Identifier: MIT
             <organizationUrl>https://www.gnamic.nl/</organizationUrl>
         </developer>
     </developers>
+    <contributors />
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
@@ -167,7 +168,10 @@ SPDX-License-Identifier: MIT
         <!--  ghcr.io or alternatively another OCI repo such as docker.b3p.nl -->
         <docker.deploy.repo>ghcr.io</docker.deploy.repo>
         <docker.skip>false</docker.skip>
-        <docker.pull.policy>Always</docker.pull.policy>
+        <docker.pull.policy>ALWAYS</docker.pull.policy>
+        <docker.publish>false</docker.publish>
+        <docker.image.name>tailormap/${project.artifactId}:snapshot</docker.image.name>
+        <docker.image.tags />
         <!-- skip QA checks -->
         <skipQA>false</skipQA>
         <skipJavaDoc>false</skipJavaDoc>
@@ -866,19 +870,56 @@ SPDX-License-Identifier: MIT
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <classifier>exec</classifier>
-                    <cleanCache>true</cleanCache>
                     <!--suppress UnresolvedMavenProperty -->
-                    <jvmArguments>${surefireArgLine}</jvmArguments>
+                    <jvmArguments>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
                     <!-- wait between attempts, default 500 ms -->
                     <wait>1000</wait>
                     <!-- max attempts to check if application is up, default 60 -->
                     <maxAttempts>120</maxAttempts>
+                    <image>
+                        <cleanCache>true</cleanCache>
+                        <createdDate>now</createdDate>
+                        <pullPolicy>${docker.pull.policy}</pullPolicy>
+                        <verboseLogging>false</verboseLogging>
+                        <name>${docker.deploy.repo}/${docker.image.name}</name>
+                        <tags>${docker.image.tags}</tags>
+                        <publish>${docker.publish}</publish>
+                        <env>
+                            <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
+                            <BP_OCI_SOURCE>${project.scm.url}</BP_OCI_SOURCE>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <BP_OCI_REVISION>${git.commit.id.abbrev}</BP_OCI_REVISION>
+                            <BP_OCI_VERSION>${project.version}</BP_OCI_VERSION>
+                            <BP_OCI_TITLE>${project.name}</BP_OCI_TITLE>
+                            <BP_OCI_BASE_NAME>${docker.image.name}</BP_OCI_BASE_NAME>
+                            <BP_OCI_URL>${docker.deploy.repo}/tailormap/${project.artifactId}:${project.version}</BP_OCI_URL>
+                            <BP_OCI_DESCRIPTION>${project.description}</BP_OCI_DESCRIPTION>
+                            <BP_OCI_LICENSES>MIT</BP_OCI_LICENSES>
+                            <BP_OCI_VENDOR>${project.organization.name}</BP_OCI_VENDOR>
+                            <BP_OCI_AUTHORS>info@b3partners.nl</BP_OCI_AUTHORS>
+                            <BP_OCI_DOCUMENTATION>https://tailormap.github.io/tailormap-api/</BP_OCI_DOCUMENTATION>
+                        </env>
+                    </image>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
+                    <docker />
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>build-info</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>build-docker-image</id>
+                        <goals>
+                            <goal>build-image-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <skip>${docker.skip}</skip>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>start-spring-boot</id>
@@ -896,6 +937,9 @@ SPDX-License-Identifier: MIT
                             <!--suppress UnresolvedMavenProperty -->
                             <jvmArguments>${failsafeArgLine}</jvmArguments>
                             <useTestClasspath>true</useTestClasspath>
+                            <environmentVariables>
+                                <LOGGING_FILE_NAME>target/tailormap.log</LOGGING_FILE_NAME>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -1414,63 +1458,6 @@ SPDX-License-Identifier: MIT
                 </executions>
             </plugin>
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <skip>${docker.skip}</skip>
-                    <verbose>true</verbose>
-                    <imagePullPolicy>${docker.pull.policy}</imagePullPolicy>
-                    <images>
-                        <image>
-                            <!-- deploy snapshot tag -->
-                            <name>${docker.deploy.repo}/tailormap/%a:snapshot</name>
-                            <build>
-                                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                <args>
-                                    <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
-                                    <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                                </args>
-                                <buildx>
-                                    <platforms>
-                                        <platform>linux/amd64</platform>
-                                    </platforms>
-                                    <attestations>
-                                        <provenance>false</provenance>
-                                    </attestations>
-                                </buildx>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>docker-build</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <skip>${docker.skip}</skip>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>docker-push</id>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                        <!-- NB for deploy/push login is required on ghcr.io or docker.b3p.nl repository with
-                             docker login - whatever value is ${docker.deploy.repo}
-                             see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
-                         -->
-                        <phase>deploy</phase>
-                        <configuration>
-                            <skip>${docker.skip}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <pushChanges>true</pushChanges>
@@ -1684,6 +1671,9 @@ SPDX-License-Identifier: MIT
             <id>release</id>
             <properties>
                 <dependencyCheckAutoUpdate>false</dependencyCheckAutoUpdate>
+                <docker.publish>true</docker.publish>
+                <docker.image.name>${docker.deploy.repo}/tailormap/${project.artifactId}:${project.version}</docker.image.name>
+                <docker.image.tags>${docker.deploy.repo}/tailormap/${project.artifactId}:latest</docker.image.tags>
             </properties>
             <build>
                 <plugins>
@@ -1695,59 +1685,6 @@ SPDX-License-Identifier: MIT
                             </compilerArgs>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <!-- deploy latest and versioned tag -->
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <verbose>true</verbose>
-                            <imagePullPolicy>Always</imagePullPolicy>
-                            <images>
-                                <image>
-                                    <name>${docker.deploy.repo}/tailormap/%a:%v</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                        <tags>
-                                            <tag>latest</tag>
-                                        </tags>
-                                        <args>
-                                            <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
-                                            <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                                        </args>
-                                        <buildx>
-                                            <platforms>
-                                                <platform>linux/amd64</platform>
-                                            </platforms>
-                                            <attestations>
-                                                <provenance>false</provenance>
-                                            </attestations>
-                                        </buildx>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>docker-push</id>
-                                <goals>
-                                    <goal>push</goal>
-                                </goals>
-                                <phase>deploy</phase>
-                                <configuration>
-                                    <verbose>true</verbose>
-                                    <images>
-                                        <image>
-                                            <name>${docker.deploy.repo}/tailormap/%a:%l</name>
-                                        </image>
-                                        <image>
-                                            <name>${docker.deploy.repo}/tailormap/%a:latest</name>
-                                        </image>
-                                    </images>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -1756,18 +1693,6 @@ SPDX-License-Identifier: MIT
             <activation>
                 <os>
                     <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <docker.skip>true</docker.skip>
-            </properties>
-        </profile>
-        <profile>
-            <id>openbsd</id>
-            <activation>
-                <os>
-                    <name>openbsd</name>
-                    <family>unix</family>
                 </os>
             </activation>
             <properties>
@@ -1794,9 +1719,9 @@ SPDX-License-Identifier: MIT
             <id>developing</id>
             <properties>
                 <docker.skip>true</docker.skip>
+                <docker.pull.policy>IF_NOT_PRESENT</docker.pull.policy>
                 <skipQA>true</skipQA>
                 <skipJavaDoc>true</skipJavaDoc>
-                <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>
         </profile>
         <profile>
@@ -1821,7 +1746,7 @@ SPDX-License-Identifier: MIT
                 <skipQA>true</skipQA>
                 <skipJavaDoc>true</skipJavaDoc>
                 <failOnWarnings>false</failOnWarnings>
-                <docker.pull.policy>IfNotPresent</docker.pull.policy>
+                <docker.pull.policy>IF_NOT_PRESENT</docker.pull.policy>
             </properties>
             <build>
                 <plugins>
