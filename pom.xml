@@ -917,6 +917,11 @@ SPDX-License-Identifier: MIT
                             <BP_OCI_VENDOR>${project.organization.name}</BP_OCI_VENDOR>
                             <BP_OCI_AUTHORS>info@b3partners.nl</BP_OCI_AUTHORS>
                             <BP_OCI_DOCUMENTATION>https://tailormap.github.io/tailormap-api/</BP_OCI_DOCUMENTATION>
+                            <!-- https://b3partners.atlassian.net/browse/HTM-1880: OOM Metaspace crash
+                             increase the default of 100% to 120% to prevent OOM errors, this is an arbitrary value that may work
+                             alternatively, use environment variable BPL_JVM_CLASS_ADJUSTMENT when deploying the docker container
+                             -->
+                            <BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>120%</BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>
                         </env>
                     </image>
                     <layers>
