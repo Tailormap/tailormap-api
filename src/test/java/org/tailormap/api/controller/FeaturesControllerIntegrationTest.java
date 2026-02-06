@@ -62,7 +62,6 @@ class FeaturesControllerIntegrationTest {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static final String controllerPath = "/features";
-
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
   private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
@@ -240,7 +239,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void broken_filter_not_supported() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("filter", "naam or Utrecht")
@@ -1102,7 +1101,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void given_only_x_or_y_should_error() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("x", "3"))
@@ -1123,7 +1122,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void given_distance_not_greater_than_zero() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("x", "3")
