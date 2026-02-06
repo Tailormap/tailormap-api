@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.20.2</flyway.version>
-        <hibernate.version>6.6.41.Final</hibernate.version>
+        <hibernate.version>6.6.42.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <micrometer.version>1.16.2</micrometer.version>
@@ -148,7 +148,7 @@ SPDX-License-Identifier: MIT
         <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-        <pmd.version>7.20.0</pmd.version>
+        <pmd.version>7.21.0</pmd.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
@@ -156,7 +156,7 @@ SPDX-License-Identifier: MIT
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.31.0</swagger-ui.version>
         <sentry.version>8.31.0</sentry.version>
-        <errorProne.version>2.46.0</errorProne.version>
+        <errorProne.version>2.47.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -898,6 +898,11 @@ SPDX-License-Identifier: MIT
                             <BP_OCI_VENDOR>${project.organization.name}</BP_OCI_VENDOR>
                             <BP_OCI_AUTHORS>info@b3partners.nl</BP_OCI_AUTHORS>
                             <BP_OCI_DOCUMENTATION>https://tailormap.github.io/tailormap-api/</BP_OCI_DOCUMENTATION>
+                            <!-- https://b3partners.atlassian.net/browse/HTM-1880: OOM Metaspace crash
+                             increase the default of 100% to 120% to prevent OOM errors, this is an arbitrary value that may work
+                             alternatively, use environment variable BPL_JVM_CLASS_ADJUSTMENT when deploying the docker container
+                             -->
+                            <BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>120%</BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>
                         </env>
                     </image>
                     <layers>

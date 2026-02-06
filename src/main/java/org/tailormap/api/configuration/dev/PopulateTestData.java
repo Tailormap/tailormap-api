@@ -171,6 +171,8 @@ public class PopulateTestData {
   @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
   private String solrGeometryValidationRule;
 
+  private static final String PROVINCIE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Provinciegebied";
+
   public PopulateTestData(
       ApplicationContext appContext,
       UserRepository userRepository,
@@ -750,7 +752,7 @@ public class PopulateTestData {
                       .featureSourceId(featureSources
                           .get("pdok-kadaster-bestuurlijkegebieden")
                           .getId())
-                      .featureTypeName("brk-bestuurlijke-gebieden:Provinciegebied"))
+                      .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS)"));
       geoServiceRepository.save(geoService);
     });
@@ -766,7 +768,7 @@ public class PopulateTestData {
                       .featureSourceId(featureSources
                           .get("pdok-kadaster-bestuurlijkegebieden")
                           .getId())
-                      .featureTypeName("brk-bestuurlijke-gebieden:Provinciegebied"))
+                      .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS, proxied met auth)"));
       geoServiceRepository.save(geoService);
     });
@@ -860,7 +862,7 @@ https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communit
     }
 
     featureSources.get("pdok-kadaster-bestuurlijkegebieden").getFeatureTypes().stream()
-        .filter(ft -> ft.getName().equals("brk-bestuurlijke-gebieden:Provinciegebied"))
+        .filter(ft -> ft.getName().equals(PROVINCIE_FEATURE_TYPE_NAME))
         .findFirst()
         .ifPresent(ft -> {
           ft.getSettings().addHideAttributesItem("identificatie");
