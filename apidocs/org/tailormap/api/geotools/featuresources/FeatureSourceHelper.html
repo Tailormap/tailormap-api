@@ -129,7 +129,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract org.geotools.api.data.DataStore</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#createDataStore(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" class="member-name-link">createDataStore</a><wbr>(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Create a GeoTools DataStore for the given TMFeatureSource.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFeatureTypeInfo(org.tailormap.api.persistence.TMFeatureType,org.geotools.api.data.ResourceInfo,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getFeatureTypeInfo</a><wbr>(<a href="../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;pft,
  org.geotools.api.data.ResourceInfo&nbsp;info,
@@ -198,9 +200,16 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type">org.geotools.api.data.DataStore</span>&nbsp;<span class="element-name">createDataStore</span><wbr><span class="parameters">(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</span>
                                                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Create a GeoTools DataStore for the given TMFeatureSource.</div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>tmfs</code> - The feature source for which to create the datastore</dd>
+<dd><code>timeout</code> - Optional timeout in milliseconds for datastore operations, if supported by the datastore
+     implementation</dd>
+<dt>Returns:</dt>
+<dd>The created DataStore</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - If an error occurs while creating the DataStore</dd>
 </dl>
 </section>
 </li>
