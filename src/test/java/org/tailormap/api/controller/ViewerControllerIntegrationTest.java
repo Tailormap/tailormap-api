@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -195,16 +196,26 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  void should_contain_description() throws Exception {
+  void should_contain_description_and_styles() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
+        .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
             // Application layer description
             jsonPath(
                     "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
-                .value(contains(startsWith("This layer shows data from https://www.postgis.net"))));
+                .value(contains(startsWith("This layer shows data from https://www.postgis.net"))))
+        .andExpect(
+            // Application layer configured styles
+            jsonPath("$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].styles")
+                .isArray())
+        .andExpect(
+            // Application layer configured styles
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].styles[1].title")
+                .value("purple_polygon"));
   }
 
   @Test
