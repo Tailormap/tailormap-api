@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -93,6 +94,7 @@ import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TailormapObjectRef;
 import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import org.tailormap.api.persistence.json.WMSStyle;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.CatalogRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
@@ -814,7 +816,21 @@ https://postgis.net/brand.svg""")
                           .featureSourceId(featureSources
                               .get("postgis")
                               .getId())
-                          .featureTypeName("begroeidterreindeel")),
+                          .featureTypeName("begroeidterreindeel"))
+                      .selectedStyles(
+                          List.of(
+                              new WMSStyle(
+                                  "begroeidterreindeel",
+                                  "Visualisatie van de begroeide terreindelen",
+                                  "Deze stylesheet bevat de regels voor de visualisatie van het objecttype Begroeid Terreindeel",
+                                  URI.create(
+                                      "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel")),
+                              new WMSStyle(
+                                  "purple_polygon",
+                                  "purple_polygon",
+                                  null,
+                                  URI.create(
+                                      "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon")))),
                   "postgis:bak",
                   new GeoServiceLayerSettings()
                       .featureType(new FeatureTypeRef()
