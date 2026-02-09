@@ -184,7 +184,7 @@ components:
           type: string
         abstractText:
           type: string
-        legendURL:
+        legendUrl:
           type: string
           format: uri
 
