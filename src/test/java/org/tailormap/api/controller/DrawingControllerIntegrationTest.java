@@ -56,8 +56,7 @@ class DrawingControllerIntegrationTest {
   private static final String UNKNOWN_DRAWING_ID = "a73ac8ee-1d64-44be-a05e-b6426e2c1c59";
   private static final String KNOWN_DRAWING_ID = "38faa008-013e-49d4-9528-8f58c94d8791";
 
-  private static final String NEW_DRAWING_JSON =
-      """
+  private static final String NEW_DRAWING_JSON = """
 {
 "name": "Drawing 1",
 "description": "Drawing 1 description",

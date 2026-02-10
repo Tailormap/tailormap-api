@@ -41,11 +41,11 @@ class GeoServiceTest {
             "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml",
             "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"),
         arguments(
-            "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS",
-            "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS"),
+            "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS",
+            "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS"),
         arguments(
-            "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS&request=getMap",
-            "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS"));
+            "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS&request=getMap",
+            "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS"));
   }
 
   @BeforeEach

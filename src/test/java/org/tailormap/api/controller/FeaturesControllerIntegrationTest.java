@@ -62,7 +62,6 @@ class FeaturesControllerIntegrationTest {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static final String controllerPath = "/features";
-
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
   private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
@@ -240,7 +239,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void broken_filter_not_supported() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("filter", "naam or Utrecht")
@@ -462,8 +461,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
@@ -489,8 +488,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
@@ -524,8 +523,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
@@ -545,8 +544,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("28"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
@@ -867,8 +866,8 @@ class FeaturesControllerIntegrationTest {
     final double x = 141247;
     final double y = 458118;
     final double distance = 5;
-    final double expected1stCoordinate = 130179.9;
-    final double expected2ndCoordinate = 430066.3;
+    final double expected1stCoordinate = 167362.2;
+    final double expected2ndCoordinate = 450268.7;
     final String expectedNaam = "Utrecht";
     final String expectedCode = "26";
     final String expectedFid = StaticTestData.get("utrecht__fid");
@@ -1102,7 +1101,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void given_only_x_or_y_should_error() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("x", "3"))
@@ -1123,7 +1122,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void given_distance_not_greater_than_zero() throws Exception {
-    final String url = apiBasePath + provinciesWfs;
+    final String url = apiBasePath + wegdeelUrlSqlserver;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("x", "3")

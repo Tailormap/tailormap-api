@@ -66,11 +66,7 @@ class IngestMetricsControllerIntegrationTest {
             .accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isOk())
         .andExpect(content().contentType("text/plain;version=0.0.4;charset=utf-8"))
-        .andExpect(
-            content()
-                .string(
-                    containsStringIgnoringCase(
-                        """
+        .andExpect(content().string(containsStringIgnoringCase("""
 tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:snapshot-geoserver:postgis:begroeidterreindeel",appName="default",appType="app"} 2.0""")));
   }
 
@@ -92,17 +88,9 @@ tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:snapshot-geoserve
             .accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isOk())
         .andExpect(content().contentType("text/plain;version=0.0.4;charset=utf-8"))
-        .andExpect(
-            content()
-                .string(
-                    containsStringIgnoringCase(
-                        """
+        .andExpect(content().string(containsStringIgnoringCase("""
 tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:snapshot-geoserver:postgis:begroeidterreindeel",appName="default",appType="app"}""")))
-        .andExpect(
-            content()
-                .string(
-                    containsStringIgnoringCase(
-                        """
+        .andExpect(content().string(containsStringIgnoringCase("""
 tailormap_applayer_switched_on_total{appId="1",appLayerId="lyr:openbasiskaart:osm",appName="default",appType="app"} 1.0""")));
   }
 

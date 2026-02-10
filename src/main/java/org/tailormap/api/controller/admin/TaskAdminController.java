@@ -82,10 +82,7 @@ public class TaskAdminController {
     this.searchIndexRepository = searchIndexRepository;
   }
 
-  @Operation(
-      summary = "List all tasks, optionally filtered by type",
-      description =
-          """
+  @Operation(summary = "List all tasks, optionally filtered by type", description = """
 This will return a list of all tasks, optionally filtered by task type.
 The state of the task is one of the Quartz Trigger states.
 The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null in error conditions.
@@ -94,13 +91,7 @@ The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null 
   @ApiResponse(
       responseCode = "200",
       description = "List of all tasks, this list may be empty",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 {"tasks":[
 {"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914","type":"index", "state":"NORMAL", "interruptable": false},
 {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca8","type":"poc", "state": "BLOCKED", "interruptable": false},
@@ -160,10 +151,7 @@ The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null 
         .set("tasks", new ObjectMapper().createArrayNode().addAll(tasks)));
   }
 
-  @Operation(
-      summary = "List all details for a given task",
-      description =
-          """
+  @Operation(summary = "List all details for a given task", description = """
 This will return the details of the task, including the status, progress,
 result and any other information.
 """)
@@ -179,18 +167,11 @@ result and any other information.
               schema = @Schema(example = "{\"message\":\"Task not found\",\"code\":404}")))
   @ApiResponse(
       responseCode = "200",
-      description =
-          """
+      description = """
 Details of the task. The response content will vay according to the type of task,
 the most common fields are listed in the Task interface.
 """,
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 {
 "type":"poc",
 "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
@@ -303,10 +284,7 @@ the most common fields are listed in the Task interface.
     }
   }
 
-  @Operation(
-      summary = "Stop a task irrevocably",
-      description =
-          """
+  @Operation(summary = "Stop a task irrevocably", description = """
 This will stop a running task, if the task is not running, nothing will happen.
 This can leave the application in an inconsistent state.
 A task that is not interruptable cannot be stopped.
@@ -325,10 +303,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
   @ApiResponse(
       responseCode = "202",
       description = "Task is stopping",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 {
 "message":"Task stopping accepted".
 "succes":true
@@ -337,10 +312,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
   @ApiResponse(
       responseCode = "400",
       description = "The task cannot be stopped as it does not implement the InterruptableJob interface.",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = """
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = """
 { "message":"Task cannot be stopped" }
 """)))
   public ResponseEntity<Object> stopTask(@PathVariable TaskType type, @PathVariable UUID uuid)

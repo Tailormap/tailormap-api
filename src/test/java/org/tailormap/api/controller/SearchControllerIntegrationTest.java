@@ -218,9 +218,7 @@ class SearchControllerIntegrationTest implements Constants, TestUrls {
    * @throws Exception when an error occurs
    */
   @ParameterizedTest(name = "query Kadastraal Perceel for : {0} -> hits {1}")
-  @CsvSource(
-      textBlock =
-          """
+  @CsvSource(textBlock = """
 *CTR*, 995
 CTR*, 995
 CTR0*, 995

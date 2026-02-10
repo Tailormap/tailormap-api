@@ -43,6 +43,15 @@ public abstract class FeatureSourceHelper {
     return createDataStore(tmfs, null);
   }
 
+  /**
+   * Create a GeoTools DataStore for the given TMFeatureSource.
+   *
+   * @param tmfs The feature source for which to create the datastore
+   * @param timeout Optional timeout in milliseconds for datastore operations, if supported by the datastore
+   *     implementation
+   * @return The created DataStore
+   * @throws IOException If an error occurs while creating the DataStore
+   */
   public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException;
 
   public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout) throws IOException {

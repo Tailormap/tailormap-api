@@ -414,7 +414,11 @@ components:
             tilingGutter:
               nullable: true
               type: integer
-              # TODO: set global default here or in frontend?
+            selectedStyles:
+              description: Selected (configured) WMS styles to be available for this layer.
+              type: array
+              items:
+                $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
 
     WMTSLayerSettings:
       description: Settings applying to a WMTS layer.

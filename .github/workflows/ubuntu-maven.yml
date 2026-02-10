@@ -60,11 +60,12 @@ jobs:
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/surefire-reports/TEST-*.xml
+          report_type: test_results
 
       - name: 'Build javadoc'
         run: mvn javadoc:javadoc
@@ -123,16 +124,17 @@ jobs:
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/failsafe-reports/TEST-*.xml
+          report_type: test_results
 
   # Upload event file so test results can be processed for the PR
   # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
   event_file:
     name: "Event File"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: write
@@ -185,7 +187,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+    if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')) }}
     steps:
       - uses: actions/checkout@v6
 
@@ -203,19 +205,19 @@ jobs:
 
       - name: 'Build and Push'
         # no need to run any QC or tests
-        # note deploy will deploy both Maven artifact as well as Docker image
+        # note deploy will deploy both Maven artifact and Docker image
         env:
           B3P_DEPLOY_ACTOR: ${{ secrets.B3P_DEPLOY_ACTOR }}
           B3P_DEPLOY_TOKEN: ${{ secrets.B3P_DEPLOY_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
+          mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy -Ddocker.publish=true --settings .github/maven-settings.xml
 
 
   deploy:
     name: 'Deploy stack'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: publish
     permissions:
       actions: write
@@ -241,7 +243,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     services:
       postgres:
-        image: postgis/postgis:17-3.5-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_USER: tailormap
           POSTGRES_PASSWORD: tailormap
@@ -280,7 +282,7 @@ jobs:
     name: 'Maven cache cleanup'
     if: ${{ always() }}
     needs: [ build, publish, postgresql-test ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
     steps:

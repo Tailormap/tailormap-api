@@ -41,8 +41,7 @@ class FindUploadsByHashControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void validate_upload_matches() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
-    String body =
-        """
+    String body = """
 [
 "cfb1b538761a21f8d39c0555ba9802b8af4d09a6",
 "71f8e7976e4cbc4561c9d62fb283e7f788202acb"
@@ -60,8 +59,7 @@ class FindUploadsByHashControllerIntegrationTest {
 "id": "%s",
 "hash": "cfb1b538761a21f8d39c0555ba9802b8af4d09a6"
 }
-]"""
-        .formatted(water.getId().toString());
+]""".formatted(water.getId().toString());
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)
