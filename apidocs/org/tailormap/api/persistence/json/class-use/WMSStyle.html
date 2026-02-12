@@ -56,6 +56,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="#org.tailormap.api.persistence.json">org.tailormap.api.persistence.json</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.viewer.model">org.tailormap.api.viewer.model</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -71,7 +73,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">WMSStyle.</span><code><a href="../WMSStyle.html#abstractText(java.lang.String)" class="member-name-link">abstractText</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;abstractText)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WMSStyle.</span><code><a href="../WMSStyle.html#legendURL(java.net.URI)" class="member-name-link">legendURL</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;legendURL)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WMSStyle.</span><code><a href="../WMSStyle.html#legendUrl(java.net.URI)" class="member-name-link">legendUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;legendUrl)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WMSStyle.</span><code><a href="../WMSStyle.html#name(java.lang.String)" class="member-name-link">name</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
@@ -176,6 +178,43 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Constructor with all args parameters</div>
 </div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.viewer.model">
+<h2>Uses of <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a> in <a href="../../../viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></h2>
+<div class="caption"><span>Methods in <a href="../../../viewer/model/package-summary.html">org.tailormap.api.viewer.model</a> that return types with arguments of type <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;@Valid <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppLayer.</span><code><a href="../../../viewer/model/AppLayer.html#getStyles()" class="member-name-link">getStyles</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Configured WMS styles for this layer, if any.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../../viewer/model/package-summary.html">org.tailormap.api.viewer.model</a> with parameters of type <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../../../viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppLayer.</span><code><a href="../../../viewer/model/AppLayer.html#addStylesItem(org.tailormap.api.persistence.json.WMSStyle)" class="member-name-link">addStylesItem</a><wbr>(<a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&nbsp;stylesItem)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Method parameters in <a href="../../../viewer/model/package-summary.html">org.tailormap.api.viewer.model</a> with type arguments of type <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppLayer.</span><code><a href="../../../viewer/model/AppLayer.html#setStyles(java.util.List)" class="member-name-link">setStyles</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;&nbsp;styles)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../../viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AppLayer.</span><code><a href="../../../viewer/model/AppLayer.html#styles(java.util.List)" class="member-name-link">styles</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;&nbsp;styles)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

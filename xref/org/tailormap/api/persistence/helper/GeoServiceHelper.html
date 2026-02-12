@@ -281,10 +281,10 @@
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>                       .map(Objects::toString)
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>                       .orElse(<strong class="jxr_keyword">null</strong>));
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>               <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 List&lt;?&gt; legendURLs = gtStyle.getLegendURLs();
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 List&lt;?&gt; legendUrls = gtStyle.getLegendURLs();
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>                 <em class="jxr_comment">// GeoTools will replace invalid URLs with null in legendURLs</em>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>                 <strong class="jxr_keyword">if</strong> (legendURLs != <strong class="jxr_keyword">null</strong> &amp;&amp; !legendURLs.isEmpty() &amp;&amp; legendURLs.getFirst() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                   style.legendURL(<strong class="jxr_keyword">new</strong> URI((String) legendURLs.getFirst()));
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>                 <strong class="jxr_keyword">if</strong> (legendUrls != <strong class="jxr_keyword">null</strong> &amp;&amp; !legendUrls.isEmpty() &amp;&amp; legendUrls.getFirst() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                   style.legendUrl(<strong class="jxr_keyword">new</strong> URI((String) legendUrls.getFirst()));
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>                 }
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>               } <strong class="jxr_keyword">catch</strong> (URISyntaxException ignored) {
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>                 <em class="jxr_comment">// Won't occur because GeoTools would have already returned null on</em>
@@ -518,13 +518,13 @@
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>       <em class="jxr_comment">// this layer, if any</em>
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>       <strong class="jxr_keyword">return</strong> serviceLayer.getStyles().stream()
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>           .findFirst()
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>           .map(WMSStyle::getLegendURL)
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>           .map(WMSStyle::getLegendUrl)
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>           .orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>     }
 <a class="jxr_linenumber" name="L516" href="#L516">516</a> 
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>     <strong class="jxr_keyword">final</strong> List&lt;WMSStyle&gt; allOurLayersStyles = serviceLayer.getStyles();
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>     <strong class="jxr_keyword">if</strong> (allOurLayersStyles.size() == 1) {
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>       <strong class="jxr_keyword">return</strong> allOurLayersStyles.getFirst().getLegendURL();
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>       <strong class="jxr_keyword">return</strong> allOurLayersStyles.getFirst().getLegendUrl();
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>     }
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>     <em class="jxr_comment">// remove the styles from all the other layer(s) from the list of all our layers styles</em>
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>     service.getLayers().stream()
@@ -533,7 +533,7 @@
 <a class="jxr_linenumber" name="L525" href="#L525">525</a> 
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>     <strong class="jxr_keyword">return</strong> allOurLayersStyles.stream()
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>         .findFirst()
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>         .map(WMSStyle::getLegendURL)
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>         .map(WMSStyle::getLegendUrl)
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>         .orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>   }
 <a class="jxr_linenumber" name="L531" href="#L531">531</a> }

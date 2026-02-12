@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    <strong class="jxr_keyword">private</strong> String abstractText;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> URI legendURL;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> URI legendUrl;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a>() {
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">super</strong>();
@@ -49,11 +49,11 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   * Constructor with all args parameters</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a>(String name, String title, String abstractText, URI legendURL) {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a>(String name, String title, String abstractText, URI legendUrl) {
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>        <strong class="jxr_keyword">this</strong>.name = name;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>        <strong class="jxr_keyword">this</strong>.title = title;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>        <strong class="jxr_keyword">this</strong>.abstractText = abstractText;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>        <strong class="jxr_keyword">this</strong>.legendURL = legendURL;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        <strong class="jxr_keyword">this</strong>.legendUrl = legendUrl;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    }
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a> name(String name) {
@@ -116,24 +116,24 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     <strong class="jxr_keyword">this</strong>.abstractText = abstractText;
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>   }
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> 
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a> legendURL(URI legendURL) {
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">this</strong>.legendURL = legendURL;
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">public</strong> <a name="WMSStyle" href="../../../../../org/tailormap/api/persistence/json/WMSStyle.html#WMSStyle">WMSStyle</a> legendUrl(URI legendUrl) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">this</strong>.legendUrl = legendUrl;
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>   }
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * Get legendURL</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   * @return legendURL</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * Get legendUrl</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   * @return legendUrl</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>   @Valid 
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>   @Schema(name = <span class="jxr_string">"legendURL"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>   @JsonProperty(<span class="jxr_string">"legendURL"</span>)
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <strong class="jxr_keyword">public</strong> URI getLegendURL() {
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">return</strong> legendURL;
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   @Schema(name = <span class="jxr_string">"legendUrl"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   @JsonProperty(<span class="jxr_string">"legendUrl"</span>)
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <strong class="jxr_keyword">public</strong> URI getLegendUrl() {
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">return</strong> legendUrl;
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>   }
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLegendURL(URI legendURL) {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">this</strong>.legendURL = legendURL;
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setLegendUrl(URI legendUrl) {
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">this</strong>.legendUrl = legendUrl;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>   }
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   @Override
@@ -148,12 +148,12 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">return</strong> Objects.equals(<strong class="jxr_keyword">this</strong>.name, wmSStyle.name) &amp;&amp;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.title, wmSStyle.title) &amp;&amp;
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.abstractText, wmSStyle.abstractText) &amp;&amp;
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.legendURL, wmSStyle.legendURL);
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.legendUrl, wmSStyle.legendUrl);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>   }
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>   @Override
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">return</strong> Objects.hash(name, title, abstractText, legendURL);
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">return</strong> Objects.hash(name, title, abstractText, legendUrl);
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>   }
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> 
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>   @Override
@@ -163,7 +163,7 @@
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     sb.append(<span class="jxr_string">"    name: "</span>).append(toIndentedString(name)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     sb.append(<span class="jxr_string">"    title: "</span>).append(toIndentedString(title)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     sb.append(<span class="jxr_string">"    abstractText: "</span>).append(toIndentedString(abstractText)).append(<span class="jxr_string">"\n"</span>);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>     sb.append(<span class="jxr_string">"    legendURL: "</span>).append(toIndentedString(legendURL)).append(<span class="jxr_string">"\n"</span>);
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     sb.append(<span class="jxr_string">"    legendUrl: "</span>).append(toIndentedString(legendUrl)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     sb.append(<span class="jxr_string">"}"</span>);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">return</strong> sb.toString();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>   }
