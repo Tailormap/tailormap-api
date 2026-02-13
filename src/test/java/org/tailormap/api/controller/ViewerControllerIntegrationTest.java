@@ -132,7 +132,7 @@ class ViewerControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_contain_proxied_secured_service_layer() throws Exception {
+  void should_contain_proxied_secured_service_layer_with_styles() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -140,7 +140,23 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]")
             .exists())
         .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]")
-            .exists());
+            .exists())
+        .andExpect(jsonPath("$.services[?(@.id == 'snapshot-geoserver-proxied')]")
+            .exists())
+        .andExpect(
+            // Application layer configured styles
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles")
+                .isArray())
+        .andExpect(jsonPath(
+                "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles.length()")
+            .value(1))
+        .andExpect(jsonPath(
+                "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles[0].title")
+            .value("purple_polygon"))
+        .andExpect(jsonPath(
+                "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles[0].name")
+            .value("purple_polygon"));
   }
 
   @Test
