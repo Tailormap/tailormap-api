@@ -337,9 +337,6 @@ components:
             - $ref: '#/components/schemas/QuantizedMeshLayerSettings'
           default:
         layerSettings:
-          # this appears to be broken since org.openapitools:openapi-generator-maven-plugin:7.8.0 / PR #913
-          # it generates a class named GeoServiceLayerSettingsValue instead of GeoServiceLayerSettings
-          # title: GeoServiceLayerSettings
           type: object
           additionalProperties:
             anyOf:
@@ -672,7 +669,12 @@ components:
           nullable: true
         hiddenFunctionality:
           $ref: './common-schemas.yaml#/components/schemas/HiddenLayerFunctionality'
-        # TODO add properties for selected WMS style, feature info popup template, etc.
+        selectedStyles:
+          description: Selected (configured) WMS styles to be available for this layer, these override selected styles in the WMSLayerSettings.
+          type: array
+          nullable: true
+          items:
+            $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
 
     FormOptions:
       $ref: './common-schemas.yaml#/components/schemas/FormOptions'

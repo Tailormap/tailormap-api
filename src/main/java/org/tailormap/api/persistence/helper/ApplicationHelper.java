@@ -48,6 +48,7 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.ServicePublishingSettings;
 import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import org.tailormap.api.persistence.json.WMSStyle;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.FeatureSourceRepository;
@@ -412,6 +413,16 @@ public class ApplicationHelper {
 
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
+      // use styles from app layer settings if set, otherwise use styles from service layer settings or default
+      // layer settings.
+      List<WMSStyle> styles = appLayerSettings.getSelectedStyles();
+      if (ObjectUtils.isEmpty(styles)) {
+        styles = serviceLayerSettings.getSelectedStyles();
+      }
+      if (ObjectUtils.isEmpty(styles)) {
+        styles = defaultLayerSettings.getSelectedStyles();
+      }
+
       mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -449,9 +460,7 @@ public class ApplicationHelper {
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())
-          // TODO / HTM-1884: check if there are styles configured in the app layer settings and use those
-          //   instead of the service layer styles
-          .styles(serviceLayerSettings.getSelectedStyles()));
+          .styles(styles));
 
       return true;
     }
