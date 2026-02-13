@@ -1525,10 +1525,23 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .serviceId("snapshot-geoserver-proxied")
                 .layerName("postgis:begroeidterreindeel")
                 .visible(false)))
-        .setSettings(new AppSettings()
-            .putLayerSettingsItem(
-                "lyr:openbasiskaart-proxied:osm",
-                new AppLayerSettings().title("Openbasiskaart (proxied)")));
+        .setSettings(
+            new AppSettings()
+                .putLayerSettingsItem(
+                    "lyr:openbasiskaart-proxied:osm",
+                    new AppLayerSettings().title("Openbasiskaart (proxied)"))
+                .putLayerSettingsItem(
+                    "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel",
+                    new AppLayerSettings()
+                        .description("This layer should rendered using purple polygons")
+                        .selectedStyles(
+                            List.of(
+                                new WMSStyle(
+                                    "purple_polygon",
+                                    "purple_polygon",
+                                    null,
+                                    URI.create(
+                                        "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon"))))));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
