@@ -195,7 +195,7 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  void should_contain_description() throws Exception {
+  void should_contain_description_and_styles() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -204,7 +204,19 @@ class ViewerControllerIntegrationTest {
             // Application layer description
             jsonPath(
                     "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
-                .value(contains(startsWith("This layer shows data from https://www.postgis.net"))));
+                .value(contains(startsWith("This layer shows data from https://www.postgis.net"))))
+        .andExpect(
+            // Application layer configured styles
+            jsonPath("$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].styles")
+                .isArray())
+        .andExpect(jsonPath(
+                "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].styles[1].title")
+            .value("purple_polygon"))
+        .andExpect(
+            // Application layer configured styles
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].styles[1].name")
+                .value("purple_polygon"));
   }
 
   @Test

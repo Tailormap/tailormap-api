@@ -448,7 +448,10 @@ public class ApplicationHelper {
           .description(description)
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
-          .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));
+          .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())
+          // TODO / HTM-1884: check if there are styles configured in the app layer settings and use those
+          //   instead of the service layer styles
+          .styles(serviceLayerSettings.getSelectedStyles()));
 
       return true;
     }

@@ -165,6 +165,12 @@ components:
           nullable: true
         hiddenFunctionality:
           $ref: './common-schemas.yaml#/components/schemas/HiddenLayerFunctionality'
+        styles:
+          description: 'Configured WMS styles for this layer, if any.'
+          type: array
+          items:
+            $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
+
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.

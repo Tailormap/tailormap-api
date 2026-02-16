@@ -273,10 +273,10 @@ public class GeoServiceHelper {
                       .map(Objects::toString)
                       .orElse(null));
               try {
-                List<?> legendURLs = gtStyle.getLegendURLs();
+                List<?> legendUrls = gtStyle.getLegendURLs();
                 // GeoTools will replace invalid URLs with null in legendURLs
-                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.getFirst() != null) {
-                  style.legendURL(new URI((String) legendURLs.getFirst()));
+                if (legendUrls != null && !legendUrls.isEmpty() && legendUrls.getFirst() != null) {
+                  style.legendUrl(new URI((String) legendUrls.getFirst()));
                 }
               } catch (URISyntaxException ignored) {
                 // Won't occur because GeoTools would have already returned null on
@@ -510,13 +510,13 @@ public class GeoServiceHelper {
       // this layer, if any
       return serviceLayer.getStyles().stream()
           .findFirst()
-          .map(WMSStyle::getLegendURL)
+          .map(WMSStyle::getLegendUrl)
           .orElse(null);
     }
 
     final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
     if (allOurLayersStyles.size() == 1) {
-      return allOurLayersStyles.getFirst().getLegendURL();
+      return allOurLayersStyles.getFirst().getLegendUrl();
     }
     // remove the styles from all the other layer(s) from the list of all our layers styles
     service.getLayers().stream()
@@ -525,7 +525,7 @@ public class GeoServiceHelper {
 
     return allOurLayersStyles.stream()
         .findFirst()
-        .map(WMSStyle::getLegendURL)
+        .map(WMSStyle::getLegendUrl)
         .orElse(null);
   }
 }

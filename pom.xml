@@ -155,7 +155,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.31.0</swagger-ui.version>
-        <sentry.version>8.31.0</sentry.version>
+        <sentry.version>8.32.0</sentry.version>
         <errorProne.version>2.47.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -707,11 +707,6 @@ SPDX-License-Identifier: MIT
                     <version>4.0.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.48.0</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
                     <version>3.3.0</version>
                 </plugin>
@@ -730,7 +725,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.9.0</version>
+                    <version>3.10.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
