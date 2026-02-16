@@ -610,21 +610,13 @@ SPDX-License-Identifier: MIT
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
-        <!--        <repository>-->
-        <!--            <snapshots>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </snapshots>-->
-        <!--            <id>Apache Snapshots</id>-->
-        <!--            <name>Apache Snapshot Repository</name>-->
-        <!--            <url>https://repository.apache.org/snapshots/</url>-->
-        <!--        </repository>-->
         <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <id>Apache solr-10.0.0-RC3</id>
-            <name>Apache solr-10.0.0-RC3 Repository</name>
-            <url>https://dist.apache.org/repos/dist/dev/solr/solr-10.0.0-RC3-rev-016965ccedaea5bb1261bd772bc4dadd528abbac/solr/10.0.0/maven/</url>
+            <id>Apache solr-10.0.0-RC4</id>
+            <name>Apache solr-10.0.0-RC4 Repository</name>
+            <url>https://dist.apache.org/repos/dist/dev/solr/solr-10.0.0-RC4-rev-6c6c48a6f78486130682ea9c1f7a2723af5a87be/solr/10.0.0/maven/</url>
         </repository>
     </repositories>
     <pluginRepositories />
