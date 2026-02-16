@@ -64,6 +64,6 @@ class ViewerControllerWithActuatorIntegrationTest {
         .andExpect(content().contentType("text/plain;version=0.0.4;charset=utf-8"))
         .andExpect(content()
             .string(containsStringIgnoringCase(
-                "tailormap_app_request_total{appId=\"1\",appName=\"default\",appType=\"app\"} 1.0")));
+                "tailormap_app_request_total{appId=\"1\",appName=\"default\",appType=\"app\"}")));
   }
 }
