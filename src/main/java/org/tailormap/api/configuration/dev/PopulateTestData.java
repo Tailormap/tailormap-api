@@ -816,21 +816,7 @@ https://postgis.net/brand.svg""")
                           .featureSourceId(featureSources
                               .get("postgis")
                               .getId())
-                          .featureTypeName("begroeidterreindeel"))
-                      .selectedStyles(
-                          List.of(
-                              new WMSStyle(
-                                  "begroeidterreindeel",
-                                  "Visualisatie van de begroeide terreindelen",
-                                  "Deze stylesheet bevat de regels voor de visualisatie van het objecttype Begroeid Terreindeel",
-                                  URI.create(
-                                      "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel")),
-                              new WMSStyle(
-                                  "purple_polygon",
-                                  "purple_polygon",
-                                  null,
-                                  URI.create(
-                                      "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon")))),
+                          .featureTypeName("begroeidterreindeel")),
                   "postgis:bak",
                   new GeoServiceLayerSettings()
                       .featureType(new FeatureTypeRef()
@@ -1311,7 +1297,21 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 new AppLayerSettings()
                     .editable(true)
                     .addHideAttributesItem("begroeidterreindeeloptalud")
-                    .addReadOnlyAttributesItem("eindregistratie"))
+                    .addReadOnlyAttributesItem("eindregistratie")
+                    .selectedStyles(
+                        List.of(
+                            new WMSStyle(
+                                "begroeidterreindeel",
+                                "Visualisatie van de begroeide terreindelen",
+                                "Deze stylesheet bevat de regels voor de visualisatie van het objecttype Begroeid Terreindeel",
+                                URI.create(
+                                    "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel")),
+                            new WMSStyle(
+                                "purple_polygon",
+                                "purple_polygon",
+                                null,
+                                URI.create(
+                                    "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon")))))
             .putLayerSettingsItem(
                 "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
                 new AppLayerSettings().editable(true).addReadOnlyAttributesItem("aanduiding"))
