@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminRevision.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence</a> &gt; <span class="el_source">AdminRevision.java</span></div><h1>AdminRevision.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.persistence;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import org.hibernate.envers.DateTimeFormatter;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.ModifiedEntityNames;
+import org.hibernate.envers.RevisionEntity;
+import org.tailormap.api.persistence.listener.AdminRevisionListener;
+
+/** Custom revision entity to store additional information about revisions. */
+@Entity
+@RevisionEntity
+@EntityListeners(AdminRevisionListener.class)
+@Table(name = &quot;revisions&quot;, schema = &quot;history&quot;)
+<span class="nc" id="L29">public class AdminRevision extends DefaultRevisionEntity {</span>
+  private String modifiedBy;
+
+<span class="nc" id="L32">  @ElementCollection</span>
+  @JoinTable(name = &quot;modified_entities&quot;, schema = &quot;history&quot;, joinColumns = @JoinColumn(name = &quot;revision_number&quot;))
+  @Column(name = &quot;modified_entity_name&quot;)
+  @ModifiedEntityNames
+  private Set&lt;String&gt; modifiedEntityNames = new HashSet&lt;&gt;();
+
+  public String getModifiedBy() {
+<span class="nc" id="L39">    return modifiedBy;</span>
+  }
+
+  public void setModifiedBy(String modifiedBy) {
+<span class="nc" id="L43">    this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L44">  }</span>
+
+  public Set&lt;String&gt; getModifiedEntityNames() {
+<span class="nc" id="L47">    return modifiedEntityNames;</span>
+  }
+
+  public void setModifiedEntityNames(Set&lt;String&gt; modifiedEntityNames) {
+<span class="nc" id="L51">    this.modifiedEntityNames = modifiedEntityNames;</span>
+<span class="nc" id="L52">  }</span>
+
+  @Override
+  public final boolean equals(Object o) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    if (!(o instanceof AdminRevision that)) return false;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (!super.equals(o)) return false;</span>
+
+<span class="nc" id="L60">    return Objects.equals(modifiedBy, that.modifiedBy);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L65">    int result = super.hashCode();</span>
+<span class="nc" id="L66">    result = 31 * result + Objects.hashCode(modifiedBy);</span>
+<span class="nc" id="L67">    return result;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L72">    return &quot;AdminRevision{id = &quot; + getId() + &quot;, revisionDate = &quot;</span>
+<span class="nc" id="L73">        + DateTimeFormatter.INSTANCE.format(getRevisionDate()) + &quot;, modifiedBy='&quot;</span>
+        + modifiedBy + '\'' + &quot;, modifiedEntityNames=&quot;
+<span class="nc" id="L75">        + String.join(&quot;, &quot;, modifiedEntityNames) + '}';</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

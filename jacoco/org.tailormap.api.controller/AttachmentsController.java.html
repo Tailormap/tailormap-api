@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AttachmentsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">AttachmentsController.java</span></div><h1>AttachmentsController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import com.google.common.base.Splitter;
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.nio.ByteBuffer;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.util.factory.GeoTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
+import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.AttachmentAttributeType;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.util.EditUtil;
+import org.tailormap.api.viewer.model.AttachmentMetadata;
+
+@AppRestController
+@Validated
+public class AttachmentsController {
+
+<span class="nc" id="L59">  private static final Logger logger =</span>
+<span class="nc" id="L60">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final EditUtil editUtil;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+<span class="nc" id="L64">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+
+<span class="nc" id="L66">  public AttachmentsController(EditUtil editUtil, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
+<span class="nc" id="L67">    this.editUtil = editUtil;</span>
+<span class="nc" id="L68">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L69">  }</span>
+
+  /**
+   * Add an attachment to a feature
+   *
+   * @param appTreeLayerNode the application tree layer node
+   * @param service the geo service
+   * @param layer the geo service layer
+   * @param application the application
+   * @param featureId the feature id
+   * @param attachment the attachment metadata
+   * @param fileData the attachment file data
+   * @return the response entity
+   */
+  @PostMapping(
+      path = {
+        &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments&quot;
+      },
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Transactional
+  public ResponseEntity&lt;Serializable&gt; addAttachment(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @PathVariable String featureId,
+      @RequestPart(&quot;attachmentMetadata&quot;) AttachmentMetadata attachment,
+      @RequestPart(&quot;attachment&quot;) byte[] fileData) {
+
+<span class="nc" id="L99">    editUtil.checkEditAuthorisation();</span>
+
+<span class="nc" id="L101">    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L103">    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);</span>
+
+<span class="nc" id="L105">    Set&lt;@Valid AttachmentAttributeType&gt; attachmentAttrSet =</span>
+<span class="nc" id="L106">        tmFeatureType.getSettings().getAttachmentAttributes();</span>
+<span class="nc bnc" id="L107" title="All 4 branches missed.">    if (attachmentAttrSet == null || attachmentAttrSet.isEmpty()) {</span>
+<span class="nc" id="L108">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Layer does not support attachments&quot;);</span>
+    }
+
+<span class="nc" id="L111">    AttachmentAttributeType attachmentAttribute = attachmentAttrSet.stream()</span>
+<span class="nc" id="L112">        .filter(attr -&gt; attr.getAttributeName().equals(attachment.getAttributeName()))</span>
+<span class="nc" id="L113">        .findFirst()</span>
+<span class="nc" id="L114">        .orElseThrow(() -&gt; new ResponseStatusException(</span>
+            HttpStatus.BAD_REQUEST,
+<span class="nc" id="L116">            &quot;Layer does not support attachments for attribute &quot; + attachment.getAttributeName()));</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    if (attachmentAttribute.getMaxAttachmentSize() != null</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        &amp;&amp; attachmentAttribute.getMaxAttachmentSize() &lt; fileData.length) {</span>
+<span class="nc" id="L120">      throw new ResponseStatusException(</span>
+          HttpStatus.BAD_REQUEST,
+          &quot;Attachment size %d exceeds maximum of %d&quot;
+<span class="nc" id="L123">              .formatted(fileData.length, attachmentAttribute.getMaxAttachmentSize()));</span>
+    }
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (!validateMimeTypeAccept(</span>
+<span class="nc" id="L127">        attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {</span>
+<span class="nc" id="L128">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;File type or extension not allowed&quot;);</span>
+    }
+
+<span class="nc" id="L131">    logger.debug(&quot;Using attachment attribute {}&quot;, attachmentAttribute);</span>
+
+    AttachmentMetadata response;
+    try {
+<span class="nc" id="L135">      response = AttachmentsHelper.insertAttachment(tmFeatureType, attachment, primaryKey, fileData);</span>
+<span class="nc" id="L136">    } catch (IOException | SQLException e) {</span>
+<span class="nc" id="L137">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());</span>
+<span class="nc" id="L138">    }</span>
+
+<span class="nc" id="L140">    return new ResponseEntity&lt;&gt;(response, HttpStatus.CREATED);</span>
+  }
+
+  /**
+   * Validate as &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file#accept&quot;&gt;file
+   * input &quot;accept&quot; attribute&lt;/a&gt;.
+   *
+   * @param acceptList comma-separated list of MIME types and file extensions to validate against
+   * @param fileName name of the file to validate
+   * @param mimeType MIME type of the file to validate
+   * @return true if the file's extension or MIME type matches one of the accepted types, false otherwise
+   */
+  private static boolean validateMimeTypeAccept(String acceptList, String fileName, String mimeType) {
+<span class="nc bnc" id="L153" title="All 4 branches missed.">    if (acceptList == null || isBlank(acceptList)) {</span>
+<span class="nc" id="L154">      return true;</span>
+    }
+<span class="nc" id="L156">    Iterable&lt;String&gt; allowedMimeTypes =</span>
+<span class="nc" id="L157">        Splitter.on(Pattern.compile(&quot;,\\s*&quot;)).split(acceptList);</span>
+<span class="nc" id="L158">    final Locale locale = Locale.ENGLISH;</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">    for (String allowedType : allowedMimeTypes) {</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">      if (allowedType.startsWith(&quot;.&quot;)) {</span>
+        // Check file extension
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (fileName.toLowerCase(locale).endsWith(allowedType.toLowerCase(locale))) {</span>
+<span class="nc" id="L163">          return true;</span>
+        }
+<span class="nc bnc" id="L165" title="All 2 branches missed.">      } else if (allowedType.endsWith(&quot;/*&quot;)) {</span>
+        // Check mime type category (e.g. image/*)
+<span class="nc" id="L167">        String category = allowedType.substring(0, allowedType.length() - 1);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (mimeType.startsWith(category)) {</span>
+<span class="nc" id="L169">          return true;</span>
+        }
+<span class="nc" id="L171">      } else {</span>
+        // Check exact mime type match
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (mimeType.equals(allowedType)) {</span>
+<span class="nc" id="L174">          return true;</span>
+        }
+      }
+<span class="nc" id="L177">    }</span>
+<span class="nc" id="L178">    return false;</span>
+  }
+
+  /**
+   * List attachments for a feature.
+   *
+   * @param appTreeLayerNode the application tree layer node
+   * @param service the geo service
+   * @param layer the geo service layer
+   * @param application the application
+   * @param featureId the feature id
+   * @return the response entity containing a list of attachment metadata
+   */
+  @GetMapping(
+      path = {
+        &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/feature/{featureId}/attachments&quot;
+      },
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Transactional
+  public ResponseEntity&lt;List&lt;AttachmentMetadata&gt;&gt; listAttachments(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @PathVariable String featureId) {
+
+<span class="nc" id="L204">    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L206">    checkFeatureTypeSupportsAttachments(tmFeatureType);</span>
+<span class="nc" id="L207">    Object primaryKey = getFeaturePrimaryKeyByFid(tmFeatureType, featureId);</span>
+
+    List&lt;AttachmentMetadata&gt; response;
+    try {
+<span class="nc" id="L211">      response = AttachmentsHelper.listAttachmentsForFeature(tmFeatureType, primaryKey);</span>
+<span class="nc" id="L212">    } catch (IOException | SQLException e) {</span>
+<span class="nc" id="L213">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());</span>
+<span class="nc" id="L214">    }</span>
+
+<span class="nc" id="L216">    return new ResponseEntity&lt;&gt;(response, HttpStatus.OK);</span>
+  }
+
+  @DeleteMapping(
+      path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}&quot;)
+  @Transactional
+  public ResponseEntity&lt;Serializable&gt; deleteAttachment(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @PathVariable UUID attachmentId) {
+<span class="nc" id="L228">    editUtil.checkEditAuthorisation();</span>
+
+<span class="nc" id="L230">    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L232">    checkFeatureTypeSupportsAttachments(tmFeatureType);</span>
+
+    try {
+<span class="nc" id="L235">      AttachmentsHelper.deleteAttachment(attachmentId, tmFeatureType);</span>
+<span class="nc" id="L236">    } catch (IOException | SQLException e) {</span>
+<span class="nc" id="L237">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());</span>
+<span class="nc" id="L238">    }</span>
+
+<span class="nc" id="L240">    return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+  }
+
+  @Transactional
+  @GetMapping(
+      path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/attachment/{attachmentId}&quot;,
+      produces = {&quot;application/octet-stream&quot;})
+  public ResponseEntity&lt;byte[]&gt; getAttachment(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @PathVariable UUID attachmentId) {
+
+<span class="nc" id="L254">    TMFeatureType tmFeatureType = editUtil.getEditableFeatureType(application, appTreeLayerNode, service, layer);</span>
+
+    try {
+<span class="nc" id="L257">      final AttachmentsHelper.AttachmentWithBinary attachmentWithBinary =</span>
+<span class="nc" id="L258">          AttachmentsHelper.getAttachment(tmFeatureType, attachmentId);</span>
+
+<span class="nc bnc" id="L260" title="All 2 branches missed.">      if (attachmentWithBinary == null) {</span>
+<span class="nc" id="L261">        throw new ResponseStatusException(</span>
+<span class="nc" id="L262">            HttpStatus.NOT_FOUND, &quot;Attachment %s not found&quot;.formatted(attachmentId.toString()));</span>
+      }
+
+      // the binary attachment() is a read-only ByteBuffer, so we cant use .array()
+<span class="nc" id="L266">      final ByteBuffer bb = attachmentWithBinary.attachment().asReadOnlyBuffer();</span>
+<span class="nc" id="L267">      bb.rewind();</span>
+<span class="nc" id="L268">      byte[] attachmentData = new byte[bb.remaining()];</span>
+<span class="nc" id="L269">      bb.get(attachmentData);</span>
+
+<span class="nc" id="L271">      return ResponseEntity.ok()</span>
+<span class="nc" id="L272">          .header(</span>
+              &quot;Content-Disposition&quot;,
+              &quot;inline; filename=\&quot;&quot;
+<span class="nc" id="L275">                  + attachmentWithBinary.attachmentMetadata().getFileName() + &quot;\&quot;&quot;)</span>
+<span class="nc" id="L276">          .contentType(MediaType.parseMediaType(</span>
+<span class="nc" id="L277">              attachmentWithBinary.attachmentMetadata().getMimeType()))</span>
+<span class="nc" id="L278">          .body(attachmentData);</span>
+<span class="nc" id="L279">    } catch (SQLException | IOException e) {</span>
+<span class="nc" id="L280">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());</span>
+    }
+  }
+
+  private Object getFeaturePrimaryKeyByFid(TMFeatureType tmFeatureType, String featureId)
+      throws ResponseStatusException {
+<span class="nc" id="L286">    final Filter fidFilter = ff.id(ff.featureId(featureId));</span>
+<span class="nc" id="L287">    SimpleFeatureSource fs = null;</span>
+    try {
+<span class="nc" id="L289">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+<span class="nc" id="L290">      Query query = new Query();</span>
+<span class="nc" id="L291">      query.setFilter(fidFilter);</span>
+<span class="nc" id="L292">      query.setPropertyNames(tmFeatureType.getPrimaryKeyAttribute());</span>
+<span class="nc" id="L293">      try (SimpleFeatureIterator sfi = fs.getFeatures(query).features()) {</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">        if (!sfi.hasNext()) {</span>
+<span class="nc" id="L295">          throw new ResponseStatusException(</span>
+<span class="nc" id="L296">              HttpStatus.NOT_FOUND, &quot;Feature with id %s does not exist&quot;.formatted(featureId));</span>
+        }
+<span class="nc" id="L298">        return sfi.next().getAttribute(tmFeatureType.getPrimaryKeyAttribute());</span>
+      }
+<span class="nc" id="L300">    } catch (IOException e) {</span>
+<span class="nc" id="L301">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);</span>
+    } finally {
+<span class="nc bnc" id="L303" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L304">        fs.getDataStore().dispose();</span>
+      }
+    }
+  }
+
+  private void checkFeatureTypeSupportsAttachments(TMFeatureType tmFeatureType) throws ResponseStatusException {
+<span class="nc" id="L310">    Set&lt;@Valid AttachmentAttributeType&gt; attachmentAttrSet =</span>
+<span class="nc" id="L311">        tmFeatureType.getSettings().getAttachmentAttributes();</span>
+<span class="nc bnc" id="L312" title="All 4 branches missed.">    if (attachmentAttrSet == null || attachmentAttrSet.isEmpty()) {</span>
+<span class="nc" id="L313">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Layer does not support attachments&quot;);</span>
+    }
+<span class="nc" id="L315">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
