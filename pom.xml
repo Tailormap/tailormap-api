@@ -917,6 +917,22 @@ SPDX-License-Identifier: MIT
                              alternatively, use environment variable BPL_JVM_CLASS_ADJUSTMENT when deploying the docker container
                              -->
                             <BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>120%</BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>
+                            <!-- JVM default is the same as -Xmx. However, the Paketo Java Buildpack memory calculator sets it to
+                             10M by default, which is too low causing OOM in our application (Netty Solr client and Hikari use more
+                             than 10MB in direct buffer pools after some time), set it to 256M
+                             See https://github.com/orgs/paketo-buildpacks/discussions/241
+                             -->
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                            <!-- Headroom is used by the memory calculator to reduce the max total memory limit. The default is 0%,
+                             but since Tailormap is usually run with unconstrained container memory, set it to 10% to prevent taking
+                             too much host memory. Although Tailormap should not exhaust heap memory, reduce it as a preventive safety
+                             measure
+                             -->
+                            <BPE_OVERRIDE_BPL_JVM_HEAD_ROOM>10</BPE_OVERRIDE_BPL_JVM_HEAD_ROOM>
+                            <!-- For each thread the JVM reserves 1M stack size, lower the default thread count of 250 to 150
+                             to reduce memory requirements. See also server.tomcat.threads.max, add about ~50 for other threads
+                             -->
+                            <BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>150</BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>
                         </env>
                     </image>
                     <layers>
