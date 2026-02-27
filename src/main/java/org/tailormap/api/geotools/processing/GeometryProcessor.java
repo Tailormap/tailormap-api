@@ -10,7 +10,6 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.api.referencing.operation.TransformException;
-import org.geotools.data.geojson.GeoJSONWriter;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
 import org.geotools.geometry.jts.WKTWriter2;
@@ -133,10 +132,6 @@ public final class GeometryProcessor {
     } else {
       return linearizeGeomToWKT(geom);
     }
-  }
-
-  public static String geometryToJson(Geometry geom) {
-    return GeoJSONWriter.toGeoJSON(geom);
   }
 
   public static String geometryToWKT(@NotNull Geometry geom) {
