@@ -109,7 +109,7 @@ jobs:
         run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: 'Upload test results'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: Test Results
@@ -140,7 +140,7 @@ jobs:
       actions: write
     steps:
       - name: 'Upload'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Event File
           path: ${{ github.event_path }}

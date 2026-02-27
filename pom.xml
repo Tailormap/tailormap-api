@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.5.0-SNAPSHOT</version>
+    <version>12.5.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2026-01-27T12:53:54Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-02-24T11:05:11Z</project.build.outputTimestamp>
         <geotools.version>34.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>11.20.3</flyway.version>
-        <hibernate.version>6.6.42.Final</hibernate.version>
+        <hibernate.version>6.6.43.Final</hibernate.version>
         <json-path.version>2.10.0</json-path.version>
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <micrometer.version>1.16.3</micrometer.version>
@@ -137,8 +137,8 @@ SPDX-License-Identifier: MIT
         <!-- <webjars-locator-core.version>0.59</webjars-locator-core.version>-->
         <!-- <xmlunit2.version>2.10.1</xmlunit2.version>-->
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
-        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
@@ -154,7 +154,7 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.31.0</swagger-ui.version>
+        <swagger-ui.version>5.31.2</swagger-ui.version>
         <sentry.version>8.33.0</sentry.version>
         <errorProne.version>2.47.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
@@ -890,6 +890,22 @@ SPDX-License-Identifier: MIT
                              alternatively, use environment variable BPL_JVM_CLASS_ADJUSTMENT when deploying the docker container
                              -->
                             <BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>120%</BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>
+                            <!-- JVM default is the same as -Xmx. However, the Paketo Java Buildpack memory calculator sets it to
+                             10M by default, which is too low causing OOM in our application (Netty Solr client and Hikari use more
+                             than 10MB in direct buffer pools after some time), set it to 256M
+                             See https://github.com/orgs/paketo-buildpacks/discussions/241
+                             -->
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                            <!-- Headroom is used by the memory calculator to reduce the max total memory limit. The default is 0%,
+                             but since Tailormap is usually run with unconstrained container memory, set it to 10% to prevent taking
+                             too much host memory. Although Tailormap should not exhaust heap memory, reduce it as a preventive safety
+                             measure
+                             -->
+                            <BPE_OVERRIDE_BPL_JVM_HEAD_ROOM>10</BPE_OVERRIDE_BPL_JVM_HEAD_ROOM>
+                            <!-- For each thread the JVM reserves 1M stack size, lower the default thread count of 250 to 150
+                             to reduce memory requirements. See also server.tomcat.threads.max, add about ~50 for other threads
+                             -->
+                            <BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>150</BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>
                         </env>
                     </image>
                     <layers>
