@@ -114,26 +114,23 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#geometryToJson(org.locationtech.jts.geom.Geometry)" class="member-name-link">geometryToJson</a><wbr>(org.locationtech.jts.geom.Geometry&nbsp;geom)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#geometryToWKT(org.locationtech.jts.geom.Geometry)" class="member-name-link">geometryToWKT</a><wbr>(@NotNull org.locationtech.jts.geom.Geometry&nbsp;geom)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#geometryToWKT(org.locationtech.jts.geom.Geometry)" class="member-name-link">geometryToWKT</a><wbr>(@NotNull org.locationtech.jts.geom.Geometry&nbsp;geom)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#processGeometry(java.lang.Object,java.lang.Boolean,java.lang.Boolean,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">processGeometry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;geometry,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#processGeometry(java.lang.Object,java.lang.Boolean,java.lang.Boolean,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">processGeometry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;geometry,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;simplifyGeometry,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;linearizeGeomToWKT,
  org.geotools.api.referencing.operation.MathTransform&nbsp;transform)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">process the geometry into a (optionally simplified) string representation.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.locationtech.jts.geom.Geometry</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#transformGeometry(org.locationtech.jts.geom.Geometry,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformGeometry</a><wbr>(@NotNull org.locationtech.jts.geom.Geometry&nbsp;geometry,
- org.geotools.api.referencing.operation.MathTransform&nbsp;transform)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.locationtech.jts.geom.Geometry</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#wktToGeometry(java.lang.String)" class="member-name-link">wktToGeometry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;wkt)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#transformGeometry(org.locationtech.jts.geom.Geometry,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformGeometry</a><wbr>(@NotNull org.locationtech.jts.geom.Geometry&nbsp;geometry,
+ org.geotools.api.referencing.operation.MathTransform&nbsp;transform)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.locationtech.jts.geom.Geometry</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#wktToGeometry(java.lang.String)" class="member-name-link">wktToGeometry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;wkt)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -179,12 +176,6 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.locationtech.jts.geom.Geometry</span>&nbsp;<span class="element-name">transformGeometry</span><wbr><span class="parameters">(@NotNull
  @NotNull org.locationtech.jts.geom.Geometry&nbsp;geometry,
  org.geotools.api.referencing.operation.MathTransform&nbsp;transform)</span></div>
-</section>
-</li>
-<li>
-<section class="detail" id="geometryToJson(org.locationtech.jts.geom.Geometry)">
-<h3>geometryToJson</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">geometryToJson</span><wbr><span class="parameters">(org.locationtech.jts.geom.Geometry&nbsp;geom)</span></div>
 </section>
 </li>
 <li>
