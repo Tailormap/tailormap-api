@@ -94,11 +94,11 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>    }
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">   * The type of this tree node (discriminator).</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">   * Get objectType</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">   * @return objectType</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    @NotNull 
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Schema(name = <span class="jxr_string">"objectType"</span>, description = <span class="jxr_string">"The type of this tree node (discriminator)."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>    
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Schema(name = <span class="jxr_string">"objectType"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    @JsonProperty(<span class="jxr_string">"objectType"</span>)
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">public</strong> String getObjectType() {
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">return</strong> objectType;
