@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-openapi: 3.0.3
+openapi: 3.0.4
 
 info:
   title: 'persistence-schemas'
@@ -530,6 +530,7 @@ components:
           description: A unique identifier across all tree nodes.
           type: string
         objectType:
+          description: The type of this tree node (discriminator).
           type: string
         title:
           description: Display title of this tree node.
@@ -549,6 +550,7 @@ components:
         - root
         - title
         - childrenIds
+        - objectType
 
     AppTreeLayerNode:
       description: Node referencing a layer.
@@ -557,6 +559,7 @@ components:
           description: A unique identifier across all tree nodes.
           type: string
         objectType:
+          description: The type of this tree node (discriminator).
           type: string
         serviceId:
           type: string
@@ -574,6 +577,7 @@ components:
       required:
         - serviceId
         - layerName
+        - objectType
 
     AppContent:
       description: Configuration for including content (layers) in an application.
