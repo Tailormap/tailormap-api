@@ -38,6 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -49,9 +50,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -96,6 +99,12 @@ public class GeoServiceProxyController {
 
   public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
+  @Value("${tailormap-api.proxy.passthrough.layerpatterns:}")
+  private Set<String> proxyLayerPassthroughPatterns = Set.of();
+
+  @Value("${tailormap-api.proxy.passthrough.hostnames:}")
+  private Set<String> proxyPassthroughHostNames = Set.of();
+
   public GeoServiceProxyController(AuthorisationService authorisationService) {
     this.authorisationService = authorisationService;
 
@@ -112,7 +121,7 @@ public class GeoServiceProxyController {
       @ModelAttribute GeoServiceLayer layer,
       HttpServletRequest request) {
 
-    checkRequestValidity(application, service, layer, GeoServiceProtocol.TILES3D);
+    checkRequestValidity(application, service, layer, GeoServiceProtocol.TILES3D, request);
 
     return doProxy(build3DTilesUrl(service, request), service, request);
   }
@@ -128,7 +137,7 @@ public class GeoServiceProxyController {
       @PathVariable("protocol") GeoServiceProtocol protocol,
       HttpServletRequest request) {
 
-    checkRequestValidity(application, service, layer, protocol);
+    checkRequestValidity(application, service, layer, protocol, request);
 
     switch (protocol) {
       case WMS, WMTS -> {
@@ -151,7 +160,11 @@ public class GeoServiceProxyController {
   }
 
   private void checkRequestValidity(
-      Application application, GeoService service, GeoServiceLayer layer, GeoServiceProtocol protocol) {
+      Application application,
+      GeoService service,
+      GeoServiceLayer layer,
+      GeoServiceProtocol protocol,
+      HttpServletRequest request) {
     if (service == null || layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
@@ -166,6 +179,54 @@ public class GeoServiceProxyController {
 
     if (!service.getSettings().getUseProxy()) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
+    }
+
+    int wmsLayerCount = request.getParameterMap().entrySet().stream()
+        .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
+        .mapToInt(entry -> entry.getValue().length)
+        .sum();
+    if (wmsLayerCount > 1) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Multiple layers in LAYERS parameter not supported");
+    }
+
+    // this can be null in case of requests that do not have a LAYERS parameter, such as GetCapabilities requests.
+    String layerNameParamValue = request.getParameterMap().entrySet().stream()
+        .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
+        .findFirst()
+        .map(entry -> entry.getValue()[0])
+        .orElse(null);
+
+    if (layerNameParamValue != null && !layer.getName().equals(layerNameParamValue)) {
+      // check if layer matches any passthrough pattern, if not throw bad request
+      if (proxyLayerPassthroughPatterns.stream().noneMatch(pattern -> {
+        String regex = String.format(pattern, Pattern.quote(layer.getName()));
+        return Pattern.compile(regex).matcher(layerNameParamValue).matches();
+      })) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Requested layer name does not match expected layer");
+      }
+
+      if (!proxyPassthroughHostNames.isEmpty()) {
+        // check if host matches any passthrough hostname, if not throw bad request
+        try {
+          String geoServiceHostName = new URI(service.getUrl()).getHost();
+          if (proxyPassthroughHostNames.stream()
+              .noneMatch(hostname -> hostname.equalsIgnoreCase(geoServiceHostName))) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Requested service hostname does not match allowed hostnames for layer passthrough");
+          }
+        } catch (URISyntaxException e) {
+          logger.error(
+              "Invalid service URL \"{}\" for layer id {}: {}",
+              service.getUrl(),
+              layer.getId(),
+              e.getMessage());
+          throw new ResponseStatusException(
+              HttpStatus.INTERNAL_SERVER_ERROR, "Invalid service URL in configuration");
+        }
+      }
     }
 
     if (authorisationService.mustDenyAccessForSecuredProxy(service)) {

@@ -208,6 +208,56 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
+  void disallow_invalid_layer_name_param() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("LAYERS", "postgis:invalid_layer_name")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void disallow_two_layer_names_param() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("LAYERS", "postgis:invalid_layer_name,postgis:begroeidterreindeel")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void disallow_comma_separated_layer_names_matching_pattern_param() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param(
+                "LAYERS",
+                "vw_t_gi_postgis:begroeidterreindeel_70cae9814c6144808f1c9bb921099794,other_layer")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void allow_valid_layer_name_pattern_param() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("LAYERS", "vw_t_gi_postgis:begroeidterreindeel_70cae9814c6144808f1c9bb921099794")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
   void allow_http_get() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc.perform(get(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
