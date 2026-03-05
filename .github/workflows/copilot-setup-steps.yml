@@ -32,7 +32,7 @@ jobs:
           maven-version: 3.9.12
 
       - name: 'Login to b3p.nl'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: docker.b3p.nl
           username: ${{ secrets.DOCKER_B3P_PULL_ACTOR }}
