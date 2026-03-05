@@ -47,7 +47,7 @@ jobs:
       - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
-      - uses: lcollins/pmd-github-action@v3.1.0
+      - uses: lcollins/pmd-github-action@v3.2.0
         if: always()
         with:
           path: '**/pmd.xml'
