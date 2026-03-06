@@ -10,9 +10,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.resource.ResourceTransformer;
 import org.springframework.web.servlet.resource.ResourceTransformerChain;

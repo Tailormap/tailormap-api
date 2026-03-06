@@ -6,7 +6,7 @@
 
 package org.tailormap.api.repository.validation;
 
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

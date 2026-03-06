@@ -5,8 +5,6 @@
  */
 package org.tailormap.api.persistence;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,6 +34,8 @@ import org.tailormap.api.persistence.json.JDBCConnectionProperties;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TMServiceCaps;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Audited
 @Entity
@@ -136,7 +136,7 @@ public class TMFeatureSource extends AuditMetadata {
           + ", jdbcConnection="
           + new ObjectMapper().writeValueAsString(jdbcConnection)
           + '}';
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }

@@ -17,8 +17,8 @@ facilitates collaboration, makes coding simpler, and ensures that best practices
 
 # Development Environment
 
-Tailormap API is written in **Java 21** using **GeoTools 34.x**, **Hibernate 6.6.x** and **Spring Boot 3.5.x** and
-leverages **OpenApi 3.0.3**.
+Tailormap API is written in **Java 21** using **GeoTools 34.x**, **Hibernate 7.2.x** and **Spring Boot 4.0.x** and
+leverages **OpenApi 3.0.4**.
 Dependencies for this project are managed using Maven in the file `pom.xml` in the root of the repository.
 Code for this project is generated using Maven using the file `pom.xml` in the root of the repository.
 Builds for this project are executed using Maven using the file `pom.xml` in the root of the repository.
@@ -31,13 +31,13 @@ Swagger annotations such as `@Operation` and `@ApiResponse`.
 ## Code Standards
 - **Java Version**: Use Java 21 features and syntax.
 - **GeoTools**: Use GeoTools 34.x for geospatial data handling.
-- **Hibernate**: Use Hibernate 6.6.x for ORM and database interactions.
-- **Spring Boot**: Use Spring Boot 3.5.x for building RESTful APIs.
+- **Hibernate**: Use Hibernate 7.2.x for ORM and database interactions.
+- **Spring Boot**: Use Spring Boot 4.0.x for building RESTful APIs.
 - **Spring Data JPA**: Use Spring Data JPA for database access and repository management.
 - **Spring Security**: Use Spring Security for authentication and authorization.
 - **Spring Boot Actuator**: Use Spring Boot Actuator for monitoring and management of the application.
-- **JUnit Jupiter**: Use JUnit 5 (Jupiter) for unit testing.
-- **OpenAPI**: Use OpenAPI 3.0.3 for API documentation and definitions.
+- **JUnit Jupiter**: Use JUnit 6 (Jupiter) for unit testing.
+- **OpenAPI**: Use OpenAPI 3.0.4 for API documentation and definitions.
 - **Maven**: Use Maven for dependency management and project builds.
 
 ### Required Before Each Commit

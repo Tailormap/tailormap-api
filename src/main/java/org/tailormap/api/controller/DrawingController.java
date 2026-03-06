@@ -5,7 +5,6 @@
  */
 package org.tailormap.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
@@ -13,12 +12,12 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.UUID;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +33,7 @@ import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.drawing.DrawingService;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.viewer.model.Drawing;
+import tools.jackson.core.JacksonException;
 
 /**
  * Controller for drawing operations. Note that the following endpoints are secured/require authentication:
@@ -77,8 +77,7 @@ public class DrawingController {
   @Timed(value = "create_or_update_drawing", description = "time spent to create or update a drawing")
   @Counted(value = "create_or_update_drawing", description = "number of created or updated drawings")
   @Valid public ResponseEntity<Serializable> createOrUpdateDrawing(
-      @NonNull @RequestBody Drawing drawing, @ModelAttribute Application application)
-      throws JsonProcessingException {
+      @NonNull @RequestBody Drawing drawing, @ModelAttribute Application application) throws JacksonException {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {

@@ -8,7 +8,6 @@ package org.tailormap.api.configuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,14 +38,11 @@ class JdbcSessionConfigurationTest {
 
   private ConversionService conversionService;
 
-  @Autowired
-  private ObjectMapper objectMapper;
-
   @BeforeEach
   void setUp() {
     JdbcSessionConfiguration cfg = new JdbcSessionConfiguration();
     cfg.setBeanClassLoader(this.getClass().getClassLoader());
-    conversionService = cfg.springSessionConversionService(objectMapper);
+    conversionService = cfg.springSessionConversionService();
   }
 
   @Test

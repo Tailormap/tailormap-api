@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import org.hibernate.envers.DateTimeFormatter;
-import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.ModifiedEntityNames;
 import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionMapping;
 import org.tailormap.api.persistence.listener.AdminRevisionListener;
 
 /** Custom revision entity to store additional information about revisions. */
@@ -26,7 +26,7 @@ import org.tailormap.api.persistence.listener.AdminRevisionListener;
 @RevisionEntity
 @EntityListeners(AdminRevisionListener.class)
 @Table(name = "revisions", schema = "history")
-public class AdminRevision extends DefaultRevisionEntity {
+public class AdminRevision extends RevisionMapping {
   private String modifiedBy;
 
   @ElementCollection

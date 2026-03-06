@@ -7,11 +7,6 @@
 package org.tailormap.api.configuration;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.StreamReadFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import org.jspecify.annotations.NonNull;
@@ -22,9 +17,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.session.config.SessionRepositoryCustomizer;
 import org.springframework.session.jdbc.JdbcIndexedSessionRepository;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.StreamReadFeature;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 @Configuration(proxyBeanMethods = false)
 public class JdbcSessionConfiguration implements BeanClassLoaderAware {
@@ -54,44 +55,41 @@ AND ATTRIBUTE_NAME = ?
   }
 
   @Bean("springSessionConversionService")
-  public ConversionService springSessionConversionService(ObjectMapper objectMapper) {
+  public ConversionService springSessionConversionService() {
 
-    BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+    BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()
         .allowIfSubType("org.tailormap.api.security.")
         .allowIfSubType("org.springframework.security.")
         .allowIfSubType("java.util.")
         .allowIfSubType(java.lang.Number.class)
         .allowIfSubType("java.time.")
-        .allowIfBaseType(Object.class)
-        .build();
+        .allowIfBaseType(Object.class);
 
-    ObjectMapper copy = objectMapper
-        .copy()
+    JsonMapper mapper = JsonMapper.builder()
         .configure(
-            StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(),
+            StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION,
             (logger.isDebugEnabled() || logger.isTraceEnabled()))
-        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()));
+        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))
 
-    // register mixins early so Jackson picks up the @JsonCreator constructor for TailormapUserDetails
-    // implementations
-    copy.addMixIn(
-        org.tailormap.api.security.TailormapUserDetailsImpl.class,
-        org.tailormap.api.security.TailormapUserDetailsImplMixin.class);
-
-    copy.addMixIn(
-        org.tailormap.api.security.TailormapOidcUser.class,
-        org.tailormap.api.security.TailormapOidcUserMixin.class);
-
-    copy.registerModules(SecurityJackson2Modules.getModules(this.classLoader))
-        .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        // register mixins early so Jackson picks up the @JsonCreator constructor for TailormapUserDetails
+        // implementations
+        .addMixIn(
+            org.tailormap.api.security.TailormapUserDetailsImpl.class,
+            org.tailormap.api.security.TailormapUserDetailsImplMixin.class)
+        .addMixIn(
+            org.tailormap.api.security.TailormapOidcUser.class,
+            org.tailormap.api.security.TailormapOidcUserMixin.class)
+        .addModules(SecurityJacksonModules.getModules(this.classLoader, builder))
+        .activateDefaultTyping(builder.build(), DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
+        .build();
 
     final GenericConversionService converter = new GenericConversionService();
     // Object -> byte[] (serialize to JSON bytes)
     converter.addConverter(Object.class, byte[].class, source -> {
       try {
         logger.debug("Serializing Spring Session: {}", source);
-        return copy.writerFor(Object.class).writeValueAsBytes(source);
-      } catch (IOException e) {
+        return mapper.writerFor(Object.class).writeValueAsBytes(source);
+      } catch (JacksonException e) {
         logger.error("Error serializing Spring Session object: {}", source, e);
         throw new RuntimeException("Unable to serialize Spring Session.", e);
       }
@@ -103,8 +101,8 @@ AND ATTRIBUTE_NAME = ?
             "Deserializing Spring Session from bytes, length: {} ({})",
             source.length,
             new String(source, StandardCharsets.UTF_8));
-        return copy.readValue(source, Object.class);
-      } catch (IOException e) {
+        return mapper.readValue(source, Object.class);
+      } catch (JacksonException e) {
         String preview;
         try {
           String content = new String(source, StandardCharsets.UTF_8);

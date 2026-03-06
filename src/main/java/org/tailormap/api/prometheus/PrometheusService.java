@@ -5,9 +5,6 @@
  */
 package org.tailormap.api.prometheus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.Metrics;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -25,6 +22,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Service for managing Prometheus-related operations. This service can be used to manage Prometheus-related operations
@@ -67,11 +67,11 @@ public class PrometheusService {
    *
    * @param promQuery the Prometheus query to execute
    * @return the result of the query as a JSON node
-   * @throws JsonProcessingException if there is an error processing the JSON response
+   * @throws JacksonException if there is an error processing the JSON response
    * @throws IOException if there is an error executing the query
    * @see PrometheusResultProcessor
    */
-  public JsonNode executeQuery(String promQuery) throws JsonProcessingException, IOException {
+  public JsonNode executeQuery(String promQuery) throws JacksonException, IOException {
     ResponseEntity<String> response;
     URI promUrl = UriComponentsBuilder.fromUriString(prometheusUrl)
         .path("/query")
@@ -93,11 +93,11 @@ public class PrometheusService {
     final JsonNode jsonResponse = new ObjectMapper().readTree(response.getBody());
     logger.trace("Prometheus query response: {}", jsonResponse.toPrettyString());
 
-    if (!"success".equals(jsonResponse.path("status").asText())) {
+    if (!"success".equals(jsonResponse.path("status").asString())) {
       logger.error(
-          "Prometheus query failed: {}", jsonResponse.path("error").asText());
+          "Prometheus query failed: {}", jsonResponse.path("error").asString());
       throw new IOException(
-          "Prometheus query failed: " + jsonResponse.path("error").asText());
+          "Prometheus query failed: " + jsonResponse.path("error").asString());
     }
     return jsonResponse;
   }

@@ -5,14 +5,14 @@
  */
 package org.tailormap.api.prometheus;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
 
 @Component
 public class PrometheusResultProcessor implements TagNames {
@@ -34,10 +34,10 @@ public class PrometheusResultProcessor implements TagNames {
   public Collection<Map<String, String>> processPrometheusResultsForApplications(JsonNode root) {
     final Map<String, Map<String, String>> groupedResults = new HashMap<>();
     for (JsonNode result : root.path("data").path("result")) {
-      String appId = result.path("metric").path(METRICS_APP_ID_TAG).asText();
-      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asText();
-      String type = result.path("metric").path("type").asText();
-      String value = result.path("value").get(1).asText();
+      String appId = result.path("metric").path(METRICS_APP_ID_TAG).asString();
+      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asString();
+      String type = result.path("metric").path("type").asString();
+      String value = result.path("value").get(1).asString();
       // combine measurements
       groupedResults.computeIfAbsent(appId, k -> new HashMap<>()).put(type, value);
 
@@ -67,11 +67,11 @@ public class PrometheusResultProcessor implements TagNames {
     final Map<String, Map<String, String>> groupedResults = new HashMap<>();
     for (JsonNode result : root.path("data").path("result")) {
       String appLayerId =
-          result.path("metric").path(METRICS_APP_LAYER_ID_TAG).asText();
-      String appId = result.path("metric").path(METRICS_APP_ID_TAG).asText();
-      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asText();
-      String type = result.path("metric").path("type").asText();
-      String value = result.path("value").get(1).asText();
+          result.path("metric").path(METRICS_APP_LAYER_ID_TAG).asString();
+      String appId = result.path("metric").path(METRICS_APP_ID_TAG).asString();
+      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asString();
+      String type = result.path("metric").path("type").asString();
+      String value = result.path("value").get(1).asString();
       // combine all measurements
       groupedResults.computeIfAbsent(appLayerId, k -> new HashMap<>()).put(type, value);
 

@@ -5,11 +5,11 @@
  */
 package org.tailormap.api.security;
 
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import java.io.Closeable;
+import tools.jackson.core.TokenStreamLocation;
+import tools.jackson.databind.DatabindException;
 
-public class InvalidPasswordException extends JsonMappingException {
+public class InvalidPasswordException extends DatabindException {
 
   public InvalidPasswordException(Closeable processor) {
     super(processor, "Invalid password.");
@@ -23,7 +23,7 @@ public class InvalidPasswordException extends JsonMappingException {
     super(processor, msg, problem);
   }
 
-  public InvalidPasswordException(Closeable processor, String msg, JsonLocation loc) {
+  public InvalidPasswordException(Closeable processor, String msg, TokenStreamLocation loc) {
     super(processor, msg, loc);
   }
 }
