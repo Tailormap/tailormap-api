@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OIDCRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.security</a> &gt; <span class="el_source">OIDCRepository.java</span></div><h1>OIDCRepository.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.security;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PostConstruct;
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.tailormap.api.persistence.OIDCConfiguration;
+import org.tailormap.api.repository.OIDCConfigurationRepository;
+
+public class OIDCRepository implements ClientRegistrationRepository, Iterable&lt;ClientRegistration&gt; {
+<span class="nc" id="L33">  public static class OIDCRegistrationMetadata {</span>
+    private boolean showForViewer;
+    private UUID image;
+
+    public boolean getShowForViewer() {
+<span class="nc" id="L38">      return showForViewer;</span>
+    }
+
+    public UUID getImage() {
+<span class="nc" id="L42">      return image;</span>
+    }
+  }
+
+<span class="nc" id="L46">  private static final Logger logger =</span>
+<span class="nc" id="L47">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+  private final OIDCConfigurationRepository oidcConfigurationRepository;
+
+  @Value(&quot;${tailormap-api.oidc.name:#{null}}&quot;)
+  private String oidcName;
+
+  @Value(&quot;${tailormap-api.oidc.issuer-uri:#{null}}&quot;)
+  private String oidcIssuerUri;
+
+  @Value(&quot;${tailormap-api.oidc.client-id:#{null}}&quot;)
+  private String oidcClientId;
+
+  @Value(&quot;${tailormap-api.oidc.client-secret:#{null}}&quot;)
+  private String oidcClientSecret;
+
+  @Value(&quot;${tailormap-api.oidc.user-name-attribute:#{null}}&quot;)
+  private String oidcUserNameAttribute;
+
+  @Value(&quot;${tailormap-api.oidc.show-for-viewer:false}&quot;)
+  private boolean oidcShowForViewer;
+
+  private final Map&lt;String, ClientRegistration&gt; registrations;
+
+<span class="nc" id="L70">  public OIDCRepository(OIDCConfigurationRepository repository) {</span>
+<span class="nc" id="L71">    oidcConfigurationRepository = repository;</span>
+<span class="nc" id="L72">    registrations = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L73">  }</span>
+
+  @Override
+  public ClientRegistration findByRegistrationId(String registrationId) {
+<span class="nc" id="L77">    return registrations.get(registrationId);</span>
+  }
+
+  @Override
+  @Nonnull
+  public Iterator&lt;ClientRegistration&gt; iterator() {
+<span class="nc" id="L83">    return registrations.values().iterator();</span>
+  }
+
+  public OIDCRegistrationMetadata getMetadataForRegistrationId(String id) {
+<span class="nc" id="L87">    OIDCRegistrationMetadata metadata = new OIDCRegistrationMetadata();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (&quot;static&quot;.equals(id)) {</span>
+<span class="nc" id="L89">      metadata.showForViewer = oidcShowForViewer;</span>
+    } else {
+<span class="nc" id="L91">      metadata.showForViewer = true;</span>
+<span class="nc" id="L92">      metadata.image = oidcConfigurationRepository</span>
+<span class="nc" id="L93">          .findById(Long.valueOf(id))</span>
+<span class="nc" id="L94">          .map(OIDCConfiguration::getImage)</span>
+<span class="nc" id="L95">          .orElse(null);</span>
+    }
+
+<span class="nc" id="L98">    return metadata;</span>
+  }
+
+  @PostConstruct
+  public void synchronize() {
+<span class="nc" id="L103">    Map&lt;String, ClientRegistration&gt; newMap = new HashMap&lt;&gt;();</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {</span>
+<span class="nc" id="L106">      String id = &quot;%d&quot;.formatted(configuration.getId());</span>
+<span class="nc" id="L107">      try (HttpClient httpClient = HttpClient.newBuilder().build()) {</span>
+<span class="nc" id="L108">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()</span>
+<span class="nc" id="L109">            .uri(new URI(configuration.getIssuerUrl() + &quot;/.well-known/openid-configuration&quot;));</span>
+<span class="nc" id="L110">        HttpResponse&lt;String&gt; response =</span>
+<span class="nc" id="L111">            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc" id="L113">        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());</span>
+
+<span class="nc" id="L115">        newMap.put(</span>
+            id,
+<span class="nc" id="L117">            ClientRegistration.withRegistrationId(id)</span>
+<span class="nc" id="L118">                .clientId(configuration.getClientId())</span>
+<span class="nc" id="L119">                .clientSecret(configuration.getClientSecret())</span>
+<span class="nc" id="L120">                .clientName(configuration.getName())</span>
+<span class="nc" id="L121">                .scope(&quot;openid&quot;)</span>
+<span class="nc" id="L122">                .issuerUri(metadata.getIssuer().toString())</span>
+<span class="nc" id="L123">                .clientAuthenticationMethod(</span>
+                    ClientAuthenticationMethod
+                        .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
+<span class="nc" id="L126">                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)</span>
+<span class="nc" id="L127">                .authorizationUri(</span>
+<span class="nc" id="L128">                    metadata.getAuthorizationEndpointURI().toASCIIString())</span>
+<span class="nc" id="L129">                .tokenUri(metadata.getTokenEndpointURI().toASCIIString())</span>
+<span class="nc" id="L130">                .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())</span>
+<span class="nc" id="L131">                .providerConfigurationMetadata(metadata.toJSONObject())</span>
+<span class="nc" id="L132">                .jwkSetUri(metadata.getJWKSetURI().toASCIIString())</span>
+<span class="nc" id="L133">                .userNameAttributeName(configuration.getUserNameAttribute())</span>
+<span class="nc" id="L134">                .redirectUri(&quot;{baseUrl}/api/oauth2/callback&quot;)</span>
+<span class="nc" id="L135">                .build());</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (configuration.getStatus() != null) {</span>
+<span class="nc" id="L137">          configuration.setStatus(null);</span>
+<span class="nc" id="L138">          oidcConfigurationRepository.save(configuration);</span>
+        }
+<span class="nc" id="L140">      } catch (Exception e) {</span>
+<span class="nc" id="L141">        logger.error(&quot;Failed to create OIDC client registration for ID {}&quot;, id, e);</span>
+<span class="nc" id="L142">        configuration.setStatus(e.toString());</span>
+<span class="nc" id="L143">        oidcConfigurationRepository.save(configuration);</span>
+<span class="nc" id="L144">      }</span>
+<span class="nc" id="L145">    }</span>
+
+<span class="nc bnc" id="L147" title="All 6 branches missed.">    if (isNotBlank(oidcName) &amp;&amp; isNotBlank(oidcIssuerUri) &amp;&amp; isNotBlank(oidcClientId)) {</span>
+<span class="nc" id="L148">      try (HttpClient httpClient = HttpClient.newBuilder().build()) {</span>
+        // When copying the URI from some IdP control panels into an .env file, this suffix won't be
+        // stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (!oidcIssuerUri.endsWith(&quot;/.well-known/openid-configuration&quot;)) {</span>
+<span class="nc" id="L152">          oidcIssuerUri = oidcIssuerUri + &quot;/.well-known/openid-configuration&quot;;</span>
+        }
+<span class="nc" id="L154">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(new URI(oidcIssuerUri));</span>
+<span class="nc" id="L155">        HttpResponse&lt;String&gt; response =</span>
+<span class="nc" id="L156">            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc" id="L158">        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());</span>
+<span class="nc" id="L159">        String id = &quot;static&quot;;</span>
+
+<span class="nc" id="L161">        newMap.put(</span>
+            id,
+<span class="nc" id="L163">            ClientRegistration.withRegistrationId(id)</span>
+<span class="nc" id="L164">                .clientId(oidcClientId)</span>
+<span class="nc" id="L165">                .clientSecret(oidcClientSecret)</span>
+<span class="nc" id="L166">                .clientName(oidcName)</span>
+<span class="nc" id="L167">                .scope(&quot;openid&quot;)</span>
+<span class="nc" id="L168">                .issuerUri(metadata.getIssuer().toString())</span>
+<span class="nc" id="L169">                .clientAuthenticationMethod(</span>
+                    ClientAuthenticationMethod
+                        .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
+<span class="nc" id="L172">                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)</span>
+<span class="nc" id="L173">                .authorizationUri(</span>
+<span class="nc" id="L174">                    metadata.getAuthorizationEndpointURI().toASCIIString())</span>
+<span class="nc" id="L175">                .tokenUri(metadata.getTokenEndpointURI().toASCIIString())</span>
+<span class="nc" id="L176">                .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())</span>
+<span class="nc" id="L177">                .providerConfigurationMetadata(metadata.toJSONObject())</span>
+<span class="nc" id="L178">                .jwkSetUri(metadata.getJWKSetURI().toASCIIString())</span>
+<span class="nc" id="L179">                .userNameAttributeName(oidcUserNameAttribute)</span>
+<span class="nc" id="L180">                .redirectUri(&quot;{baseUrl}/api/oauth2/callback&quot;)</span>
+<span class="nc" id="L181">                .build());</span>
+<span class="nc" id="L182">      } catch (Exception e) {</span>
+<span class="nc" id="L183">        logger.error(&quot;Failed to create static OIDC client registration&quot;, e);</span>
+<span class="nc" id="L184">      }</span>
+    }
+
+<span class="nc" id="L187">    registrations.clear();</span>
+<span class="nc" id="L188">    registrations.putAll(newMap);</span>
+<span class="nc" id="L189">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
