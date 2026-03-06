@@ -9,8 +9,6 @@ import static java.net.HttpURLConnection.HTTP_ACCEPTED;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,6 +48,8 @@ import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding tasks belongs in the

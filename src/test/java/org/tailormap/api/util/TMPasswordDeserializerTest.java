@@ -10,12 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.tailormap.api.security.InvalidPasswordException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 
 class TMPasswordDeserializerTest {
   private final String testJsonTemplate = "{\"password\":\"%s\"}";
@@ -67,9 +66,7 @@ class TMPasswordDeserializerTest {
 
   private String deserializeJson(String json) throws IOException {
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    DeserializationContext deserializationContext = objectMapper.getDeserializationContext();
-    try (JsonParser parser = new ObjectMapper().getFactory().createParser(json)) {
+    try (JsonParser parser = new ObjectMapper().createParser(json)) {
       // step though the templated json
       // skip START_OBJECT
       parser.nextToken();
@@ -78,7 +75,7 @@ class TMPasswordDeserializerTest {
       // use FIELD_VALUE
       parser.nextToken();
 
-      return new TMPasswordDeserializer().deserialize(parser, deserializationContext);
+      return new TMPasswordDeserializer().deserialize(parser, null);
     }
   }
 }

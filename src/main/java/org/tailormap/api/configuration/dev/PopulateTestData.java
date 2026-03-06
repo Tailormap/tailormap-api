@@ -5,36 +5,6 @@
  */
 package org.tailormap.api.configuration.dev;
 
-import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
-import static org.tailormap.api.persistence.Configuration.PORTAL_MENU;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
-import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.ATTRIBUTE_LIST;
-import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EXPORT;
-import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.FEATURE_INFO;
-import static org.tailormap.api.security.AuthorisationService.ACCESS_TYPE_VIEW;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -116,6 +86,38 @@ import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ComponentConfig;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
+import static org.tailormap.api.persistence.Configuration.PORTAL_MENU;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.ATTRIBUTE_LIST;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EXPORT;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.FEATURE_INFO;
+import static org.tailormap.api.security.AuthorisationService.ACCESS_TYPE_VIEW;
 
 /**
  * Populates entities to add services and applications to demo functionality, support development and use in integration
@@ -1795,12 +1797,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     configurationRepository.save(config);
   }
 
-  private void createConfigurationTestData() throws JsonProcessingException {
+  private void createConfigurationTestData() throws JacksonException {
     Configuration config = new Configuration();
     config.setKey("test");
     config.setAvailableForViewer(true);
     config.setValue("test value");
-    config.setJsonValue(new ObjectMapper().readTree("{ \"someProperty\": 1, \"nestedObject\": { \"num\": 42 } }"));
+    config.setJsonValue(new JsonMapper().readTree("{ \"someProperty\": 1, \"nestedObject\": { \"num\": 42 } }"));
     configurationRepository.save(config);
   }
 

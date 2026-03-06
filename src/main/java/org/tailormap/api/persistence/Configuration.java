@@ -5,7 +5,6 @@
  */
 package org.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,6 +14,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
+import tools.jackson.databind.JsonNode;
 
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
