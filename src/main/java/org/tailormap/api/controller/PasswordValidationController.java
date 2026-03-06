@@ -6,7 +6,6 @@
 
 package org.tailormap.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.configuration.TailormapPasswordStrengthConfig;
 import org.tailormap.api.util.TMPasswordDeserializer;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 public class PasswordValidationController {

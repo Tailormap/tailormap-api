@@ -5,7 +5,6 @@
  */
 package org.tailormap.api.controller.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Metrics;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +55,8 @@ import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.ErrorResponse;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /** Admin controller for Solr. */
 @RestController
@@ -131,7 +132,7 @@ public class SolrAdminController implements InitializingBean {
           .createObjectNode()
           .put("status", ping.getResponse().get("status").toString())
           .put("timeElapsed", ping.getElapsedTime()));
-    } catch (IOException | SolrServerException e) {
+    } catch (JacksonException | IOException | SolrServerException e) {
       logger.error("Error pinging solr", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }

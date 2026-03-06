@@ -6,9 +6,9 @@
 package org.tailormap.api.repository.validation;
 
 import java.lang.invoke.MethodHandles;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
