@@ -42,7 +42,7 @@ import org.tailormap.api.security.TailormapUserDetails;
 import org.tailormap.api.viewer.model.Drawing;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -60,11 +60,11 @@ public class DrawingService {
 
   private final JdbcClient jdbcClient;
   private final RowMapper<Drawing> drawingRowMapper;
-  private final ObjectMapper objectMapper;
+  private final JsonMapper mapper;
 
-  public DrawingService(JdbcClient jdbcClient, ObjectMapper objectMapper) {
+  public DrawingService(JdbcClient jdbcClient, JsonMapper jsonMapper) {
     this.jdbcClient = jdbcClient;
-    this.objectMapper = objectMapper;
+    this.mapper = jsonMapper;
 
     final GenericConversionService conversionService = new GenericConversionService();
     DefaultConversionService.addDefaultConverters(conversionService);
@@ -81,7 +81,7 @@ public class DrawingService {
       @SuppressWarnings("unchecked")
       public Map<String, Object> convert(@NonNull PGobject source) {
         try {
-          return objectMapper.readValue(source.getValue(), Map.class);
+          return jsonMapper.readValue(source.getValue(), Map.class);
         } catch (JacksonException e) {
           throw new IllegalArgumentException("Failed to convert PGobject to Map", e);
         }
@@ -112,7 +112,7 @@ public class DrawingService {
     logger.trace(
         "creating new drawing: {}, domainData {}, createdAt {}",
         drawing,
-        objectMapper.writeValueAsString(drawing.getDomainData()),
+        mapper.writeValueAsString(drawing.getDomainData()),
         OffsetDateTime.now(ZoneId.systemDefault()));
 
     Drawing storedDrawing = jdbcClient
@@ -122,7 +122,7 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
 """)
         .param(drawing.getName())
         .param(drawing.getDescription())
-        .param(objectMapper.writeValueAsString(drawing.getDomainData()))
+        .param(mapper.writeValueAsString(drawing.getDomainData()))
         .param(drawing.getAccess().getValue())
         .param(OffsetDateTime.now(ZoneId.systemDefault()))
         .param(authentication.getName())
@@ -134,7 +134,7 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
       ObjectNode featureCollection = insertGeoJsonFeatureCollection(
           storedDrawing.getId(),
           drawing.getSrid(),
-          objectMapper.writeValueAsString(drawing.getFeatureCollection()));
+          mapper.writeValueAsString(drawing.getFeatureCollection()));
       storedDrawing.setFeatureCollection(featureCollection);
     }
 
@@ -166,7 +166,7 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
           @Override
           public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             try {
-              JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
+              JsonNode jsonNode = mapper.readTree(rs.getString(1));
               // merge/un-nest properties with nested properties, because we have a jsonb
               // column
               // called "properties" and we are using the `ST_AsGeoJSON(::record,...)`
@@ -188,10 +188,9 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
         })
         .list();
 
-    return objectMapper
-        .createObjectNode()
+    return mapper.createObjectNode()
         .put("type", "FeatureCollection")
-        .set("features", objectMapper.createArrayNode().addAll(storedFeatures));
+        .set("features", mapper.createArrayNode().addAll(storedFeatures));
   }
 
   /**
@@ -210,7 +209,7 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
     logger.trace(
         "updating drawing: {}, domainData {}, updatedAt {}",
         drawing,
-        objectMapper.writeValueAsString(drawing.getDomainData()),
+        mapper.writeValueAsString(drawing.getDomainData()),
         OffsetDateTime.now(ZoneId.systemDefault()));
 
     final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)
@@ -240,7 +239,7 @@ WHERE id = :id RETURNING *""")
         .param("id", drawing.getId())
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
-        .param("domainData", objectMapper.writeValueAsString(drawing.getDomainData()))
+        .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
         .param("access", drawing.getAccess().getValue())
         .param("createdBy", drawing.getCreatedBy())
         .param("createdAt", drawing.getCreatedAt())
@@ -260,9 +259,7 @@ WHERE id = :id RETURNING *""")
 
     if (drawing.getFeatureCollection() != null) {
       ObjectNode featureCollection = insertGeoJsonFeatureCollection(
-          drawing.getId(),
-          drawing.getSrid(),
-          objectMapper.writeValueAsString(drawing.getFeatureCollection()));
+          drawing.getId(), drawing.getSrid(), mapper.writeValueAsString(drawing.getFeatureCollection()));
       updatedDrawing.setFeatureCollection(featureCollection);
     }
 
@@ -368,7 +365,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
           @Override
           public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             try {
-              JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
+              JsonNode jsonNode = mapper.readTree(rs.getString(1));
               // merge/un-nest properties with nested properties, because we have a jsonb column
               // called "properties" and we are using the `ST_AsGeoJSON(::record,...)` function
               ArrayNode features = (ArrayNode) jsonNode.get("features");

@@ -56,7 +56,7 @@ import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Admin controller for Solr. */
 @RestController
@@ -128,7 +128,7 @@ public class SolrAdminController implements InitializingBean {
       final SolrPingResponse ping = solrClient.ping();
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
       Metrics.timer("tailormap_solr_ping").record(ping.getElapsedTime(), TimeUnit.MILLISECONDS);
-      return ResponseEntity.ok(new ObjectMapper()
+      return ResponseEntity.ok(new JsonMapper()
           .createObjectNode()
           .put("status", ping.getResponse().get("status").toString())
           .put("timeElapsed", ping.getElapsedTime()));

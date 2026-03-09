@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 
 @Component
@@ -96,8 +96,8 @@ public class PrometheusResultProcessor implements TagNames {
   public ArrayNode processPrometheusResultsToJsonArray(JsonNode jsonResponse1, JsonNode jsonResponse2)
       throws IOException {
     JsonNode mergedResults =
-        new ObjectMapper().readerForUpdating(jsonResponse1).readValue(jsonResponse2);
+        new JsonMapper().readerForUpdating(jsonResponse1).readValue(jsonResponse2);
     Collection<Map<String, String>> mergedResultsList = this.processPrometheusResultsForApplications(mergedResults);
-    return new ObjectMapper().valueToTree(mergedResultsList);
+    return new JsonMapper().valueToTree(mergedResultsList);
   }
 }

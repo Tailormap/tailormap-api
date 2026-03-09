@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 /*
@@ -58,7 +58,7 @@ class GeoServiceAdminControllerIntegrationTest {
   private Resource wmsServiceException1_3_0;
 
   private static ObjectNode getGeoServicePOSTBody(String url) {
-    return new ObjectMapper()
+    return new JsonMapper()
         .createObjectNode()
         .put("protocol", "wms")
         .put("title", "test")

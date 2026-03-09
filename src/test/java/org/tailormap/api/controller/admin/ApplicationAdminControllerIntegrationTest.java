@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -47,7 +47,7 @@ class ApplicationAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final JsonMapper mapper = new JsonMapper();
 
   private MockMvc mockMvc;
   private Long maxAppId;
@@ -69,15 +69,14 @@ class ApplicationAdminControllerIntegrationTest {
   }
 
   private String getTestApplicationJson(String name) {
-    return objectMapper
-        .createObjectNode()
+    return mapper.createObjectNode()
         .put("name", name)
         .put("crs", "EPSG:3857")
         .toPrettyString();
   }
 
   private String getDuplicateNameErrorJson(String name) {
-    ObjectNode object = objectMapper.createObjectNode();
+    ObjectNode object = mapper.createObjectNode();
     ArrayNode errors = object.putArray("errors");
     ObjectNode error = errors.addObject();
     error.put("entity", "Application");
@@ -99,8 +98,7 @@ class ApplicationAdminControllerIntegrationTest {
         .andExpect(status().isCreated())
         .andReturn();
 
-    createdAppId = objectMapper
-        .readTree(result.getResponse().getContentAsString())
+    createdAppId = mapper.readTree(result.getResponse().getContentAsString())
         .get("id")
         .asLong();
 

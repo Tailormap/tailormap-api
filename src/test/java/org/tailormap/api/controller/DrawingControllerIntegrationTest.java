@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Drawing;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -221,8 +221,7 @@ class DrawingControllerIntegrationTest {
     final String body = result.getResponse().getContentAsString();
     assertNotNull(body, "response body should not be null");
 
-    final ObjectMapper objectMapper = new ObjectMapper();
-    Drawing drawing = Arrays.stream(objectMapper.readValue(body, Drawing[].class))
+    Drawing drawing = Arrays.stream(new JsonMapper().readValue(body, Drawing[].class))
         // reduce to last drawing in collection
         .reduce((first, second) -> second)
         .orElse(null);

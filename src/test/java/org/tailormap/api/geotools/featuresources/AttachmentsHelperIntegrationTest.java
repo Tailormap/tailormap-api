@@ -151,7 +151,7 @@ class AttachmentsHelperIntegrationTest {
   }
 
   @AfterEach
-  void teardown() throws SQLException {
+  void teardown() {
     if (ds != null) {
       ds.dispose();
     }
@@ -299,13 +299,11 @@ class AttachmentsHelperIntegrationTest {
   /**
    * We would do this in @AfterAll, but because we're in a parameterized test class that fails so we need to do it in
    * a regular test with the highest order.
-   *
-   * @throws SQLException when SQL error occurs
    */
   @Order(Integer.MAX_VALUE)
   @Test
   @DisplayName("Delete attachments table for feature type.")
-  void delete_attachments_table_for_feature_type() throws SQLException, IOException {
+  void delete_attachments_table_for_feature_type() {
     try {
       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
 

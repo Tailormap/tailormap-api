@@ -40,7 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
@@ -178,9 +178,9 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    ObjectNode body = objectMapper.createObjectNode();
-    ObjectNode attributes = objectMapper.createObjectNode();
+    JsonMapper mapper = new JsonMapper();
+    ObjectNode body = mapper.createObjectNode();
+    ObjectNode attributes = mapper.createObjectNode();
     attributes.put("terminationdate", "something");
     attributes.put("geom_kruinlijn", "LINESTRING(0 0, 1 1)");
     body.set("attributes", attributes);
@@ -189,7 +189,7 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(body)))
+            .content(mapper.writeValueAsString(body)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -207,9 +207,9 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    ObjectNode body = objectMapper.createObjectNode();
-    ObjectNode attributes = objectMapper.createObjectNode();
+    JsonMapper mapper = new JsonMapper();
+    ObjectNode body = mapper.createObjectNode();
+    ObjectNode attributes = mapper.createObjectNode();
     attributes.put("begroeidterreindeeloptalud", "something");
     body.set("attributes", attributes);
 
@@ -217,7 +217,7 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(body)))
+            .content(mapper.writeValueAsString(body)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -235,9 +235,9 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    ObjectNode body = objectMapper.createObjectNode();
-    ObjectNode attributes = objectMapper.createObjectNode();
+    JsonMapper mapper = new JsonMapper();
+    ObjectNode body = mapper.createObjectNode();
+    ObjectNode attributes = mapper.createObjectNode();
     attributes.put("eindregistratie", "something");
     body.set("attributes", attributes);
 
@@ -245,7 +245,7 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(body)))
+            .content(mapper.writeValueAsString(body)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))

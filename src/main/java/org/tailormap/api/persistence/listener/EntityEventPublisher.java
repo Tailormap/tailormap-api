@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.tailormap.api.admin.model.EntityEvent;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.persistence.TMFeatureType;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class EntityEventPublisher {
@@ -40,7 +40,7 @@ public class EntityEventPublisher {
 
   @Autowired
   @Lazy
-  private ObjectMapper objectMapper;
+  private JsonMapper mapper;
 
   @Autowired
   @Lazy
@@ -70,7 +70,7 @@ public class EntityEventPublisher {
       }
       ServerSentEvent event =
           new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
-      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
+      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, mapper.writeValueAsString(event)));
     } catch (Exception e) {
       logger.error(
           "Error sending SSE for event type {}, entity {}, id {}",

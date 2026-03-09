@@ -21,7 +21,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.tailormap.api.security.InvalidPasswordException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Test for json serializing an deserializing {@link User}. */
 @JsonTest
@@ -31,11 +31,11 @@ class UserTest {
   private static final Validator validator =
       Validation.buildDefaultValidatorFactory().getValidator();
   private final String expectedMessage = "Username must consist of alphanumeric characters, underscore or -";
-  private ObjectMapper mapper;
+  private JsonMapper mapper;
 
   @BeforeEach
   void setup() {
-    this.mapper = new ObjectMapper();
+    this.mapper = new JsonMapper();
   }
 
   /** Test that the password is not serialized. */

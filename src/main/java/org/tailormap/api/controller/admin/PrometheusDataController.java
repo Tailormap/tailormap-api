@@ -39,7 +39,7 @@ import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.viewer.model.ErrorResponse;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class PrometheusDataController implements TagNames, InitializingBean {
@@ -150,9 +150,9 @@ public class PrometheusDataController implements TagNames, InitializingBean {
       logger.trace("Application graph data fetched successfully. {}", totals.toPrettyString());
       Collection<Map<String, String>> applications =
           prometheusResultProcessor.processPrometheusResultsForApplications(totals);
-      return ResponseEntity.ok(new ObjectMapper()
+      return ResponseEntity.ok(new JsonMapper()
           .createObjectNode()
-          .set("applications", new ObjectMapper().valueToTree(applications)));
+          .set("applications", new JsonMapper().valueToTree(applications)));
     } catch (JacksonException | IOException e) {
       logger.error("Error fetching application graph data", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -233,9 +233,8 @@ public class PrometheusDataController implements TagNames, InitializingBean {
             }));
       }
 
-      return ResponseEntity.ok(new ObjectMapper()
-          .createObjectNode()
-          .set("applicationLayers", new ObjectMapper().valueToTree(data)));
+      return ResponseEntity.ok(
+          new JsonMapper().createObjectNode().set("applicationLayers", new JsonMapper().valueToTree(data)));
     } catch (JacksonException | IOException e) {
       logger.error("Error fetching application layers graph data", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

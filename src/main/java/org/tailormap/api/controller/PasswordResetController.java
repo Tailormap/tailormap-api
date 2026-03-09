@@ -43,7 +43,7 @@ import org.tailormap.api.repository.TemporaryTokenRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.service.PasswordResetEmailService;
 import org.tailormap.api.viewer.model.ErrorResponse;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 @Validated
@@ -103,7 +103,7 @@ public class PasswordResetController {
     }
 
     return ResponseEntity.accepted()
-        .body(new ObjectMapper()
+        .body(new JsonMapper()
             .createObjectNode()
             .put("message", "Your password reset request is being processed"));
   }
@@ -144,7 +144,7 @@ public class PasswordResetController {
         logger.info("Password reset successful for user: {}", user.getUsername());
         temporaryTokenRepository.delete(temporaryToken);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new ObjectMapper()
+            .body(new JsonMapper()
                 .createObjectNode()
                 .put("message", "Your password reset was reset successful"));
       }
