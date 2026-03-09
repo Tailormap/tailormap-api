@@ -126,7 +126,7 @@ SPDX-License-Identifier: MIT
         <hibernate.version>7.2.6.Final</hibernate.version>
         <jackson-2-bom.version>2.21.1</jackson-2-bom.version>
         <jackson-bom.version>3.1.0</jackson-bom.version>
-        <json-path.version>2.10.0</json-path.version>
+        <json-path.version>3.0.0</json-path.version>
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <micrometer.version>1.16.4</micrometer.version>
         <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
