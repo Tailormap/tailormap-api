@@ -132,7 +132,7 @@ public class PrometheusIntegrationTest {
             .path("application")
             .asString());
     // Check that total count is greater than 0
-    assertThat(root.path("data").path("result").get(0).path("value").get(1).asInt(), is(greaterThan(0)));
+    assertThat(root.path("data").path("result").get(0).path("value").get(1).asDouble(), is(greaterThan(0.0)));
   }
 
   @Tag("prometheus-service-testcase")
@@ -218,7 +218,7 @@ public class PrometheusIntegrationTest {
 
         assertAll(
             () -> assertThat(metricsNode.get("totalCount").asInt(), is(greaterThan(0))),
-            () -> assertThat(metricsNode.get("lastUpdateSecondsAgo").asInt(), is(greaterThan(0))));
+            () -> assertThat(metricsNode.get("lastUpdateSecondsAgo").asDouble(), is(greaterThan(0.0))));
       });
     } catch (JacksonException | IOException e) {
       fail("Error processing Prometheus results", e);
