@@ -216,7 +216,8 @@ class GeoServiceProxyControllerIntegrationTest {
             .param("LAYERS", "postgis:invalid_layer_name")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(setServletPath(path)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Requested layer name does not match expected layer"));
   }
 
   @Test
@@ -228,7 +229,22 @@ class GeoServiceProxyControllerIntegrationTest {
             .param("LAYERS", "postgis:invalid_layer_name,postgis:begroeidterreindeel")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(setServletPath(path)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Multiple layers in LAYERS parameter not supported"));
+  }
+
+  @Test
+  void disallow_two_layers_param() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(post(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("LAYERS", "postgis:begroeidterreindeel")
+            .param("LAYERS", "postgis:invalid_layer_name")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Multiple layers in LAYERS parameter not supported"));
   }
 
   @Test
@@ -242,7 +258,8 @@ class GeoServiceProxyControllerIntegrationTest {
                 "vw_t_gi_postgis:begroeidterreindeel_70cae9814c6144808f1c9bb921099794,other_layer")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(setServletPath(path)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Multiple layers in LAYERS parameter not supported"));
   }
 
   @Test
