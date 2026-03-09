@@ -36,7 +36,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.prometheus.PrometheusResultProcessor;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 
 /**
@@ -84,7 +84,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new ObjectMapper().readTree(response.getBody());
+    JsonNode root = new JsonMapper().readTree(response.getBody());
     logger.debug("App usage response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
@@ -114,7 +114,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new ObjectMapper().readTree(response.getBody());
+    JsonNode root = new JsonMapper().readTree(response.getBody());
     logger.debug("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
@@ -151,7 +151,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new ObjectMapper().readTree(response.getBody());
+    JsonNode root = new JsonMapper().readTree(response.getBody());
     logger.debug("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
@@ -186,8 +186,8 @@ public class PrometheusIntegrationTest {
     assertEquals(HttpStatus.OK, response2.getStatusCode());
 
     try {
-      JsonNode root = new ObjectMapper().readTree(response.getBody());
-      JsonNode root2 = new ObjectMapper().readTree(response2.getBody());
+      JsonNode root = new JsonMapper().readTree(response.getBody());
+      JsonNode root2 = new JsonMapper().readTree(response2.getBody());
       PrometheusResultProcessor processor = new PrometheusResultProcessor();
       ArrayNode combined = processor.processPrometheusResultsToJsonArray(root, root2);
       assertEquals(

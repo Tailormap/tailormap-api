@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 class PrometheusResultProcessorTest {
   private static final Logger logger =
@@ -105,8 +105,8 @@ class PrometheusResultProcessorTest {
 ]}}
 """;
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      JsonNode root = objectMapper.readTree(jsonResponse);
+      JsonMapper mapper = new JsonMapper();
+      JsonNode root = mapper.readTree(jsonResponse);
       Collection<Map<String, String>> processedResults = processor.processPrometheusResultsForApplications(root);
       assertEquals(3, processedResults.size());
       processedResults.forEach((metric) -> {
@@ -240,8 +240,8 @@ class PrometheusResultProcessorTest {
 }
 """;
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      JsonNode root = objectMapper.readTree(jsonResponse);
+      JsonMapper mapper = new JsonMapper();
+      JsonNode root = mapper.readTree(jsonResponse);
       Collection<Map<String, String>> processedResults =
           processor.processPrometheusResultsForApplicationLayers(root);
       assertEquals(4, processedResults.size());

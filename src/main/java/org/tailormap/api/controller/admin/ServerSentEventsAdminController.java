@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class ServerSentEventsAdminController {
@@ -30,11 +30,11 @@ public class ServerSentEventsAdminController {
 
   private final SseEventBus eventBus;
 
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
 
-  public ServerSentEventsAdminController(SseEventBus eventBus, ObjectMapper objectMapper) {
+  public ServerSentEventsAdminController(SseEventBus eventBus, JsonMapper jsonMapper) {
     this.eventBus = eventBus;
-    this.objectMapper = objectMapper;
+    this.jsonMapper = jsonMapper;
   }
 
   /**
@@ -61,6 +61,6 @@ public class ServerSentEventsAdminController {
   @Scheduled(fixedRate = 60_000)
   public void keepAlive() throws JacksonException {
     this.eventBus.handleEvent(
-        SseEvent.ofData(objectMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));
+        SseEvent.ofData(jsonMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));
   }
 }

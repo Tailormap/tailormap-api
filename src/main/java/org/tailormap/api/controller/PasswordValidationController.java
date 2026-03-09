@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.configuration.TailormapPasswordStrengthConfig;
 import org.tailormap.api.util.TMPasswordDeserializer;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class PasswordValidationController {
@@ -22,6 +22,6 @@ public class PasswordValidationController {
     int minLength = TailormapPasswordStrengthConfig.getMinLength();
     int minStrength = TailormapPasswordStrengthConfig.getMinStrength();
     boolean result = TMPasswordDeserializer.validatePasswordStrength(password, minLength, minStrength);
-    return ResponseEntity.ok(new ObjectMapper().createObjectNode().put("result", result));
+    return ResponseEntity.ok(new JsonMapper().createObjectNode().put("result", result));
   }
 }
