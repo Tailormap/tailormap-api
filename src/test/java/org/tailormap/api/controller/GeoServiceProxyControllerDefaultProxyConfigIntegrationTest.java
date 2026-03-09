@@ -7,6 +7,7 @@ package org.tailormap.api.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 
@@ -101,7 +102,8 @@ class GeoServiceProxyControllerDefaultProxyConfigIntegrationTest {
             .param("LAYERS", "postgis:invalid_layer_name")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(setServletPath(path)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Requested layer name does not match expected layer"));
   }
 
   @Test
@@ -113,6 +115,7 @@ class GeoServiceProxyControllerDefaultProxyConfigIntegrationTest {
             .param("LAYERS", "postgis:invalid_layer_name,postgis:begroeidterreindeel")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(setServletPath(path)))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Multiple layers in LAYERS parameter not supported"));
   }
 }
