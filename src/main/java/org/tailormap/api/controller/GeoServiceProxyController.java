@@ -186,13 +186,11 @@ public class GeoServiceProxyController {
     long wmsLayerParamCount = request.getParameterMap().entrySet().stream()
         .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
         .count();
-    int wmsLayerCount = request.getParameterMap().entrySet().stream()
+    boolean hasMultipleLayerValues = request.getParameterMap().entrySet().stream()
         .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
-        .mapToInt(entry -> Arrays.stream(entry.getValue())
-            .mapToInt(value -> value.split(",").length)
-            .sum())
-        .sum();
-    if (wmsLayerParamCount > 1 || wmsLayerCount > 1) {
+        .anyMatch(entry -> entry.getValue().length > 1
+            || (entry.getValue().length == 1 && entry.getValue()[0].indexOf(',') >= 0));
+    if (wmsLayerParamCount > 1 || hasMultipleLayerValues) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Multiple layers in LAYERS parameter not supported");
     }
