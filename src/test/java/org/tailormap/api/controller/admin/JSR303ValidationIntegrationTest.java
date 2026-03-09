@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @PostgresIntegrationTest
 class JSR303ValidationIntegrationTest {
@@ -37,7 +37,7 @@ class JSR303ValidationIntegrationTest {
   void validate_url_required() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
-    String geoServicePOSTBody = new ObjectMapper()
+    String geoServicePOSTBody = new JsonMapper()
         .createObjectNode()
         .put("protocol", "wms")
         .put("title", "test")

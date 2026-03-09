@@ -41,7 +41,7 @@ import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
@@ -54,7 +54,7 @@ public class IndexTask extends QuartzJobBean implements Task {
   private final SearchIndexRepository searchIndexRepository;
   private final SolrService solrService;
   private final SseEventBus eventBus;
-  private final ObjectMapper objectMapper;
+  private final JsonMapper mapper;
 
   @Value("${tailormap-api.solr-batch-size:1000}")
   private int solrBatchSize;
@@ -71,14 +71,14 @@ public class IndexTask extends QuartzJobBean implements Task {
       @Autowired FeatureSourceFactoryHelper featureSourceFactoryHelper,
       @Autowired SolrService solrService,
       @Autowired SseEventBus eventBus,
-      @Autowired ObjectMapper objectMapper) {
+      @Autowired JsonMapper mapper) {
 
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.solrService = solrService;
     this.featureTypeRepository = featureTypeRepository;
     this.searchIndexRepository = searchIndexRepository;
     this.eventBus = eventBus;
-    this.objectMapper = objectMapper;
+    this.mapper = mapper;
   }
 
   @Timed(value = "indexTask", description = "Time taken to execute index task")
@@ -142,7 +142,7 @@ public class IndexTask extends QuartzJobBean implements Task {
     ServerSentEvent serverSentEvent =
         new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
     try {
-      eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
+      eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, mapper.writeValueAsString(serverSentEvent)));
     } catch (JacksonException e) {
       logger.error("Error publishing indexing task progress event", e);
     }

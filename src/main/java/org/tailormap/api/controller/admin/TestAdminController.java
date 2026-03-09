@@ -10,12 +10,12 @@ import java.io.Serializable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class TestAdminController {
   @GetMapping(path = "${tailormap-api.admin.base-path}/test")
   public ResponseEntity<Serializable> test() {
-    return ResponseEntity.ok(new ObjectMapper().createObjectNode().put("test", true));
+    return ResponseEntity.ok(new JsonMapper().createObjectNode().put("test", true));
   }
 }

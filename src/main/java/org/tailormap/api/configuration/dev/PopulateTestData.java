@@ -115,7 +115,6 @@ import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ComponentConfig;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
@@ -2122,7 +2121,7 @@ from [B3Partners](https://www.b3partners.nl)!
             .exclusiveOnPageId(about.getId()));
     c = new Configuration();
     c.setKey(PORTAL_MENU);
-    c.setJsonValue(new ObjectMapper().valueToTree(globalMenuItems));
+    c.setJsonValue(new JsonMapper().valueToTree(globalMenuItems));
     configurationRepository.save(c);
   }
 

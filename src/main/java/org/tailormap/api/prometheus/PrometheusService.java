@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Service for managing Prometheus-related operations. This service can be used to manage Prometheus-related operations
@@ -90,7 +90,7 @@ public class PrometheusService {
       throw new IOException("Error executing Prometheus query: " + e.getMessage(), e);
     }
 
-    final JsonNode jsonResponse = new ObjectMapper().readTree(response.getBody());
+    final JsonNode jsonResponse = new JsonMapper().readTree(response.getBody());
     logger.trace("Prometheus query response: {}", jsonResponse.toPrettyString());
 
     if (!"success".equals(jsonResponse.path("status").asString())) {

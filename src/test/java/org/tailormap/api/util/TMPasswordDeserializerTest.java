@@ -14,7 +14,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.tailormap.api.security.InvalidPasswordException;
 import tools.jackson.core.JsonParser;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 class TMPasswordDeserializerTest {
   private final String testJsonTemplate = "{\"password\":\"%s\"}";
@@ -64,9 +64,8 @@ class TMPasswordDeserializerTest {
     assertEquals(68, actual.length(), "bcrypted password should be 8+60 characters");
   }
 
-  private String deserializeJson(String json) throws IOException {
-
-    try (JsonParser parser = new ObjectMapper().createParser(json)) {
+  private String deserializeJson(String json) {
+    try (JsonParser parser = new JsonMapper().createParser(json)) {
       // step though the templated json
       // skip START_OBJECT
       parser.nextToken();

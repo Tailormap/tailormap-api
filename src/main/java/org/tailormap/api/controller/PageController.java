@@ -32,7 +32,7 @@ import org.tailormap.api.viewer.model.ViewerMenuItem;
 import org.tailormap.api.viewer.model.ViewerPageTile;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @AppRestController
 public class PageController {
@@ -99,7 +99,7 @@ public class PageController {
         .filter(JsonNode::isArray)
         .map(jsonNode -> {
           try {
-            return Arrays.asList(new ObjectMapper().treeToValue(jsonNode, MenuItem[].class));
+            return Arrays.asList(new JsonMapper().treeToValue(jsonNode, MenuItem[].class));
           } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
           }

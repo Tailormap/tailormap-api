@@ -35,7 +35,7 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TMServiceCaps;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Audited
 @Entity
@@ -134,7 +134,7 @@ public class TMFeatureSource extends AuditMetadata {
           + url
           + '\''
           + ", jdbcConnection="
-          + new ObjectMapper().writeValueAsString(jdbcConnection)
+          + new JsonMapper().writeValueAsString(jdbcConnection)
           + '}';
     } catch (JacksonException e) {
       throw new RuntimeException(e);
