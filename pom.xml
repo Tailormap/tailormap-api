@@ -596,6 +596,12 @@ SPDX-License-Identifier: MIT
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -1446,12 +1452,12 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.hamcrest:hamcrest-all</exclude>
                                         <!-- slf4j should be used instead -->
                                         <exclude>log4j:log4j</exclude>
-                                        <exclude>commons-logging:commons-logging.(,1.2]</exclude>
-                                        <exclude>commons-logging:commons-logging-api.(,1.2]</exclude>
+                                        <exclude>commons-logging:commons-logging:(,1.2]</exclude>
+                                        <exclude>commons-logging:commons-logging-api:(,1.2]</exclude>
                                         <exclude>org.apache.logging.log4j:log4j-core</exclude>
                                         <exclude>org.slf4j:slf4j-simple</exclude>
                                         <exclude>joda-time:joda-time</exclude>
-                                        <exclude>org.assertj:assertj-core.(3.12,]</exclude>
+                                        <exclude>org.assertj:assertj-core:(3.12,]</exclude>
                                     </excludes>
                                 </bannedDependencies>
                                 <RestrictImports>

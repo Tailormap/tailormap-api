@@ -55,7 +55,6 @@ import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.ErrorResponse;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 /** Admin controller for Solr. */
@@ -69,6 +68,7 @@ public class SolrAdminController implements InitializingBean {
   private final SolrService solrService;
   private final Scheduler scheduler;
   private final TaskManagerService taskManagerService;
+  private final JsonMapper jsonMapper;
 
   @Value("${tailormap-api.solr-query-timeout-seconds:7}")
   private int solrQueryTimeout;
@@ -81,12 +81,14 @@ public class SolrAdminController implements InitializingBean {
       @Autowired SearchIndexRepository searchIndexRepository,
       @Autowired SolrService solrService,
       @Autowired Scheduler scheduler,
-      @Autowired TaskManagerService taskManagerService) {
+      @Autowired TaskManagerService taskManagerService,
+      JsonMapper jsonMapper) {
     this.featureTypeRepository = featureTypeRepository;
     this.searchIndexRepository = searchIndexRepository;
     this.solrService = solrService;
     this.scheduler = scheduler;
     this.taskManagerService = taskManagerService;
+    this.jsonMapper = jsonMapper;
   }
 
   @ExceptionHandler({ResponseStatusException.class})
@@ -128,11 +130,11 @@ public class SolrAdminController implements InitializingBean {
       final SolrPingResponse ping = solrClient.ping();
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
       Metrics.timer("tailormap_solr_ping").record(ping.getElapsedTime(), TimeUnit.MILLISECONDS);
-      return ResponseEntity.ok(new JsonMapper()
+      return ResponseEntity.ok(this.jsonMapper
           .createObjectNode()
           .put("status", ping.getResponse().get("status").toString())
           .put("timeElapsed", ping.getElapsedTime()));
-    } catch (JacksonException | IOException | SolrServerException e) {
+    } catch (IOException | SolrServerException e) {
       logger.error("Error pinging solr", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }

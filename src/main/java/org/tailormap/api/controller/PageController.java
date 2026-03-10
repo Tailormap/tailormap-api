@@ -99,7 +99,7 @@ public class PageController {
         .filter(JsonNode::isArray)
         .map(jsonNode -> {
           try {
-            return Arrays.asList(new JsonMapper().treeToValue(jsonNode, MenuItem[].class));
+            return Arrays.asList(JsonMapper.shared().treeToValue(jsonNode, MenuItem[].class));
           } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
           }
@@ -129,8 +129,7 @@ public class PageController {
    * @param tile The page tile configuration
    * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).
    */
-  // TODO check: private
-  ViewerPageTileResult convert(PageTile tile) {
+  private ViewerPageTileResult convert(PageTile tile) {
     ViewerPageTile viewerPageTile = new ViewerPageTile();
     ViewerPageTileResult result = new ViewerPageTileResult();
     result.viewerPageTile = viewerPageTile;

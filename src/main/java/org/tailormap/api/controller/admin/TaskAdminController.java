@@ -72,14 +72,17 @@ public class TaskAdminController {
   private final Scheduler scheduler;
   private final TaskManagerService taskManagerService;
   private final SearchIndexRepository searchIndexRepository;
+  private final JsonMapper jsonMapper;
 
   public TaskAdminController(
       @Autowired Scheduler scheduler,
       @Autowired TaskManagerService taskManagerService,
-      @Autowired SearchIndexRepository searchIndexRepository) {
+      @Autowired SearchIndexRepository searchIndexRepository,
+      JsonMapper jsonMapper) {
     this.scheduler = scheduler;
     this.taskManagerService = taskManagerService;
     this.searchIndexRepository = searchIndexRepository;
+    this.jsonMapper = jsonMapper;
   }
 
   @Operation(summary = "List all tasks, optionally filtered by type", description = """
@@ -127,7 +130,7 @@ The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null 
               logger.error("Error getting task state", e);
               state = null;
             }
-            tasks.add(new JsonMapper()
+            tasks.add(this.jsonMapper
                 .createObjectNode()
                 .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
                 .put(Task.UUID_KEY, jobDetail.getKey().getName())
@@ -146,9 +149,9 @@ The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null 
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting tasks", e);
     }
 
-    return ResponseEntity.ok(new JsonMapper()
+    return ResponseEntity.ok(this.jsonMapper
         .createObjectNode()
-        .set("tasks", new JsonMapper().createArrayNode().addAll(tasks)));
+        .set("tasks", this.jsonMapper.createArrayNode().addAll(tasks)));
   }
 
   @Operation(summary = "List all details for a given task", description = """
@@ -217,7 +220,7 @@ the most common fields are listed in the Task interface.
             result[0] = jobExecutionContext.getResult();
           });
 
-      return ResponseEntity.ok(new JsonMapper()
+      return ResponseEntity.ok(this.jsonMapper
           .createObjectNode()
           // immutable uuid, type and description
           .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
@@ -277,7 +280,7 @@ the most common fields are listed in the Task interface.
       }
       scheduler.triggerJob(jobKey);
       return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-          .body(new JsonMapper().createObjectNode().put("message", "Task starting accepted"));
+          .body(this.jsonMapper.createObjectNode().put("message", "Task starting accepted"));
 
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);
@@ -329,13 +332,13 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
           scheduler.getJobDetail(jobKey).getJobClass())) {
         boolean interrupted = scheduler.interrupt(jobKey);
         return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-            .body(new JsonMapper()
+            .body(this.jsonMapper
                 .createObjectNode()
                 .put("message", "Task stopping accepted")
                 .put("succes", interrupted));
       } else {
         return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_BAD_REQUEST))
-            .body(new JsonMapper()
+            .body(this.jsonMapper
                 .createObjectNode()
                 .put("message", "Task cannot be stopped")
                 .put("succes", false));
@@ -397,7 +400,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
   private ResponseEntity<Object> handleTaskNotFound() {
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_NOT_FOUND))
         .contentType(MediaType.APPLICATION_JSON)
-        .body(new JsonMapper()
+        .body(this.jsonMapper
             .createObjectNode()
             .put("message", "Task not found")
             .put("code", HTTP_NOT_FOUND));
