@@ -50,12 +50,13 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     }
 
     JDBCConnectionProperties c = tmfs.getJdbcConnection();
-    Objects.requireNonNull(c.getDbtype());
-    String connectionOpts = Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions"))
+    String connectionOpts = Optional.ofNullable(c.getAdditionalProperties())
+        .map(props -> props.get("connectionOptions"))
         .orElse("");
 
     Map<String, Object> params = new HashMap<>();
     // database specific settings
+    Objects.requireNonNull(c.getDbtype());
     switch (c.getDbtype()) {
       case POSTGIS -> {
         // use spatial index to estimate the extents
