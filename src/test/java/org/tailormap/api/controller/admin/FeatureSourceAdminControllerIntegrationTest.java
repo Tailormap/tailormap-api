@@ -84,6 +84,7 @@ class FeatureSourceAdminControllerIntegrationTest {
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
         .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
+        .andExpect(jsonPath("$.protocol").value("JDBC"))
         .andReturn();
     Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     String selfLink = JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
@@ -100,6 +101,7 @@ class FeatureSourceAdminControllerIntegrationTest {
           .andExpect(jsonPath("$.id").isNotEmpty())
           .andExpect(jsonPath("$.allFeatureTypes").isArray())
           .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal + 1))
+          .andExpect(jsonPath("$.protocol").value("JDBC"))
           .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isNotEmpty());
     } finally {
       try {
@@ -118,6 +120,7 @@ class FeatureSourceAdminControllerIntegrationTest {
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
         .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
+        .andExpect(jsonPath("$.protocol").value("JDBC"))
         .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isEmpty());
   }
 }
