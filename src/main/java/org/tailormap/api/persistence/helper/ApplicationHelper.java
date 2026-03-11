@@ -309,6 +309,7 @@ public class ApplicationHelper {
         // The name for a level node does show in the frontend
         layerTreeNode.setName(appTreeLevelNode.getTitle());
         layerTreeNode.setDescription(appTreeLevelNode.getDescription());
+        layerTreeNode.setExpandOnStartup(appTreeLevelNode.getExpandOnStartup());
       }
       layerTreeNodeList.add(layerTreeNode);
     }

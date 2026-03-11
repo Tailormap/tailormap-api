@@ -195,6 +195,9 @@ components:
           type: array
           items:
             type: string
+        expandOnStartup:
+          description: Whether this node should be expanded in the tree on startup.
+          type: boolean
       required:
         - id
         - name
