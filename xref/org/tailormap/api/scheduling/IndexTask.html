@@ -18,38 +18,38 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.rasc.sse.eventbus.SseEvent;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.rasc.sse.eventbus.SseEventBus;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.core.JsonProcessingException;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Counted;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Timed;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.UUID;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrClient;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrServerException;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.common.SolrException;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.quartz.DisallowConcurrentExecution;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobDataMap;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionContext;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionException;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.quartz.PersistJobDataAfterExecution;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.springframework.lang.NonNull;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.springframework.scheduling.quartz.QuartzJobBean;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.SearchIndexSummary;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.ServerSentEvent;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.TaskProgressEvent;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.SearchIndex;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureTypeRepository;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.SearchIndexRepository;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrHelper;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrService;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Counted;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Timed;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.UUID;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrClient;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrServerException;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.common.SolrException;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.jspecify.annotations.NonNull;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.quartz.DisallowConcurrentExecution;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobDataMap;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionContext;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionException;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.quartz.PersistJobDataAfterExecution;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.springframework.scheduling.quartz.QuartzJobBean;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.SearchIndexSummary;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.ServerSentEvent;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.TaskProgressEvent;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.SearchIndex;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureTypeRepository;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.SearchIndexRepository;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrHelper;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrService;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> tools.jackson.core.JacksonException;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.json.JsonMapper;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  @DisallowConcurrentExecution
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  @PersistJobDataAfterExecution
@@ -62,7 +62,7 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SearchIndexRepository" href="../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SolrService" href="../../../../org/tailormap/api/solr/SolrService.html#SolrService">SolrService</a> solrService;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> SseEventBus eventBus;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ObjectMapper objectMapper;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> JsonMapper mapper;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Value(<span class="jxr_string">"${tailormap-api.solr-batch-size:1000}"</span>)
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> solrBatchSize;
@@ -79,14 +79,14 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>        @Autowired <a name="FeatureSourceFactoryHelper" href="../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper,
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>        @Autowired <a name="SolrService" href="../../../../org/tailormap/api/solr/SolrService.html#SolrService">SolrService</a> solrService,
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>        @Autowired SseEventBus eventBus,
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>        @Autowired ObjectMapper objectMapper) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        @Autowired JsonMapper mapper) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">this</strong>.featureSourceFactoryHelper = featureSourceFactoryHelper;
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">this</strong>.solrService = solrService;
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">this</strong>.featureTypeRepository = featureTypeRepository;
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">this</strong>.searchIndexRepository = searchIndexRepository;
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">this</strong>.eventBus = eventBus;
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">this</strong>.objectMapper = objectMapper;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">this</strong>.mapper = mapper;
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>    }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    @Timed(value = <span class="jxr_string">"indexTask"</span>, description = <span class="jxr_string">"Time taken to execute index task"</span>)
@@ -150,8 +150,8 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>     ServerSentEvent serverSentEvent =
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         <strong class="jxr_keyword">new</strong> ServerSentEvent().eventType(TASK_PROGRESS).details(event);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>       eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     } <strong class="jxr_keyword">catch</strong> (JsonProcessingException e) {
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>       eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, mapper.writeValueAsString(serverSentEvent)));
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     } <strong class="jxr_keyword">catch</strong> (JacksonException e) {
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>       logger.error(<span class="jxr_string">"Error publishing indexing task progress event"</span>, e);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     }
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>   }

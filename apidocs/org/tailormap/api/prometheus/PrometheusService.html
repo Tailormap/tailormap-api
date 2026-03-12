@@ -132,7 +132,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executes a Prometheus delete query.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.fasterxml.jackson.databind.JsonNode</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>tools.jackson.databind.JsonNode</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeQuery(java.lang.String)" class="member-name-link">executeQuery</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;promQuery)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executes a Prometheus query and returns the result.</div>
@@ -183,8 +183,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="executeQuery(java.lang.String)">
 <h3>executeQuery</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">com.fasterxml.jackson.databind.JsonNode</span>&nbsp;<span class="element-name">executeQuery</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;promQuery)</span>
-                                                     throws <span class="exceptions">com.fasterxml.jackson.core.JsonProcessingException,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">tools.jackson.databind.JsonNode</span>&nbsp;<span class="element-name">executeQuery</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;promQuery)</span>
+                                             throws <span class="exceptions">tools.jackson.core.JacksonException,
 <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <div class="block">Executes a Prometheus query and returns the result.</div>
 <dl class="notes">
@@ -193,7 +193,7 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the result of the query as a JSON node</dd>
 <dt>Throws:</dt>
-<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code> - if there is an error processing the JSON response</dd>
+<dd><code>tools.jackson.core.JacksonException</code> - if there is an error processing the JSON response</dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if there is an error executing the query</dd>
 <dt>See Also:</dt>
 <dd>

@@ -125,10 +125,10 @@ implements org.springframework.web.servlet.resource.ResourceTransformer</span></
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.core.io.Resource</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)" class="member-name-link">transform</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
- org.springframework.core.io.Resource&nbsp;resource,
- org.springframework.web.servlet.resource.ResourceTransformerChain&nbsp;transformerChain)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull org.springframework.core.io.Resource</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)" class="member-name-link">transform</a><wbr>(@NonNull jakarta.servlet.http.HttpServletRequest&nbsp;request,
+ @NonNull org.springframework.core.io.Resource&nbsp;resource,
+ @NonNull org.springframework.web.servlet.resource.ResourceTransformerChain&nbsp;transformerChain)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -164,14 +164,10 @@ implements org.springframework.web.servlet.resource.ResourceTransformer</span></
 <li>
 <section class="detail" id="transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)">
 <h3>transform</h3>
-<div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.core.io.Resource</span>&nbsp;<span class="element-name">transform</span><wbr><span class="parameters">(@NonNull
- jakarta.servlet.http.HttpServletRequest&nbsp;request,
- @NonNull
- org.springframework.core.io.Resource&nbsp;resource,
- @NonNull
- org.springframework.web.servlet.resource.ResourceTransformerChain&nbsp;transformerChain)</span>
-                                               throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull org.springframework.core.io.Resource</span>&nbsp;<span class="element-name">transform</span><wbr><span class="parameters">(@NonNull jakarta.servlet.http.HttpServletRequest&nbsp;request,
+ @NonNull org.springframework.core.io.Resource&nbsp;resource,
+ @NonNull org.springframework.web.servlet.resource.ResourceTransformerChain&nbsp;transformerChain)</span>
+                                                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code>transform</code>&nbsp;in interface&nbsp;<code>org.springframework.web.servlet.resource.ResourceTransformer</code></dd>

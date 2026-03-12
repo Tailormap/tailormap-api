@@ -21,15 +21,15 @@
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_ID_TAG;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.prometheus.TagNames.METRICS_APP_NAME_TAG;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.core.JsonProcessingException;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.JsonNode;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> tools.jackson.core.JacksonException;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.JsonNode;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.json.JsonMapper;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">class</strong> <a name="PrometheusResultProcessorTest" href="../../../../org/tailormap/api/prometheus/PrometheusResultProcessorTest.html#PrometheusResultProcessorTest">PrometheusResultProcessorTest</a> {
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
@@ -113,8 +113,8 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> ]}}
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> <span class="jxr_string">""</span><span class="jxr_string">";
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>       ObjectMapper objectMapper = <strong class="jxr_keyword">new</strong> ObjectMapper();
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>       JsonNode root = objectMapper.readTree(jsonResponse);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>       JsonMapper mapper = <strong class="jxr_keyword">new</strong> JsonMapper();
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       JsonNode root = mapper.readTree(jsonResponse);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>       Collection&lt;Map&lt;String, String&gt;&gt; processedResults = processor.processPrometheusResultsForApplications(root);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>       assertEquals(3, processedResults.size());
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>       processedResults.forEach((metric) -&gt; {
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 () -&gt; assertEquals(<span class="jxr_string">"17"</span>, metric.get(<span class="jxr_string">"total"</span>)),
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 () -&gt; assertEquals(<span class="jxr_string">"11577"</span>, metric.get(<span class="jxr_string">"last_updated"</span>))));
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>       });
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     } <strong class="jxr_keyword">catch</strong> (JsonProcessingException e) {
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     } <strong class="jxr_keyword">catch</strong> (JacksonException e) {
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>       fail(<span class="jxr_string">"Failed to process JSON response: "</span> + e.getMessage());
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     }
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>   }
@@ -248,8 +248,8 @@
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> }
 <a class="jxr_linenumber" name="L241" href="#L241">241</a> <span class="jxr_string">""</span><span class="jxr_string">";
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>       ObjectMapper objectMapper = <strong class="jxr_keyword">new</strong> ObjectMapper();
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>       JsonNode root = objectMapper.readTree(jsonResponse);
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>       JsonMapper mapper = <strong class="jxr_keyword">new</strong> JsonMapper();
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>       JsonNode root = mapper.readTree(jsonResponse);
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>       Collection&lt;Map&lt;String, String&gt;&gt; processedResults =
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>           processor.processPrometheusResultsForApplicationLayers(root);
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>       assertEquals(4, processedResults.size());
@@ -291,7 +291,7 @@
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>                 () -&gt; assertEquals(<span class="jxr_string">"5474"</span>, metric.get(<span class="jxr_string">"lastUpdateSecondsAgo"</span>))));
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>       });
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> 
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>     } <strong class="jxr_keyword">catch</strong> (JsonProcessingException e) {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>     } <strong class="jxr_keyword">catch</strong> (JacksonException e) {
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>       fail(<span class="jxr_string">"Failed to process JSON response: "</span> + e.getMessage());
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>     }
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>   }

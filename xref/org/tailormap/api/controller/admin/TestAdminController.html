@@ -14,17 +14,17 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.controller.admin;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.io.Serializable;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.io.Serializable;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.json.JsonMapper;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  @RestController
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TestAdminController" href="../../../../../org/tailormap/api/controller/admin/TestAdminController.html#TestAdminController">TestAdminController</a> {
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>    @GetMapping(path = <span class="jxr_string">"${tailormap-api.admin.base-path}/test"</span>)
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; test() {
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.ok(<strong class="jxr_keyword">new</strong> ObjectMapper().createObjectNode().put(<span class="jxr_string">"test"</span>, <strong class="jxr_keyword">true</strong>));
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.ok(<strong class="jxr_keyword">new</strong> JsonMapper().createObjectNode().put(<span class="jxr_string">"test"</span>, <strong class="jxr_keyword">true</strong>));
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>    }
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  }
 </pre>

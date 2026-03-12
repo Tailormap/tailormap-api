@@ -152,7 +152,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
  @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
  @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&gt;&nbsp;progressListener,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</code></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Add or update a feature type index for a layer.</div>
 </div>
@@ -183,7 +183,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr instance.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified validation rule.</div>
 </div>
@@ -256,8 +256,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <li>
 <section class="detail" id="withGeometryValidationRule(java.lang.String)">
 <h3>withGeometryValidationRule</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withGeometryValidationRule</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withGeometryValidationRule</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</span></div>
 <div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified validation rule.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -312,8 +311,7 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
  @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
  @NotNull
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&gt;&nbsp;progressListener,
- @Nullable
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</span>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</span>
                                 throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
 org.apache.solr.client.solrj.SolrServerException</span></div>
 <div class="block">Add or update a feature type index for a layer.</div>

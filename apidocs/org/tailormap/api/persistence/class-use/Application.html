@@ -112,7 +112,7 @@ loadScripts(document, 'script');</script>
  <a href="../../viewer/model/Feature.html" title="class in org.tailormap.api.viewer.model">Feature</a>&nbsp;completeFeature)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>@Valid org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../controller/DrawingController.html#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(<a href="../../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../controller/DrawingController.html#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(@NonNull <a href="../../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
  <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create or update a drawing.</div>
@@ -158,7 +158,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;attachmentId)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>@Valid org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../controller/DrawingController.html#getDrawing(java.util.UUID,org.tailormap.api.persistence.Application)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../controller/DrawingController.html#getDrawing(java.util.UUID,org.tailormap.api.persistence.Application)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
  <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Get a drawing by id.</div>
@@ -405,8 +405,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ApplicationRepository.</span><code><a href="../../repository/ApplicationRepository.html#findById(java.lang.Long)" class="member-name-link">findById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;aLong)</code></div>
+<div class="col-first even-row-color"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ApplicationRepository.</span><code><a href="../../repository/ApplicationRepository.html#findById(java.lang.Long)" class="member-name-link">findById</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;aLong)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

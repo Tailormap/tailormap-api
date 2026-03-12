@@ -16,31 +16,31 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.beans.BeanUtils.copyProperties;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.JsonNode;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.server.ResponseStatusException;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.AppRestController;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Configuration;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Page;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Upload;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.UploadHelper;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.MenuItem;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.PageTile;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.PageRepository;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorisationService;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.PageResponse;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerMenuItem;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerPageTile;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.server.ResponseStatusException;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.AppRestController;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Configuration;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Page;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Upload;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.UploadHelper;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.MenuItem;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.PageTile;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.PageRepository;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorisationService;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.PageResponse;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerMenuItem;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerPageTile;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> tools.jackson.core.JacksonException;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.JsonNode;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> tools.jackson.databind.json.JsonMapper;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  @AppRestController
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PageController" href="../../../../org/tailormap/api/controller/PageController.html#PageController">PageController</a> {
@@ -107,8 +107,8 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          .filter(JsonNode::isArray)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         .map(jsonNode -&gt; {
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>           <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">return</strong> Arrays.asList(<strong class="jxr_keyword">new</strong> ObjectMapper().treeToValue(jsonNode, MenuItem[].<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>           } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">return</strong> Arrays.asList(JsonMapper.shared().treeToValue(jsonNode, MenuItem[].<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           } <strong class="jxr_keyword">catch</strong> (JacksonException e) {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <strong class="jxr_keyword">null</strong>, e);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>           }
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         })
@@ -132,71 +132,73 @@
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>   }
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> 
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">   * @param tile The page tile configuration</em>
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).</em>
-<a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>   <strong class="jxr_keyword">private</strong> ViewerPageTileResult convert(PageTile tile) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     ViewerPageTile viewerPageTile = <strong class="jxr_keyword">new</strong> ViewerPageTile();
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     ViewerPageTileResult result = <strong class="jxr_keyword">new</strong> ViewerPageTileResult();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     result.viewerPageTile = viewerPageTile;
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     result.shouldBeFiltered = false;
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>     copyProperties(tile, viewerPageTile);
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> 
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     PageTile.TileTypeEnum tileType = getTileTypeForPageTile(tile);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.APPLICATION) {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>       Optional.ofNullable(tile.getApplicationId())
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>           .flatMap(applicationRepository::findById)
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>           .filter(application -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>               || authorisationService.userAllowedToViewApplication(application))
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>           .ifPresentOrElse(
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>               application -&gt; {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>                 viewerPageTile.applicationUrl(<span class="jxr_string">"/app/"</span> + application.getName());
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>                 viewerPageTile.requiresLogin(
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>                     !authorisationService.userAllowedToViewApplication(application));
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>               },
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>               () -&gt; result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>     }
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> 
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.PAGE) {
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>       Optional.ofNullable(tile.getPageId())
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>           .flatMap(pageRepository::findById)
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>           .filter(page -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>               || authorisationService.userAllowedToViewPage(page))
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>           .ifPresentOrElse(
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>               page -&gt; {
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 viewerPageTile.pageUrl(<span class="jxr_string">"/page/"</span> + page.getName());
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>                 viewerPageTile.requiresLogin(!authorisationService.userAllowedToViewPage(page));
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>               },
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>               () -&gt; result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>     }
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.URL
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         &amp;&amp; !tile.getAuthorizationRules().isEmpty()
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>         &amp;&amp; !authorisationService.userAllowedToViewPageTile(tile)) {
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>       result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>     }
-<a class="jxr_linenumber" name="L170" href="#L170">170</a> 
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">   * Convert a page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).</em>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">   * @param tile The page tile configuration</em>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   <strong class="jxr_keyword">private</strong> ViewerPageTileResult convert(PageTile tile) {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     ViewerPageTile viewerPageTile = <strong class="jxr_keyword">new</strong> ViewerPageTile();
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     ViewerPageTileResult result = <strong class="jxr_keyword">new</strong> ViewerPageTileResult();
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     result.viewerPageTile = viewerPageTile;
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     result.shouldBeFiltered = false;
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>     copyProperties(tile, viewerPageTile);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> 
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     PageTile.TileTypeEnum tileType = getTileTypeForPageTile(tile);
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.APPLICATION) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>       Optional.ofNullable(tile.getApplicationId())
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>           .flatMap(applicationRepository::findById)
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>           .filter(application -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>               || authorisationService.userAllowedToViewApplication(application))
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>           .ifPresentOrElse(
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>               application -&gt; {
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>                 viewerPageTile.applicationUrl(<span class="jxr_string">"/app/"</span> + application.getName());
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>                 viewerPageTile.requiresLogin(
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>                     !authorisationService.userAllowedToViewApplication(application));
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>               },
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>               () -&gt; result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     }
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.PAGE) {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>       Optional.ofNullable(tile.getPageId())
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>           .flatMap(pageRepository::findById)
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>           .filter(page -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>               || authorisationService.userAllowedToViewPage(page))
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>           .ifPresentOrElse(
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>               page -&gt; {
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                 viewerPageTile.pageUrl(<span class="jxr_string">"/page/"</span> + page.getName());
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                 viewerPageTile.requiresLogin(!authorisationService.userAllowedToViewPage(page));
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>               },
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>               () -&gt; result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     }
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> 
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>     <strong class="jxr_keyword">if</strong> (tileType == PageTile.TileTypeEnum.URL
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>         &amp;&amp; !tile.getAuthorizationRules().isEmpty()
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>         &amp;&amp; !authorisationService.userAllowedToViewPageTile(tile)) {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     }
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">return</strong> result;
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>   }
-<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>   <strong class="jxr_keyword">private</strong> PageTile.TileTypeEnum getTileTypeForPageTile(PageTile pageTile) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">if</strong> (pageTile.getTileType() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>       <strong class="jxr_keyword">return</strong> pageTile.getTileType();
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>     }
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>     <strong class="jxr_keyword">if</strong> (pageTile.getApplicationId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.APPLICATION;
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>     }
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">if</strong> (pageTile.getPageId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.PAGE;
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">if</strong> (pageTile.getUrl() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.URL;
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.APPLICATION;
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>   }
-<a class="jxr_linenumber" name="L191" href="#L191">191</a> }
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>     viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     <strong class="jxr_keyword">return</strong> result;
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>   }
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>   <strong class="jxr_keyword">private</strong> PageTile.TileTypeEnum getTileTypeForPageTile(PageTile pageTile) {
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">if</strong> (pageTile.getTileType() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>       <strong class="jxr_keyword">return</strong> pageTile.getTileType();
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>     }
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">if</strong> (pageTile.getApplicationId() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.APPLICATION;
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     }
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>     <strong class="jxr_keyword">if</strong> (pageTile.getPageId() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.PAGE;
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>     }
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">if</strong> (pageTile.getUrl() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>       <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.URL;
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">return</strong> PageTile.TileTypeEnum.APPLICATION;
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>   }
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

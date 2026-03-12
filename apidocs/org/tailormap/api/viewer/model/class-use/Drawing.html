@@ -83,7 +83,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>@Valid org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../../controller/DrawingController.html#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+<div class="col-second even-row-color"><span class="type-name-label">DrawingController.</span><code><a href="../../../controller/DrawingController.html#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(@NonNull <a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
  <a href="../../../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create or update a drawing.</div>
@@ -100,14 +100,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(@NonNull <a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create a new drawing.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(@NonNull <a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Update an existing drawing.</div>
 </div>
@@ -118,14 +118,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#getDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#getDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Get a drawing only — no geometry data — by its ID.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#getDrawing(java.util.UUID,org.springframework.security.core.Authentication,boolean,int)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- org.springframework.security.core.Authentication&nbsp;authentication,
+<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#getDrawing(java.util.UUID,org.springframework.security.core.Authentication,boolean,int)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication,
  boolean&nbsp;withGeometries,
  int&nbsp;requestedSrid)</code></div>
 <div class="col-last odd-row-color">
@@ -143,14 +143,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(@NonNull <a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create a new drawing.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(<a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DrawingService.</span><code><a href="../../../drawing/DrawingService.html#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(@NonNull <a href="../Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Update an existing drawing.</div>
 </div>

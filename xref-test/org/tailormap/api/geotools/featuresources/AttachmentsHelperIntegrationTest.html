@@ -47,8 +47,8 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.Arguments;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.MethodSource;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.context.SpringBootTest;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.ComponentScan;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.ClassPathResource;
@@ -159,7 +159,7 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>   }
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>   @AfterEach
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> teardown() <strong class="jxr_keyword">throws</strong> SQLException {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">void</strong> teardown() {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">if</strong> (ds != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>       ds.dispose();
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     }
@@ -307,32 +307,30 @@
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_javadoccomment">   * We would do this in @AfterAll, but because we're in a parameterized test class that fails so we need to do it in</em>
 <a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">   * a regular test with the highest order.</em>
-<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L303" href="#L303">303</a> <em class="jxr_javadoccomment">   * @throws SQLException when SQL error occurs</em>
-<a class="jxr_linenumber" name="L304" href="#L304">304</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>   @Order(Integer.MAX_VALUE)
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>   @Test
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>   @DisplayName(<span class="jxr_string">"Delete attachments table for feature type."</span>)
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>   <strong class="jxr_keyword">void</strong> delete_attachments_table_<strong class="jxr_keyword">for</strong>_feature_type() <strong class="jxr_keyword">throws</strong> SQLException, IOException {
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>           Statement stmt = conn.createStatement();
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>           ResultSet rs = stmt.executeQuery(
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>               <span class="jxr_string">"select count(*) from "</span> + schemaPrefix + featureTypeName + <span class="jxr_string">"_attachments"</span>)) {
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>         <strong class="jxr_keyword">if</strong> (rs.next()) {
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>           fail(<span class="jxr_string">"Attachments table '%s_attachments' still exists."</span>.formatted(featureTypeName));
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         }
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>       } <strong class="jxr_keyword">catch</strong> (SQLException e) {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         <em class="jxr_comment">// expected, table should not exist</em>
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>       }
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>     } <strong class="jxr_keyword">catch</strong> (SQLException | IOException e) {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>       fail(e.getMessage());
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>     }
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>   }
-<a class="jxr_linenumber" name="L327" href="#L327">327</a> }
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @Order(Integer.MAX_VALUE)
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>   @Test
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>   @DisplayName(<span class="jxr_string">"Delete attachments table for feature type."</span>)
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>   <strong class="jxr_keyword">void</strong> delete_attachments_table_<strong class="jxr_keyword">for</strong>_feature_type() {
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>       AttachmentsHelper.dropAttachmentTableForFeatureType(featureType);
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>       <strong class="jxr_keyword">try</strong> (Connection conn = ds.getDataSource().getConnection();
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>           Statement stmt = conn.createStatement();
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>           ResultSet rs = stmt.executeQuery(
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>               <span class="jxr_string">"select count(*) from "</span> + schemaPrefix + featureTypeName + <span class="jxr_string">"_attachments"</span>)) {
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>         <strong class="jxr_keyword">if</strong> (rs.next()) {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>           fail(<span class="jxr_string">"Attachments table '%s_attachments' still exists."</span>.formatted(featureTypeName));
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         }
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>       } <strong class="jxr_keyword">catch</strong> (SQLException e) {
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <em class="jxr_comment">// expected, table should not exist</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>       }
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     } <strong class="jxr_keyword">catch</strong> (SQLException | IOException e) {
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>       fail(e.getMessage());
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     }
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>   }
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

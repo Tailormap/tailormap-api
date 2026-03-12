@@ -253,7 +253,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="serialized-class-details" id="org.tailormap.api.persistence.AdminRevision">
 <h3>Class&nbsp;<a href="org/tailormap/api/persistence/AdminRevision.html" title="class in org.tailormap.api.persistence">org.tailormap.api.persistence.AdminRevision</a></h3>
-<div class="type-signature">class AdminRevision extends org.hibernate.envers.DefaultRevisionEntity implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<div class="type-signature">class AdminRevision extends org.hibernate.envers.RevisionMapping implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <ul class="block-list">
 <li>
 <section class="detail">
@@ -450,7 +450,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li class="block-list">
 <h5>editable</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> editable</pre>
+<pre>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> editable</pre>
 </li>
 <li class="block-list">
 <h5>formId</h5>
@@ -592,6 +592,10 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>description</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> description</pre>
+</li>
+<li class="block-list">
+<h5>expandOnStartup</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> expandOnStartup</pre>
 </li>
 <li class="block-list">
 <h5>id</h5>
@@ -2692,7 +2696,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="serialized-class-details" id="org.tailormap.api.security.InvalidPasswordException">
 <h3>Exception Class&nbsp;<a href="org/tailormap/api/security/InvalidPasswordException.html" title="class in org.tailormap.api.security">org.tailormap.api.security.InvalidPasswordException</a></h3>
-<div class="type-signature">class InvalidPasswordException extends com.fasterxml.jackson.databind.JsonMappingException implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<div class="type-signature">class InvalidPasswordException extends tools.jackson.databind.DatabindException implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 </section>
 </li>
 <li>
@@ -3676,7 +3680,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li class="block-list">
 <h5>pageSize</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a> pageSize</pre>
+<pre>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a> pageSize</pre>
 </li>
 <li class="block-list">
 <h5>template</h5>
@@ -4053,6 +4057,10 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>description</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> description</pre>
+</li>
+<li class="block-list">
+<h5>expandOnStartup</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> expandOnStartup</pre>
 </li>
 <li class="block-list">
 <h5>id</h5>

@@ -130,12 +130,12 @@ implements <a href="Task.html" title="interface in org.tailormap.api.scheduling"
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService,ch.rasc.sse.eventbus.SseEventBus,com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">IndexTask</a><wbr>(<a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService,ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)" class="member-name-link">IndexTask</a><wbr>(<a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
  <a href="../repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
  <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
  <a href="../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
  ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
- com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</code></div>
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -152,7 +152,7 @@ implements <a href="Task.html" title="interface in org.tailormap.api.scheduling"
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeInternal(org.quartz.JobExecutionContext)" class="member-name-link">executeInternal</a><wbr>(org.quartz.JobExecutionContext&nbsp;context)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeInternal(org.quartz.JobExecutionContext)" class="member-name-link">executeInternal</a><wbr>(@NonNull org.quartz.JobExecutionContext&nbsp;context)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDescription()" class="member-name-link">getDescription</a>()</code></div>
@@ -226,7 +226,7 @@ implements <a href="Task.html" title="interface in org.tailormap.api.scheduling"
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService,ch.rasc.sse.eventbus.SseEventBus,com.fasterxml.jackson.databind.ObjectMapper)">
+<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService,ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)">
 <h3>IndexTask</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">IndexTask</span><wbr><span class="parameters">(@Autowired
  <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
@@ -239,7 +239,7 @@ implements <a href="Task.html" title="interface in org.tailormap.api.scheduling"
  @Autowired
  ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
  @Autowired
- com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</span></div>
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</span></div>
 </section>
 </li>
 </ul>
@@ -253,8 +253,7 @@ implements <a href="Task.html" title="interface in org.tailormap.api.scheduling"
 <li>
 <section class="detail" id="executeInternal(org.quartz.JobExecutionContext)">
 <h3>executeInternal</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">executeInternal</span><wbr><span class="parameters">(@NonNull
- org.quartz.JobExecutionContext&nbsp;context)</span>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">executeInternal</span><wbr><span class="parameters">(@NonNull org.quartz.JobExecutionContext&nbsp;context)</span>
                         throws <span class="exceptions">org.quartz.JobExecutionException</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>

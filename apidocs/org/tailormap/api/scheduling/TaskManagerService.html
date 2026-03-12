@@ -138,7 +138,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Delete all tasks in a specific group.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.quartz.JobKey</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable org.quartz.JobKey</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getJobKey(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">getJobKey</a><wbr>(<a href="TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a>&nbsp;jobType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -239,10 +239,9 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getJobKey(org.tailormap.api.scheduling.TaskType,java.util.UUID)">
 <h3>getJobKey</h3>
-<div class="member-signature"><span class="annotations">@Nullable
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.quartz.JobKey</span>&nbsp;<span class="element-name">getJobKey</span><wbr><span class="parameters">(<a href="TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a>&nbsp;jobType,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable org.quartz.JobKey</span>&nbsp;<span class="element-name">getJobKey</span><wbr><span class="parameters">(<a href="TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a>&nbsp;jobType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</span>
-                            throws <span class="exceptions">org.quartz.SchedulerException</span></div>
+                                      throws <span class="exceptions">org.quartz.SchedulerException</span></div>
 <div class="block">Get the job key for a given type and uuid.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

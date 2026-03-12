@@ -135,18 +135,18 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing</a><wbr>(@NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Create or update a drawing.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteDrawing(java.util.UUID)" class="member-name-link">deleteDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteDrawing(java.util.UUID)" class="member-name-link">deleteDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Delete a drawing.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.tailormap.api.persistence.Application)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.tailormap.api.persistence.Application)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get a drawing by id.</div>
@@ -194,11 +194,11 @@ loadScripts(document, 'script');</script>
             consumes="application/json",
             produces="application/json")
 @Valid
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">createOrUpdateDrawing</span><wbr><span class="parameters">(@NonNull @RequestBody
- <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">createOrUpdateDrawing</span><wbr><span class="parameters">(@RequestBody
+ @NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
  @ModelAttribute
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span>
-                                                                                   throws <span class="exceptions">com.fasterxml.jackson.core.JsonProcessingException</span></div>
+                                                                                   throws <span class="exceptions">tools.jackson.core.JacksonException</span></div>
 <div class="block">Create or update a drawing. Requires authentication.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -207,7 +207,7 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the created or updated drawing</dd>
 <dt>Throws:</dt>
-<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code></dd>
+<dd><code>tools.jackson.core.JacksonException</code></dd>
 </dl>
 </section>
 </li>
@@ -217,8 +217,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations">@GetMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/drawing/{drawingId}",
             produces="application/json")
 @Valid
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@NonNull @PathVariable
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@PathVariable
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
  @ModelAttribute
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span>
                                                                         throws <span class="exceptions">org.springframework.web.server.ResponseStatusException</span></div>
@@ -263,8 +263,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="deleteDrawing(java.util.UUID)">
 <h3>deleteDrawing</h3>
 <div class="member-signature"><span class="annotations">@DeleteMapping(path="${tailormap-api.base-path}/drawing/{drawingId}")
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@NonNull @PathVariable
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@PathVariable
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId)</span></div>
 <div class="block">Delete a drawing. Requires authentication.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

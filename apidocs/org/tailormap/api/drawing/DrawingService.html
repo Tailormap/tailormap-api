@@ -109,8 +109,8 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.springframework.jdbc.core.simple.JdbcClient,com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">DrawingService</a><wbr>(org.springframework.jdbc.core.simple.JdbcClient&nbsp;jdbcClient,
- com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.springframework.jdbc.core.simple.JdbcClient,tools.jackson.databind.json.JsonMapper)" class="member-name-link">DrawingService</a><wbr>(org.springframework.jdbc.core.simple.JdbcClient&nbsp;jdbcClient,
+ tools.jackson.databind.json.JsonMapper&nbsp;jsonMapper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -127,26 +127,26 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">createDrawing</a><wbr>(@NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Create a new drawing.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">deleteDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">deleteDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Delete a drawing by its ID.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.springframework.security.core.Authentication)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get a drawing only — no geometry data — by its ID.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.springframework.security.core.Authentication,boolean,int)" class="member-name-link">getDrawing</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- org.springframework.security.core.Authentication&nbsp;authentication,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDrawing(java.util.UUID,org.springframework.security.core.Authentication,boolean,int)" class="member-name-link">getDrawing</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication,
  boolean&nbsp;withGeometries,
  int&nbsp;requestedSrid)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -158,8 +158,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Get all drawings for the current user.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)" class="member-name-link">updateDrawing</a><wbr>(@NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Update an existing drawing.</div>
 </div>
@@ -181,10 +181,10 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.springframework.jdbc.core.simple.JdbcClient,com.fasterxml.jackson.databind.ObjectMapper)">
+<section class="detail" id="&lt;init&gt;(org.springframework.jdbc.core.simple.JdbcClient,tools.jackson.databind.json.JsonMapper)">
 <h3>DrawingService</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">DrawingService</span><wbr><span class="parameters">(org.springframework.jdbc.core.simple.JdbcClient&nbsp;jdbcClient,
- com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</span></div>
+ tools.jackson.databind.json.JsonMapper&nbsp;jsonMapper)</span></div>
 </section>
 </li>
 </ul>
@@ -199,11 +199,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="createDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)">
 <h3>createDrawing</h3>
 <div class="member-signature"><span class="annotations">@Transactional
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></span>&nbsp;<span class="element-name">createDrawing</span><wbr><span class="parameters">(@NonNull
- <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- @NonNull
- org.springframework.security.core.Authentication&nbsp;authentication)</span>
-                      throws <span class="exceptions">com.fasterxml.jackson.core.JsonProcessingException</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></span>&nbsp;<span class="element-name">createDrawing</span><wbr><span class="parameters">(@NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</span>
+                      throws <span class="exceptions">tools.jackson.core.JacksonException</span></div>
 <div class="block">Create a new drawing.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -212,7 +210,7 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the created drawing</dd>
 <dt>Throws:</dt>
-<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code></dd>
+<dd><code>tools.jackson.core.JacksonException</code></dd>
 </dl>
 </section>
 </li>
@@ -220,11 +218,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="updateDrawing(org.tailormap.api.viewer.model.Drawing,org.springframework.security.core.Authentication)">
 <h3>updateDrawing</h3>
 <div class="member-signature"><span class="annotations">@Transactional
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></span>&nbsp;<span class="element-name">updateDrawing</span><wbr><span class="parameters">(@NonNull
- <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
- @NonNull
- org.springframework.security.core.Authentication&nbsp;authentication)</span>
-                      throws <span class="exceptions">com.fasterxml.jackson.core.JsonProcessingException</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></span>&nbsp;<span class="element-name">updateDrawing</span><wbr><span class="parameters">(@NonNull <a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&nbsp;drawing,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</span>
+                      throws <span class="exceptions">tools.jackson.core.JacksonException</span></div>
 <div class="block">Update an existing drawing.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -233,7 +229,7 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the created drawing</dd>
 <dt>Throws:</dt>
-<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code></dd>
+<dd><code>tools.jackson.core.JacksonException</code></dd>
 </dl>
 </section>
 </li>
@@ -256,10 +252,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getDrawing(java.util.UUID,org.springframework.security.core.Authentication)">
 <h3>getDrawing</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- @NonNull
- org.springframework.security.core.Authentication&nbsp;authentication)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</span></div>
 <div class="block">Get a drawing only — no geometry data — by its ID.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -274,10 +268,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getDrawing(java.util.UUID,org.springframework.security.core.Authentication,boolean,int)">
 <h3>getDrawing</h3>
 <div class="member-signature"><span class="annotations">@Transactional
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- @NonNull
- org.springframework.security.core.Authentication&nbsp;authentication,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</span>&nbsp;<span class="element-name">getDrawing</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication,
  boolean&nbsp;withGeometries,
  int&nbsp;requestedSrid)</span></div>
 <div class="block">Get a complete drawing by its ID with GeoJSON geometries in the requested srid.</div>
@@ -295,10 +287,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="deleteDrawing(java.util.UUID,org.springframework.security.core.Authentication)">
 <h3>deleteDrawing</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@NonNull
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
- @NonNull
- org.springframework.security.core.Authentication&nbsp;authentication)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+ @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</span></div>
 <div class="block">Delete a drawing by its ID.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
