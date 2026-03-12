@@ -39,7 +39,7 @@ public class JPAConfiguration {
   }
 
   @Bean
-  public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+  public static PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
     return new PersistenceExceptionTranslationPostProcessor();
   }
 
