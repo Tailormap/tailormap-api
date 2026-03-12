@@ -37,6 +37,13 @@ public class PasswordResetEmailService {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
+  public PasswordResetEmailService() {
+    this.emailSender = Optional.empty();
+    this.userRepository = null;
+    this.temporaryTokenRepository = null;
+    this.messageSource = null;
+  }
+
   @Autowired(required = false)
   public PasswordResetEmailService(
       @Nullable JavaMailSender emailSender,
