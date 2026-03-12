@@ -1,10 +1,10 @@
 # Copyright (C) 2024 B3Partners B.V.
 #
 # SPDX-License-Identifier: MIT
-FROM mcr.microsoft.com/devcontainers/java:21
+FROM mcr.microsoft.com/devcontainers/java:25
 
 ARG INSTALL_MAVEN="true"
-ARG MAVEN_VERSION="3.9.12"
+ARG MAVEN_VERSION="3.9.14"
 
 ARG INSTALL_GRADLE="false"
 ARG GRADLE_VERSION=""

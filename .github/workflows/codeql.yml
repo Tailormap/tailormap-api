@@ -6,7 +6,7 @@ concurrency:
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.12'
+  MAVEN_VERSION: '3.9.14'
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: 25
           distribution: 'temurin'
           cache: 'maven'
 

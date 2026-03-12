@@ -6,8 +6,8 @@ permissions:
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.12'
-  JAVA_VERSION: '21'
+  MAVEN_VERSION: '3.9.14'
+  JAVA_VERSION: '25'
 
 concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -24,7 +24,7 @@ on:
 
 jobs:
   build:
-    name: Build w/ Java 21
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -77,7 +77,6 @@ jobs:
     permissions:
       contents: read
       packages: read
-#      actions: write
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
     steps:

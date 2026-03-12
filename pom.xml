@@ -94,7 +94,7 @@ SPDX-License-Identifier: MIT
         </site>
     </distributionManagement>
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -1437,8 +1437,8 @@ SPDX-License-Identifier: MIT
                             <rules>
                                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                                 <requireMavenVersion>
-                                    <version>[3.9.9, 4)</version>
-                                    <message>Maven 3.9.9 or higher is required to build</message>
+                                    <version>[3.9.11, 4)</version>
+                                    <message>Maven 3.9.11 or higher is required to build</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
