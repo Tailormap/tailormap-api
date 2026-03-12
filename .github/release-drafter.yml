@@ -1,10 +1,10 @@
 tag-template: "tailormap-api-$NEXT_PATCH_VERSION"
 name-template: v$NEXT_PATCH_VERSION 🎁
-
 version-template: "$MAJOR.$MINOR.$PATCH"
+sort-by: 'title'
 
 template: |
-  ## Uncategorised changes
+  ## What’s Changed
 
   $CHANGES
 
