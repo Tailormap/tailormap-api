@@ -6,6 +6,7 @@
 package org.tailormap.api.controller;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -110,22 +111,13 @@ class ViewerControllerIntegrationTest {
                     contains(
                         endsWith(
                             "/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"))))
-
-    // Backend does not save legendImageUrl from capabilities, and therefore also does not
-    // replace it with a proxied version. Frontend will use normal URL to create standard WMS
-    // GetLegendGraphic request, which usually works fine
-    // Old 10.0 code:
-    // https://github.com/Tailormap/tailormap-api/blob/tailormap-api-10.0.0/src/main/java/nl/b3p/tailormap/api/controller/MapController.java#L440
-    //        .andExpect(
-    //            jsonPath("$.appLayers[?(@.id ===
-    // 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
-    //                .value(
-    //                    contains(
-    //                        allOf(
-    //
-    // containsString("/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"),
-    //                            containsString("request=GetLegendGraphic")))))
-    ;
+        .andExpect(
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
+                .value(
+                    contains(
+                        containsString(
+                            "/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/legend"))));
   }
 
   @Test
@@ -156,7 +148,18 @@ class ViewerControllerIntegrationTest {
             .value("purple_polygon"))
         .andExpect(jsonPath(
                 "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles[0].name")
-            .value("purple_polygon"));
+            .value("purple_polygon"))
+        .andExpect(
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].styles[0].legendUrl")
+                .value(
+                    // Need to use (extra) contains() because jsonPath() returns an array even when
+                    // the expression resolves to a single scalar property
+                    // see
+                    // https://github.com/authorjapps/zerocode/wiki/When-JSON-Path-Matching-returns-value-or-values-as-an-array
+                    contains(
+                        containsString(
+                            "/app/secured/layer/lyr%3Asnapshot-geoserver-proxied%3Apostgis%3Abegroeidterreindeel/proxy/legend?STYLE=purple_polygon"))));
   }
 
   @Test

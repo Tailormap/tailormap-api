@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.controller.GeoServiceProxyController;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
@@ -48,6 +49,7 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.ServicePublishingSettings;
 import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import org.tailormap.api.persistence.json.WMSStyle;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.FeatureSourceRepository;
@@ -189,6 +191,23 @@ public class ApplicationHelper {
                 "appLayerId",
                 appTreeLayerNode.getId()))
         + "/" + LEGEND.getValue();
+  }
+
+  private List<WMSStyle> getProxiedLegendStyles(
+      Application application, AppTreeLayerNode appTreeLayerNode, List<WMSStyle> legendStyles) {
+    String legendProxyUrl = getLegendProxyUrl(application, appTreeLayerNode);
+    return legendStyles.stream()
+        .map(style ->
+            // Create a copy of the style so we don't mutate configuration objects
+            new WMSStyle(
+                style.getName(),
+                style.getTitle(),
+                style.getAbstractText(),
+                UriComponentsBuilder.fromUriString(legendProxyUrl)
+                    .queryParam("STYLE", style.getName())
+                    .build(true)
+                    .toUri()))
+        .toList();
   }
 
   private class MapResponseLayerBuilder {
@@ -404,6 +423,13 @@ public class ApplicationHelper {
         }
       }
 
+      List<WMSStyle> legendStyles = appLayerSettings.getSelectedStyles();
+      if (proxied && legendStyles != null) {
+        // when proxied the urls must be passed through getProxiedLegendStyles to be accessible,
+        // so don't pass the original style URLs to the frontend
+        legendStyles = getProxiedLegendStyles(app, layerRef, legendStyles);
+      }
+
       SearchIndex searchIndex = null;
       if (appLayerSettings.getSearchIndexId() != null) {
         searchIndex = searchIndexRepository
@@ -450,7 +476,7 @@ public class ApplicationHelper {
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())
-          .styles(appLayerSettings.getSelectedStyles()));
+          .styles(legendStyles));
 
       return true;
     }
