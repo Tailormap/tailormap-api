@@ -91,14 +91,9 @@ class GeometryProcessorTest extends StaticTestData {
 
     final Geometry p2 = new WKTReader2().read(simplified);
     assertTrue(p.overlaps(p2), "source polygon should overlap simplified");
-    //    /* PMD.JUnitAssertionsShouldIncludeMessage */
-    //    assertThat(100 * p2.intersection(p).getArea() / p.getArea())
-    //        .as("intersection area should be about 99% of original")
-    //        .isCloseTo(99, within(1d));
     assertThat(
         "intersection area should be about 99% of original",
         100 * p2.intersection(p).getArea() / p.getArea(), closeTo(99, 1d));
-
   }
 
   @Test
