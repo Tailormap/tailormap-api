@@ -99,7 +99,6 @@ class GeometryProcessorTest extends StaticTestData {
         "intersection area should be about 99% of original",
         100 * p2.intersection(p).getArea() / p.getArea(), closeTo(99, 1d));
 
-    //        .isCloseTo(99, within(1d));
   }
 
   @Test
