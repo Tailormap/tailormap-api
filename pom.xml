@@ -102,7 +102,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2026-03-06T10:33:43Z</project.build.outputTimestamp>
-        <geotools.version>34.2</geotools.version>
+        <geotools.version>35-SNAPSHOT</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
         <greenmail.version>2.1.8</greenmail.version>
@@ -121,6 +121,7 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <awaitility.version>4.3.0</awaitility.version>
+        <commons-codec.version>1.21.0</commons-codec.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <flyway.version>12.1.0</flyway.version>
         <hibernate.version>7.2.6.Final</hibernate.version>
@@ -218,6 +219,10 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc17</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -658,6 +663,14 @@ SPDX-License-Identifier: MIT
             <id>OSGeo</id>
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>OSGeoSNAPS</id>
+            <name>Snapshots hosted by OSGeo</name>
+            <url>https://repo.osgeo.org/repository/snapshot/</url>
         </repository>
     </repositories>
     <pluginRepositories />
