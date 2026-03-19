@@ -30,5 +30,4 @@ public class StaticOnlySecurityConfiguration {
         .requestCache((cache) -> cache.requestCache(nullRequestCache));
     return http.build();
   }
-
 }

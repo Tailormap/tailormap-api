@@ -945,6 +945,13 @@ paths:
         schema:
           type: integer
           minimum: 1
+      - description: 'Page size to retrieve. Default value is 100. Default maximum value is 500.'
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          minimum: 1
       - description: '
           The attribute name (not alias) to sort by. 
           The name must be of a configured attribute and not a geometry type.
