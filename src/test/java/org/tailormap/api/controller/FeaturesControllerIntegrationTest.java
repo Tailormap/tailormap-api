@@ -88,8 +88,11 @@ class FeaturesControllerIntegrationTest {
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
 
-  @Value("${tailormap-api.pageSize}")
+  @Value("${tailormap-api.default-page-size}")
   private int pageSize;
+
+  @Value("${tailormap-api.max-page-size}")
+  private int maxPageSize;
 
   static Stream<Arguments> databaseArgumentsProvider() {
     return Stream.of(
@@ -431,6 +434,74 @@ class FeaturesControllerIntegrationTest {
     assertNotNull(body, "response body should not be null");
     List<Service> features = JsonPath.read(body, "$.features");
     assertEquals(0, features.size(), "there should be 0 provinces in the list");
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_use_default_page_size_when_not_specified() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andReturn();
+
+    List<?> features = JsonPath.read(result.getResponse().getContentAsString(), "$.features");
+    assertEquals(pageSize, features.size(), "number of returned features should equal the default page size");
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_use_custom_page_size_when_specified() throws Exception {
+    int requestedPageSize = pageSize - 1; // smaller than default, so the data set has enough rows
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("pageSize", String.valueOf(requestedPageSize)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(requestedPageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andReturn();
+
+    List<?> features = JsonPath.read(result.getResponse().getContentAsString(), "$.features");
+    assertEquals(
+        requestedPageSize, features.size(), "number of returned features should equal the requested page size");
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_cap_page_size_at_max_page_size() throws Exception {
+    int oversizedPageSize = maxPageSize + 100; // well above the configured maxPageSize
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("pageSize", String.valueOf(oversizedPageSize)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(maxPageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andReturn();
+
+    List<?> features = JsonPath.read(result.getResponse().getContentAsString(), "$.features");
+    assertEquals(maxPageSize, features.size(), "number of returned features should be capped at maxPageSize");
   }
 
   @Test

@@ -86,8 +86,11 @@ public class FeaturesController implements Constants {
   private final FeatureSourceRepository featureSourceRepository;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
-  @Value("${tailormap-api.pageSize:100}")
-  private int pageSize;
+  @Value("${tailormap-api.default-page-size:100}")
+  private int defaultPageSize;
+
+  @Value("${tailormap-api.max-page-size:500}")
+  private int maxPageSize;
 
   @Value("${tailormap-api.feature.info.maxitems:30}")
   private int maxFeatures;
@@ -119,6 +122,7 @@ public class FeaturesController implements Constants {
       @RequestParam(defaultValue = "false") Boolean simplify,
       @RequestParam(required = false) String filter,
       @RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer pageSize,
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false, defaultValue = "asc") String sortOrder,
       @RequestParam(defaultValue = "false") boolean onlyGeometries,
@@ -162,6 +166,7 @@ public class FeaturesController implements Constants {
           application,
           appLayerSettings,
           page,
+          pageSize,
           filter,
           sortBy,
           sortOrder,
@@ -180,13 +185,15 @@ public class FeaturesController implements Constants {
       @NotNull Application application,
       @NotNull AppLayerSettings appLayerSettings,
       Integer page,
+      Integer pageSize,
       String filterCQL,
       String sortBy,
       String sortOrder,
       boolean onlyGeometries,
       boolean skipGeometryOutput,
       boolean withAttachments) {
-    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+    int requestPageSize = Math.min(maxPageSize, pageSize != null ? pageSize : defaultPageSize);
+    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(requestPageSize);
 
     SimpleFeatureSource fs = null;
     try {
@@ -264,8 +271,8 @@ public class FeaturesController implements Constants {
       if (sortAttrName != null) {
         q.setSortBy(ff.sort(sortAttrName, _sortOrder));
       }
-      q.setMaxFeatures(pageSize);
-      q.setStartIndex((page - 1) * pageSize);
+      q.setMaxFeatures(requestPageSize);
+      q.setStartIndex((page - 1) * requestPageSize);
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(

@@ -53,7 +53,7 @@ public class SearchController {
   @Value("${tailormap-api.solr-query-timeout-seconds:7}")
   private int solrQueryTimeout;
 
-  @Value("${tailormap-api.pageSize:100}")
+  @Value("${tailormap-api.default-page-size:100}")
   private int numResultsToReturn;
 
   public SearchController(SearchIndexRepository searchIndexRepository, SolrService solrService) {
