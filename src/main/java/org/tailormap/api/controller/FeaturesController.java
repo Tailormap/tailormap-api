@@ -192,7 +192,9 @@ public class FeaturesController implements Constants {
       boolean onlyGeometries,
       boolean skipGeometryOutput,
       boolean withAttachments) {
-    int requestPageSize = Math.min(maxPageSize, pageSize != null ? pageSize : defaultPageSize);
+    int requestedPageSize = pageSize != null ? pageSize : defaultPageSize;
+    requestedPageSize = Math.max(1, requestedPageSize);
+    int requestPageSize = Math.min(maxPageSize, requestedPageSize);
     FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(requestPageSize);
 
     SimpleFeatureSource fs = null;
