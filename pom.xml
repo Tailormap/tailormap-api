@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>4.0.3</version>
+        <version>4.0.4</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -122,14 +122,15 @@ SPDX-License-Identifier: MIT
         -->
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <flyway.version>12.1.0</flyway.version>
-        <hibernate.version>7.2.6.Final</hibernate.version>
-        <jackson-2-bom.version>2.21.1</jackson-2-bom.version>
+        <commons-codec.version>1.21.0</commons-codec.version>
+        <flyway.version>12.1.1</flyway.version>
+        <hibernate.version>7.2.7.Final</hibernate.version>
+        <jackson-2-bom.version>2.21.2</jackson-2-bom.version>
         <jackson-bom.version>3.1.0</jackson-bom.version>
         <json-path.version>3.0.0</json-path.version>
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <micrometer.version>1.16.4</micrometer.version>
-        <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
+        <mssql-jdbc.version>13.4.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.26.1.0.0</oracle-database.version>
         <postgresql.version>42.7.10</postgresql.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
