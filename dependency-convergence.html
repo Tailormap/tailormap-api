@@ -85,10 +85,10 @@
 <td>342</td></tr>
 <tr class="b">
 <th>Number of unique artifacts (NOA):</th>
-<td>343</td></tr>
+<td>344</td></tr>
 <tr class="a">
 <th>Number of version-conflicting artifacts (NOC):</th>
-<td>1</td></tr>
+<td>2</td></tr>
 <tr class="b">
 <th>Number of SNAPSHOT artifacts (NOS):</th>
 <td>0</td></tr>
@@ -99,6 +99,20 @@
 <th>Ready for release (100% convergence and no SNAPSHOTS):</th>
 <td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>Error</b><br />You do not have 100% convergence.</td></tr></table></section><section>
 <h2>Dependencies used in this project</h2><section>
+<h3>commons-io:commons-io</h3>
+<table class="table table-striped">
+<tr class="a">
+<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
+<td>
+<table class="table table-striped">
+<tr class="b">
+<td>2.19.0</td>
+<td>
+<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />+-&#160;org.geotools:gt-wfs-ng:jar:34.2:compile<br />|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.19.0:compile<br />+-&#160;org.geotools:gt-wms:jar:34.2:compile<br />|&#160;&#160;+-&#160;org.geotools:gt-coverage:jar:34.2:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.19.0:compile<br />|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.19.0:compile<br />\-&#160;org.geotools.xsd:gt-xsd-core:jar:34.2:compile<br />&#160;&#160;&#160;\-&#160;commons-io:commons-io:jar:2.19.0:compile<br /><br /></ol></td></tr>
+<tr class="a">
+<td>2.21.0</td>
+<td>
+<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />\-&#160;commons-io:commons-io:jar:2.21.0:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
 <h3>javax.measure:unit-api</h3>
 <table class="table table-striped">
 <tr class="a">
@@ -108,11 +122,11 @@
 <tr class="b">
 <td>2.1.2</td>
 <td>
-<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />\-&#160;org.geotools:gt-api:jar:34.3:compile<br />&#160;&#160;&#160;\-&#160;systems.uom:systems-common:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;javax.measure:unit-api:jar:2.1.2:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;si.uom:si-quantity:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.1.2:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;si.uom:si-units:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.1.2:compile<br /><br /></ol></td></tr>
+<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />\-&#160;org.geotools:gt-api:jar:34.2:compile<br />&#160;&#160;&#160;\-&#160;systems.uom:systems-common:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;javax.measure:unit-api:jar:2.1.2:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;si.uom:si-quantity:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.1.2:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;si.uom:si-units:jar:2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.1.2:compile<br /><br /></ol></td></tr>
 <tr class="a">
 <td>2.2</td>
 <td>
-<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />+-&#160;org.geotools:gt-api:jar:34.3:compile<br />|&#160;&#160;+-&#160;tech.units:indriya:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;+-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;tech.uom.lib:uom-lib-common:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-main:jar:34.3:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-metadata:jar:34.3:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-referencing:jar:34.3:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wfs-ng:jar:34.3:compile<br />|&#160;&#160;\-&#160;org.geotools.xsd:gt-xsd-wfs:jar:34.3:compile<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;org.geotools.xsd:gt-xsd-ows:jar:34.3:compile<br />|&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wms:jar:34.3:compile<br />|&#160;&#160;+-&#160;org.geotools:gt-coverage:jar:34.3:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;\-&#160;org.geotools:gt-render:jar:34.3:compile<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wmts:jar:34.3:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />\-&#160;org.geotools:gt-xml:jar:34.3:compile<br />&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br /><br /></ol></td></tr></table></td></tr></table></section></section>        </main>
+<ol style="list-style-type: decimal;">org.tailormap:tailormap-api:jar:12.5.2-SNAPSHOT<br />+-&#160;org.geotools:gt-api:jar:34.2:compile<br />|&#160;&#160;+-&#160;tech.units:indriya:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;+-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;tech.uom.lib:uom-lib-common:jar:2.2:compile<br />|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-main:jar:34.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-metadata:jar:34.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-referencing:jar:34.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wfs-ng:jar:34.2:compile<br />|&#160;&#160;\-&#160;org.geotools.xsd:gt-xsd-wfs:jar:34.2:compile<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;org.geotools.xsd:gt-xsd-ows:jar:34.2:compile<br />|&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wms:jar:34.2:compile<br />|&#160;&#160;+-&#160;org.geotools:gt-coverage:jar:34.2:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />|&#160;&#160;\-&#160;org.geotools:gt-render:jar:34.2:compile<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />+-&#160;org.geotools:gt-wmts:jar:34.2:compile<br />|&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br />\-&#160;org.geotools:gt-xml:jar:34.2:compile<br />&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.2:compile<br /><br /></ol></td></tr></table></td></tr></table></section></section>        </main>
       </div>
     </div>
     <hr/>
