@@ -22,7 +22,7 @@ updates:
       - dependency-name: org.springframework.security:spring-security-test
         versions:
           - '>= 7.1'
-      - dependency-name: org.hibernate.orm.tooling:hibernate-enhance-maven-plugin
+      - dependency-name: org.hibernate.orm:hibernate-maven-plugin
         versions:
           - '>= 7.3'
 
