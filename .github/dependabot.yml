@@ -14,7 +14,7 @@ updates:
     labels:
       - infrastructure
       - dependency
-    # stay on springboot 4.0.x / spring-security 7.0.x / hibernate 7.2.x  for now
+    # stay on springboot 4.0.x / spring-security 7.0.x / hibernate 7.3.x  for now
     ignore:
       - dependency-name: org.springframework.boot:spring-boot-starter-parent
         versions:
@@ -24,7 +24,7 @@ updates:
           - '>= 7.1'
       - dependency-name: org.hibernate.orm:hibernate-maven-plugin
         versions:
-          - '>= 7.3'
+          - '>= 7.4'
 
   - package-ecosystem: github-actions
     directory: "/"
