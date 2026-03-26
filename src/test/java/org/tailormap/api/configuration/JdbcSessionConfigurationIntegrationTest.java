@@ -86,7 +86,10 @@ and session_primary_id = (select primary_id from spring_session where session_id
   void should_create_session_attribute_using_postgresql_convert_from_and_jsonb() {
     User user = new User()
         .setUsername("test-user")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("userkey", true, "uservalue")))
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty()
+            .key("userkey")
+            .isPublic(true)
+            .value("uservalue")))
         .setGroups(Set.of(new Group().setName("test-bar")));
     // Note: group additional properties are normally loaded from the database via GroupRepository
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, groupRepository);
@@ -135,7 +138,10 @@ and session_primary_id = (select primary_id from spring_session where session_id
 
     User updatedUser = new User()
         .setUsername("updated-user")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("newkey", false, "newvalue")));
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty()
+            .key("newkey")
+            .isPublic(false)
+            .value("newvalue")));
     TailormapUserDetailsImpl updatedUserDetails = new TailormapUserDetailsImpl(updatedUser, null);
     Authentication updatedAuth = new UsernamePasswordAuthenticationToken(
         updatedUserDetails, null, List.of(new SimpleGrantedAuthority("ADMIN")));
@@ -206,8 +212,10 @@ where session_primary_id = (select primary_id from spring_session where session_
 
     User user = new User()
         .setUsername("user-with-\"quotes\"")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty(
-            "key with spaces", true, "value with 'quotes' and \"double quotes\"")));
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty()
+            .key("key with spaces")
+            .isPublic(true)
+            .value("value with 'quotes' and \"double quotes\"")));
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);
     Authentication auth =
         new UsernamePasswordAuthenticationToken(userDetails, null, List.of(new SimpleGrantedAuthority("USER")));

@@ -49,10 +49,16 @@ class JdbcSessionConfigurationTest {
   void should_serialize_and_deserialize_security_context_with_tm_userdetails_round_trip() {
     Set<Group> groups = Set.of(new Group()
         .setName("admin")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("grouptest", true, "group"))));
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty()
+            .key("grouptest")
+            .isPublic(true)
+            .value("group"))));
     User user = new User()
         .setUsername("tm-admin")
-        .setAdditionalProperties(List.of(new AdminAdditionalProperty("usertest", true, "user")))
+        .setAdditionalProperties(List.of(new AdminAdditionalProperty()
+            .key("usertest")
+            .isPublic(true)
+            .value("user")))
         .setOrganisation("Tailormap")
         .setGroups(groups);
     TailormapUserDetailsImpl userDetails = new TailormapUserDetailsImpl(user, null);

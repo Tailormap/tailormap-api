@@ -651,6 +651,12 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.25.10</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -1092,7 +1098,8 @@ SPDX-License-Identifier: MIT
                                 <useJackson3>true</useJackson3>
                                 <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
                                 <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
-                                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                                <!-- Do not generate constructors with all args because this may set initialized fields (such as Collections) to null -->
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -1228,6 +1235,29 @@ SPDX-License-Identifier: MIT
                             <target name="generate-paths">
                                 <mkdir dir="${project.build.directory}/classes/static/swagger-ui" />
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>inject-jackson-null-skip</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.tailormap.api.compile.JacksonNullSkipInjector</mainClass>
+                            <arguments>
+                                <argument>
+                                    ${project.build.directory}/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json
+                                </argument>
+                            </arguments>
+                            <classpathScope>compile</classpathScope>
                         </configuration>
                     </execution>
                 </executions>
