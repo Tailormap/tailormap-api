@@ -342,7 +342,12 @@ public class GeoService extends AuditMetadata {
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
-    return getSettings().getLayerSettings().get(layerName);
+    // do a possibly superfluous null check for issue HTM-1951
+    GeoServiceLayerSettings layerSettings = null;
+    if (getSettings().getLayerSettings() != null) {
+      layerSettings = getSettings().getLayerSettings().get(layerName);
+    }
+    return layerSettings;
   }
 
   @NonNull public String getTitleWithSettingsOverrides(String layerName) {

@@ -212,8 +212,12 @@ public class AuthorisationService {
       return false;
     }
 
-    GeoServiceLayerSettings layerSettings =
-        geoService.getSettings().getLayerSettings().get(layer.getName());
+    // do a possibly superfluous null check for issue HTM-1951
+    GeoServiceLayerSettings layerSettings = null;
+    if (geoService.getSettings().getLayerSettings() != null) {
+      layerSettings = geoService.getSettings().getLayerSettings().get(layer.getName());
+    }
+
     if (layerSettings != null && layerSettings.getAuthorizationRules() != null) {
       logger.trace(
           "Checking layer settings rules for GeoService '{}' and layer '{}'. \nRules: {}",
