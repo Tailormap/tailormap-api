@@ -41,25 +41,17 @@ public class JacksonNullSkipInjector {
   @SuppressWarnings("PMD.SystemPrintln")
   private static void processFile(Path filePath) {
     try {
-      System.out.println("Processing " + filePath);
       CompilationUnit cu = StaticJavaParser.parse(filePath);
 
       cu.findAll(FieldDeclaration.class).forEach(field -> {
         if (!field.isStatic() && hasInitializer(field)) {
           String fieldName = field.getVariable(0).getNameAsString();
-          System.out.println("Adding JsonSetter annotation to " + fieldName);
-          //          NormalAnnotationExpr a = new NormalAnnotationExpr(
-          //              new Name("JsonSetter"),
-          //              NodeList.nodeList(
-          //                  new MemberValuePair("nulls", new FieldAccessExpr(new NameExpr("Nulls"),
-          // "SKIP")),
-          //                  new MemberValuePair("contentNulls", new FieldAccessExpr(new NameExpr("Nulls"),
-          // "SKIP")),
-          //                  new MemberValuePair("value", new StringLiteralExpr(fieldName))));
-          //          field.addAnnotation(a);
 
           // Modify @JsonProperty on setter method
           String setterName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+          System.out.printf(
+              "Adding JsonSetter annotation to %s::%s\n",
+              cu.getPrimaryTypeName().orElse(null), setterName);
           cu.findAll(MethodDeclaration.class).stream()
               .filter(method -> method.getNameAsString().equals(setterName))
               .forEach(method -> processSetterMethod(method, fieldName));
@@ -67,7 +59,6 @@ public class JacksonNullSkipInjector {
       });
       cu.addImport("com.fasterxml.jackson.annotation.JsonSetter");
       cu.addImport("com.fasterxml.jackson.annotation.Nulls");
-      cu.addImport("com.fasterxml.jackson.annotation.JsonProperty");
 
       Files.writeString(filePath, cu.toString());
 
@@ -83,12 +74,16 @@ public class JacksonNullSkipInjector {
   }
 
   private static void processSetterMethod(MethodDeclaration method, String property) {
-    NormalAnnotationExpr a = new NormalAnnotationExpr(
-        new Name("JsonSetter"),
-        NodeList.nodeList(
-            new MemberValuePair("nulls", new FieldAccessExpr(new NameExpr("Nulls"), "SKIP")),
-            new MemberValuePair("contentNulls", new FieldAccessExpr(new NameExpr("Nulls"), "SKIP")),
-            new MemberValuePair("value", new StringLiteralExpr(property))));
-    method.addAnnotation(a);
+    boolean hasJsonSetter = method.getAnnotations().stream()
+        .anyMatch(annotation -> annotation.getNameAsString().equals("JsonSetter"));
+
+    if (!hasJsonSetter) {
+      NormalAnnotationExpr a = new NormalAnnotationExpr(
+          new Name("JsonSetter"),
+          NodeList.nodeList(
+              new MemberValuePair("nulls", new FieldAccessExpr(new NameExpr("Nulls"), "SKIP")),
+              new MemberValuePair("value", new StringLiteralExpr(property))));
+      method.addAnnotation(a);
+    }
   }
 }
