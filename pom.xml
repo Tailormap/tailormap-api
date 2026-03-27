@@ -212,7 +212,7 @@ SPDX-License-Identifier: MIT
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
             <version>3.28.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
@@ -1069,6 +1069,21 @@ SPDX-License-Identifier: MIT
                     </annotationProcessorPaths>
                     <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                 </configuration>
+                <executions>
+                    <execution>
+                        <!-- Pre-compile the injector before process-sources so exec:java can run it at process-sources -->
+                        <id>compile-injector-early</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>org/tailormap/api/compile/JacksonNullSkipInjector.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -1249,7 +1264,7 @@ SPDX-License-Identifier: MIT
                         <goals>
                             <goal>java</goal>
                         </goals>
-                        <phase>process-classes</phase>
+                        <phase>process-sources</phase>
                         <configuration>
                             <mainClass>org.tailormap.api.compile.JacksonNullSkipInjector</mainClass>
                             <arguments>
