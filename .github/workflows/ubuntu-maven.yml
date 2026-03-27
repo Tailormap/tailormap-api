@@ -53,14 +53,14 @@ jobs:
           mvn -B -fae -e test
 
       - name: 'Upload coverage to Codecov'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -116,14 +116,14 @@ jobs:
             target/failsafe-reports/TEST-*.xml       
 
       - name: 'Upload coverage to Codecov'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 'Upload test results to Codecov'
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/failsafe-reports/TEST-*.xml
