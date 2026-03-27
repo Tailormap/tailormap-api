@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.tailormap.api.compile;
+package org.tailormap.tools;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  */
 public class JacksonNullSkipInjector {
 
-  public static void main(String[] args) throws IOException {
+  static void main(String[] args) throws IOException {
     Path sourceDir = Path.of(args[0]);
     try (Stream<Path> paths = Files.walk(sourceDir)) {
       paths.filter(p -> p.toString().endsWith(".java")).forEach(JacksonNullSkipInjector::processFile);
