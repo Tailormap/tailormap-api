@@ -6,7 +6,7 @@
 
 package org.tailormap.api.compile;
 
-import com.github.javaparser.*;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -18,8 +18,9 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
 /**
  * Injects JsonSetter annotation with "Nulls.SKIP" to fields that don't have a null initializer. This is needed because
@@ -31,13 +32,13 @@ import java.nio.file.Paths;
 public class JacksonNullSkipInjector {
 
   public static void main(String[] args) throws IOException {
-    Path sourceDir = Paths.get(args[0]);
-
-    try (var paths = Files.walk(sourceDir)) {
+    Path sourceDir = Path.of(args[0]);
+    try (Stream<Path> paths = Files.walk(sourceDir)) {
       paths.filter(p -> p.toString().endsWith(".java")).forEach(JacksonNullSkipInjector::processFile);
     }
   }
 
+  @SuppressWarnings("PMD.SystemPrintln")
   private static void processFile(Path filePath) {
     try {
       System.out.println("Processing " + filePath);
@@ -78,7 +79,7 @@ public class JacksonNullSkipInjector {
   private static boolean hasInitializer(FieldDeclaration field) {
     return field.getVariables().stream()
         .anyMatch(variable -> variable.getInitializer().isPresent()
-            && !variable.getInitializer().get().toString().equals("null"));
+            && !variable.getInitializer().orElseThrow().toString().equals("null"));
   }
 
   private static void processSetterMethod(MethodDeclaration method, String property) {

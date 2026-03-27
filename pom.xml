@@ -209,6 +209,12 @@ SPDX-License-Identifier: MIT
             <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.28.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <!-- TODO should be  <scope>test</scope> ... -->
@@ -650,12 +656,6 @@ SPDX-License-Identifier: MIT
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.javaparser</groupId>
-            <artifactId>javaparser-core</artifactId>
-            <version>3.28.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <repositories>
@@ -1246,16 +1246,14 @@ SPDX-License-Identifier: MIT
                 <executions>
                     <execution>
                         <id>inject-jackson-null-skip</id>
-                        <phase>process-classes</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
+                        <phase>process-classes</phase>
                         <configuration>
                             <mainClass>org.tailormap.api.compile.JacksonNullSkipInjector</mainClass>
                             <arguments>
-                                <argument>
-                                    ${project.build.directory}/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json
-                                </argument>
+                                <argument>${project.build.directory}/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json</argument>
                             </arguments>
                             <classpathScope>compile</classpathScope>
                         </configuration>
