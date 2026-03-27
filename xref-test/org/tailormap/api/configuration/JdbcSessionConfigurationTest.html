@@ -57,104 +57,110 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">void</strong> should_serialize_and_deserialize_security_context_with_tm_userdetails_round_trip() {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      Set&lt;Group&gt; groups = Set.of(<strong class="jxr_keyword">new</strong> Group()
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          .setName(<span class="jxr_string">"admin"</span>)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          .setAdditionalProperties(List.of(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty(<span class="jxr_string">"grouptest"</span>, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"group"</span>))));
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      User user = <strong class="jxr_keyword">new</strong> User()
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          .setUsername(<span class="jxr_string">"tm-admin"</span>)
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          .setAdditionalProperties(List.of(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty(<span class="jxr_string">"usertest"</span>, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"user"</span>)))
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          .setOrganisation(<span class="jxr_string">"Tailormap"</span>)
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          .setGroups(groups);
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      TailormapUserDetailsImpl userDetails = <strong class="jxr_keyword">new</strong> TailormapUserDetailsImpl(user, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      Authentication auth = <strong class="jxr_keyword">new</strong> UsernamePasswordAuthenticationToken(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          userDetails, <strong class="jxr_keyword">null</strong>, List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)));
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      SecurityContextImpl ctx = <strong class="jxr_keyword">new</strong> SecurityContextImpl(auth);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <em class="jxr_comment">// serialize</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      byte[] bytes = conversionService.convert(ctx, byte[].<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      assertNotNull(bytes);
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <em class="jxr_comment">// deserialize</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      Object back = conversionService.convert(bytes, Object.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      assertNotNull(back);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      assertEquals(SecurityContextImpl.<strong class="jxr_keyword">class</strong>, back.getClass());
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      SecurityContextImpl ctxBack = (SecurityContextImpl) back;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      assertNotNull(ctxBack.getAuthentication());
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      assertEquals(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          UsernamePasswordAuthenticationToken.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          ctxBack.getAuthentication().getClass());
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      TailormapUserDetailsImpl userDetailsBack =
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          (TailormapUserDetailsImpl) ctxBack.getAuthentication().getPrincipal();
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      assertEquals(userDetails.getAuthorities(), userDetailsBack.getAuthorities());
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      Collection&lt;String&gt; in = userDetails.getAdditionalProperties().stream()
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          .map(Objects::toString)
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          .collect(Collectors.toList());
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      Collection&lt;String&gt; out = userDetailsBack.getAdditionalProperties().stream()
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          .map(Objects::toString)
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          .collect(Collectors.toList());
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      assertEquals(in, out);
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      Set&lt;String&gt; ag = userDetails.getAdditionalGroupProperties().stream()
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          .map(Object::toString)
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          .collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      Set&lt;String&gt; bg = userDetailsBack.getAdditionalGroupProperties().stream()
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          .map(Object::toString)
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          .collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      assertEquals(ag, bg);
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>   }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a> 
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @Test
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">void</strong> should_serialize_and_deserialize_security_context_with_oidc_userdetails_round_trip() {
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     TailormapOidcUser userDetails = <strong class="jxr_keyword">new</strong> TailormapOidcUser(
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)),
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         OidcIdToken.withTokenValue(<span class="jxr_string">"test"</span>)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             .claim(StandardClaimNames.NAME, <span class="jxr_string">"tm-admin"</span>)
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             .build(),
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         OidcUserInfo.builder().name(<span class="jxr_string">"tm-admin"</span>).build(),
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         <span class="jxr_string">"name"</span>,
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <span class="jxr_string">"oidc-registration"</span>,
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         List.of(<strong class="jxr_keyword">new</strong> TailormapAdditionalProperty(<span class="jxr_string">"grouptest"</span>, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"group"</span>)));
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     assertEquals(<span class="jxr_string">"tm-admin"</span>, userDetails.getUsername());
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     Authentication auth =
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">new</strong> OAuth2AuthenticationToken(userDetails, List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)), <span class="jxr_string">"client-id"</span>);
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>     SecurityContextImpl ctx = <strong class="jxr_keyword">new</strong> SecurityContextImpl(auth);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          .setAdditionalProperties(List.of(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty()
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .key(<span class="jxr_string">"grouptest"</span>)
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>              .isPublic(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>              .value(<span class="jxr_string">"group"</span>))));
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      User user = <strong class="jxr_keyword">new</strong> User()
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          .setUsername(<span class="jxr_string">"tm-admin"</span>)
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          .setAdditionalProperties(List.of(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty()
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>              .key(<span class="jxr_string">"usertest"</span>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>              .isPublic(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              .value(<span class="jxr_string">"user"</span>)))
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          .setOrganisation(<span class="jxr_string">"Tailormap"</span>)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          .setGroups(groups);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      TailormapUserDetailsImpl userDetails = <strong class="jxr_keyword">new</strong> TailormapUserDetailsImpl(user, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      Authentication auth = <strong class="jxr_keyword">new</strong> UsernamePasswordAuthenticationToken(
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          userDetails, <strong class="jxr_keyword">null</strong>, List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)));
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      SecurityContextImpl ctx = <strong class="jxr_keyword">new</strong> SecurityContextImpl(auth);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <em class="jxr_comment">// serialize</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      byte[] bytes = conversionService.convert(ctx, byte[].<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      assertNotNull(bytes);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <em class="jxr_comment">// deserialize</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      Object back = conversionService.convert(bytes, Object.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      assertNotNull(back);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      assertEquals(SecurityContextImpl.<strong class="jxr_keyword">class</strong>, back.getClass());
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      SecurityContextImpl ctxBack = (SecurityContextImpl) back;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      assertNotNull(ctxBack.getAuthentication());
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      assertEquals(
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          UsernamePasswordAuthenticationToken.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          ctxBack.getAuthentication().getClass());
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      TailormapUserDetailsImpl userDetailsBack =
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          (TailormapUserDetailsImpl) ctxBack.getAuthentication().getPrincipal();
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      assertEquals(userDetails.getAuthorities(), userDetailsBack.getAuthorities());
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      Collection&lt;String&gt; in = userDetails.getAdditionalProperties().stream()
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          .map(Objects::toString)
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      Collection&lt;String&gt; out = userDetailsBack.getAdditionalProperties().stream()
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          .map(Objects::toString)
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      assertEquals(in, out);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      Set&lt;String&gt; ag = userDetails.getAdditionalGroupProperties().stream()
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .map(Object::toString)
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          .collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      Set&lt;String&gt; bg = userDetailsBack.getAdditionalGroupProperties().stream()
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         .map(Object::toString)
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         .collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     assertEquals(ag, bg);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   @Test
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">void</strong> should_serialize_and_deserialize_security_context_with_oidc_userdetails_round_trip() {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     TailormapOidcUser userDetails = <strong class="jxr_keyword">new</strong> TailormapOidcUser(
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)),
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         OidcIdToken.withTokenValue(<span class="jxr_string">"test"</span>)
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             .claim(StandardClaimNames.NAME, <span class="jxr_string">"tm-admin"</span>)
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             .build(),
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         OidcUserInfo.builder().name(<span class="jxr_string">"tm-admin"</span>).build(),
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         <span class="jxr_string">"name"</span>,
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         <span class="jxr_string">"oidc-registration"</span>,
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>         List.of(<strong class="jxr_keyword">new</strong> TailormapAdditionalProperty(<span class="jxr_string">"grouptest"</span>, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"group"</span>)));
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <em class="jxr_comment">// serialize</em>
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>     byte[] bytes = conversionService.convert(ctx, byte[].<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     assertNotNull(bytes);
-<a class="jxr_linenumber" name="L123" href="#L123">123</a> 
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <em class="jxr_comment">// deserialize</em>
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     Object back = conversionService.convert(bytes, Object.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     assertNotNull(back);
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     assertEquals(SecurityContextImpl.<strong class="jxr_keyword">class</strong>, back.getClass());
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     SecurityContextImpl ctxBack = (SecurityContextImpl) back;
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     assertNotNull(ctxBack.getAuthentication());
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>     assertEquals(auth.getClass(), ctxBack.getAuthentication().getClass());
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     TailormapOidcUser userDetailsBack =
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         (TailormapOidcUser) ctxBack.getAuthentication().getPrincipal();
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     assertEquals(userDetails.getAuthorities(), userDetailsBack.getAuthorities());
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>     assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     assertEquals(userDetails.getAdditionalProperties(), userDetailsBack.getAdditionalProperties());
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     assertEquals(
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>         userDetails.getAdditionalGroupProperties().stream()
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>             .map(Object::toString)
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             .collect(Collectors.toSet()),
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         userDetailsBack.getAdditionalGroupProperties().stream()
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>             .map(Object::toString)
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>             .collect(Collectors.toSet()));
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>   }
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     assertEquals(<span class="jxr_string">"tm-admin"</span>, userDetails.getUsername());
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     Authentication auth =
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">new</strong> OAuth2AuthenticationToken(userDetails, List.of(<strong class="jxr_keyword">new</strong> SimpleGrantedAuthority(<span class="jxr_string">"admin"</span>)), <span class="jxr_string">"client-id"</span>);
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     SecurityContextImpl ctx = <strong class="jxr_keyword">new</strong> SecurityContextImpl(auth);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> 
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <em class="jxr_comment">// serialize</em>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     byte[] bytes = conversionService.convert(ctx, byte[].<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     assertNotNull(bytes);
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <em class="jxr_comment">// deserialize</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     Object back = conversionService.convert(bytes, Object.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     assertNotNull(back);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     assertEquals(SecurityContextImpl.<strong class="jxr_keyword">class</strong>, back.getClass());
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     SecurityContextImpl ctxBack = (SecurityContextImpl) back;
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     assertNotNull(ctxBack.getAuthentication());
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     assertEquals(auth.getClass(), ctxBack.getAuthentication().getClass());
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     TailormapOidcUser userDetailsBack =
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         (TailormapOidcUser) ctxBack.getAuthentication().getPrincipal();
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     assertEquals(userDetails.getAuthorities(), userDetailsBack.getAuthorities());
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     assertEquals(userDetails.getUsername(), userDetailsBack.getUsername());
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     assertEquals(userDetails.getOrganisation(), userDetailsBack.getOrganisation());
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     assertEquals(userDetails.getAdditionalProperties(), userDetailsBack.getAdditionalProperties());
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     assertEquals(
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         userDetails.getAdditionalGroupProperties().stream()
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>             .map(Object::toString)
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>             .collect(Collectors.toSet()),
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         userDetailsBack.getAdditionalGroupProperties().stream()
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             .map(Object::toString)
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>             .collect(Collectors.toSet()));
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     assertEquals(userDetails.isAccountNonExpired(), userDetailsBack.isAccountNonExpired());
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     assertEquals(userDetails.isEnabled(), userDetailsBack.isEnabled());
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>     assertEquals(userDetails.isCredentialsNonExpired(), userDetailsBack.isCredentialsNonExpired());
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   }
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

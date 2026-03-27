@@ -207,11 +207,11 @@
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">return</strong> legendStyles.stream()
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         .map(style -&gt;
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>             <em class="jxr_comment">// Create a copy of the style so we don't mutate configuration objects</em>
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>             <strong class="jxr_keyword">new</strong> WMSStyle(
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>                 style.getName(),
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>                 style.getTitle(),
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>                 style.getAbstractText(),
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 UriComponentsBuilder.fromUriString(legendProxyUrl)
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>             <strong class="jxr_keyword">new</strong> WMSStyle()
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>                 .name(style.getName())
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>                 .title(style.getTitle())
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>                 .abstractText(style.getAbstractText())
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 .legendUrl(UriComponentsBuilder.fromUriString(legendProxyUrl)
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>                     .queryParam(<span class="jxr_string">"STYLE"</span>, style.getName())
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>                     .build(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>                     .toUri()))
