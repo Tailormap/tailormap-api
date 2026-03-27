@@ -100,7 +100,6 @@ SPDX-License-Identifier: MIT
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2026-03-23T14:25:52Z</project.build.outputTimestamp>
         <geotools.version>34.3</geotools.version>
         <jts.version>1.20.0</jts.version>
@@ -135,6 +134,7 @@ SPDX-License-Identifier: MIT
         <oracle-database.version>23.26.1.0.0</oracle-database.version>
         <postgresql.version>42.7.10</postgresql.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
@@ -143,7 +143,7 @@ SPDX-License-Identifier: MIT
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <pmd.version>7.22.0</pmd.version>
@@ -528,6 +528,12 @@ SPDX-License-Identifier: MIT
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.28.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <scope>provided</scope>
@@ -713,6 +719,11 @@ SPDX-License-Identifier: MIT
         </testResources>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.1</version>
+                </plugin>
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -1063,6 +1074,22 @@ SPDX-License-Identifier: MIT
                     </annotationProcessorPaths>
                     <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                 </configuration>
+                <executions>
+                    <execution>
+                        <!-- Pre-compile the injector before process-sources so exec:java can run it at process-sources -->
+                        <id>compile-injector-early</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <compileSourceRoots>${project.basedir}/build/tooling/src/main/java</compileSourceRoots>
+                            <includes>
+                                <include>org/tailormap/tools/JacksonNullSkipInjector.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -1092,7 +1119,8 @@ SPDX-License-Identifier: MIT
                                 <useJackson3>true</useJackson3>
                                 <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
                                 <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
-                                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                                <!-- Do not generate constructors with all args because this may set initialized fields (such as Collections) to null -->
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -1228,6 +1256,27 @@ SPDX-License-Identifier: MIT
                             <target name="generate-paths">
                                 <mkdir dir="${project.build.directory}/classes/static/swagger-ui" />
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>inject-jackson-null-skip</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <mainClass>org.tailormap.tools.JacksonNullSkipInjector</mainClass>
+                            <arguments>
+                                <argument>${project.build.directory}/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json</argument>
+                            </arguments>
+                            <classpathScope>compile</classpathScope>
                         </configuration>
                     </execution>
                 </executions>
@@ -1793,6 +1842,28 @@ SPDX-License-Identifier: MIT
                 <skipQA>true</skipQA>
                 <skipJavaDoc>true</skipJavaDoc>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-source</id>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/build/tooling/src/main/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>hal-explorer</id>

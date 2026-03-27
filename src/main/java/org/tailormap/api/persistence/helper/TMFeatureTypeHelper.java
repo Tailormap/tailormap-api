@@ -164,7 +164,10 @@ public class TMFeatureTypeHelper {
           long attMaxFileSize = att.getMaxAttachmentSize() == null
               ? maxFileSize
               : Math.min(att.getMaxAttachmentSize(), maxFileSize);
-          return new AttachmentAttributeType(att.getAttributeName(), att.getMimeType(), attMaxFileSize);
+          return new AttachmentAttributeType()
+              .attributeName(att.getAttributeName())
+              .mimeType(att.getMimeType())
+              .maxAttachmentSize(attMaxFileSize);
         })
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
