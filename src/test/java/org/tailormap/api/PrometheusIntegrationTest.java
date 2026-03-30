@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
+import static org.tailormap.api.IntegrationTestOrdering.PROMETHEUS_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.NUMBER_OF_DAYS_REPLACE_TOKEN;
 
@@ -44,7 +45,7 @@ import tools.jackson.databind.node.ArrayNode;
  * localhost:9090 and that the tailormap_app_request_total metric is available.
  */
 @PostgresIntegrationTest
-@Order(Integer.MAX_VALUE)
+@Order(PROMETHEUS_INTEGRATION_TEST_ORDER)
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscoreAndNumber.class)
 public class PrometheusIntegrationTest {
   private static final Logger logger =
