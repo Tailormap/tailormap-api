@@ -41,7 +41,7 @@ jobs:
         continue-on-error: true
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: mvn -U package -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -fae -B -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -DfailBuildOnCVSS=5
+        run: mvn -U package -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -fae -B -DfailBuildOnCVSS=5
 
       - name: 'Check sarif file existence'
         id: check_files

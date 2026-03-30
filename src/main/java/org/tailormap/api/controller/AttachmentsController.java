@@ -7,7 +7,6 @@ package org.tailormap.api.controller;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import com.google.common.base.Splitter;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
@@ -153,8 +151,7 @@ public class AttachmentsController {
     if (acceptList == null || isBlank(acceptList)) {
       return true;
     }
-    Iterable<String> allowedMimeTypes =
-        Splitter.on(Pattern.compile(",\\s*")).split(acceptList);
+    String[] allowedMimeTypes = acceptList.split(",\\s*", -1);
     final Locale locale = Locale.ENGLISH;
     for (String allowedType : allowedMimeTypes) {
       if (allowedType.startsWith(".")) {
