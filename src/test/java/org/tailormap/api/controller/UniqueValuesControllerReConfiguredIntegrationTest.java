@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.IntegrationTestOrdering.SECOND_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 
 import com.jayway.jsonpath.JsonPath;
@@ -48,7 +49,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 @TestPropertySource(properties = {"tailormap-api.unique.use_geotools_unique_function=false"})
-@Order(2)
+@Order(SECOND_INTEGRATION_TEST_ORDER)
 class UniqueValuesControllerReConfiguredIntegrationTest {
   private static final String provinciesWFSUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/naam";

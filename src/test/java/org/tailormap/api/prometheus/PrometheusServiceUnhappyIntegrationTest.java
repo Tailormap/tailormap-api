@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.tailormap.api.IntegrationTestOrdering.PROMETHEUS_UNHAPPY_INTEGRATION_TEST_ORDER;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Order;
@@ -18,7 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
-@Order(Integer.MAX_VALUE)
+@Order(PROMETHEUS_UNHAPPY_INTEGRATION_TEST_ORDER)
 @TestPropertySource(
     properties = {
       "tailormap-api.prometheus-api-url=http://localhost:9091/unhappy-path/",

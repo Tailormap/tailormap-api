@@ -199,7 +199,9 @@ mvn -Pdeveloping test
 ```
 
 Unit tests which use the PostGIS configuration database _and_ the spatial database stack need 
-their class name to end with `PostgresIntegrationTest`. 
+their class name to end with `IntegrationTest` and have the annotation `@PostgresIntegrationTest`.
+When specifying test class ordering using `@Order` make sure to re-use or create a new constant 
+from  `IntegrationTestOrdering` to avoid test order dependencies.
 
 Run the following command to run the integration tests. The application is started with the
 `populate-testdata` profile automatically, so if you've modified your configuration it will be 
