@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.IntegrationTestOrdering.APPLICATION_EVENT_HANDLER_INTEGRATION_TEST_ORDER;
 
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +34,7 @@ import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.prometheus.PrometheusService;
 import org.tailormap.api.repository.ApplicationRepository;
 
-@Order(Integer.MAX_VALUE)
+@Order(APPLICATION_EVENT_HANDLER_INTEGRATION_TEST_ORDER)
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -336,6 +336,7 @@ components:
           nullable: false
           default: false
         editConfiguration:
+          title: 'filterEditConfiguration'
           description: 'configuration for editing filter'
           allOf:
             - type: object

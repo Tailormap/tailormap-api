@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.tailormap.api.IntegrationTestOrdering.PROMETHEUS_INTEGRATION_TEST_ORDER;
 
 import java.io.IOException;
 import org.junit.jupiter.api.MethodOrderer;
@@ -28,7 +29,7 @@ import tools.jackson.databind.JsonNode;
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisableIfTestFails
-@Order(Integer.MAX_VALUE - 1)
+@Order(PROMETHEUS_INTEGRATION_TEST_ORDER)
 class PrometheusServiceIntegrationTest {
   @Autowired
   private PrometheusService prometheusService;

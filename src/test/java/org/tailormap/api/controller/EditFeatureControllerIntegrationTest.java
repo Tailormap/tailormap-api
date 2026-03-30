@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.IntegrationTestOrdering.EDIT_FEATURES_CONTROLLER_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
@@ -47,8 +48,7 @@ import tools.jackson.databind.node.ObjectNode;
 @AutoConfigureMockMvc
 @Stopwatch
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
-// should be last test to prevent side effects - as some data is deleted
-@Order(Integer.MAX_VALUE)
+@Order(EDIT_FEATURES_CONTROLLER_INTEGRATION_TEST_ORDER)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EditFeatureControllerIntegrationTest {

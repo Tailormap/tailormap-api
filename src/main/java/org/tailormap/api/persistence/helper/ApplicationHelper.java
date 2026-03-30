@@ -199,11 +199,11 @@ public class ApplicationHelper {
     return legendStyles.stream()
         .map(style ->
             // Create a copy of the style so we don't mutate configuration objects
-            new WMSStyle(
-                style.getName(),
-                style.getTitle(),
-                style.getAbstractText(),
-                UriComponentsBuilder.fromUriString(legendProxyUrl)
+            new WMSStyle()
+                .name(style.getName())
+                .title(style.getTitle())
+                .abstractText(style.getAbstractText())
+                .legendUrl(UriComponentsBuilder.fromUriString(legendProxyUrl)
                     .queryParam("STYLE", style.getName())
                     .build(true)
                     .toUri()))

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.IntegrationTestOrdering.FIRST_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
@@ -51,7 +52,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
-@Order(1)
+@Order(FIRST_INTEGRATION_TEST_ORDER)
 class UniqueValuesControllerIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;

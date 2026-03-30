@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>4.0.4</version>
+        <version>4.0.5</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -100,7 +100,6 @@ SPDX-License-Identifier: MIT
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2026-03-23T14:25:52Z</project.build.outputTimestamp>
         <geotools.version>35-SNAPSHOT</geotools.version>
         <jts.version>1.20.0</jts.version>
@@ -112,7 +111,7 @@ SPDX-License-Identifier: MIT
         Spring Boot version overrides.
 
         See org.springframework.boot:spring-boot-dependencies
-        eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
+        e.g. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
         and use
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates
@@ -126,14 +125,16 @@ SPDX-License-Identifier: MIT
         <flyway.version>12.1.1</flyway.version>
         <hibernate.version>7.3.0.Final</hibernate.version>
         <jackson-2-bom.version>2.21.2</jackson-2-bom.version>
-        <jackson-bom.version>3.1.0</jackson-bom.version>
+        <jackson-bom.version>3.1.1</jackson-bom.version>
         <json-path.version>3.0.0</json-path.version>
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <micrometer.version>1.16.4</micrometer.version>
+        <mockito.version>5.23.0</mockito.version>
         <mssql-jdbc.version>13.4.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.26.1.0.0</oracle-database.version>
         <postgresql.version>42.7.10</postgresql.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
@@ -142,17 +143,17 @@ SPDX-License-Identifier: MIT
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-        <pmd.version>7.22.0</pmd.version>
+        <pmd.version>7.23.0</pmd.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.3.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.32.1</swagger-ui.version>
-        <sentry.version>8.36.0</sentry.version>
+        <sentry.version>8.37.1</sentry.version>
         <errorProne.version>2.48.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -347,10 +348,22 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wms</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-coverage</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wmts</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-coverage</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -525,6 +538,12 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.28.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -721,6 +740,11 @@ SPDX-License-Identifier: MIT
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
                     <version>7.21.0</version>
@@ -780,7 +804,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>io.github.git-commit-id</groupId>
                     <artifactId>git-commit-id-maven-plugin</artifactId>
-                    <version>9.0.2</version>
+                    <version>9.1.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1070,6 +1094,22 @@ SPDX-License-Identifier: MIT
                     </annotationProcessorPaths>
                     <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                 </configuration>
+                <executions>
+                    <execution>
+                        <!-- Pre-compile the injector before process-sources so exec:java can run it at process-sources -->
+                        <id>compile-injector-early</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <compileSourceRoots>${project.basedir}/build/tooling/src/main/java</compileSourceRoots>
+                            <includes>
+                                <include>org/tailormap/tools/JacksonNullSkipInjector.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -1099,7 +1139,8 @@ SPDX-License-Identifier: MIT
                                 <useJackson3>true</useJackson3>
                                 <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
                                 <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
-                                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                                <!-- Do not generate constructors with all args because this may set initialized fields (such as Collections) to null -->
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -1235,6 +1276,27 @@ SPDX-License-Identifier: MIT
                             <target name="generate-paths">
                                 <mkdir dir="${project.build.directory}/classes/static/swagger-ui" />
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>inject-jackson-null-skip</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <mainClass>org.tailormap.tools.JacksonNullSkipInjector</mainClass>
+                            <arguments>
+                                <argument>${project.build.directory}/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json</argument>
+                            </arguments>
+                            <classpathScope>compile</classpathScope>
                         </configuration>
                     </execution>
                 </executions>
@@ -1785,7 +1847,7 @@ SPDX-License-Identifier: MIT
             </activation>
             <properties>
                 <docker.skip>true</docker.skip>
-                <!-- on windows we need to use -XepExcludedPaths:\Q${project.build.directory}\E.
+                <!-- on Windows, we need to use -XepExcludedPaths:\Q${project.build.directory}\E.
                      see https://github.com/google/error-prone/issues/2394
                 -->
                 <errorProneExcludePaths>\Q${project.build.directory}\E.*</errorProneExcludePaths>
@@ -1800,6 +1862,28 @@ SPDX-License-Identifier: MIT
                 <skipQA>true</skipQA>
                 <skipJavaDoc>true</skipJavaDoc>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-source</id>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/build/tooling/src/main/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>hal-explorer</id>
@@ -1877,7 +1961,7 @@ SPDX-License-Identifier: MIT
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
-                            <!-- <excludedGroups>prometheus-service-testcase</excludedGroups>-->
+                            <!-- <excludedGroups>prometheus-service-testcase</excludedGroups> -->
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Xshare:off -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>

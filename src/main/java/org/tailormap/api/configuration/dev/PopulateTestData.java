@@ -1300,18 +1300,21 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .addReadOnlyAttributesItem("eindregistratie")
                     .selectedStyles(
                         List.of(
-                            new WMSStyle(
-                                "begroeidterreindeel",
-                                "Visualisatie van de begroeide terreindelen",
-                                "Deze stylesheet bevat de regels voor de visualisatie van het objecttype Begroeid Terreindeel",
-                                URI.create(
-                                    "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel")),
-                            new WMSStyle(
-                                "purple_polygon",
-                                "purple_polygon",
-                                null,
-                                URI.create(
-                                    "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon")))))
+                            new WMSStyle()
+                                .name("begroeidterreindeel")
+                                .title("Visualisatie van de begroeide terreindelen")
+                                .abstractText(
+                                    "Deze stylesheet bevat de regels voor de visualisatie van het objecttype Begroeid Terreindeel")
+                                .legendUrl(
+                                    URI.create(
+                                        "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel")),
+                            new WMSStyle()
+                                .name("purple_polygon")
+                                .title("purple_polygon")
+                                .abstractText(null)
+                                .legendUrl(
+                                    URI.create(
+                                        "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon")))))
             .putLayerSettingsItem(
                 "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
                 new AppLayerSettings().editable(true).addReadOnlyAttributesItem("aanduiding"))
@@ -1536,12 +1539,13 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                         .description("This layer should render using purple polygons")
                         .selectedStyles(
                             List.of(
-                                new WMSStyle(
-                                    "purple_polygon",
-                                    "purple_polygon",
-                                    null,
-                                    URI.create(
-                                        "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon"))))));
+                                new WMSStyle()
+                                    .name("purple_polygon")
+                                    .title("purple_polygon")
+                                    .abstractText(null)
+                                    .legendUrl(
+                                        URI.create(
+                                            "https://snapshot.tailormap.nl/geoserver/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=test%3Apostgis_begroeidterreindeel&style=purple_polygon"))))));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
