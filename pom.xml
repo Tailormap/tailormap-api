@@ -1941,7 +1941,7 @@ SPDX-License-Identifier: MIT
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
-                            <!-- <excludedGroups>prometheus-service-testcase</excludedGroups>-->
+                            <excludedGroups>prometheus-service-testcase</excludedGroups>
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Xshare:off -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>
