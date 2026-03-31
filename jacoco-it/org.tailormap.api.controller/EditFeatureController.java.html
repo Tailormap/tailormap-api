@@ -71,17 +71,17 @@ import org.tailormap.api.viewer.model.Feature;
 @Validated
 @RequestMapping(path = {&quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature&quot;})
 public class EditFeatureController implements Constants {
-<span class="fc" id="L74">  private static final Logger logger =</span>
-<span class="fc" id="L75">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L74">  private static final Logger logger =</span>
+<span class="nc" id="L75">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-<span class="fc" id="L78">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L78">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
   private final EditUtil editUtil;
 
-<span class="fc" id="L81">  public EditFeatureController(FeatureSourceFactoryHelper featureSourceFactoryHelper, EditUtil editUtil) {</span>
-<span class="fc" id="L82">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="fc" id="L83">    this.editUtil = editUtil;</span>
-<span class="fc" id="L84">  }</span>
+<span class="nc" id="L81">  public EditFeatureController(FeatureSourceFactoryHelper featureSourceFactoryHelper, EditUtil editUtil) {</span>
+<span class="nc" id="L82">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L83">    this.editUtil = editUtil;</span>
+<span class="nc" id="L84">  }</span>
 
   private static void checkFeatureHasOnlyValidAttributes(
       Feature feature, TMFeatureType tmFeatureType, AppLayerSettings appLayerSettings) {

@@ -27,7 +27,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L30">public class Form extends AuditMetadata {</span>
+<span class="nc" id="L30">public class Form extends AuditMetadata {</span>
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -41,11 +41,11 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
   private String featureTypeName;
 
-<span class="fc" id="L44">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L44">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private FormOptions options = new FormOptions();
 
-<span class="fc" id="L48">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L48">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;FormField&gt; fields = new ArrayList&lt;&gt;();
 

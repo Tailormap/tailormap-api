@@ -54,17 +54,17 @@ import org.tailormap.api.viewer.model.AttachmentMetadata;
 @Validated
 public class AttachmentsController {
 
-<span class="fc" id="L57">  private static final Logger logger =</span>
-<span class="fc" id="L58">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L57">  private static final Logger logger =</span>
+<span class="nc" id="L58">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final EditUtil editUtil;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-<span class="fc" id="L62">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L62">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
 
-<span class="fc" id="L64">  public AttachmentsController(EditUtil editUtil, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
-<span class="fc" id="L65">    this.editUtil = editUtil;</span>
-<span class="fc" id="L66">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="fc" id="L67">  }</span>
+<span class="nc" id="L64">  public AttachmentsController(EditUtil editUtil, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
+<span class="nc" id="L65">    this.editUtil = editUtil;</span>
+<span class="nc" id="L66">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L67">  }</span>
 
   /**
    * Add an attachment to a feature

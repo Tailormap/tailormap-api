@@ -25,9 +25,9 @@ public class ConfigurationController {
 
   private final ConfigurationRepository configurationRepository;
 
-<span class="fc" id="L28">  public ConfigurationController(ConfigurationRepository configurationRepository) {</span>
-<span class="fc" id="L29">    this.configurationRepository = configurationRepository;</span>
-<span class="fc" id="L30">  }</span>
+<span class="nc" id="L28">  public ConfigurationController(ConfigurationRepository configurationRepository) {</span>
+<span class="nc" id="L29">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L30">  }</span>
 
   @GetMapping(path = &quot;${tailormap-api.base-path}/config/{key}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = &quot;get_config_key&quot;, description = &quot;Get configuration value&quot;)

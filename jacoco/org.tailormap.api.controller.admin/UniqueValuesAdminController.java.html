@@ -37,13 +37,13 @@ public class UniqueValuesAdminController {
   @Value(&quot;${tailormap-api.unique.use_geotools_unique_function:true}&quot;)
   private boolean useGeotoolsUniqueFunction;
 
-<span class="fc" id="L40">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L40">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
 
   public UniqueValuesAdminController(
-<span class="fc" id="L43">      FeatureTypeRepository featureTypeRepository, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
-<span class="fc" id="L44">    this.featureTypeRepository = featureTypeRepository;</span>
-<span class="fc" id="L45">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="fc" id="L46">  }</span>
+<span class="nc" id="L43">      FeatureTypeRepository featureTypeRepository, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
+<span class="nc" id="L44">    this.featureTypeRepository = featureTypeRepository;</span>
+<span class="nc" id="L45">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L46">  }</span>
 
   @ExceptionHandler({ResponseStatusException.class})
   public ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {

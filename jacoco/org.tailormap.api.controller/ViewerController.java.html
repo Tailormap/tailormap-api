@@ -47,14 +47,14 @@ public class ViewerController implements TagNames {
       ApplicationHelper applicationHelper,
       AuthorisationService authorisationService,
       UploadHelper uploadHelper,
-<span class="fc" id="L50">      ViewerResponseHelper viewerResponseHelper) {</span>
-<span class="fc" id="L51">    this.configurationRepository = configurationRepository;</span>
-<span class="fc" id="L52">    this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L53">    this.applicationHelper = applicationHelper;</span>
-<span class="fc" id="L54">    this.authorisationService = authorisationService;</span>
-<span class="fc" id="L55">    this.uploadHelper = uploadHelper;</span>
-<span class="fc" id="L56">    this.viewerResponseHelper = viewerResponseHelper;</span>
-<span class="fc" id="L57">  }</span>
+<span class="nc" id="L50">      ViewerResponseHelper viewerResponseHelper) {</span>
+<span class="nc" id="L51">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L52">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L53">    this.applicationHelper = applicationHelper;</span>
+<span class="nc" id="L54">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L55">    this.uploadHelper = uploadHelper;</span>
+<span class="nc" id="L56">    this.viewerResponseHelper = viewerResponseHelper;</span>
+<span class="nc" id="L57">  }</span>
 
   @GetMapping(path = &quot;${tailormap-api.base-path}/app&quot;)
   @Timed(value = &quot;get_default_app&quot;, description = &quot;Get default app&quot;)

@@ -41,7 +41,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 @Entity
 @Table(name = &quot;users&quot;)
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L44">public class User extends AuditMetadata {</span>
+<span class="nc" id="L44">public class User extends AuditMetadata {</span>
 
   @Id
   @Pattern(regexp = Constants.NAME_REGEX, message = &quot;User&quot; + Constants.NAME_REGEX_INVALID_MESSAGE) private String username;
@@ -68,13 +68,13 @@ import tools.jackson.databind.annotation.JsonDeserialize;
   @Column(columnDefinition = &quot;timestamp with time zone&quot;)
   private ZonedDateTime validUntil;
 
-<span class="fc" id="L71">  private boolean enabled = true;</span>
+<span class="nc" id="L71">  private boolean enabled = true;</span>
 
-<span class="fc" id="L73">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L73">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   private List&lt;AdminAdditionalProperty&gt; additionalProperties = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L77">  @ManyToMany</span>
+<span class="nc" id="L77">  @ManyToMany</span>
   @JoinTable(
       name = &quot;user_groups&quot;,
       joinColumns = @JoinColumn(name = &quot;username&quot;),
@@ -86,12 +86,12 @@ import tools.jackson.databind.annotation.JsonDeserialize;
   }
 
   public User setUsername(String username) {
-<span class="fc" id="L89">    this.username = username;</span>
-<span class="fc" id="L90">    return this;</span>
+<span class="nc" id="L89">    this.username = username;</span>
+<span class="nc" id="L90">    return this;</span>
   }
 
   public Long getVersion() {
-<span class="fc" id="L94">    return version;</span>
+<span class="nc" id="L94">    return version;</span>
   }
 
   public User setVersion(Long version) {
@@ -104,8 +104,8 @@ import tools.jackson.databind.annotation.JsonDeserialize;
   }
 
   public User setPassword(String passwordHash) {
-<span class="fc" id="L107">    this.password = passwordHash;</span>
-<span class="fc" id="L108">    return this;</span>
+<span class="nc" id="L107">    this.password = passwordHash;</span>
+<span class="nc" id="L108">    return this;</span>
   }
 
   public String getEmail() {
@@ -154,7 +154,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
   }
 
   public Set&lt;Group&gt; getGroups() {
-<span class="fc" id="L157">    return groups;</span>
+<span class="nc" id="L157">    return groups;</span>
   }
 
   public User setGroups(Set&lt;Group&gt; groups) {

@@ -23,14 +23,14 @@ import org.tailormap.api.persistence.helper.GeoServiceHelper;
 
 @Component
 public class GeoServiceValidator implements Validator {
-<span class="fc" id="L26">  private static final Logger logger =</span>
-<span class="fc" id="L27">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L26">  private static final Logger logger =</span>
+<span class="nc" id="L27">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final GeoServiceHelper geoServiceHelper;
 
-<span class="fc" id="L31">  public GeoServiceValidator(GeoServiceHelper geoServiceHelper) {</span>
-<span class="fc" id="L32">    this.geoServiceHelper = geoServiceHelper;</span>
-<span class="fc" id="L33">  }</span>
+<span class="nc" id="L31">  public GeoServiceValidator(GeoServiceHelper geoServiceHelper) {</span>
+<span class="nc" id="L32">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L33">  }</span>
 
   @Override
   public boolean supports(@NonNull Class&lt;?&gt; clazz) {

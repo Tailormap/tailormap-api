@@ -24,9 +24,9 @@ import org.tailormap.api.repository.GroupRepository;
 public class TailormapOidcUserService extends OidcUserService {
   private final GroupRepository groupRepository;
 
-<span class="fc" id="L27">  public TailormapOidcUserService(GroupRepository groupRepository) {</span>
-<span class="fc" id="L28">    this.groupRepository = groupRepository;</span>
-<span class="fc" id="L29">  }</span>
+<span class="nc" id="L27">  public TailormapOidcUserService(GroupRepository groupRepository) {</span>
+<span class="nc" id="L28">    this.groupRepository = groupRepository;</span>
+<span class="nc" id="L29">  }</span>
 
   @Override
   public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {

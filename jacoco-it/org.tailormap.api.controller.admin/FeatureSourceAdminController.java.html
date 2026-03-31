@@ -25,8 +25,8 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 
 @RestController
 public class FeatureSourceAdminController {
-<span class="fc" id="L28">  private static final Logger logger =</span>
-<span class="fc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L28">  private static final Logger logger =</span>
+<span class="nc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
@@ -34,11 +34,11 @@ public class FeatureSourceAdminController {
   public FeatureSourceAdminController(
       FeatureSourceRepository featureSourceRepository,
       ApplicationContext applicationContext,
-<span class="fc" id="L37">      RepositoryEntityLinks repositoryEntityLinks) {</span>
-<span class="fc" id="L38">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L39">    this.applicationContext = applicationContext;</span>
-<span class="fc" id="L40">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
-<span class="fc" id="L41">  }</span>
+<span class="nc" id="L37">      RepositoryEntityLinks repositoryEntityLinks) {</span>
+<span class="nc" id="L38">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L39">    this.applicationContext = applicationContext;</span>
+<span class="nc" id="L40">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L41">  }</span>
 
   @PostMapping(path = &quot;${tailormap-api.admin.base-path}/feature-sources/{id}/refresh-capabilities&quot;)
   @Transactional

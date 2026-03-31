@@ -15,14 +15,14 @@ import org.flywaydb.core.api.migration.Context;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-<span class="fc" id="L18">public class V18__UploadHash extends BaseJavaMigration {</span>
+<span class="nc" id="L18">public class V18__UploadHash extends BaseJavaMigration {</span>
   @Override
   public void migrate(Context context) {
-<span class="fc" id="L21">    JdbcTemplate jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));</span>
-<span class="fc" id="L22">    jdbcTemplate.execute(&quot;alter table upload add column hash char(40) null&quot;);</span>
+<span class="nc" id="L21">    JdbcTemplate jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));</span>
+<span class="nc" id="L22">    jdbcTemplate.execute(&quot;alter table upload add column hash char(40) null&quot;);</span>
 
-<span class="fc" id="L24">    List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(&quot;select id, content from upload&quot;);</span>
-<span class="pc bpc" id="L25" title="1 of 2 branches missed.">    for (var row : rows) {</span>
+<span class="nc" id="L24">    List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(&quot;select id, content from upload&quot;);</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">    for (var row : rows) {</span>
 <span class="nc" id="L26">      UUID id = (UUID) row.get(&quot;id&quot;);</span>
 <span class="nc" id="L27">      byte[] content = (byte[]) row.get(&quot;content&quot;);</span>
 <span class="nc bnc" id="L28" title="All 2 branches missed.">      if (content != null) {</span>
@@ -30,6 +30,6 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 <span class="nc" id="L30">        jdbcTemplate.update(&quot;update upload set hash = ? where id = ?&quot;, hash, id);</span>
       }
 <span class="nc" id="L32">    }</span>
-<span class="fc" id="L33">  }</span>
+<span class="nc" id="L33">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

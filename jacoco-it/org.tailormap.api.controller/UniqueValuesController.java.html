@@ -52,13 +52,13 @@ public class UniqueValuesController {
   @Value(&quot;${tailormap-api.unique.use_geotools_unique_function:true}&quot;)
   private boolean useGeotoolsUniqueFunction;
 
-<span class="fc" id="L55">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L55">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
 
   public UniqueValuesController(
-<span class="fc" id="L58">      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {</span>
-<span class="fc" id="L59">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="fc" id="L60">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L61">  }</span>
+<span class="nc" id="L58">      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L59">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L60">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L61">  }</span>
 
   @Transactional
   @RequestMapping(method = {GET, POST})

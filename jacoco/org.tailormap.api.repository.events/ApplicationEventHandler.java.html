@@ -28,17 +28,17 @@ import org.tailormap.api.prometheus.PrometheusService;
 @Component
 @RepositoryEventHandler
 public class ApplicationEventHandler {
-<span class="fc" id="L31">  private static final Logger logger =</span>
-<span class="fc" id="L32">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L31">  private static final Logger logger =</span>
+<span class="nc" id="L32">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final PrometheusService prometheusService;
 
   @Value(&quot;${tailormap-api.allowed-metrics}&quot;)
   private Set&lt;String&gt; allowedMetrics;
 
-<span class="fc" id="L39">  public ApplicationEventHandler(PrometheusService prometheusService) {</span>
-<span class="fc" id="L40">    this.prometheusService = prometheusService;</span>
-<span class="fc" id="L41">  }</span>
+<span class="nc" id="L39">  public ApplicationEventHandler(PrometheusService prometheusService) {</span>
+<span class="nc" id="L40">    this.prometheusService = prometheusService;</span>
+<span class="nc" id="L41">  }</span>
 
   /**
    * Handle after delete. Delete any associated task.

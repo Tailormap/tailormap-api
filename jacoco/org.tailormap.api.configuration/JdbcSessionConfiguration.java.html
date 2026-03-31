@@ -48,10 +48,10 @@ AND ATTRIBUTE_NAME = ?
 
   @Bean
   SessionRepositoryCustomizer&lt;JdbcIndexedSessionRepository&gt; customizer() {
-<span class="fc" id="L51">    return (sessionRepository) -&gt; {</span>
-<span class="fc" id="L52">      sessionRepository.setCreateSessionAttributeQuery(CREATE_SESSION_ATTRIBUTE_QUERY);</span>
-<span class="fc" id="L53">      sessionRepository.setUpdateSessionAttributeQuery(UPDATE_SESSION_ATTRIBUTE_QUERY);</span>
-<span class="fc" id="L54">    };</span>
+<span class="nc" id="L51">    return (sessionRepository) -&gt; {</span>
+<span class="nc" id="L52">      sessionRepository.setCreateSessionAttributeQuery(CREATE_SESSION_ATTRIBUTE_QUERY);</span>
+<span class="nc" id="L53">      sessionRepository.setUpdateSessionAttributeQuery(UPDATE_SESSION_ATTRIBUTE_QUERY);</span>
+<span class="nc" id="L54">    };</span>
   }
 
   @Bean(&quot;springSessionConversionService&quot;)
@@ -68,8 +68,8 @@ AND ATTRIBUTE_NAME = ?
 <span class="fc" id="L68">    JsonMapper mapper = JsonMapper.builder()</span>
 <span class="fc" id="L69">        .configure(</span>
             StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION,
-<span class="pc bpc" id="L71" title="1 of 4 branches missed.">            (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
-<span class="pc bpc" id="L72" title="1 of 4 branches missed.">        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
+<span class="pc bpc" id="L71" title="3 of 4 branches missed.">            (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
+<span class="pc bpc" id="L72" title="3 of 4 branches missed.">        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
 
         // register mixins early so Jackson picks up the @JsonCreator constructor for TailormapUserDetails
         // implementations

@@ -54,14 +54,14 @@ import tools.jackson.core.JacksonException;
 @AppRestController
 @Validated
 public class DrawingController {
-<span class="fc" id="L57">  private static final Logger logger =</span>
-<span class="fc" id="L58">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L57">  private static final Logger logger =</span>
+<span class="nc" id="L58">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final DrawingService drawingService;
 
-<span class="fc" id="L62">  public DrawingController(DrawingService drawingService) {</span>
-<span class="fc" id="L63">    this.drawingService = drawingService;</span>
-<span class="fc" id="L64">  }</span>
+<span class="nc" id="L62">  public DrawingController(DrawingService drawingService) {</span>
+<span class="nc" id="L63">    this.drawingService = drawingService;</span>
+<span class="nc" id="L64">  }</span>
 
   /**
    * Create or update a drawing. Requires authentication.

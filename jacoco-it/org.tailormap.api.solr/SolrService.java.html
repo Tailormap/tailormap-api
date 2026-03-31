@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="fc" id="L19">public class SolrService {</span>
+<span class="nc" id="L19">public class SolrService {</span>
   @Value(&quot;${tailormap-api.solr-url}&quot;)
   private String solrUrl;
 
@@ -38,15 +38,15 @@ import org.springframework.stereotype.Service;
    * @return the Solr client
    */
   public SolrClient getSolrClientForIndexing() {
-<span class="fc" id="L41">    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)</span>
-<span class="fc" id="L42">        .withFollowRedirects(true)</span>
-<span class="fc" id="L43">        .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)</span>
-<span class="fc" id="L44">        .withRequestTimeout(solrRequestTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L41">    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)</span>
+<span class="nc" id="L42">        .withFollowRedirects(true)</span>
+<span class="nc" id="L43">        .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L44">        .withRequestTimeout(solrRequestTimeout, TimeUnit.SECONDS)</span>
         // Set maxConnectionsPerHost for http1 connections,
         // maximum number http2 connections is limited to 4
         // .withMaxConnectionsPerHost(10)
-<span class="fc" id="L48">        .withIdleTimeout(solrIdleTimeout, TimeUnit.SECONDS)</span>
-<span class="fc" id="L49">        .build();</span>
+<span class="nc" id="L48">        .withIdleTimeout(solrIdleTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L49">        .build();</span>
   }
 
   /**
@@ -66,12 +66,12 @@ import org.springframework.stereotype.Service;
 <span class="nc" id="L66">  }</span>
 
   public boolean isSolrServiceAvailable() {
-<span class="fc" id="L69">    try (SolrClient client = getSolrClientForIndexing()) {</span>
+<span class="nc" id="L69">    try (SolrClient client = getSolrClientForIndexing()) {</span>
 <span class="nc" id="L70">      SolrPingResponse response = client.ping();</span>
 <span class="nc" id="L71">      Metrics.timer(&quot;tailormap_solr_ping&quot;).record(response.getElapsedTime(), TimeUnit.MILLISECONDS);</span>
 <span class="nc" id="L72">      return true;</span>
-<span class="fc" id="L73">    } catch (SolrServerException | IOException e) {</span>
-<span class="fc" id="L74">      return false;</span>
+<span class="nc" id="L73">    } catch (SolrServerException | IOException e) {</span>
+<span class="nc" id="L74">      return false;</span>
     }
   }
 }

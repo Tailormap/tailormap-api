@@ -16,9 +16,9 @@ import org.springframework.core.convert.converter.Converter;
 public class CaseInsensitiveEnumConverter&lt;T extends Enum&lt;T&gt;&gt; implements Converter&lt;String, T&gt; {
   private final Class&lt;T&gt; enumClass;
 
-<span class="fc" id="L19">  public CaseInsensitiveEnumConverter(Class&lt;T&gt; enumClass) {</span>
-<span class="fc" id="L20">    this.enumClass = enumClass;</span>
-<span class="fc" id="L21">  }</span>
+<span class="nc" id="L19">  public CaseInsensitiveEnumConverter(Class&lt;T&gt; enumClass) {</span>
+<span class="nc" id="L20">    this.enumClass = enumClass;</span>
+<span class="nc" id="L21">  }</span>
 
   @Override
   public T convert(String from) {

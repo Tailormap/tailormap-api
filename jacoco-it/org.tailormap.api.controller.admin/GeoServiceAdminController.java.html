@@ -28,11 +28,11 @@ public class GeoServiceAdminController {
   public GeoServiceAdminController(
       GeoServiceRepository geoServiceRepository,
       ApplicationContext applicationContext,
-<span class="fc" id="L31">      RepositoryEntityLinks repositoryEntityLinks) {</span>
-<span class="fc" id="L32">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="fc" id="L33">    this.applicationContext = applicationContext;</span>
-<span class="fc" id="L34">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
-<span class="fc" id="L35">  }</span>
+<span class="nc" id="L31">      RepositoryEntityLinks repositoryEntityLinks) {</span>
+<span class="nc" id="L32">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L33">    this.applicationContext = applicationContext;</span>
+<span class="nc" id="L34">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L35">  }</span>
 
   @PostMapping(path = &quot;${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities&quot;)
   public ResponseEntity&lt;GeoService&gt; refreshCapabilities(

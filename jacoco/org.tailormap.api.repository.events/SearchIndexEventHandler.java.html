@@ -36,16 +36,16 @@ import org.tailormap.api.scheduling.TaskType;
 @Component
 @RepositoryEventHandler
 public class SearchIndexEventHandler {
-<span class="fc" id="L39">  private static final Logger logger =</span>
-<span class="fc" id="L40">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L39">  private static final Logger logger =</span>
+<span class="nc" id="L40">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final Scheduler scheduler;
   private final TaskManagerService taskManagerService;
 
-<span class="fc" id="L45">  public SearchIndexEventHandler(@Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {</span>
-<span class="fc" id="L46">    this.scheduler = scheduler;</span>
-<span class="fc" id="L47">    this.taskManagerService = taskManagerService;</span>
-<span class="fc" id="L48">  }</span>
+<span class="nc" id="L45">  public SearchIndexEventHandler(@Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {</span>
+<span class="nc" id="L46">    this.scheduler = scheduler;</span>
+<span class="nc" id="L47">    this.taskManagerService = taskManagerService;</span>
+<span class="nc" id="L48">  }</span>
 
   /**
    * Handle after delete. Delete any associated task.

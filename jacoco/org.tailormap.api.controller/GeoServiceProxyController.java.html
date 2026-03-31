@@ -99,18 +99,18 @@ public class GeoServiceProxyController {
 
   public static final String TILES3D_DESCRIPTION_PATH = &quot;tiles3dDescription&quot;;
 
-<span class="fc" id="L102">  @Value(&quot;${tailormap-api.proxy.passthrough.layerpatterns:}&quot;)</span>
-<span class="fc" id="L103">  private Set&lt;String&gt; proxyLayerPassthroughPatterns = Set.of();</span>
+<span class="nc" id="L102">  @Value(&quot;${tailormap-api.proxy.passthrough.layerpatterns:}&quot;)</span>
+<span class="nc" id="L103">  private Set&lt;String&gt; proxyLayerPassthroughPatterns = Set.of();</span>
 
-<span class="fc" id="L105">  @Value(&quot;${tailormap-api.proxy.passthrough.hostnames:}&quot;)</span>
-<span class="fc" id="L106">  private Set&lt;String&gt; proxyPassthroughHostNames = Set.of();</span>
+<span class="nc" id="L105">  @Value(&quot;${tailormap-api.proxy.passthrough.hostnames:}&quot;)</span>
+<span class="nc" id="L106">  private Set&lt;String&gt; proxyPassthroughHostNames = Set.of();</span>
 
-<span class="fc" id="L108">  public GeoServiceProxyController(AuthorisationService authorisationService) {</span>
-<span class="fc" id="L109">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L108">  public GeoServiceProxyController(AuthorisationService authorisationService) {</span>
+<span class="nc" id="L109">    this.authorisationService = authorisationService;</span>
 
-<span class="fc" id="L111">    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
-<span class="fc" id="L112">    this.httpClient = builder.build();</span>
-<span class="fc" id="L113">  }</span>
+<span class="nc" id="L111">    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
+<span class="nc" id="L112">    this.httpClient = builder.build();</span>
+<span class="nc" id="L113">  }</span>
 
   @RequestMapping(
       method = {GET, POST},

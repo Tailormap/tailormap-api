@@ -21,9 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /** AuditInterceptor logs the user that is making the request. */
-<span class="fc" id="L24">public class AuditInterceptor extends OncePerRequestFilter {</span>
-<span class="fc" id="L25">  private static final Logger logger =</span>
-<span class="fc" id="L26">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L24">public class AuditInterceptor extends OncePerRequestFilter {</span>
+<span class="nc" id="L25">  private static final Logger logger =</span>
+<span class="nc" id="L26">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Override
   protected void doFilterInternal(

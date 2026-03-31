@@ -31,14 +31,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TaskManagerService {
-<span class="fc" id="L34">  private static final Logger logger =</span>
-<span class="fc" id="L35">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L34">  private static final Logger logger =</span>
+<span class="nc" id="L35">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final Scheduler scheduler;
 
-<span class="fc" id="L39">  public TaskManagerService(@Autowired Scheduler scheduler) {</span>
-<span class="fc" id="L40">    this.scheduler = scheduler;</span>
-<span class="fc" id="L41">  }</span>
+<span class="nc" id="L39">  public TaskManagerService(@Autowired Scheduler scheduler) {</span>
+<span class="nc" id="L40">    this.scheduler = scheduler;</span>
+<span class="nc" id="L41">  }</span>
 
   /**
    * Create a one-time job and schedule it to start immediately.

@@ -45,12 +45,12 @@ public class AppRestControllerAdvice {
       ApplicationRepository applicationRepository,
       GeoServiceRepository geoServiceRepository,
       ApplicationHelper applicationHelper,
-<span class="fc" id="L48">      AuthorisationService authorisationService) {</span>
-<span class="fc" id="L49">    this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L50">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="fc" id="L51">    this.applicationHelper = applicationHelper;</span>
-<span class="fc" id="L52">    this.authorisationService = authorisationService;</span>
-<span class="fc" id="L53">  }</span>
+<span class="nc" id="L48">      AuthorisationService authorisationService) {</span>
+<span class="nc" id="L49">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L50">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L51">    this.applicationHelper = applicationHelper;</span>
+<span class="nc" id="L52">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L53">  }</span>
 
   @InitBinder
   protected void initBinder(WebDataBinder binder) {

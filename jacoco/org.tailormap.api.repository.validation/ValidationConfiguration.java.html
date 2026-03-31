@@ -29,27 +29,27 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
       GeoServiceValidator geoServiceValidator,
       FeatureSourceValidator featureSourceValidator,
       ApplicationValidator applicationValidator,
-<span class="fc" id="L32">      SearchIndexValidator searchIndexValidator) {</span>
-<span class="fc" id="L33">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
-<span class="fc" id="L34">    this.geoServiceValidator = geoServiceValidator;</span>
-<span class="fc" id="L35">    this.featureSourceValidator = featureSourceValidator;</span>
-<span class="fc" id="L36">    this.applicationValidator = applicationValidator;</span>
-<span class="fc" id="L37">    this.searchIndexValidator = searchIndexValidator;</span>
-<span class="fc" id="L38">  }</span>
+<span class="nc" id="L32">      SearchIndexValidator searchIndexValidator) {</span>
+<span class="nc" id="L33">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
+<span class="nc" id="L34">    this.geoServiceValidator = geoServiceValidator;</span>
+<span class="nc" id="L35">    this.featureSourceValidator = featureSourceValidator;</span>
+<span class="nc" id="L36">    this.applicationValidator = applicationValidator;</span>
+<span class="nc" id="L37">    this.searchIndexValidator = searchIndexValidator;</span>
+<span class="nc" id="L38">  }</span>
 
   @Override
   public void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
-<span class="fc" id="L42">    validatingListener</span>
-<span class="fc" id="L43">        .addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean)</span>
-<span class="fc" id="L44">        .addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean)</span>
-<span class="fc" id="L45">        .addValidator(&quot;beforeCreate&quot;, geoServiceValidator)</span>
-<span class="fc" id="L46">        .addValidator(&quot;beforeSave&quot;, geoServiceValidator)</span>
-<span class="fc" id="L47">        .addValidator(&quot;beforeCreate&quot;, featureSourceValidator)</span>
-<span class="fc" id="L48">        .addValidator(&quot;beforeSave&quot;, featureSourceValidator)</span>
-<span class="fc" id="L49">        .addValidator(&quot;beforeCreate&quot;, applicationValidator)</span>
-<span class="fc" id="L50">        .addValidator(&quot;beforeSave&quot;, applicationValidator)</span>
-<span class="fc" id="L51">        .addValidator(&quot;beforeCreate&quot;, searchIndexValidator)</span>
-<span class="fc" id="L52">        .addValidator(&quot;beforeSave&quot;, searchIndexValidator);</span>
-<span class="fc" id="L53">  }</span>
+<span class="nc" id="L42">    validatingListener</span>
+<span class="nc" id="L43">        .addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean)</span>
+<span class="nc" id="L44">        .addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean)</span>
+<span class="nc" id="L45">        .addValidator(&quot;beforeCreate&quot;, geoServiceValidator)</span>
+<span class="nc" id="L46">        .addValidator(&quot;beforeSave&quot;, geoServiceValidator)</span>
+<span class="nc" id="L47">        .addValidator(&quot;beforeCreate&quot;, featureSourceValidator)</span>
+<span class="nc" id="L48">        .addValidator(&quot;beforeSave&quot;, featureSourceValidator)</span>
+<span class="nc" id="L49">        .addValidator(&quot;beforeCreate&quot;, applicationValidator)</span>
+<span class="nc" id="L50">        .addValidator(&quot;beforeSave&quot;, applicationValidator)</span>
+<span class="nc" id="L51">        .addValidator(&quot;beforeCreate&quot;, searchIndexValidator)</span>
+<span class="nc" id="L52">        .addValidator(&quot;beforeSave&quot;, searchIndexValidator);</span>
+<span class="nc" id="L53">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

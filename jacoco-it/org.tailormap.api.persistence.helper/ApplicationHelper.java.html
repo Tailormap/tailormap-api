@@ -64,8 +64,8 @@ import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 
 @Service
 public class ApplicationHelper {
-<span class="fc" id="L67">  private static final Logger logger =</span>
-<span class="fc" id="L68">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L67">  private static final Logger logger =</span>
+<span class="nc" id="L68">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
   private static final String DEFAULT_WEB_MERCATOR_CRS = &quot;EPSG:3857&quot;;
 
   private final GeoServiceHelper geoServiceHelper;
@@ -85,16 +85,16 @@ public class ApplicationHelper {
       FeatureSourceRepository featureSourceRepository,
       EntityManager entityManager,
       AuthorisationService authorisationService,
-<span class="fc" id="L88">      SearchIndexRepository searchIndexRepository) {</span>
-<span class="fc" id="L89">    this.geoServiceHelper = geoServiceHelper;</span>
-<span class="fc" id="L90">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="fc" id="L91">    this.configurationRepository = configurationRepository;</span>
-<span class="fc" id="L92">    this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L93">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L94">    this.entityManager = entityManager;</span>
-<span class="fc" id="L95">    this.authorisationService = authorisationService;</span>
-<span class="fc" id="L96">    this.searchIndexRepository = searchIndexRepository;</span>
-<span class="fc" id="L97">  }</span>
+<span class="nc" id="L88">      SearchIndexRepository searchIndexRepository) {</span>
+<span class="nc" id="L89">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L90">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L91">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L92">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L93">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L94">    this.entityManager = entityManager;</span>
+<span class="nc" id="L95">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L96">    this.searchIndexRepository = searchIndexRepository;</span>
+<span class="nc" id="L97">  }</span>
 
   public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
 <span class="nc bnc" id="L100" title="All 2 branches missed.">    if (baseAppName == null) {</span>

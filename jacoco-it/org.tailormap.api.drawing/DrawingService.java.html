@@ -55,28 +55,28 @@ import tools.jackson.databind.node.ObjectNode;
  */
 @Service
 public class DrawingService {
-<span class="fc" id="L58">  private static final Logger logger =</span>
-<span class="fc" id="L59">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L58">  private static final Logger logger =</span>
+<span class="nc" id="L59">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final JdbcClient jdbcClient;
   private final RowMapper&lt;Drawing&gt; drawingRowMapper;
   private final JsonMapper mapper;
 
-<span class="fc" id="L65">  public DrawingService(JdbcClient jdbcClient, JsonMapper jsonMapper) {</span>
-<span class="fc" id="L66">    this.jdbcClient = jdbcClient;</span>
-<span class="fc" id="L67">    this.mapper = jsonMapper;</span>
+<span class="nc" id="L65">  public DrawingService(JdbcClient jdbcClient, JsonMapper jsonMapper) {</span>
+<span class="nc" id="L66">    this.jdbcClient = jdbcClient;</span>
+<span class="nc" id="L67">    this.mapper = jsonMapper;</span>
 
-<span class="fc" id="L69">    final GenericConversionService conversionService = new GenericConversionService();</span>
-<span class="fc" id="L70">    DefaultConversionService.addDefaultConverters(conversionService);</span>
+<span class="nc" id="L69">    final GenericConversionService conversionService = new GenericConversionService();</span>
+<span class="nc" id="L70">    DefaultConversionService.addDefaultConverters(conversionService);</span>
 
-<span class="fc" id="L72">    conversionService.addConverter(new Converter&lt;String, Drawing.AccessEnum&gt;() {</span>
+<span class="nc" id="L72">    conversionService.addConverter(new Converter&lt;String, Drawing.AccessEnum&gt;() {</span>
       @Override
       public Drawing.AccessEnum convert(@NonNull String source) {
 <span class="nc" id="L75">        return Drawing.AccessEnum.fromValue(source);</span>
       }
     });
 
-<span class="fc" id="L79">    conversionService.addConverter(new Converter&lt;PGobject, Map&lt;String, Object&gt;&gt;() {</span>
+<span class="nc" id="L79">    conversionService.addConverter(new Converter&lt;PGobject, Map&lt;String, Object&gt;&gt;() {</span>
       @Override
       @SuppressWarnings(&quot;unchecked&quot;)
       public Map&lt;String, Object&gt; convert(@NonNull PGobject source) {
@@ -88,13 +88,13 @@ public class DrawingService {
       }
     });
 
-<span class="fc" id="L91">    drawingRowMapper = new SimplePropertyRowMapper&lt;&gt;(Drawing.class, conversionService) {</span>
+<span class="nc" id="L91">    drawingRowMapper = new SimplePropertyRowMapper&lt;&gt;(Drawing.class, conversionService) {</span>
       @Override
       @NonNull public Drawing mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
 <span class="nc" id="L94">        return super.mapRow(rs, rowNum);</span>
       }
     };
-<span class="fc" id="L97">  }</span>
+<span class="nc" id="L97">  }</span>
 
   /**
    * Create a new drawing.

@@ -18,14 +18,14 @@ import org.tailormap.api.repository.TemporaryTokenRepository;
 
 @Service
 public class TemporaryTokenCleanupService {
-<span class="fc" id="L21">  private static final Logger logger =</span>
-<span class="fc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L21">  private static final Logger logger =</span>
+<span class="nc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final TemporaryTokenRepository temporaryTokenRepository;
 
-<span class="fc" id="L26">  public TemporaryTokenCleanupService(TemporaryTokenRepository temporaryTokenRepository) {</span>
-<span class="fc" id="L27">    this.temporaryTokenRepository = temporaryTokenRepository;</span>
-<span class="fc" id="L28">  }</span>
+<span class="nc" id="L26">  public TemporaryTokenCleanupService(TemporaryTokenRepository temporaryTokenRepository) {</span>
+<span class="nc" id="L27">    this.temporaryTokenRepository = temporaryTokenRepository;</span>
+<span class="nc" id="L28">  }</span>
 
   @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES, initialDelay = 1)
   @Transactional

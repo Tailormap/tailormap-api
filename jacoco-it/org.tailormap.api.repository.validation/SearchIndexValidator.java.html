@@ -18,14 +18,14 @@ import org.tailormap.api.repository.FeatureTypeRepository;
 
 @Component
 public class SearchIndexValidator implements Validator {
-<span class="fc" id="L21">  private static final Logger logger =</span>
-<span class="fc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L21">  private static final Logger logger =</span>
+<span class="nc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final FeatureTypeRepository featureTypeRepository;
 
-<span class="fc" id="L26">  public SearchIndexValidator(FeatureTypeRepository featureTypeRepository) {</span>
-<span class="fc" id="L27">    this.featureTypeRepository = featureTypeRepository;</span>
-<span class="fc" id="L28">  }</span>
+<span class="nc" id="L26">  public SearchIndexValidator(FeatureTypeRepository featureTypeRepository) {</span>
+<span class="nc" id="L27">    this.featureTypeRepository = featureTypeRepository;</span>
+<span class="nc" id="L28">  }</span>
 
   @Override
   public boolean supports(@NonNull Class&lt;?&gt; clazz) {

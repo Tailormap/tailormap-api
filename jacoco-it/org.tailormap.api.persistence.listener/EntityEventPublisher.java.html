@@ -31,8 +31,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class EntityEventPublisher {
-<span class="fc" id="L34">  private static final Logger logger =</span>
-<span class="fc" id="L35">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L34">  private static final Logger logger =</span>
+<span class="nc" id="L35">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Autowired
   @Lazy
@@ -50,13 +50,13 @@ public class EntityEventPublisher {
   @Lazy
   private RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
 
-<span class="fc" id="L53">  public EntityEventPublisher() {}</span>
+<span class="nc" id="L53">  public EntityEventPublisher() {}</span>
 
   private void sendEvent(ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
-<span class="fc" id="L56">    Object id = null;</span>
+<span class="nc" id="L56">    Object id = null;</span>
 
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">    if (this.eventBus.countSubscribers(DEFAULT_EVENT) == 0) {</span>
-<span class="fc" id="L59">      return;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (this.eventBus.countSubscribers(DEFAULT_EVENT) == 0) {</span>
+<span class="nc" id="L59">      return;</span>
     }
 
     try {
@@ -87,10 +87,10 @@ public class EntityEventPublisher {
     // Note that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes
     // have no ID's yet. So for a created feature source the frontend must retrieve the
     // TMFeatureSource separately or use the return value of the POST request.
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">    if (!(entity instanceof TMFeatureType)) {</span>
-<span class="fc" id="L91">      sendEvent(ENTITY_CREATED, entity, true);</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">    if (!(entity instanceof TMFeatureType)) {</span>
+<span class="nc" id="L91">      sendEvent(ENTITY_CREATED, entity, true);</span>
     }
-<span class="fc" id="L93">  }</span>
+<span class="nc" id="L93">  }</span>
 
   @PostRemove
   public void postRemove(Object entity) {

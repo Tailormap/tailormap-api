@@ -48,13 +48,13 @@ public class PageController {
       ApplicationRepository applicationRepository,
       AuthorisationService authorisationService,
       PageRepository pageRepository,
-<span class="fc" id="L51">      UploadHelper uploadHelper) {</span>
-<span class="fc" id="L52">    this.configurationRepository = configurationRepository;</span>
-<span class="fc" id="L53">    this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L54">    this.pageRepository = pageRepository;</span>
-<span class="fc" id="L55">    this.authorisationService = authorisationService;</span>
-<span class="fc" id="L56">    this.uploadHelper = uploadHelper;</span>
-<span class="fc" id="L57">  }</span>
+<span class="nc" id="L51">      UploadHelper uploadHelper) {</span>
+<span class="nc" id="L52">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L53">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L54">    this.pageRepository = pageRepository;</span>
+<span class="nc" id="L55">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L56">    this.uploadHelper = uploadHelper;</span>
+<span class="nc" id="L57">  }</span>
 
   private ResponseStatusException notFound() {
 <span class="nc" id="L60">    return new ResponseStatusException(HttpStatus.NOT_FOUND);</span>

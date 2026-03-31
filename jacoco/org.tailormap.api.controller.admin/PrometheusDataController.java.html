@@ -43,8 +43,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class PrometheusDataController implements TagNames, InitializingBean {
-<span class="fc" id="L46">  private static final Logger logger =</span>
-<span class="fc" id="L47">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L46">  private static final Logger logger =</span>
+<span class="nc" id="L47">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
   private final PrometheusService prometheusService;
   private final PrometheusResultProcessor prometheusResultProcessor;
   private final ApplicationRepository applicationRepository;
@@ -69,16 +69,16 @@ public class PrometheusDataController implements TagNames, InitializingBean {
       PrometheusService prometheusService,
       PrometheusResultProcessor prometheusResultProcessor,
       ApplicationRepository applicationRepository,
-<span class="fc" id="L72">      TaskManagerService taskManagerService) {</span>
-<span class="fc" id="L73">    this.prometheusService = prometheusService;</span>
-<span class="fc" id="L74">    this.prometheusResultProcessor = prometheusResultProcessor;</span>
-<span class="fc" id="L75">    this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L76">    this.taskManagerService = taskManagerService;</span>
-<span class="fc" id="L77">  }</span>
+<span class="nc" id="L72">      TaskManagerService taskManagerService) {</span>
+<span class="nc" id="L73">    this.prometheusService = prometheusService;</span>
+<span class="nc" id="L74">    this.prometheusResultProcessor = prometheusResultProcessor;</span>
+<span class="nc" id="L75">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L76">    this.taskManagerService = taskManagerService;</span>
+<span class="nc" id="L77">  }</span>
 
   @Override
   public void afterPropertiesSet() throws Exception {
-<span class="pc bpc" id="L81" title="1 of 2 branches missed.">    if (prometheusService.isPrometheusAvailable()) {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (prometheusService.isPrometheusAvailable()) {</span>
 <span class="nc" id="L82">      logger.info(&quot;Prometheus is available, initializing PrometheusDataController.&quot;);</span>
       try {
         // there should be only one Prometheus ping task, so we delete any existing ones
@@ -98,9 +98,9 @@ public class PrometheusDataController implements TagNames, InitializingBean {
 <span class="nc" id="L98">        logger.error(&quot;Error initializing Prometheus ping task&quot;, e);</span>
 <span class="nc" id="L99">      }</span>
     } else {
-<span class="fc" id="L101">      logger.info(&quot;Prometheus is not available, /graph/ endpoint will not be functional.&quot;);</span>
+<span class="nc" id="L101">      logger.info(&quot;Prometheus is not available, /graph/ endpoint will not be functional.&quot;);</span>
     }
-<span class="fc" id="L103">  }</span>
+<span class="nc" id="L103">  }</span>
 
   @ExceptionHandler({ResponseStatusException.class})
   public ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {

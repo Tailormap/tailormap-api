@@ -18,9 +18,9 @@ import org.tailormap.api.repository.UploadRepository;
 public class FindUploadsByHashController {
   private final UploadRepository uploadRepository;
 
-<span class="fc" id="L21">  public FindUploadsByHashController(UploadRepository uploadRepository) {</span>
-<span class="fc" id="L22">    this.uploadRepository = uploadRepository;</span>
-<span class="fc" id="L23">  }</span>
+<span class="nc" id="L21">  public FindUploadsByHashController(UploadRepository uploadRepository) {</span>
+<span class="nc" id="L22">    this.uploadRepository = uploadRepository;</span>
+<span class="nc" id="L23">  }</span>
 
   @PostMapping(
       path = &quot;${tailormap-api.admin.base-path}/uploads/find-by-hash/{category}&quot;,

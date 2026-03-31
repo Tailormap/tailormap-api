@@ -78,13 +78,13 @@ import org.tailormap.api.viewer.model.FeaturesResponse;
     path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/features&quot;,
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
-<span class="fc" id="L81">  private static final Logger logger =</span>
-<span class="fc" id="L82">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L81">  private static final Logger logger =</span>
+<span class="nc" id="L82">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final TMFeatureTypeHelper featureTypeHelper;
   private final FeatureSourceRepository featureSourceRepository;
-<span class="fc" id="L87">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L87">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
 
   @Value(&quot;${tailormap-api.default-page-size:100}&quot;)
   private int defaultPageSize;
@@ -101,11 +101,11 @@ public class FeaturesController implements Constants {
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
       TMFeatureTypeHelper featureTypeHelper,
-<span class="fc" id="L104">      FeatureSourceRepository featureSourceRepository) {</span>
-<span class="fc" id="L105">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="fc" id="L106">    this.featureTypeHelper = featureTypeHelper;</span>
-<span class="fc" id="L107">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L108">  }</span>
+<span class="nc" id="L104">      FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L105">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L106">    this.featureTypeHelper = featureTypeHelper;</span>
+<span class="nc" id="L107">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L108">  }</span>
 
   @Transactional
   @RequestMapping(method = {GET, POST})

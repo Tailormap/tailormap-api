@@ -23,7 +23,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L26">public class Catalog extends AuditMetadata {</span>
+<span class="nc" id="L26">public class Catalog extends AuditMetadata {</span>
   public static final String MAIN = &quot;main&quot;;
 
   @Id
@@ -32,7 +32,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
   @Version
   private Long version;
 
-<span class="fc" id="L35">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L35">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;CatalogNode&gt; nodes = new ArrayList&lt;&gt;();
 
@@ -41,12 +41,12 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
   }
 
   public Catalog setId(String id) {
-<span class="fc" id="L44">    this.id = id;</span>
-<span class="fc" id="L45">    return this;</span>
+<span class="nc" id="L44">    this.id = id;</span>
+<span class="nc" id="L45">    return this;</span>
   }
 
   public Long getVersion() {
-<span class="fc" id="L49">    return version;</span>
+<span class="nc" id="L49">    return version;</span>
   }
 
   public Catalog setVersion(Long version) {
@@ -59,8 +59,8 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
   }
 
   public Catalog setNodes(List&lt;CatalogNode&gt; nodes) {
-<span class="fc" id="L62">    this.nodes = nodes;</span>
-<span class="fc" id="L63">    return this;</span>
+<span class="nc" id="L62">    this.nodes = nodes;</span>
+<span class="nc" id="L63">    return this;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

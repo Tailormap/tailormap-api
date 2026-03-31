@@ -27,8 +27,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = &quot;temporary_token&quot;)
 public class TemporaryToken {
 
-<span class="fc" id="L30">  public enum TokenType {</span>
-<span class="fc" id="L31">    PASSWORD_RESET</span>
+<span class="nc" id="L30">  public enum TokenType {</span>
+<span class="nc" id="L31">    PASSWORD_RESET</span>
     // we can add other use tokens in the future such as EMAIL_VERIFICATION
   }
 
@@ -45,9 +45,9 @@ public class TemporaryToken {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @NotNull private ZonedDateTime expirationTime;
 
-<span class="fc" id="L48">  public TemporaryToken() {</span>
+<span class="nc" id="L48">  public TemporaryToken() {</span>
     // Default constructor for JPA
-<span class="fc" id="L50">  }</span>
+<span class="nc" id="L50">  }</span>
 
 <span class="nc" id="L52">  public TemporaryToken(@NotNull TokenType tokenType, @NotNull String username, int expirationMinutes) {</span>
 <span class="nc" id="L53">    this.tokenType = tokenType;</span>

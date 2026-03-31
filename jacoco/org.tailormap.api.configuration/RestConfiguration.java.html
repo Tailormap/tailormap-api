@@ -18,17 +18,17 @@ public class RestConfiguration implements RepositoryRestConfigurer {
 
   private final EntityManager entityManager;
 
-<span class="fc" id="L21">  public RestConfiguration(EntityManager entityManager) {</span>
-<span class="fc" id="L22">    this.entityManager = entityManager;</span>
-<span class="fc" id="L23">  }</span>
+<span class="nc" id="L21">  public RestConfiguration(EntityManager entityManager) {</span>
+<span class="nc" id="L22">    this.entityManager = entityManager;</span>
+<span class="nc" id="L23">  }</span>
 
   @Override
   public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-<span class="fc" id="L27">    Class&lt;?&gt;[] classes = entityManager.getMetamodel().getEntities().stream()</span>
-<span class="fc" id="L28">        .map(Type::getJavaType)</span>
-<span class="fc" id="L29">        .toArray(Class[]::new);</span>
-<span class="fc" id="L30">    config.exposeIdsFor(classes);</span>
-<span class="fc" id="L31">    config.setReturnBodyOnDelete(false);</span>
-<span class="fc" id="L32">  }</span>
+<span class="nc" id="L27">    Class&lt;?&gt;[] classes = entityManager.getMetamodel().getEntities().stream()</span>
+<span class="nc" id="L28">        .map(Type::getJavaType)</span>
+<span class="nc" id="L29">        .toArray(Class[]::new);</span>
+<span class="nc" id="L30">    config.exposeIdsFor(classes);</span>
+<span class="nc" id="L31">    config.setReturnBodyOnDelete(false);</span>
+<span class="nc" id="L32">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

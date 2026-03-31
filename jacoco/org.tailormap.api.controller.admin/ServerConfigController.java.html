@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServerConfigController {
   private final MultipartConfigElement multipartConfigElement;
 
-<span class="fc" id="L23">  public ServerConfigController(MultipartConfigElement multipartConfigElement) {</span>
-<span class="fc" id="L24">    this.multipartConfigElement = multipartConfigElement;</span>
-<span class="fc" id="L25">  }</span>
+<span class="nc" id="L23">  public ServerConfigController(MultipartConfigElement multipartConfigElement) {</span>
+<span class="nc" id="L24">    this.multipartConfigElement = multipartConfigElement;</span>
+<span class="nc" id="L25">  }</span>
 
   @GetMapping(path = &quot;${tailormap-api.admin.base-path}/server/config&quot;)
   public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; get() {

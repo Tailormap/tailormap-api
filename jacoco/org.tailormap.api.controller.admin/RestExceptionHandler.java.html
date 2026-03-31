@@ -20,9 +20,9 @@ import org.tailormap.api.security.InvalidPasswordException;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestControllerAdvice
-<span class="fc" id="L23">public class RestExceptionHandler {</span>
-<span class="fc" id="L24">  private static final Logger logger =</span>
-<span class="fc" id="L25">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L23">public class RestExceptionHandler {</span>
+<span class="nc" id="L24">  private static final Logger logger =</span>
+<span class="nc" id="L25">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @ExceptionHandler({HttpMessageNotReadableException.class})
   @Nullable public ResponseEntity&lt;Object&gt; handleException(final HttpMessageNotReadableException ex, final WebRequest request) {

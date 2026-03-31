@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.json.JsonMapper;
 
 @RestController
-<span class="fc" id="L16">public class TestAdminController {</span>
+<span class="nc" id="L16">public class TestAdminController {</span>
   @GetMapping(path = &quot;${tailormap-api.admin.base-path}/test&quot;)
   public ResponseEntity&lt;Serializable&gt; test() {
 <span class="nc" id="L19">    return ResponseEntity.ok(new JsonMapper().createObjectNode().put(&quot;test&quot;, true));</span>

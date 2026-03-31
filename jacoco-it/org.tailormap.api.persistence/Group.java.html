@@ -36,7 +36,7 @@ import org.tailormap.api.util.Constants;
 @Entity
 @Table(name = &quot;groups&quot;)
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L39">public class Group extends AuditMetadata {</span>
+<span class="nc" id="L39">public class Group extends AuditMetadata {</span>
   // Group to make authorization rules for anonymous users
   public static final String ANONYMOUS = &quot;anonymous&quot;;
   // Group to make authorization rules for authenticated users
@@ -57,7 +57,7 @@ import org.tailormap.api.util.Constants;
   @Column(columnDefinition = &quot;text&quot;)
   private String notes;
 
-<span class="fc" id="L60">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
+<span class="nc" id="L60">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
   private Set&lt;User&gt; members = new HashSet&lt;&gt;();
 
   /**
@@ -72,7 +72,7 @@ import org.tailormap.api.util.Constants;
    * attributes for the purposes of the extension and the viewer admin UI will show a control to edit the attribute in
    * the group detail form.
    */
-<span class="fc" id="L75">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L75">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   private List&lt;AdminAdditionalProperty&gt; additionalProperties = new ArrayList&lt;&gt;();
 

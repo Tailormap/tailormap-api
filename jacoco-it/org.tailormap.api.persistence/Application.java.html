@@ -42,9 +42,9 @@ import org.tailormap.api.viewer.model.Component;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L45">public class Application extends AuditMetadata {</span>
-<span class="fc" id="L46">  private static final Logger logger =</span>
-<span class="fc" id="L47">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L45">public class Application extends AuditMetadata {</span>
+<span class="nc" id="L46">  private static final Logger logger =</span>
+<span class="nc" id="L47">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,26 +84,26 @@ import org.tailormap.api.viewer.model.Component;
   })
   private Bounds maxExtent;
 
-<span class="fc" id="L87">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L87">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private AppContent contentRoot = new AppContent();
 
   @JsonIgnore
   private transient AppContent oldContentRoot;
 
-<span class="fc" id="L94">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L94">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private AppSettings settings = new AppSettings();
 
-<span class="fc" id="L98">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L98">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;Component&gt; components = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L102">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L102">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private AppStyling styling = new AppStyling();
 
-<span class="fc" id="L106">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L106">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;AuthorizationRule&gt; authorizationRules = new ArrayList&lt;&gt;();
 

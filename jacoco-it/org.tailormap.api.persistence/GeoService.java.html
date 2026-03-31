@@ -56,11 +56,11 @@ import org.tailormap.api.viewer.model.Service;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L59">public class GeoService extends AuditMetadata {</span>
+<span class="nc" id="L59">public class GeoService extends AuditMetadata {</span>
   private static final Logger logger =
-<span class="fc" id="L61">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L61">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
-<span class="fc" id="L63">  private static final List&lt;String&gt; REMOVE_PARAMS = List.of(&quot;REQUEST&quot;);</span>
+<span class="nc" id="L63">  private static final List&lt;String&gt; REMOVE_PARAMS = List.of(&quot;REQUEST&quot;);</span>
 
   @Id
   private String id;
@@ -124,11 +124,11 @@ import org.tailormap.api.viewer.model.Service;
   @Column(columnDefinition = &quot;jsonb&quot;)
   private TMServiceCaps serviceCapabilities;
 
-<span class="fc" id="L127">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L127">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;AuthorizationRule&gt; authorizationRules = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L131">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L131">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;GeoServiceLayer&gt; layers = new ArrayList&lt;&gt;();
 
@@ -138,7 +138,7 @@ import org.tailormap.api.viewer.model.Service;
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for vendor-specific
    * capabilities etc.
    */
-<span class="fc" id="L141">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L141">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private GeoServiceSettings settings = new GeoServiceSettings();
 

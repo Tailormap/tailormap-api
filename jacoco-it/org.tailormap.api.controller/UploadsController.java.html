@@ -27,9 +27,9 @@ import org.tailormap.api.repository.UploadRepository;
 public class UploadsController {
   private final UploadRepository uploadRepository;
 
-<span class="fc" id="L30">  public UploadsController(UploadRepository uploadRepository) {</span>
-<span class="fc" id="L31">    this.uploadRepository = uploadRepository;</span>
-<span class="fc" id="L32">  }</span>
+<span class="nc" id="L30">  public UploadsController(UploadRepository uploadRepository) {</span>
+<span class="nc" id="L31">    this.uploadRepository = uploadRepository;</span>
+<span class="nc" id="L32">  }</span>
 
   // Can't use ${tailormap-api.base-path} because linkTo() won't work
   @GetMapping(path = &quot;/api/uploads/{category}/{id}/{filename}&quot;)

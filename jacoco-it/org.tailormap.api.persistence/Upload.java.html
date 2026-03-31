@@ -27,7 +27,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L30">public class Upload extends AuditMetadata {</span>
+<span class="nc" id="L30">public class Upload extends AuditMetadata {</span>
   public static final String CATEGORY_APP_LOGO = &quot;app-logo&quot;;
   public static final String CATEGORY_LEGEND = &quot;legend&quot;;
   public static final String CATEGORY_PORTAL_IMAGE = &quot;portal-image&quot;;
@@ -51,7 +51,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
   private Boolean hiDpiImage;
 
-<span class="fc" id="L54">  @NotNull private OffsetDateTime lastModified = OffsetDateTime.now(ZoneId.systemDefault());</span>
+<span class="nc" id="L54">  @NotNull private OffsetDateTime lastModified = OffsetDateTime.now(ZoneId.systemDefault());</span>
 
   @Basic(fetch = FetchType.LAZY)
   private byte[] content;

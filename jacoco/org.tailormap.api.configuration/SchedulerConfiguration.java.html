@@ -19,19 +19,19 @@ import org.tailormap.api.scheduling.DebugLoggingTriggerListener;
 
 @Configuration
 public class SchedulerConfiguration {
-<span class="fc" id="L22">  private static final Logger logger =</span>
-<span class="fc" id="L23">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L22">  private static final Logger logger =</span>
+<span class="nc" id="L23">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final SchedulerFactoryBean schedulerFactoryBean;
 
-<span class="fc" id="L27">  public SchedulerConfiguration(@Autowired SchedulerFactoryBean schedulerFactoryBean) {</span>
-<span class="fc" id="L28">    this.schedulerFactoryBean = schedulerFactoryBean;</span>
-<span class="fc" id="L29">  }</span>
+<span class="nc" id="L27">  public SchedulerConfiguration(@Autowired SchedulerFactoryBean schedulerFactoryBean) {</span>
+<span class="nc" id="L28">    this.schedulerFactoryBean = schedulerFactoryBean;</span>
+<span class="nc" id="L29">  }</span>
 
   @PostConstruct
   public void addListeners() throws SchedulerException {
-<span class="fc" id="L33">    schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new SentryJobListener());</span>
-<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L33">    schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new SentryJobListener());</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
       // Add debug logging listeners to the scheduler
 <span class="nc" id="L36">      schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new DebugLoggingJobListener());</span>
 
@@ -40,6 +40,6 @@ public class SchedulerConfiguration {
 <span class="nc" id="L40">          .getListenerManager()</span>
 <span class="nc" id="L41">          .addTriggerListener(new DebugLoggingTriggerListener());</span>
     }
-<span class="fc" id="L43">  }</span>
+<span class="nc" id="L43">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

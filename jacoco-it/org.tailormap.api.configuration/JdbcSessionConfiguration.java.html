@@ -28,9 +28,9 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 @Configuration(proxyBeanMethods = false)
-<span class="fc" id="L31">public class JdbcSessionConfiguration implements BeanClassLoaderAware {</span>
-<span class="fc" id="L32">  private static final Logger logger =</span>
-<span class="fc" id="L33">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L31">public class JdbcSessionConfiguration implements BeanClassLoaderAware {</span>
+<span class="nc" id="L32">  private static final Logger logger =</span>
+<span class="nc" id="L33">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private static final String CREATE_SESSION_ATTRIBUTE_QUERY = &quot;&quot;&quot;
 INSERT INTO %TABLE_NAME%_ATTRIBUTES (SESSION_PRIMARY_ID, ATTRIBUTE_NAME, ATTRIBUTE_BYTES)
@@ -48,44 +48,44 @@ AND ATTRIBUTE_NAME = ?
 
   @Bean
   SessionRepositoryCustomizer&lt;JdbcIndexedSessionRepository&gt; customizer() {
-<span class="fc" id="L51">    return (sessionRepository) -&gt; {</span>
-<span class="fc" id="L52">      sessionRepository.setCreateSessionAttributeQuery(CREATE_SESSION_ATTRIBUTE_QUERY);</span>
-<span class="fc" id="L53">      sessionRepository.setUpdateSessionAttributeQuery(UPDATE_SESSION_ATTRIBUTE_QUERY);</span>
-<span class="fc" id="L54">    };</span>
+<span class="nc" id="L51">    return (sessionRepository) -&gt; {</span>
+<span class="nc" id="L52">      sessionRepository.setCreateSessionAttributeQuery(CREATE_SESSION_ATTRIBUTE_QUERY);</span>
+<span class="nc" id="L53">      sessionRepository.setUpdateSessionAttributeQuery(UPDATE_SESSION_ATTRIBUTE_QUERY);</span>
+<span class="nc" id="L54">    };</span>
   }
 
   @Bean(&quot;springSessionConversionService&quot;)
   public ConversionService springSessionConversionService() {
 
-<span class="fc" id="L60">    BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()</span>
-<span class="fc" id="L61">        .allowIfSubType(&quot;org.tailormap.api.security.&quot;)</span>
-<span class="fc" id="L62">        .allowIfSubType(&quot;org.springframework.security.&quot;)</span>
-<span class="fc" id="L63">        .allowIfSubType(&quot;java.util.&quot;)</span>
-<span class="fc" id="L64">        .allowIfSubType(java.lang.Number.class)</span>
-<span class="fc" id="L65">        .allowIfSubType(&quot;java.time.&quot;)</span>
-<span class="fc" id="L66">        .allowIfBaseType(Object.class);</span>
+<span class="nc" id="L60">    BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()</span>
+<span class="nc" id="L61">        .allowIfSubType(&quot;org.tailormap.api.security.&quot;)</span>
+<span class="nc" id="L62">        .allowIfSubType(&quot;org.springframework.security.&quot;)</span>
+<span class="nc" id="L63">        .allowIfSubType(&quot;java.util.&quot;)</span>
+<span class="nc" id="L64">        .allowIfSubType(java.lang.Number.class)</span>
+<span class="nc" id="L65">        .allowIfSubType(&quot;java.time.&quot;)</span>
+<span class="nc" id="L66">        .allowIfBaseType(Object.class);</span>
 
-<span class="fc" id="L68">    JsonMapper mapper = JsonMapper.builder()</span>
-<span class="fc" id="L69">        .configure(</span>
+<span class="nc" id="L68">    JsonMapper mapper = JsonMapper.builder()</span>
+<span class="nc" id="L69">        .configure(</span>
             StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION,
-<span class="pc bpc" id="L71" title="2 of 4 branches missed.">            (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
-<span class="pc bpc" id="L72" title="2 of 4 branches missed.">        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
+<span class="nc bnc" id="L71" title="All 4 branches missed.">            (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
+<span class="nc bnc" id="L72" title="All 4 branches missed.">        .configure(SerializationFeature.INDENT_OUTPUT, (logger.isDebugEnabled() || logger.isTraceEnabled()))</span>
 
         // register mixins early so Jackson picks up the @JsonCreator constructor for TailormapUserDetails
         // implementations
-<span class="fc" id="L76">        .addMixIn(</span>
+<span class="nc" id="L76">        .addMixIn(</span>
             org.tailormap.api.security.TailormapUserDetailsImpl.class,
             org.tailormap.api.security.TailormapUserDetailsImplMixin.class)
-<span class="fc" id="L79">        .addMixIn(</span>
+<span class="nc" id="L79">        .addMixIn(</span>
             org.tailormap.api.security.TailormapOidcUser.class,
             org.tailormap.api.security.TailormapOidcUserMixin.class)
-<span class="fc" id="L82">        .addModules(SecurityJacksonModules.getModules(this.classLoader, builder))</span>
-<span class="fc" id="L83">        .activateDefaultTyping(builder.build(), DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)</span>
-<span class="fc" id="L84">        .build();</span>
+<span class="nc" id="L82">        .addModules(SecurityJacksonModules.getModules(this.classLoader, builder))</span>
+<span class="nc" id="L83">        .activateDefaultTyping(builder.build(), DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)</span>
+<span class="nc" id="L84">        .build();</span>
 
-<span class="fc" id="L86">    final GenericConversionService converter = new GenericConversionService();</span>
+<span class="nc" id="L86">    final GenericConversionService converter = new GenericConversionService();</span>
     // Object -&gt; byte[] (serialize to JSON bytes)
-<span class="fc" id="L88">    converter.addConverter(Object.class, byte[].class, source -&gt; {</span>
+<span class="nc" id="L88">    converter.addConverter(Object.class, byte[].class, source -&gt; {</span>
       try {
 <span class="nc" id="L90">        logger.debug(&quot;Serializing Spring Session: {}&quot;, source);</span>
 <span class="nc" id="L91">        return mapper.writerFor(Object.class).writeValueAsBytes(source);</span>
@@ -95,7 +95,7 @@ AND ATTRIBUTE_NAME = ?
       }
     });
     // byte[] -&gt; Object (deserialize from JSON bytes)
-<span class="fc" id="L98">    converter.addConverter(byte[].class, Object.class, source -&gt; {</span>
+<span class="nc" id="L98">    converter.addConverter(byte[].class, Object.class, source -&gt; {</span>
       try {
 <span class="nc" id="L100">        logger.debug(</span>
             &quot;Deserializing Spring Session from bytes, length: {} ({})&quot;,
@@ -120,12 +120,12 @@ AND ATTRIBUTE_NAME = ?
       }
     });
 
-<span class="fc" id="L123">    return converter;</span>
+<span class="nc" id="L123">    return converter;</span>
   }
 
   @Override
   public void setBeanClassLoader(@NonNull ClassLoader classLoader) {
-<span class="fc" id="L128">    this.classLoader = classLoader;</span>
-<span class="fc" id="L129">  }</span>
+<span class="nc" id="L128">    this.classLoader = classLoader;</span>
+<span class="nc" id="L129">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -22,10 +22,10 @@ import java.util.Set;
 public class WFSProxy {
   private final HttpClient httpClient;
 
-<span class="fc" id="L25">  public WFSProxy() {</span>
-<span class="fc" id="L26">    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
-<span class="fc" id="L27">    this.httpClient = builder.build();</span>
-<span class="fc" id="L28">  }</span>
+<span class="nc" id="L25">  public WFSProxy() {</span>
+<span class="nc" id="L26">    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
+<span class="nc" id="L27">    this.httpClient = builder.build();</span>
+<span class="nc" id="L28">  }</span>
 
   public HttpResponse&lt;InputStream&gt; proxyWfsRequest(
       URI wfsRequest, String username, String password, HttpServletRequest request) throws Exception {

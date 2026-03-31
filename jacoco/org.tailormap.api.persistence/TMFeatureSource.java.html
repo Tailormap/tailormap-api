@@ -41,18 +41,18 @@ import tools.jackson.databind.json.JsonMapper;
 @Entity
 @Table(name = &quot;feature_source&quot;)
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L44">public class TMFeatureSource extends AuditMetadata {</span>
+<span class="nc" id="L44">public class TMFeatureSource extends AuditMetadata {</span>
 
-<span class="fc" id="L46">  public enum Protocol {</span>
-<span class="fc" id="L47">    WFS(&quot;wfs&quot;),</span>
+<span class="nc" id="L46">  public enum Protocol {</span>
+<span class="nc" id="L47">    WFS(&quot;wfs&quot;),</span>
 
-<span class="fc" id="L49">    JDBC(&quot;jdbc&quot;);</span>
+<span class="nc" id="L49">    JDBC(&quot;jdbc&quot;);</span>
 
     private final String value;
 
-<span class="fc" id="L53">    Protocol(String value) {</span>
-<span class="fc" id="L54">      this.value = value;</span>
-<span class="fc" id="L55">    }</span>
+<span class="nc" id="L53">    Protocol(String value) {</span>
+<span class="nc" id="L54">      this.value = value;</span>
+<span class="nc" id="L55">    }</span>
 
     public String getValue() {
 <span class="nc" id="L58">      return value;</span>
@@ -111,7 +111,7 @@ import tools.jackson.databind.json.JsonMapper;
   @Column(columnDefinition = &quot;jsonb&quot;)
   private TMServiceCaps serviceCapabilities;
 
-<span class="fc" id="L114">  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)</span>
+<span class="nc" id="L114">  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)</span>
   @JoinTable(
       name = &quot;feature_source_feature_types&quot;,
       inverseJoinColumns = @JoinColumn(name = &quot;feature_type&quot;),

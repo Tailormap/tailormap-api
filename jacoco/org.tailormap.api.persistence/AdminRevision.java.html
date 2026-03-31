@@ -26,10 +26,10 @@ import org.tailormap.api.persistence.listener.AdminRevisionListener;
 @RevisionEntity
 @EntityListeners(AdminRevisionListener.class)
 @Table(name = &quot;revisions&quot;, schema = &quot;history&quot;)
-<span class="fc" id="L29">public class AdminRevision extends RevisionMapping {</span>
+<span class="nc" id="L29">public class AdminRevision extends RevisionMapping {</span>
   private String modifiedBy;
 
-<span class="fc" id="L32">  @ElementCollection</span>
+<span class="nc" id="L32">  @ElementCollection</span>
   @JoinTable(name = &quot;modified_entities&quot;, schema = &quot;history&quot;, joinColumns = @JoinColumn(name = &quot;revision_number&quot;))
   @Column(name = &quot;modified_entity_name&quot;)
   @ModifiedEntityNames

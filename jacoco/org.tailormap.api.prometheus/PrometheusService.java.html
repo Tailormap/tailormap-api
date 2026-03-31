@@ -32,23 +32,23 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @Component
 public class PrometheusService {
-<span class="fc" id="L35">  private static final Logger logger =</span>
-<span class="fc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L35">  private static final Logger logger =</span>
+<span class="nc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Value(&quot;${tailormap-api.prometheus-api-url}&quot;)
   private String prometheusUrl;
 
   private final RestTemplate restTemplate;
 
-<span class="fc" id="L43">  public PrometheusService(RestTemplate template) {</span>
-<span class="fc" id="L44">    this.restTemplate = template;</span>
-<span class="fc" id="L45">  }</span>
+<span class="nc" id="L43">  public PrometheusService(RestTemplate template) {</span>
+<span class="nc" id="L44">    this.restTemplate = template;</span>
+<span class="nc" id="L45">  }</span>
 
   /** Check if the Prometheus server is available by sending a simple query. */
   public boolean isPrometheusAvailable() {
     try {
-<span class="fc" id="L50">      long startTime = System.nanoTime();</span>
-<span class="fc" id="L51">      ResponseEntity&lt;String&gt; response =</span>
+<span class="nc" id="L50">      long startTime = System.nanoTime();</span>
+<span class="nc" id="L51">      ResponseEntity&lt;String&gt; response =</span>
 <span class="nc" id="L52">          restTemplate.getForEntity(prometheusUrl + &quot;/query?query=up&quot;, String.class);</span>
 <span class="nc" id="L53">      Metrics.timer(&quot;tailormap_prometheus_ping&quot;).record(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);</span>
 <span class="nc bnc" id="L54" title="All 2 branches missed.">      if (response.getStatusCode() == HttpStatus.OK) {</span>
@@ -57,9 +57,9 @@ public class PrometheusService {
 <span class="nc" id="L57">        logger.warn(&quot;Prometheus server is not available: {}&quot;, response.getStatusCode());</span>
 <span class="nc" id="L58">        return false;</span>
       }
-<span class="fc" id="L60">    } catch (Exception e) {</span>
-<span class="fc" id="L61">      logger.debug(&quot;Error checking Prometheus availability&quot;, e);</span>
-<span class="fc" id="L62">      return false;</span>
+<span class="nc" id="L60">    } catch (Exception e) {</span>
+<span class="nc" id="L61">      logger.debug(&quot;Error checking Prometheus availability&quot;, e);</span>
+<span class="nc" id="L62">      return false;</span>
     }
   }
   /**

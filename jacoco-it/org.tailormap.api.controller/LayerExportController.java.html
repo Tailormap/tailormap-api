@@ -62,18 +62,18 @@ import org.tailormap.api.viewer.model.LayerExportCapabilities;
 @AppRestController
 @RequestMapping(path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/&quot;)
 public class LayerExportController {
-<span class="fc" id="L65">  private static final Logger logger =</span>
-<span class="fc" id="L66">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L65">  private static final Logger logger =</span>
+<span class="nc" id="L66">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Value(&quot;#{'${tailormap-api.export.allowed-outputformats}'.split(',')}&quot;)
   private List&lt;String&gt; allowedOutputFormats;
 
   private final FeatureSourceRepository featureSourceRepository;
-<span class="fc" id="L72">  private final WFSProxy wfsProxy = new WFSProxy();</span>
+<span class="nc" id="L72">  private final WFSProxy wfsProxy = new WFSProxy();</span>
 
-<span class="fc" id="L74">  public LayerExportController(FeatureSourceRepository featureSourceRepository) {</span>
-<span class="fc" id="L75">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L76">  }</span>
+<span class="nc" id="L74">  public LayerExportController(FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L75">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L76">  }</span>
 
   @Transactional
   @GetMapping(path = &quot;capabilities&quot;)

@@ -33,7 +33,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Entity
 @Table(name = &quot;feature_type&quot;)
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L36">public class TMFeatureType extends AuditMetadata {</span>
+<span class="nc" id="L36">public class TMFeatureType extends AuditMetadata {</span>
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
   private String title;
 
-<span class="fc" id="L53">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L53">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
 
@@ -68,11 +68,11 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
   // XXX: multiple primary keys?
   private String primaryKeyAttribute;
 
-<span class="fc" id="L71">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L71">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;TMAttributeDescriptor&gt; attributes = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L75">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L75">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private FeatureTypeSettings settings = new FeatureTypeSettings();
 

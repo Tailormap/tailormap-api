@@ -38,10 +38,10 @@ public class UserController {
   @Value(&quot;${tailormap-api.password-reset.enabled:false}&quot;)
   private boolean passwordResetEnabled;
 
-<span class="fc" id="L41">  public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {</span>
-<span class="fc" id="L42">    this.oidcRepository = oidcRepository;</span>
-<span class="fc" id="L43">    this.uploadHelper = uploadHelper;</span>
-<span class="fc" id="L44">  }</span>
+<span class="nc" id="L41">  public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {</span>
+<span class="nc" id="L42">    this.oidcRepository = oidcRepository;</span>
+<span class="nc" id="L43">    this.uploadHelper = uploadHelper;</span>
+<span class="nc" id="L44">  }</span>
 
   /**
    * Get user login information.

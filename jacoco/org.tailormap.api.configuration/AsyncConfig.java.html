@@ -14,19 +14,19 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableAsync
-<span class="fc" id="L17">public class AsyncConfig {</span>
+<span class="nc" id="L17">public class AsyncConfig {</span>
 
   @Bean(name = &quot;passwordResetTaskExecutor&quot;)
   public Executor passwordResetTaskExecutor() {
-<span class="fc" id="L21">    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();</span>
-<span class="fc" id="L22">    executor.setCorePoolSize(1);</span>
-<span class="fc" id="L23">    executor.setMaxPoolSize(1);</span>
-<span class="fc" id="L24">    executor.setQueueCapacity(10);</span>
-<span class="fc" id="L25">    executor.setThreadNamePrefix(&quot;pwd-reset-&quot;);</span>
-<span class="fc" id="L26">    executor.setWaitForTasksToCompleteOnShutdown(true);</span>
-<span class="fc" id="L27">    executor.setAwaitTerminationSeconds(30);</span>
-<span class="fc" id="L28">    executor.initialize();</span>
-<span class="fc" id="L29">    return executor;</span>
+<span class="nc" id="L21">    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();</span>
+<span class="nc" id="L22">    executor.setCorePoolSize(1);</span>
+<span class="nc" id="L23">    executor.setMaxPoolSize(1);</span>
+<span class="nc" id="L24">    executor.setQueueCapacity(10);</span>
+<span class="nc" id="L25">    executor.setThreadNamePrefix(&quot;pwd-reset-&quot;);</span>
+<span class="nc" id="L26">    executor.setWaitForTasksToCompleteOnShutdown(true);</span>
+<span class="nc" id="L27">    executor.setAwaitTerminationSeconds(30);</span>
+<span class="nc" id="L28">    executor.initialize();</span>
+<span class="nc" id="L29">    return executor;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -27,7 +27,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Audited
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
-<span class="fc" id="L30">public class Page extends AuditMetadata {</span>
+<span class="nc" id="L30">public class Page extends AuditMetadata {</span>
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +51,11 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
   /** CSS class name to apply to the page. */
   private String className;
 
-<span class="fc" id="L54">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L54">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   private List&lt;PageTile&gt; tiles = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L58">  @JdbcTypeCode(SqlTypes.JSON)</span>
+<span class="nc" id="L58">  @JdbcTypeCode(SqlTypes.JSON)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull private List&lt;AuthorizationRule&gt; authorizationRules = new ArrayList&lt;&gt;();
 

@@ -18,16 +18,16 @@ import org.tailormap.api.repository.UserRepository;
 
 @Service
 public class TailormapUserDetailsService implements UserDetailsService {
-<span class="fc" id="L21">  private static final Logger logger =</span>
-<span class="fc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L21">  private static final Logger logger =</span>
+<span class="nc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
 
-<span class="fc" id="L27">  public TailormapUserDetailsService(UserRepository userRepository, GroupRepository groupRepository) {</span>
-<span class="fc" id="L28">    this.userRepository = userRepository;</span>
-<span class="fc" id="L29">    this.groupRepository = groupRepository;</span>
-<span class="fc" id="L30">  }</span>
+<span class="nc" id="L27">  public TailormapUserDetailsService(UserRepository userRepository, GroupRepository groupRepository) {</span>
+<span class="nc" id="L28">    this.userRepository = userRepository;</span>
+<span class="nc" id="L29">    this.groupRepository = groupRepository;</span>
+<span class="nc" id="L30">  }</span>
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

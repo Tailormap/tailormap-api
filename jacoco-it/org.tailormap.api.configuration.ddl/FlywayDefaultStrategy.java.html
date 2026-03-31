@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class FlywayDefaultStrategy {
   private final FlywayMigrationResult migrationResult;
 
-<span class="fc" id="L17">  public FlywayDefaultStrategy(FlywayMigrationResult migrationResult) {</span>
-<span class="fc" id="L18">    this.migrationResult = migrationResult;</span>
-<span class="fc" id="L19">  }</span>
+<span class="nc" id="L17">  public FlywayDefaultStrategy(FlywayMigrationResult migrationResult) {</span>
+<span class="nc" id="L18">    this.migrationResult = migrationResult;</span>
+<span class="nc" id="L19">  }</span>
 
   @Bean
   public FlywayMigrationStrategy flywayMigrationStrategy() {
-<span class="fc" id="L23">    return flyway -&gt; this.migrationResult.setMigrateResult(flyway.migrate());</span>
+<span class="nc" id="L23">    return flyway -&gt; this.migrationResult.setMigrateResult(flyway.migrate());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

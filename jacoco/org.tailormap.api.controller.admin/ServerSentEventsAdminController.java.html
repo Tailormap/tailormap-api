@@ -25,17 +25,17 @@ import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 public class ServerSentEventsAdminController {
-<span class="fc" id="L28">  private static final Logger logger =</span>
-<span class="fc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L28">  private static final Logger logger =</span>
+<span class="nc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final SseEventBus eventBus;
 
   private final JsonMapper jsonMapper;
 
-<span class="fc" id="L35">  public ServerSentEventsAdminController(SseEventBus eventBus, JsonMapper jsonMapper) {</span>
-<span class="fc" id="L36">    this.eventBus = eventBus;</span>
-<span class="fc" id="L37">    this.jsonMapper = jsonMapper;</span>
-<span class="fc" id="L38">  }</span>
+<span class="nc" id="L35">  public ServerSentEventsAdminController(SseEventBus eventBus, JsonMapper jsonMapper) {</span>
+<span class="nc" id="L36">    this.eventBus = eventBus;</span>
+<span class="nc" id="L37">    this.jsonMapper = jsonMapper;</span>
+<span class="nc" id="L38">  }</span>
 
   /**
    * Endpoint for the single-page admin frontend to receive updates to entities from other windows. The frontend does
@@ -60,8 +60,8 @@ public class ServerSentEventsAdminController {
 
   @Scheduled(fixedRate = 60_000)
   public void keepAlive() throws JacksonException {
-<span class="fc" id="L63">    this.eventBus.handleEvent(</span>
-<span class="fc" id="L64">        SseEvent.ofData(jsonMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));</span>
-<span class="fc" id="L65">  }</span>
+<span class="nc" id="L63">    this.eventBus.handleEvent(</span>
+<span class="nc" id="L64">        SseEvent.ofData(jsonMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));</span>
+<span class="nc" id="L65">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -66,16 +66,16 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 @Service
 public class GeoServiceHelper {
 
-<span class="fc" id="L69">  private static final Logger logger =</span>
-<span class="fc" id="L70">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L69">  private static final Logger logger =</span>
+<span class="nc" id="L70">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
   private final TailormapConfig tailormapConfig;
   private final FeatureSourceRepository featureSourceRepository;
 
   @Autowired
-<span class="fc" id="L75">  public GeoServiceHelper(TailormapConfig tailormapConfig, FeatureSourceRepository featureSourceRepository) {</span>
-<span class="fc" id="L76">    this.tailormapConfig = tailormapConfig;</span>
-<span class="fc" id="L77">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="fc" id="L78">  }</span>
+<span class="nc" id="L75">  public GeoServiceHelper(TailormapConfig tailormapConfig, FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L76">    this.tailormapConfig = tailormapConfig;</span>
+<span class="nc" id="L77">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L78">  }</span>
 
   public static org.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(String url) {
 

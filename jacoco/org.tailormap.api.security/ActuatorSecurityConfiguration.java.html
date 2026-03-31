@@ -32,8 +32,8 @@ import org.tailormap.api.repository.UserRepository;
 @Configuration
 @Order(1)
 public class ActuatorSecurityConfiguration {
-<span class="fc" id="L35">  private static final Logger logger =</span>
-<span class="fc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L35">  private static final Logger logger =</span>
+<span class="nc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Value(&quot;${management.endpoints.web.base-path}&quot;)
   private String basePath;
@@ -44,17 +44,17 @@ public class ActuatorSecurityConfiguration {
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
 
-<span class="fc" id="L47">  public ActuatorSecurityConfiguration(UserRepository userRepository, GroupRepository groupRepository) {</span>
-<span class="fc" id="L48">    this.userRepository = userRepository;</span>
-<span class="fc" id="L49">    this.groupRepository = groupRepository;</span>
-<span class="fc" id="L50">  }</span>
+<span class="nc" id="L47">  public ActuatorSecurityConfiguration(UserRepository userRepository, GroupRepository groupRepository) {</span>
+<span class="nc" id="L48">    this.userRepository = userRepository;</span>
+<span class="nc" id="L49">    this.groupRepository = groupRepository;</span>
+<span class="nc" id="L50">  }</span>
 
   @EventListener(ApplicationReadyEvent.class)
   @Transactional
   @DependsOn(&quot;tailormap-database-initialization&quot;)
   public void createActuatorAccount() {
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">    if (StringUtils.isBlank(hashedPassword)) {</span>
-<span class="fc" id="L57">      return;</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (StringUtils.isBlank(hashedPassword)) {</span>
+<span class="nc" id="L57">      return;</span>
     }
 <span class="nc" id="L59">    InternalAdminAuthentication.setInSecurityContext();</span>
     try {
@@ -88,15 +88,15 @@ public class ActuatorSecurityConfiguration {
   @Bean
   public SecurityFilterChain actuatorFilterChain(HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository)
       throws Exception {
-<span class="fc" id="L91">    http.csrf(csrf -&gt; csrf.csrfTokenRepository(csrfTokenRepository))</span>
-<span class="fc" id="L92">        .securityMatcher(basePath + &quot;/**&quot;)</span>
-<span class="fc" id="L93">        .authorizeHttpRequests(authorize -&gt; authorize</span>
-<span class="fc" id="L94">            .requestMatchers(basePath + &quot;/health/**&quot;)</span>
-<span class="fc" id="L95">            .permitAll()</span>
-<span class="fc" id="L96">            .requestMatchers(basePath + &quot;/info&quot;)</span>
-<span class="fc" id="L97">            .permitAll()</span>
-<span class="fc" id="L98">            .requestMatchers(basePath + &quot;/**&quot;)</span>
-<span class="fc" id="L99">            .access((authentication, context) -&gt; {</span>
+<span class="nc" id="L91">    http.csrf(csrf -&gt; csrf.csrfTokenRepository(csrfTokenRepository))</span>
+<span class="nc" id="L92">        .securityMatcher(basePath + &quot;/**&quot;)</span>
+<span class="nc" id="L93">        .authorizeHttpRequests(authorize -&gt; authorize</span>
+<span class="nc" id="L94">            .requestMatchers(basePath + &quot;/health/**&quot;)</span>
+<span class="nc" id="L95">            .permitAll()</span>
+<span class="nc" id="L96">            .requestMatchers(basePath + &quot;/info&quot;)</span>
+<span class="nc" id="L97">            .permitAll()</span>
+<span class="nc" id="L98">            .requestMatchers(basePath + &quot;/**&quot;)</span>
+<span class="nc" id="L99">            .access((authentication, context) -&gt; {</span>
 <span class="nc" id="L100">              String remoteAddr = context.getRequest().getRemoteAddr();</span>
 <span class="nc bnc" id="L101" title="All 2 branches missed.">              if (remoteAddr.startsWith(&quot;10.&quot;)</span>
 <span class="nc bnc" id="L102" title="All 2 branches missed.">                  || remoteAddr.startsWith(&quot;192.168.&quot;)</span>
@@ -111,11 +111,11 @@ public class ActuatorSecurityConfiguration {
 <span class="nc bnc" id="L111" title="All 2 branches missed.">                  .anyMatch(a -&gt; a.getAuthority().equals(Group.ADMIN)</span>
 <span class="nc bnc" id="L112" title="All 2 branches missed.">                      || a.getAuthority().equals(Group.ACTUATOR)));</span>
             }))
-<span class="fc" id="L114">        .httpBasic(Customizer.withDefaults())</span>
-<span class="fc" id="L115">        .addFilterAfter(</span>
+<span class="nc" id="L114">        .httpBasic(Customizer.withDefaults())</span>
+<span class="nc" id="L115">        .addFilterAfter(</span>
             /* debug logging user making the request */ new AuditInterceptor(),
             AnonymousAuthenticationFilter.class);
-<span class="fc" id="L118">    return http.build();</span>
+<span class="nc" id="L118">    return http.build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
