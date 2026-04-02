@@ -1221,6 +1221,34 @@ SPDX-License-Identifier: MIT
                         </configuration>
                     </execution>
                     <execution>
+                        <id>generate-obsolete-viewer-models</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/obsolete-viewer-schemas.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <modelPackage>org.tailormap.api.viewer.model</modelPackage>
+                            <library>spring-boot</library>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <serializableModel>true</serializableModel>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+                                <useOptional>true</useOptional>
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useJackson3>true</useJackson3>
+                                <additionalModelTypeAnnotations>@Deprecated</additionalModelTypeAnnotations>
+                            </configOptions>
+                            <generateApis>false</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateModelTests>false</generateModelTests>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-spec</id>
                         <goals>
                             <goal>generate</goal>
