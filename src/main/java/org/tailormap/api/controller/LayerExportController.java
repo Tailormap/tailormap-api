@@ -59,8 +59,14 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.viewer.model.LayerExportCapabilities;
 
+/**
+ * @deprecated This controller is deprecated and will be removed in a future release. Use the `/extract/` endpoint
+ *     (TODO) instead, which provides more flexible data extraction capabilities and supports more data sources than
+ *     just WFS.
+ */
 @AppRestController
 @RequestMapping(path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/")
+@Deprecated(forRemoval = true)
 public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
