@@ -135,8 +135,8 @@ components:
           description: 'Tile size for XYZ layer'
           type: integer
         tileGridExtent:
+          # Tile grid bounds for XYZ layer
           $ref: './common-schemas.yaml#/components/schemas/Bounds'
-          description: 'Tile grid bounds for XYZ layer'
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
@@ -260,18 +260,6 @@ components:
         name:
           type: string
 
-    LayerExportCapabilities:
-      type: object
-      required: [exportable]
-      properties:
-        exportable:
-          nullable: false
-          type: boolean
-        outputFormats:
-          type: array
-          items:
-            type: string
-
     Attribute:
       type: object
       required: [name]
@@ -330,7 +318,7 @@ components:
           nullable: true
           minItems: 0
           items:
-            $ref: './viewer-schemas.yaml#/components/schemas/AttachmentMetadata'
+            $ref: '#/components/schemas/AttachmentMetadata'
       example:
         __fid: 1
         geometry: "POLYGON(...)"
