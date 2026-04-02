@@ -13,6 +13,7 @@ on: # use pull request so this workflow dos not fail when triggered by dependabo
 jobs:
   build:
     name: 'Trivy Scan'
+    if: false # disable for now, external service is not working
     runs-on: ubuntu-latest
     permissions:
       contents: read
