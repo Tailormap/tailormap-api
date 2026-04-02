@@ -63,3 +63,31 @@ components:
       example:
         code: 500
         message: 'Internal server error'
+
+    ServerSentEventResponse:
+      description: 'Server Sent Event response. 
+      The client can use the `eventType` property to determine the type of event, and the `details` property 
+      to get specific event data.'
+      type: object
+      required:
+        - eventType
+      properties:
+        eventType:
+          description: 'Event type'
+          type: string
+        details:
+          description: 'Event data. Can be any JSON object or nothing, but should include at least a `status` property to indicate the status of the event.'
+          type: object
+          nullable: true
+        id:
+          description: 'optional event identifier, can be used for event ordering and deduplication'
+          type: string
+          format: uuid
+          nullable: true
+      example:
+        eventType: 'extract-started'
+        details:
+          status: 'started'
+          message: 'Extracting data'
+          progress: 10
+        id: '123e4567-e89b-12d3-a456-426614174000'
