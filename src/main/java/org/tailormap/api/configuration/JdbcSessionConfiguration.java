@@ -39,7 +39,7 @@ VALUES (?, ?, convert_from(?, 'UTF8')::jsonb)
 
   private static final String UPDATE_SESSION_ATTRIBUTE_QUERY = """
 UPDATE %TABLE_NAME%_ATTRIBUTES
-SET ATTRIBUTE_BYTES = encode(?, 'escape')::jsonb
+SET ATTRIBUTE_BYTES = convert_from(?, 'UTF8')::jsonb
 WHERE SESSION_PRIMARY_ID = ?
 AND ATTRIBUTE_NAME = ?
 """;
