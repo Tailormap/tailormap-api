@@ -17,7 +17,6 @@ import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.web.util.UriUtils;
 import org.tailormap.api.controller.GeoServiceProxyController;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
@@ -207,8 +205,8 @@ public class ApplicationHelper {
                 .title(style.getTitle())
                 .abstractText(style.getAbstractText())
                 .legendUrl(UriComponentsBuilder.fromUriString(legendProxyUrl)
-                    .queryParam("STYLE", UriUtils.encode(style.getName(), StandardCharsets.UTF_8))
-                    .build(true)
+                    .queryParam("STYLE", style.getName())
+                    .build(false)
                     .toUri());
           } catch (Exception e) {
             logger.warn(
