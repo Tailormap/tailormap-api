@@ -17,6 +17,7 @@ import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 import org.tailormap.api.controller.GeoServiceProxyController;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
@@ -197,16 +199,28 @@ public class ApplicationHelper {
       Application application, AppTreeLayerNode appTreeLayerNode, List<WMSStyle> legendStyles) {
     String legendProxyUrl = getLegendProxyUrl(application, appTreeLayerNode);
     return legendStyles.stream()
-        .map(style ->
+        .map(style -> {
+          try {
             // Create a copy of the style so we don't mutate configuration objects
-            new WMSStyle()
+            return new WMSStyle()
                 .name(style.getName())
                 .title(style.getTitle())
                 .abstractText(style.getAbstractText())
                 .legendUrl(UriComponentsBuilder.fromUriString(legendProxyUrl)
-                    .queryParam("STYLE", style.getName())
+                    .queryParam("STYLE", UriUtils.encode(style.getName(), StandardCharsets.UTF_8))
                     .build(true)
-                    .toUri()))
+                    .toUri());
+          } catch (Exception e) {
+            logger.warn(
+                "Failed to create proxied legend style for application {} layer {} style {}: {}",
+                application.getId(),
+                appTreeLayerNode.getId(),
+                style.getName(),
+                e.getMessage());
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
         .toList();
   }
 
