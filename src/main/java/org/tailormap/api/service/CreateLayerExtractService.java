@@ -159,8 +159,9 @@ public class CreateLayerExtractService {
   /**
    * Create a validated filename for an extract. The naming follows the pattern
    * {@code "%s_%s_%s.%s".formatted(sourceFT.getName(), clientId, UUIDv7.randomV7(), outputFormat.getExtension()) }
-   * where the first part is the source feature type name, the second part is the SSE client id, the third part is a
-   * random UUIDv7 and the fourth part is the file extension based on the requested output format.
+   * where the first part is the source feature type name (this is cleaned from some characters), the second part is
+   * the SSE client id, the third part is a random UUIDv7 and the fourth part is the file extension based on the
+   * requested output format.
    *
    * @param clientId the SSE client id
    * @param sourceFT the source featuretype for the extract
@@ -180,6 +181,9 @@ public class CreateLayerExtractService {
     if (cleanFTName.contains(":")) {
       // clip off the WFS namespace part
       cleanFTName = cleanFTName.substring(cleanFTName.lastIndexOf(":") + 1);
+      // remove: . _ which are used as separators in the filename and could cause issues when parsing the filename
+      // later on
+      cleanFTName = cleanFTName.replaceAll("[._]", "");
     }
     return "%s_%s_%s.%s".formatted(cleanFTName, clientId, UUIDv7.randomV7(), outputFormat.getExtension());
   }
@@ -197,13 +201,16 @@ public class CreateLayerExtractService {
       @NonNull String outputFileName) {
     SimpleFeatureSource inputFeatureSource = null;
 
-    this.emitProgress(clientId, outputFileName, 0, false, null);
+    this.emitProgress(clientId, outputFileName, 0, false, "Starting extract");
 
     try (Transaction outputTransaction = new DefaultTransaction("tailormap-extract-output")) {
       inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
 
       Query q = new Query(inputFeatureSource.getName().toString());
-      q.setPropertyNames(attributes.toArray(new String[0]));
+      if (!attributes.isEmpty()) {
+        q.setPropertyNames(attributes.toArray(new String[0]));
+      }
+
       if (!StringUtils.isBlank(filterCQL)) {
         Filter filter = ECQL.toFilter(filterCQL);
         q.setFilter(filter);
@@ -213,8 +220,8 @@ public class CreateLayerExtractService {
       }
 
       final int featCount = inputFeatureSource.getCount(q);
-      AtomicInteger featsAdded = new AtomicInteger();
       logger.debug("Filtered source counts {}", featCount);
+      final AtomicInteger featsAdded = new AtomicInteger();
 
       FileDataStore outputDataStore = getExtractDataStore(extractOutputFormat, outputFileName, clientId);
       SimpleFeatureType fType =
@@ -245,7 +252,7 @@ public class CreateLayerExtractService {
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
       outputDataStore.dispose();
-      this.emitProgress(clientId, outputFileName, 100, true, null);
+      this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
     } catch (IOException | CQLException | SchemaException e) {
       emitError(clientId, e.getMessage());
       logger.error("Creating extract failed", e);
