@@ -4,7 +4,7 @@ version-template: "$MAJOR.$MINOR.$PATCH"
 sort-by: 'title'
 
 template: |
-  ## What’s Changed
+  # What’s Changed
 
   $CHANGES
 

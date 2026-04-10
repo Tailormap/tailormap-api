@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.6.1-SNAPSHOT</version>
+    <version>12.6.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
-        <project.build.outputTimestamp>2026-03-23T14:25:52Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-03-31T11:10:19Z</project.build.outputTimestamp>
         <geotools.version>35-SNAPSHOT</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
@@ -153,8 +153,8 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.3.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.32.1</swagger-ui.version>
-        <sentry.version>8.37.1</sentry.version>
-        <errorProne.version>2.48.0</errorProne.version>
+        <sentry.version>8.38.0</sentry.version>
+        <errorProne.version>2.49.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -266,7 +266,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.45</version>
+            <version>2.2.47</version>
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -804,7 +804,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>io.github.git-commit-id</groupId>
                     <artifactId>git-commit-id-maven-plugin</artifactId>
-                    <version>9.1.0</version>
+                    <version>10.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
