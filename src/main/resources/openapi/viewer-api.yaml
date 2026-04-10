@@ -1820,7 +1820,7 @@ paths:
           in: path
           required: true
           description: 'A client-generated identifier; 
-            this must be the same as the clientId used in eg. the `/extract` request to correlate the events with the extract request.
+            this must be the same as the clientId used in eg. the `/{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}` request to correlate the events with the extract request.
              The format should use the "Nano ID" format, for example `V1StGXR8_Z5jdHi6B-myT`.'
           schema:
             type: string
@@ -1871,7 +1871,7 @@ paths:
                 type: array
                 items:
                   type: string
-                example: '["csv","shape.zip"]'
+                example: '["csv","shape"]'
 
   /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}:
     description: 'Export the attributes as shown in the attribute list for a layer.'
@@ -1944,8 +1944,8 @@ paths:
       responses:
         '202':
           description: 'Export started/queued. The client should listen to the `/events/` stream and wait for an 
-          `extract-completed` event with `status: completed` to know when the export is finished and the file is ready 
-          to be downloaded. If the connection is closed before that, the export may be cancelled.'
+          `extract-completed` event with `message: Extract task completed` to know when the export is finished and the 
+          file is ready to be downloaded. If the connection is closed before that, the export may be cancelled.'
           content:
             application/json:
               schema:
@@ -1957,12 +1957,7 @@ paths:
                 required:
                   - message
               example:
-                eventType: 'extract-started'
-                id: '123e4567-e89b-12d3-a456-426614174000'
-                details:
-                  status: started
-                  message: 'Extracting data'
-                  progress: 50
+                  message: 'Extract request accepted'
                   downloadId: '123e4567-e89b-12d3-a456-426614174001.csv'
         '400':
           description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'

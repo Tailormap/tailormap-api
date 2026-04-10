@@ -12,6 +12,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
@@ -52,7 +53,15 @@ class LayerExtractControllerRestrictedFormatsIntegrationTest {
 
   @Test
   void invalid_output_format_should_return_bad_request_on_extract() throws Exception {
-    final String validClientId = "format-test-" + System.nanoTime();
+    final String validClientId = "invalid_output_format-" + System.nanoTime();
+    final String sseUrl = apiBasePath + "/events/" + validClientId;
+    mockMvc.perform(get(sseUrl)
+            .accept(MediaType.TEXT_EVENT_STREAM)
+            .with(setServletPath(sseUrl))
+            .acceptCharset(StandardCharsets.UTF_8))
+        .andExpect(request().asyncStarted())
+        .andReturn();
+
     final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + validClientId;
     mockMvc.perform(post(extractUrl)
             .accept(MediaType.APPLICATION_JSON)

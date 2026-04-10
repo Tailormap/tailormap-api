@@ -81,14 +81,14 @@ components:
           type: object
           nullable: true
         id:
-          description: 'optional event identifier, can be used for event ordering and deduplication'
+          description: 'optional event identifier (UUIDv7), can be used for event ordering and deduplication'
           type: string
           format: uuid
           nullable: true
       example:
-        eventType: 'extract-started'
+        eventType: 'extract-progress'
         details:
-          status: 'started'
           message: 'Extracting data'
           progress: 17
+          downloadId: '123e4567-e89b-12d3-a456-426614174001.csv'
         id: '123e4567-e89b-12d3-a456-426614174000'

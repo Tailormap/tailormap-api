@@ -69,7 +69,7 @@ public class LayerExtractController {
 
   /**
    * Download the result of an extract request. The extract generation should be initiated first by a POST to
-   * {@code /{viewerKind}/{viewerName}/layer/{appLayerId}/extract}.
+   * {@code /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}}.
    */
   @GetMapping(path = "/download/{downloadId}")
   @Counted(value = "tailormap_api_extract_download", description = "Count of layer extract downloads")
@@ -119,7 +119,9 @@ public class LayerExtractController {
       @ModelAttribute GeoService service,
       @ModelAttribute Application application,
       @ModelAttribute AppTreeLayerNode appTreeLayerNode) {
-    return ResponseEntity.ok(allowedExtractOutputFormats);
+    return ResponseEntity.ok(allowedExtractOutputFormats.stream()
+        .map(ExtractOutputFormat::getValue)
+        .toList());
   }
 
   @Transactional
