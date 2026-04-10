@@ -113,7 +113,7 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/>
     <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
         <properties>
-            <property name="extraAssertMethodNames" value="andExpect"/>
+            <property name="extraAssertMethodNames" value="andExpect, untilAsserted"/>
         </properties>
     </rule>
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
