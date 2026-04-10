@@ -1809,8 +1809,71 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
+  /events/{clientId}:
+    description: 'Subscribe to server-sent events for a viewer. The `clientId` is a client-generated identifier.'
+    get:
+      operationId: 'subscribeToEvents'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: 'A client-generated identifier; 
+            this must be the same as the clientId used in eg. the `/extract` request to correlate the events with the extract request.
+             The format should use the "Nano ID" format, for example `V1StGXR8_Z5jdHi6B-myT`.'
+          schema:
+            type: string
+            pattern: '[A-Za-z0-9_-]+'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/event-stream:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ServerSentEventResponse'
+              example:
+                eventType: 'keep-alive'
+                id: '123e4567-e89b-12d3-a456-426614174000'
 
-  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract:
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/formats:
+    description: 'Get the configured output formats for layer attribute extraction for this viewer/layer. 
+    Currently this is set per instance using the `tailormap-api.extract.allowed-outputformats` property, but in the future this may be configurable per layer/viewer.'
+    get:
+      operationId: 'getAllowedExtractFormats'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: viewerKind
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - name: viewerName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appLayerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: '["csv","shape.zip"]'
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}:
     description: 'Export the attributes as shown in the attribute list for a layer.'
     post:
       operationId: 'extractLayerAttributes'
@@ -1835,6 +1898,14 @@ paths:
           required: true
           schema:
             type: string
+        - name: clientId
+          in: path
+          required: true
+          description: 'The client-generated id to identify the extract request; this must be the same as the clientId used to initiate the SSE stream in `/events/`. 
+            This is used to correlate the extract response and the download request. The format should use the "Nano ID" format, for example `V1StGXR8_Z5jdHi6B-myT`.'
+          schema:
+            type: string
+            pattern: '[A-Za-z0-9_-]+'
       requestBody:
         required: true
         content:
@@ -1846,9 +1917,8 @@ paths:
               properties:
                 outputFormat:
                   description: 'Output format.
-                    The allowed formats are configured per instance using `tailormap-api.export.allowed-outputformats`.
-                    For geographical formats the (default) geometry is included even if not requested.
-                    For textual or spreadsheet formats geometries are not included.'
+                    The allowed formats are configured per instance using `tailormap-api.extract.allowed-outputformats`.
+                    The (default) geometry is included even if not requested.'
                   type: string
                   nullable: false
                   example: 'application/geo+json'
@@ -1871,18 +1941,21 @@ paths:
                   enum:
                     - asc
                     - desc
-                crs:
-                  description: 'Projection for geometry output.'
-                  type: string
       responses:
-        '200':
-          description: 'Export started/in progress/finished. The client should listen to the stream and wait for an 
+        '202':
+          description: 'Export started/queued. The client should listen to the `/events/` stream and wait for an 
           `extract-completed` event with `status: completed` to know when the export is finished and the file is ready 
-          to be downloaded. If the connection is closed before that, the export will be cancelled.'
+          to be downloaded. If the connection is closed before that, the export may be cancelled.'
           content:
-            text/event-stream:
+            application/json:
               schema:
-                $ref: './status-responses.yaml#/components/schemas/ServerSentEventResponse'
+                title: 'extractRequestResponse'
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
               example:
                 eventType: 'extract-started'
                 id: '123e4567-e89b-12d3-a456-426614174000'
@@ -1890,7 +1963,7 @@ paths:
                   status: started
                   message: 'Extracting data'
                   progress: 50
-                  downloadId: '123e4567-e89b-12d3-a456-426614174001'
+                  downloadId: '123e4567-e89b-12d3-a456-426614174001.csv'
         '400':
           description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
           content:
