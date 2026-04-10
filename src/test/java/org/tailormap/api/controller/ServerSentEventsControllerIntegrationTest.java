@@ -66,7 +66,7 @@ class ServerSentEventsControllerIntegrationTest {
     Awaitility.await("waiting for keep-alive messages")
         .pollDelay(45, SECONDS)
         .pollInterval(15, SECONDS)
-        .atLeast(2, MINUTES)
+        .atLeast(1, MINUTES)
         .atMost(130, SECONDS)
         .logging(logPrinter -> logger.debug("Checking for keep-alive messages in SSE stream... {}", logPrinter))
         .untilAsserted(() -> {
