@@ -228,7 +228,7 @@ class LayerExtractControllerIntegrationTest {
     final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
     assertThat(extractedDownloadId, containsString(".csv"));
 
-    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    final String downloadUrl = apiBasePath + layerProxiedWithAuthInPublicApp + downloadPath + extractedDownloadId;
     MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
         .andExpect(status().isOk())
         .andExpect(result -> {
