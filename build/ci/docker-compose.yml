@@ -24,6 +24,7 @@ services:
   postgres:
     container_name: postgres
     image: postgis/postgis:18-3.6
+    command: -c 'max_connections=200'
     environment:
       TZ: Europe/Amsterdam
       POSTGRES_USER: tailormap

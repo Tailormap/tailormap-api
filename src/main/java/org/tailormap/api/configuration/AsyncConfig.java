@@ -28,4 +28,16 @@ public class AsyncConfig {
     executor.initialize();
     return executor;
   }
+
+  @Bean(name = "extractTaskExecutor")
+  public Executor extractTaskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(1);
+    executor.setMaxPoolSize(10);
+    executor.setQueueCapacity(100);
+    executor.setThreadNamePrefix("create-extract-");
+    executor.setWaitForTasksToCompleteOnShutdown(false);
+    executor.initialize();
+    return executor;
+  }
 }

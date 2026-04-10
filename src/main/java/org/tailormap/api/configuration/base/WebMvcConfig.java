@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.tailormap.api.configuration.CaseInsensitiveEnumConverter;
+import org.tailormap.api.controller.LayerExtractController;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.scheduling.TaskType;
 
@@ -63,5 +64,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         String.class, GeoServiceProtocol.class, new CaseInsensitiveEnumConverter<>(GeoServiceProtocol.class));
 
     registry.addConverter(String.class, TaskType.class, new CaseInsensitiveEnumConverter<>(TaskType.class));
+    registry.addConverter(
+        String.class,
+        LayerExtractController.ExtractOutputFormat.class,
+        new CaseInsensitiveEnumConverter<>(LayerExtractController.ExtractOutputFormat.class));
   }
 }
