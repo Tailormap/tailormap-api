@@ -75,8 +75,9 @@ components:
         eventType:
           description: 'Event type'
           type: string
+          enum: [ 'keep-alive',  'extract-progress', 'extract-completed', 'extract-failed' ]
         details:
-          description: 'Event data. Can be any JSON object or nothing, but should include at least a `status` property to indicate the status of the event.'
+          description: 'Event data. Can be any JSON object or nothing, but should include at least a `message` property to indicate the status of the event.'
           type: object
           nullable: true
         id:
@@ -89,5 +90,5 @@ components:
         details:
           status: 'started'
           message: 'Extracting data'
-          progress: 10
+          progress: 17
         id: '123e4567-e89b-12d3-a456-426614174000'
