@@ -679,15 +679,15 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                 Scan Information (<a href="#" title="Click to toggle display" id="scanInformationToggle">show all</a>):<br/>
                     <ul class="indent">
                         <li><i>dependency-check version</i>: 12.2.0</li>
-                        <li><i>Report Generated On</i>: Sun, 12 Apr 2026 23:41:31 GMT</li>
+                        <li><i>Report Generated On</i>: Tue, 14 Apr 2026 20:36:34 GMT</li>
                         <li><i>Dependencies Scanned</i>:&nbsp;257 (155 unique)</li>
-                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">0</span></li>
-                        <li><i>Vulnerabilities Found</i>:&nbsp;0</li>
+                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">1</span></li>
+                        <li><i>Vulnerabilities Found</i>:&nbsp;4</li>
                         <li><i>Vulnerabilities Suppressed</i>:&nbsp;0
                         </li>
                         <li class="scaninfo">...</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-04-12T23:41:13Z</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-04-12T23:16:26Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-04-14T20:36:15Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-04-14T20:28:36Z</li>
                     </ul><br/>
 <h2>Summary</h2>
                 <p><span id="tablecaption-plain">Summary of Vulnerable Dependencies </span><a href="#" title="Click to toggle display" id="vulnerabilityDisplayToggle">(click to show all)</a></p>
@@ -1732,8 +1732,10 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                     </tr>
                     <tr class="notvulnerable">
                         <td data-sort-value="MSSQL-JDBC-13.4.0.JRE11.JAR"><a href="#l83_061d769c8a7dd4870fd85099ab55fbc6040b1997">mssql-jdbc-13.4.0.jre11.jar</a></td>
-                        <td data-sort-value="cpe:2.3:a:microsoft:jdbc_driver_for_sql_server:13.4.0.jre11:*:*:*:*:*:*:*cpe:2.3:a:www-sql_project:www-sql:13.4.0.jre11:*:*:*:*:*:*:*">
+                        <td data-sort-value="cpe:2.3:a:microsoft:jdbc_driver_for_sql_server:13.4.0.jre11:*:*:*:*:*:*:*cpe:2.3:a:microsoft:sql_server:13.4.0.jre11:*:*:*:*:*:*:*cpe:2.3:a:www-sql_project:www-sql:13.4.0.jre11:*:*:*:*:*:*:*">
                                 cpe:2.3:a:microsoft:jdbc_driver_for_sql_server:13.4.0.jre11:*:*:*:*:*:*:*
+                                <br/>
+                                <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Amicrosoft%3Asql_server%3A13.4.0.jre11%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:microsoft:sql_server:13.4.0.jre11:*:*:*:*:*:*:*</a>
                                 <br/>
                                 <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Awww-sql_project%3Awww-sql%3A13.4.0.jre11%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:www-sql_project:www-sql:13.4.0.jre11:*:*:*:*:*:*:*</a>
                         </td>
@@ -2548,7 +2550,7 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="0"></td>
                         <td>37</td>
                     </tr>
-                    <tr class="notvulnerable">
+                    <tr class=" vulnerable">
                         <td data-sort-value="TOMCAT-EMBED-CORE-11.0.20.JAR"><a href="#l147_384f1db7c5a017bf0381fc03693606a08b252c23">tomcat-embed-core-11.0.20.jar</a></td>
                         <td data-sort-value="cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*cpe:2.3:a:apache_tomcat:apache_tomcat:11.0.20:*:*:*:*:*:*:*">
                                 <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a>
@@ -2558,8 +2560,8 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20">
                                 pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20
 </td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
+                                                                                <td data-sort-value="75.0">HIGH</td>
+                        <td>4</td>
                         <td data-sort-value="0">Highest</td>
                         <td>63</td>
                     </tr>
@@ -9214,6 +9216,10 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     &nbsp;&nbsp;(<i>Confidence</i>:Low)
                                 &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="mssql-jdbc-13.4.0.jre11.jar" data-sha1="061d769c8a7dd4870fd85099ab55fbc6040b1997" data-pkgurl="pkg:maven/com.microsoft.sqlserver/mssql-jdbc@13.4.0" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:microsoft:jdbc_driver_for_sql_server">suppress</button>
                             </li>
+                                <li><a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Amicrosoft%3Asql_server%3A13.4.0.jre11%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:microsoft:sql_server:13.4.0.jre11:*:*:*:*:*:*:*</a>
+                                    &nbsp;&nbsp;(<i>Confidence</i>:Highest)
+                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="mssql-jdbc-13.4.0.jre11.jar" data-sha1="061d769c8a7dd4870fd85099ab55fbc6040b1997" data-pkgurl="pkg:maven/com.microsoft.sqlserver/mssql-jdbc@13.4.0" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:microsoft:sql_server">suppress</button>
+                            </li>
                                 <li><a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Awww-sql_project%3Awww-sql%3A13.4.0.jre11%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:www-sql_project:www-sql:13.4.0.jre11:*:*:*:*:*:*:*</a>
                                     &nbsp;&nbsp;(<i>Confidence</i>:Highest)
                                 &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="mssql-jdbc-13.4.0.jre11.jar" data-sha1="061d769c8a7dd4870fd85099ab55fbc6040b1997" data-pkgurl="pkg:maven/com.microsoft.sqlserver/mssql-jdbc@13.4.0" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:www-sql_project:www-sql">suppress</button>
@@ -13559,8 +13565,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l147_384f1db7c5a017bf0381fc03693606a08b252c23"></a>tomcat-embed-core-11.0.20.jar</h3>
-                    <div class="subsectioncontent notvulnerable">
+                    <h3 class="subsectionheader standardsubsection"><a name="l147_384f1db7c5a017bf0381fc03693606a08b252c23"></a>tomcat-embed-core-11.0.20.jar</h3>
+                    <div class="subsectioncontent">
                             <p><b>Description:</b><pre>Core Tomcat implementation</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
@@ -13670,6 +13676,113 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             </li>
                             </ul>
                         </div>
+                    <h4 id="header310" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content310" class="subsectioncontent standardsubsection">
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34483">CVE-2026-34483</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34483">suppress</button></p>
+                            <p>                            <pre>Improper Encoding or Escaping of Output vulnerability in the JsonAccessLogValve component of Apache Tomcat.
+
+This issue affects Apache Tomcat: from 11.0.0-M1 through 11.0.20, from 10.1.0-M1 through 10.1.53, from 9.0.40 through 9.0.116.
+
+Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117 , which fix the issue.</pre>
+
+                                CWE-116 Improper Encoding or Escaping of Output<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.5)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/26">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/j1w7304yonlr8vo1tkb5nfs7od1y228b">MAILING_LIST,VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs1">show all</a>)<ul>
+                                        <li class="vs1"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs1">...</li>
+                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.40; versions up to (excluding) 9.0.117</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34486">CVE-2026-34486</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34486">suppress</button></p>
+                            <p>                            <pre>Missing Encryption of Sensitive Data vulnerability in Apache Tomcat due to the&nbsp;fix for CVE-2026-29146 allowing the bypass of the EncryptInterceptor.
+
+This issue affects Apache Tomcat: 11.0.20, 10.1.53, 9.0.116.
+
+Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which fix the issue.</pre>
+
+                                CWE-311 Missing Encryption of Sensitive Data<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.5)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/9510k5p5zdvt9pkkgtyp85mvwxo2qrly">MAILING_LIST,VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs2">show all</a>)<ul>
+                                        <li class="vs2"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs2">...</li>
+                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A9.0.116%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:9.0.116:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A10.1.53%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:10.1.53:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34487">CVE-2026-34487</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34487">suppress</button></p>
+                            <p>                            <pre>Insertion of Sensitive Information into Log File vulnerability in the cloud membership for clustering component of Apache Tomcat exposed the Kubernetes bearer token.
+
+This issue affects Apache Tomcat: from 11.0.0-M1 through 11.0.20, from 10.1.0-M1 through 10.1.53, from 9.0.13 through 9.0.116.
+
+Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which fix the issue.</pre>
+
+                                CWE-532 Insertion of Sensitive Information into Log File<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.5)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/28">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/4xpkwolpkrj8v5xzp5nyovtlqp3y850h">MAILING_LIST,VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs3">show all</a>)<ul>
+                                        <li class="vs3"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs3">...</li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.13; versions up to (excluding) 9.0.117</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34500">CVE-2026-34500</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34500">suppress</button></p>
+                            <p>                            <pre>CLIENT_CERT authentication does not fail as expected for some scenarios when soft fail is disabled and FFM is used in Apache Tomcat.
+
+This issue affects Apache Tomcat: from 11.0.0-M14 through 11.0.20, from 10.1.22 through 10.1.53, from 9.0.92 through 9.0.116.
+
+Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which fixes the issue.</pre>
+
+                                CWE-287 Improper Authentication<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (6.5)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N/E:2.2/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/29">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/7rcl4zdxryc8hy3htyfyxkbqpxjtfdl2">VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs4">show all</a>)<ul>
+                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs4">...</li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.22; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.92; versions up to (excluding) 9.0.117</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone14%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone14:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone15%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone15:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone16%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone16:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone17%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone17:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone18%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone18:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone19%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone19:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone20:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone21%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone21:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone22%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone22:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone23%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone23:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone24%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone24:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone25%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone25:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone26%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone26:*:*:*:*:*:*</a></li>
+                                    </ul></p>
+                    </div>
                 </div>
                     <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l148_ed5ce9eeb3fae5b39e6da171f24430d3b7c3195b"></a>tomcat-embed-el-11.0.20.jar</h3>
                     <div class="subsectioncontent notvulnerable">
@@ -13683,8 +13796,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-el-11.0.20.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-validation@4.0.5
                         </p>
-                        <h4 id="header310" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content310" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header311" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content311" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-el</td><td>High</td></tr>
@@ -13722,8 +13835,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.20</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header311" class="subsectionheader white">Identifiers</h4>
-                        <div id="content311" class="subsectioncontent standardsubsection">
+                        <h4 id="header312" class="subsectionheader white">Identifiers</h4>
+                        <div id="content312" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.20
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13744,8 +13857,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
                                 <br/><span class="tooltip"><span class="tooltiptext">txw2-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
                         </p>
-                        <h4 id="header312" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content312" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header313" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content313" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>txw2</td><td>High</td></tr>
@@ -13784,8 +13897,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.0.6</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header313" class="subsectionheader white">Identifiers</h4>
-                        <div id="content313" class="subsectioncontent standardsubsection">
+                        <h4 id="header314" class="subsectionheader white">Identifiers</h4>
+                        <div id="content314" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.glassfish.jaxb/txw2@4.0.6
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13807,8 +13920,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">unit-api-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@34.3
                         </p>
-                        <h4 id="header314" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content314" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header315" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content315" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>unit-api</td><td>High</td></tr>
@@ -13922,8 +14035,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header315" class="subsectionheader white">Identifiers</h4>
-                        <div id="content315" class="subsectioncontent standardsubsection">
+                        <h4 id="header316" class="subsectionheader white">Identifiers</h4>
+                        <div id="content316" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/javax.measure/unit-api@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13943,8 +14056,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">uom-lib-common-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@34.3
                         </p>
-                        <h4 id="header316" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content316" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header317" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content317" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>uom-lib-common</td><td>High</td></tr>
@@ -13992,8 +14105,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header317" class="subsectionheader white">Identifiers</h4>
-                        <div id="content317" class="subsectioncontent standardsubsection">
+                        <h4 id="header318" class="subsectionheader white">Identifiers</h4>
+                        <div id="content318" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/tech.uom.lib/uom-lib-common@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14011,8 +14124,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">utilities-0.9.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-main@34.3
                         </p>
-                        <h4 id="header318" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content318" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header319" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content319" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>utilities</td><td>High</td></tr>
@@ -14041,8 +14154,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header319" class="subsectionheader white">Identifiers</h4>
-                        <div id="content319" class="subsectioncontent standardsubsection">
+                        <h4 id="header320" class="subsectionheader white">Identifiers</h4>
+                        <div id="content320" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/utilities@0.9.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14062,8 +14175,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">value-2.12.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
-                        <h4 id="header320" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content320" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header321" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content321" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>value</td><td>High</td></tr>
@@ -14093,8 +14206,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.12.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header321" class="subsectionheader white">Identifiers</h4>
-                        <div id="content321" class="subsectioncontent standardsubsection">
+                        <h4 id="header322" class="subsectionheader white">Identifiers</h4>
+                        <div id="content322" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.immutables/value@2.12.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14114,8 +14227,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">webjars-locator-core-0.59.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
-                        <h4 id="header322" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content322" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header323" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content323" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>webjars-locator-core</td><td>High</td></tr>
@@ -14143,8 +14256,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.59</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header323" class="subsectionheader white">Identifiers</h4>
-                        <div id="content323" class="subsectioncontent standardsubsection">
+                        <h4 id="header324" class="subsectionheader white">Identifiers</h4>
+                        <div id="content324" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.webjars/webjars-locator-core@0.59
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14162,8 +14275,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xml-commons-resolver-1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-xml@34.3
                         </p>
-                        <h4 id="header324" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content324" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header325" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content325" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xml-commons-resolver</td><td>High</td></tr>
@@ -14187,8 +14300,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>1.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header325" class="subsectionheader white">Identifiers</h4>
-                        <div id="content325" class="subsectioncontent standardsubsection">
+                        <h4 id="header326" class="subsectionheader white">Identifiers</h4>
+                        <div id="content326" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xml/xml-commons-resolver@1.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
