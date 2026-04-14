@@ -320,6 +320,11 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
+            <artifactId>gt-excel-writer</artifactId>
+            <version>[35-SNAPSHOT,)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
             <artifactId>gt-http</artifactId>
         </dependency>
         <dependency>
@@ -681,6 +686,14 @@ SPDX-License-Identifier: MIT
             <id>OSGeo</id>
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>repo.b3p.nl</id>
+            <name>B3Partners public repository</name>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
     <pluginRepositories />
