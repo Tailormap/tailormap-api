@@ -200,6 +200,16 @@ SPDX-License-Identifier: MIT
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
             <groupId>ch.rasc</groupId>
             <artifactId>sse-eventbus</artifactId>
             <version>3.0.0</version>
@@ -1613,6 +1623,8 @@ SPDX-License-Identifier: MIT
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                         <exclude>org.apache.solr:solr-solrj</exclude>
                                         <exclude>com.jayway.jsonpath</exclude>
+                                        <exclude>org.apache.poi:poi</exclude>
+                                        <exclude>org.apache.poi:poi-ooxml</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
