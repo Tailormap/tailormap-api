@@ -547,8 +547,7 @@ components:
           items:
             type: string
         expandOnStartup:
-          description: Whether this node should be expanded in the tree on startup.
-          type: boolean
+          $ref: './common-schemas.yaml#/components/schemas/ExpandOnStartup'
       required:
         - root
         - title

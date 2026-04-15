@@ -559,3 +559,12 @@ components:
         - "feature-info"
         - "attribute-list"
         - "export"
+
+    ExpandOnStartup:
+      description: Whether this node should be expanded in the tree on startup.
+      type: string
+      enum:
+        - automatic
+        - alwaysExpand
+        - neverExpand
+      default: automatic
