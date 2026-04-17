@@ -91,9 +91,13 @@
                     }
                 });
                 $('#modal-add-header').click(function () {
-                    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">\n   ';
-                    xml += $("#modal-text").text().replace(/\n/g,'\n   ');
-                    xml += '\n</suppressions>';
+                    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd
+                                  https://dependency-check.github.io/DependencyCheck/dependency-suppression.1.4.xsd">
+    ${$("#modal-text").text().replace(/\n/g,'\n    ')}
+</suppressions>`;
                     $('#modal-add-header').toggleClass('active');
                     $('#modal-text').text(xml).focus().select();
                 });
@@ -139,26 +143,26 @@
             }
             function setCopyText(name, matchType, matchValue, suppressType, suppressVal) {
                 var xml =  '<suppress>\n';
-                xml += '   <notes><!'+'[CDATA[\n   file name: ' + name + '\n   ]]'+'></notes>\n';
+                xml += '    <notes><![CDATA[\n    file name: ' + name + '\n    ]]></notes>\n';
                 if (matchType=='packageUrl') {
                     var v = matchValue.match(/^[^@]+/);
                     if (v && v[0]) {
-                        xml += '   <'+matchType+' regex="true">^' + escapeRegExp(v[0]) + '@.*$</'+matchType+'>\n';
+                        xml += '    <'+matchType+' regex="true">^' + escapeRegExp(v[0]) + '@.*$</'+matchType+'>\n';
                     } else {
-                        xml += '   <'+matchType+'>' + matchValue + '</'+matchType+'>\n';
+                        xml += '    <'+matchType+'>' + matchValue + '</'+matchType+'>\n';
                     }
                 } else {
-                    xml += '   <'+matchType+'>' + matchValue + '</'+matchType+'>\n';
+                    xml += '    <'+matchType+'>' + matchValue + '</'+matchType+'>\n';
                 }
                 if (suppressType=='cpe') {
                     v = suppressVal.match(/^cpe:\/a:[^:]+:[^:]+/);
                     if (v && v[0]) {
-                        xml += '   <'+suppressType+'>' + v[0] + '</'+suppressType+'>\n';
+                        xml += '    <'+suppressType+'>' + v[0] + '</'+suppressType+'>\n';
                     } else {
-                        xml += '   <'+suppressType+'>' + suppressVal + '</'+suppressType+'>\n';
+                        xml += '    <'+suppressType+'>' + suppressVal + '</'+suppressType+'>\n';
                     }
                 } else {
-                    xml += '   <'+suppressType+'>' + suppressVal + '</'+suppressType+'>\n';
+                    xml += '    <'+suppressType+'>' + suppressVal + '</'+suppressType+'>\n';
                 }
                 xml += '</suppress>';
                 $('#modal-text').text(xml);
@@ -265,7 +269,8 @@
             }
             #modal-text {
                 border: 0;
-                overflow: hidden
+                overflow: auto;
+                white-space: pre;
             }
             #modal-text:focus {
                 outline: none;
@@ -652,8 +657,8 @@
         <div id="modal-background"></div>
         <div id="modal-content">
             <div>Press CTR-C to copy XML&nbsp;<a href="https://dependency-check.github.io/DependencyCheck/general/suppression.html" class="infolink" target="_blank" title="Help with suppressing false positives">[help]</a></div>
-                <button id="modal-suppress-change-to-packageUrl" class="modal-button suppresstype" title="Supress by Maven Group Artifact Version">Suppress By GAV</button>
-                <button id="modal-suppress-change-to-sha1" class="modal-button suppresstype" title="Supress by SHA1 hash">Suppress By SHA1</button><br/>
+                <button id="modal-suppress-change-to-packageUrl" class="modal-button suppresstype" title="Supress by Maven Group Artifact Version">Suppress by Package URL</button>
+                <button id="modal-suppress-change-to-sha1" class="modal-button suppresstype" title="Supress by SHA1 hash">Suppress by SHA1</button><br/>
                 <input type="hidden" id="suppress-name"/>
                 <input type="hidden" id="suppress-type"/><input type="hidden" id="suppress-val"/>
                 <input type="hidden" id="suppress-sha1"/><input type="hidden" id="suppress-packageUrl"/>
@@ -678,16 +683,16 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
 
                 Scan Information (<a href="#" title="Click to toggle display" id="scanInformationToggle">show all</a>):<br/>
                     <ul class="indent">
-                        <li><i>dependency-check version</i>: 12.2.0</li>
-                        <li><i>Report Generated On</i>: Wed, 15 Apr 2026 12:25:07 GMT</li>
+                        <li><i>dependency-check version</i>: 12.2.1</li>
+                        <li><i>Report Generated On</i>: Fri, 17 Apr 2026 12:28:25 GMT</li>
                         <li><i>Dependencies Scanned</i>:&nbsp;257 (155 unique)</li>
-                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">1</span></li>
-                        <li><i>Vulnerabilities Found</i>:&nbsp;4</li>
+                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">3</span></li>
+                        <li><i>Vulnerabilities Found</i>:&nbsp;6</li>
                         <li><i>Vulnerabilities Suppressed</i>:&nbsp;0
                         </li>
                         <li class="scaninfo">...</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-04-15T12:24:49Z</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-04-14T23:16:29Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-04-17T12:28:06Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-04-17T12:20:03Z</li>
                     </ul><br/>
 <h2>Summary</h2>
                 <p><span id="tablecaption-plain">Summary of Vulnerable Dependencies </span><a href="#" title="Click to toggle display" id="vulnerabilityDisplayToggle">(click to show all)</a></p>
@@ -1124,12 +1129,12 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>46</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="HIBERNATE-CORE-7.3.0.FINAL.JAR"><a href="#l35_cdf1d7162766006ae38dbd03b535f5e7a06f2b51">hibernate-core-7.3.0.Final.jar</a></td>
-                        <td data-sort-value="cpe:2.3:a:hibernate:hibernate_orm:7.3.0:*:*:*:*:*:*:*">
-                                <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Ahibernate%3Ahibernate_orm%3A7.3.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:hibernate:hibernate_orm:7.3.0:*:*:*:*:*:*:*</a>
+                        <td data-sort-value="HIBERNATE-CORE-7.3.1.FINAL.JAR"><a href="#l35_01415a8e09e3cebc37051948699f1be126c0de09">hibernate-core-7.3.1.Final.jar</a></td>
+                        <td data-sort-value="cpe:2.3:a:hibernate:hibernate_orm:7.3.1:*:*:*:*:*:*:*">
+                                <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Ahibernate%3Ahibernate_orm%3A7.3.1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:hibernate:hibernate_orm:7.3.1:*:*:*:*:*:*:*</a>
                         </td>
-                        <td data-sort-value="pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final">
-                                pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                        <td data-sort-value="pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final">
+                                pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -1137,11 +1142,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>43</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="HIBERNATE-MODELS-1.1.0.JAR"><a href="#l36_c890a4cc781fd8720e0e2613b4a24b33cdaa80a1">hibernate-models-1.1.0.jar</a></td>
+                        <td data-sort-value="HIBERNATE-MODELS-1.1.1.JAR"><a href="#l36_c890a4cc781fd8720e0e2613b4a24b33cdaa80a1">hibernate-models-1.1.1.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/org.hibernate.models/hibernate-models@1.1.0">
-                                pkg:maven/org.hibernate.models/hibernate-models@1.1.0
+                        <td data-sort-value="pkg:maven/org.hibernate.models/hibernate-models@1.1.1">
+                                pkg:maven/org.hibernate.models/hibernate-models@1.1.1
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2040,11 +2045,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>23</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-8.38.0.JAR"><a href="#l107_6b5269da1699b7eb5af86c99dc2ed7dd29c838dc">sentry-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-8.39.0.JAR"><a href="#l107_f42ae3a541fe1a6c9471fa7722a0a3b2e8536abe">sentry-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry@8.38.0">
-                                pkg:maven/io.sentry/sentry@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry@8.39.0">
+                                pkg:maven/io.sentry/sentry@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2052,11 +2057,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>29</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-JDBC-8.38.0.JAR"><a href="#l108_192de8a7b84ff642b6de8ea601444904119aff52">sentry-jdbc-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-JDBC-8.39.0.JAR"><a href="#l108_7cc6eb249dd5147f28efdffb6c544e0a18ae6b51">sentry-jdbc-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-jdbc@8.38.0">
-                                pkg:maven/io.sentry/sentry-jdbc@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-jdbc@8.39.0">
+                                pkg:maven/io.sentry/sentry-jdbc@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2064,11 +2069,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>31</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-QUARTZ-8.38.0.JAR"><a href="#l109_41eac2ebecd2f20e4e0b60874829c906d80984e4">sentry-quartz-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-QUARTZ-8.39.0.JAR"><a href="#l109_ce595d6cae9917e12c977e99b52a9602080db44f">sentry-quartz-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-quartz@8.38.0">
-                                pkg:maven/io.sentry/sentry-quartz@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-quartz@8.39.0">
+                                pkg:maven/io.sentry/sentry-quartz@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2076,11 +2081,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>31</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-REACTOR-8.38.0.JAR"><a href="#l110_6a5af6644db1c86b0a7be06ed2dc884e6e7e43c7">sentry-reactor-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-REACTOR-8.39.0.JAR"><a href="#l110_03b136b88c5b2baf9878654c2a077c96dea1ad1a">sentry-reactor-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-reactor@8.38.0">
-                                pkg:maven/io.sentry/sentry-reactor@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-reactor@8.39.0">
+                                pkg:maven/io.sentry/sentry-reactor@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2088,11 +2093,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>31</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-SPRING-7-8.38.0.JAR"><a href="#l111_2e374f35f14024f1c774ef95ccc8047e0c54b9b3">sentry-spring-7-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-SPRING-7-8.39.0.JAR"><a href="#l111_b31d833946d37ddc51f279100743016186d6afc9">sentry-spring-7-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-7@8.38.0">
-                                pkg:maven/io.sentry/sentry-spring-7@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-7@8.39.0">
+                                pkg:maven/io.sentry/sentry-spring-7@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2100,11 +2105,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>29</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-SPRING-BOOT-4-8.38.0.JAR"><a href="#l112_041e388f8eb0b1966ab2886c7b24af7280cd170c">sentry-spring-boot-4-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-SPRING-BOOT-4-8.39.0.JAR"><a href="#l112_aa85021828a86dd23371afab4a027fb5e9c0821f">sentry-spring-boot-4-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-boot-4@8.38.0">
-                                pkg:maven/io.sentry/sentry-spring-boot-4@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-boot-4@8.39.0">
+                                pkg:maven/io.sentry/sentry-spring-boot-4@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2112,11 +2117,11 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>31</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SENTRY-SPRING-BOOT-4-STARTER-8.38.0.JAR"><a href="#l113_bfaeed9be36ecdc47538eb6394717ac27c1df4aa">sentry-spring-boot-4-starter-8.38.0.jar</a></td>
+                        <td data-sort-value="SENTRY-SPRING-BOOT-4-STARTER-8.39.0.JAR"><a href="#l113_c951ec0ed4091764731d3fc3fdcb8f90139a3517">sentry-spring-boot-4-starter-8.39.0.jar</a></td>
                         <td data-sort-value="">
                         </td>
-                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0">
-                                pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                        <td data-sort-value="pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0">
+                                pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2412,12 +2417,12 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>29</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-ANNOTATIONS-2.2.47.JAR"><a href="#l135_1c5232f33bf5bf2146e64532551fa11894f9f682">swagger-annotations-2.2.47.jar</a></td>
-                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:2.2.47:*:*:*:*:*:*:*">
-                                cpe:2.3:a:http-swagger_project:http-swagger:2.2.47:*:*:*:*:*:*:*
+                        <td data-sort-value="SWAGGER-ANNOTATIONS-2.2.48.JAR"><a href="#l135_149e215edb850c8acdfcc782db2d60a086bfc5c1">swagger-annotations-2.2.48.jar</a></td>
+                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:2.2.48:*:*:*:*:*:*:*">
+                                cpe:2.3:a:http-swagger_project:http-swagger:2.2.48:*:*:*:*:*:*:*
                         </td>
-                        <td data-sort-value="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.47">
-                                pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.47
+                        <td data-sort-value="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.48">
+                                pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.48
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2449,12 +2454,12 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>0</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR"><a href="#l138_261726168712ed6c6a9fd0f470cf01e42f8b601e">swagger-ui-5.32.1.jar</a></td>
-                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:5.32.1:*:*:*:*:*:*:*">
-                                cpe:2.3:a:http-swagger_project:http-swagger:5.32.1:*:*:*:*:*:*:*
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR"><a href="#l138_6fe200e69b262ccc15fb0c9e2c6a9e51b9125f1d">swagger-ui-5.32.4.jar</a></td>
+                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:5.32.4:*:*:*:*:*:*:*">
+                                cpe:2.3:a:http-swagger_project:http-swagger:5.32.4:*:*:*:*:*:*:*
                         </td>
-                        <td data-sort-value="pkg:maven/org.webjars/swagger-ui@5.32.1">
-                                pkg:maven/org.webjars/swagger-ui@5.32.1
+                        <td data-sort-value="pkg:maven/org.webjars/swagger-ui@5.32.4">
+                                pkg:maven/org.webjars/swagger-ui@5.32.4
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -2462,7 +2467,7 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>21</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: OAUTH2-REDIRECT.JS"><a href="#l139_d9df3eb79cf8ab7d1bd9df14d3264350c270b51b">swagger-ui-5.32.1.jar: oauth2-redirect.js</a></td>
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: OAUTH2-REDIRECT.JS"><a href="#l139_d9df3eb79cf8ab7d1bd9df14d3264350c270b51b">swagger-ui-5.32.4.jar: oauth2-redirect.js</a></td>
                         <td data-sort-value="">
                         </td>
                         <td data-sort-value="">
@@ -2473,7 +2478,53 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>0</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-INITIALIZER.JS"><a href="#l140_c434dd8fbfa625a10351681d3037ee79d5682207">swagger-ui-5.32.1.jar: swagger-initializer.js</a></td>
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-INITIALIZER.JS"><a href="#l140_c434dd8fbfa625a10351681d3037ee79d5682207">swagger-ui-5.32.4.jar: swagger-initializer.js</a></td>
+                        <td data-sort-value="">
+                        </td>
+                        <td data-sort-value="">
+</td>
+                        <td data-sort-value="-10">&nbsp;</td>
+                        <td>0</td>
+                        <td data-sort-value="0"></td>
+                        <td>0</td>
+                    </tr>
+                    <tr class=" vulnerable">
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-UI-BUNDLE.JS"><a href="#l141_5f9278b867c750274663e10fed4686c4847aa450">swagger-ui-5.32.4.jar: swagger-ui-bundle.js</a></td>
+                        <td data-sort-value="">
+                        </td>
+                        <td data-sort-value="pkg:javascript/DOMPurify@3.3.2">
+                                pkg:javascript/DOMPurify@3.3.2
+</td>
+                                                                                <td data-sort-value="-10">MEDIUM</td>
+                        <td>1</td>
+                        <td data-sort-value="0"></td>
+                        <td>3</td>
+                    </tr>
+                    <tr class="notvulnerable">
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-UI-ES-BUNDLE-CORE.JS"><a href="#l142_d753c55c83461beedd3a4a256ab1f03110675d38">swagger-ui-5.32.4.jar: swagger-ui-es-bundle-core.js</a></td>
+                        <td data-sort-value="">
+                        </td>
+                        <td data-sort-value="">
+</td>
+                        <td data-sort-value="-10">&nbsp;</td>
+                        <td>0</td>
+                        <td data-sort-value="0"></td>
+                        <td>0</td>
+                    </tr>
+                    <tr class=" vulnerable">
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-UI-ES-BUNDLE.JS"><a href="#l143_d7c546af7ae56e99231c0087480e95d44e7014c3">swagger-ui-5.32.4.jar: swagger-ui-es-bundle.js</a></td>
+                        <td data-sort-value="">
+                        </td>
+                        <td data-sort-value="pkg:javascript/DOMPurify@3.3.2">
+                                pkg:javascript/DOMPurify@3.3.2
+</td>
+                                                                                <td data-sort-value="-10">MEDIUM</td>
+                        <td>1</td>
+                        <td data-sort-value="0"></td>
+                        <td>3</td>
+                    </tr>
+                    <tr class="notvulnerable">
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-UI-STANDALONE-PRESET.JS"><a href="#l144_296ac957b2bd263971de6f608409b11337387160">swagger-ui-5.32.4.jar: swagger-ui-standalone-preset.js</a></td>
                         <td data-sort-value="">
                         </td>
                         <td data-sort-value="">
@@ -2484,51 +2535,7 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>0</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-UI-BUNDLE.JS"><a href="#l141_3e69048f19402b71f6f68adf62ccf333b00c61db">swagger-ui-5.32.1.jar: swagger-ui-bundle.js</a></td>
-                        <td data-sort-value="">
-                        </td>
-                        <td data-sort-value="">
-</td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
-                        <td data-sort-value="0"></td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-UI-ES-BUNDLE-CORE.JS"><a href="#l142_1a75f6b95d87c707ac90994cdf3f73c557696450">swagger-ui-5.32.1.jar: swagger-ui-es-bundle-core.js</a></td>
-                        <td data-sort-value="">
-                        </td>
-                        <td data-sort-value="">
-</td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
-                        <td data-sort-value="0"></td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-UI-ES-BUNDLE.JS"><a href="#l143_fbdb115f0729709b19ce5997cc54eaed7667ddbc">swagger-ui-5.32.1.jar: swagger-ui-es-bundle.js</a></td>
-                        <td data-sort-value="">
-                        </td>
-                        <td data-sort-value="">
-</td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
-                        <td data-sort-value="0"></td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-UI-STANDALONE-PRESET.JS"><a href="#l144_296ac957b2bd263971de6f608409b11337387160">swagger-ui-5.32.1.jar: swagger-ui-standalone-preset.js</a></td>
-                        <td data-sort-value="">
-                        </td>
-                        <td data-sort-value="">
-</td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
-                        <td data-sort-value="0"></td>
-                        <td>0</td>
-                    </tr>
-                    <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-UI-5.32.1.JAR: SWAGGER-UI.JS"><a href="#l145_f5f3254d57589329179ee646d576fbf2cdae431d">swagger-ui-5.32.1.jar: swagger-ui.js</a></td>
+                        <td data-sort-value="SWAGGER-UI-5.32.4.JAR: SWAGGER-UI.JS"><a href="#l145_427bfddf8f8a0d2ac04c2f822fe94c9fe1f3bb2a">swagger-ui-5.32.4.jar: swagger-ui.js</a></td>
                         <td data-sort-value="">
                         </td>
                         <td data-sort-value="">
@@ -3219,7 +3226,7 @@ BSD-2-Clause: https://opensource.org/licenses/BSD-2-Clause</pre>
                             <b>SHA1:</b>&nbsp;fc3db6d844df652a3d5db31c87fa12757f13691d<br/>
                             <b>SHA256:</b>dd3e8a13a2d669bf84fb8d834de35ce4875f27157698d206241ec8488aadcaf7
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">antlr4-runtime-4.13.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">antlr4-runtime-4.13.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header20" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content20" class="subsectioncontent standardsubsection hidden">
@@ -3504,7 +3511,7 @@ BSD-2-Clause: https://opensource.org/licenses/BSD-2-Clause</pre>
                             <b>SHA1:</b>&nbsp;af5735f63d00ca47a9375fae5c7471a36331c6ed<br/>
                             <b>SHA256:</b>2b5ddc8c1f4234bdb7cb45338a8e10a13e0e3ca473e91d5d821d681127ea8ba1
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">byte-buddy-1.17.8.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">byte-buddy-1.17.8.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header28" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content28" class="subsectioncontent standardsubsection hidden">
@@ -5724,17 +5731,17 @@ file comparators, endian transformation classes, and much more.
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l35_cdf1d7162766006ae38dbd03b535f5e7a06f2b51"></a>hibernate-core-7.3.0.Final.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l35_01415a8e09e3cebc37051948699f1be126c0de09"></a>hibernate-core-7.3.1.Final.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>Hibernate's core ORM functionality</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-core/7.3.0.Final/hibernate-core-7.3.0.Final.jar<br/>
-                            <b>MD5:</b>&nbsp;eab74505014b62b282352dc2b4c9440a<br/>
-                            <b>SHA1:</b>&nbsp;cdf1d7162766006ae38dbd03b535f5e7a06f2b51<br/>
-                            <b>SHA256:</b>2c7790ef0cb4f7abd1dbd83dd0fd0e7f2d6d04aa1a5a4901907b20f5cac8ef96
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-core/7.3.1.Final/hibernate-core-7.3.1.Final.jar<br/>
+                            <b>MD5:</b>&nbsp;d60db42d89467dd0afcc0b01ca8e675c<br/>
+                            <b>SHA1:</b>&nbsp;01415a8e09e3cebc37051948699f1be126c0de09<br/>
+                            <b>SHA256:</b>e787c3fee260a95a570081fb4ab076acaff6ef34d61bf414c22c5ac73142492a
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">hibernate-core-7.3.0.Final.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">hibernate-core-7.3.1.Final.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header72" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content72" class="subsectioncontent standardsubsection hidden">
@@ -5780,30 +5787,30 @@ file comparators, endian transformation classes, and much more.
                                     <tr><td>Product</td><td>pom</td><td>organization name</td><td>Hibernate.org</td><td>Low</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>organization url</td><td>https://hibernate.org</td><td>Low</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>https://hibernate.org/orm</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>7.3.0.Final</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>7.3.0.Final</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>7.3.0.Final</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>7.3.1.Final</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>7.3.1.Final</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>7.3.1.Final</td><td>Highest</td></tr>
                             </table>
                         </div>
                             <h4 id="header73" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
                             <div id="content73" class="subsectioncontent standardsubsection hidden">
                             <ul>
-                                <li>hibernate-envers-7.3.0.Final.jar
+                                <li>hibernate-envers-7.3.1.Final.jar
                                     <ul>
-                                        <li>File Path:&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-envers/7.3.0.Final/hibernate-envers-7.3.0.Final.jar</li>
-                                        <li>MD5:&nbsp;aa98f46d69f2af185b12447fc3bc3b08</li>
-                                        <li>SHA1:&nbsp;0ab1917c5f97db679daa17873bea3a99dd01cffe</li>
-                                        <li>SHA256:&nbsp;6e8b7704eb18a1b18be13e66f7024f26aeba8fcccf9e8da76c86a39138798b09</li>
-                                                <li>pkg:maven/org.hibernate.orm/hibernate-envers@7.3.0.Final</li>
+                                        <li>File Path:&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-envers/7.3.1.Final/hibernate-envers-7.3.1.Final.jar</li>
+                                        <li>MD5:&nbsp;0cb57789581356860d84277bc242da7f</li>
+                                        <li>SHA1:&nbsp;33fecf2e3158597db934e34d9b8654e7035099fc</li>
+                                        <li>SHA256:&nbsp;bb698e67df31684a220a73e4740eb433aed10592f3674ab7e926fc226983e312</li>
+                                                <li>pkg:maven/org.hibernate.orm/hibernate-envers@7.3.1.Final</li>
                                      </ul>
                                 </li>
-                                <li>hibernate-micrometer-7.3.0.Final.jar
+                                <li>hibernate-micrometer-7.3.1.Final.jar
                                     <ul>
-                                        <li>File Path:&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-micrometer/7.3.0.Final/hibernate-micrometer-7.3.0.Final.jar</li>
-                                        <li>MD5:&nbsp;2ff527111714931f3af05817276af53d</li>
-                                        <li>SHA1:&nbsp;2d912a8102a12c70e69e4c17ad03d12adf88fbcb</li>
-                                        <li>SHA256:&nbsp;87565069518462984df2065c23ee0d35a38d9593c0afabe983d134c1cf4eeb93</li>
-                                                <li>pkg:maven/org.hibernate.orm/hibernate-micrometer@7.3.0.Final</li>
+                                        <li>File Path:&nbsp;/home/runner/.m2/repository/org/hibernate/orm/hibernate-micrometer/7.3.1.Final/hibernate-micrometer-7.3.1.Final.jar</li>
+                                        <li>MD5:&nbsp;dadb01589f40fece2c2d7fc0e81cd563</li>
+                                        <li>SHA1:&nbsp;dd9fa088369fecaf9235866263049318b1fc9f15</li>
+                                        <li>SHA256:&nbsp;92c1f33df3666bb0946a297d2009fc9373c7ef0469a413637bdae5b405e22db9</li>
+                                                <li>pkg:maven/org.hibernate.orm/hibernate-micrometer@7.3.1.Final</li>
                                      </ul>
                                 </li>
                             </ul>
@@ -5811,27 +5818,27 @@ file comparators, endian transformation classes, and much more.
                         <h4 id="header74" class="subsectionheader white">Identifiers</h4>
                         <div id="content74" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                    <li>pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
-                                <li><a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Ahibernate%3Ahibernate_orm%3A7.3.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:hibernate:hibernate_orm:7.3.0:*:*:*:*:*:*:*</a>
+                                <li><a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Ahibernate%3Ahibernate_orm%3A7.3.1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:hibernate:hibernate_orm:7.3.1:*:*:*:*:*:*:*</a>
                                     &nbsp;&nbsp;(<i>Confidence</i>:Highest)
-                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="hibernate-core-7.3.0.Final.jar" data-sha1="cdf1d7162766006ae38dbd03b535f5e7a06f2b51" data-pkgurl="pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:hibernate:hibernate_orm">suppress</button>
+                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="hibernate-core-7.3.1.Final.jar" data-sha1="01415a8e09e3cebc37051948699f1be126c0de09" data-pkgurl="pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:hibernate:hibernate_orm">suppress</button>
                             </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l36_c890a4cc781fd8720e0e2613b4a24b33cdaa80a1"></a>hibernate-models-1.1.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l36_c890a4cc781fd8720e0e2613b4a24b33cdaa80a1"></a>hibernate-models-1.1.1.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>A de-typed abstraction over reflection and annotations</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">Apache License Version 2.0: http://www.apache.org/licenses/</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/hibernate/models/hibernate-models/1.1.0/hibernate-models-1.1.0.jar<br/>
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/hibernate/models/hibernate-models/1.1.1/hibernate-models-1.1.1.jar<br/>
                             <b>MD5:</b>&nbsp;bfdc23cef68eaa53fc308edb20a46264<br/>
                             <b>SHA1:</b>&nbsp;c890a4cc781fd8720e0e2613b4a24b33cdaa80a1<br/>
                             <b>SHA256:</b>7cb645f2ebe5fcb63e21d26259cef62d93a1ca77c400bda6992c92cb19826a89
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">hibernate-models-1.1.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">hibernate-models-1.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header75" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content75" class="subsectioncontent standardsubsection hidden">
@@ -5867,14 +5874,14 @@ file comparators, endian transformation classes, and much more.
                                     <tr><td>Product</td><td>pom</td><td>organization name</td><td>Hibernate.org</td><td>Low</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>organization url</td><td>https://hibernate.org</td><td>Low</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>hibernate/hibernate-models</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>1.1.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>1.1.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>1.1.1</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>1.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header76" class="subsectionheader white">Identifiers</h4>
                         <div id="content76" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/org.hibernate.models/hibernate-models@1.1.0
+                                    <li>pkg:maven/org.hibernate.models/hibernate-models@1.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
@@ -6418,7 +6425,7 @@ file comparators, endian transformation classes, and much more.
                             <b>SHA1:</b>&nbsp;18ec117c85f3ba0ac65409136afa8e42bc74e739<br/>
                             <b>SHA256:</b>7fd6792361f4dd00f8c56af4a20cecc0066deea4a8f3dec38348af23fc2296ee
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">istack-commons-runtime-4.1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">istack-commons-runtime-4.1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header91" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content91" class="subsectioncontent standardsubsection hidden">
@@ -7053,7 +7060,7 @@ GPL2 w/ CPE: https://www.gnu.org/software/classpath/license.html</pre>
                             <b>SHA1:</b>&nbsp;4c28afe1991a941d7702fe1362c365f0a8641d1e<br/>
                             <b>SHA256:</b>f7dc98062fccf14126abb751b64fab12c312566e8cbdc8483598bffcea93af7c
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.inject-api-2.0.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.inject-api-2.0.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header109" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content109" class="subsectioncontent standardsubsection hidden">
@@ -7274,7 +7281,7 @@ GPL2 w/ CPE: https://www.gnu.org/software/classpath/license.html</pre>
                             <b>SHA1:</b>&nbsp;51a520e3fae406abb84e2e1148e6746ce3f80a1a<br/>
                             <b>SHA256:</b>50c0a7c760c13ae6c042acf182b28f0047413db95b4636fb8879bcffab5ba875
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.transaction-api-2.0.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.transaction-api-2.0.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header115" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content115" class="subsectioncontent standardsubsection hidden">
@@ -7502,7 +7509,7 @@ GPL2 w/ CPE: https://www.gnu.org/software/classpath/license.html</pre>
                             <b>SHA1:</b>&nbsp;d6d2327f3817d9a33a3b6b8f2e15a96bc2e7afdc<br/>
                             <b>SHA256:</b>c507ca69a8c6dd11bf4afeec9e0d412c4fa3933fffb0a84680ea5727e8472124
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.xml.bind-api-4.0.4.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jakarta.xml.bind-api-4.0.4.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header121" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content121" class="subsectioncontent standardsubsection hidden">
@@ -7669,7 +7676,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;8e61282303777fc98a00cc3affd0560d68748a75<br/>
                             <b>SHA256:</b>ebbd274207b4860d0dc6e2d44d6dbdb5945cede01222d2e50661d45f5d46c0f7
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">jaxb-core-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jaxb-core-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header127" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content127" class="subsectioncontent standardsubsection hidden">
@@ -7736,7 +7743,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;fb95ebb62564657b2fedfe165b859789ef3a8711<br/>
                             <b>SHA256:</b>1c0d57f8c25f9605d5a2f7ad0a87581893776ac85b00b101b2651258edaa9118
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">jaxb-runtime-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jaxb-runtime-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header129" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content129" class="subsectioncontent standardsubsection hidden">
@@ -7805,7 +7812,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;1cc9f976725720bb4a66f80af3e3aa6b9890d969<br/>
                             <b>SHA256:</b>7c12ee575508f81e22b1db9334b969d0ec54ef0fd1dcba24eeab1a44235fc366
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">jboss-logging-3.6.3.Final.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">jboss-logging-3.6.3.Final.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
                         <h4 id="header131" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content131" class="subsectioncontent standardsubsection hidden">
@@ -8290,7 +8297,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;524cb6ccc2b68a57604750e1ab8b13b5a786a6aa<br/>
                             <b>SHA256:</b>a7afcd23b9cfd1475e55c94f943b808c5922035e7e2c2a5c65a487a4106bc538
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">jul-to-slf4j-2.0.17.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">jul-to-slf4j-2.0.17.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header147" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content147" class="subsectioncontent standardsubsection hidden">
@@ -8425,7 +8432,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;fb385330d89c2d61058ef649403f214633569205<br/>
                             <b>SHA256:</b>e886682920fa0fb9d6eb6395dcb4de088443f8646c89c5e5846e168e327f406f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">log4j-api-2.25.3.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">log4j-api-2.25.3.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header151" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content151" class="subsectioncontent standardsubsection hidden">
@@ -8500,7 +8507,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;30adfb40cca243ec88cf7ec1fddb411ab55faa4f<br/>
                             <b>SHA256:</b>90a09280390c54a28ac1514ded7c5293f3fe62f4448bf371b4e2415272e67a3d
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">log4j-to-slf4j-2.25.3.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">log4j-to-slf4j-2.25.3.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header153" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content153" class="subsectioncontent standardsubsection hidden">
@@ -8566,7 +8573,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;fdfb3ff9a842303d4a95207294a6c6bc64e2605d<br/>
                             <b>SHA256:</b>6a904d5778d0e361a9692f9cbe68b1b0620ae0f3eda2ec2ed09102755bf036c4
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">logback-core-1.5.32.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">logback-core-1.5.32.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header155" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content155" class="subsectioncontent standardsubsection hidden">
@@ -10006,7 +10013,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;a393fe91de298097b0242a9f380267e2bb1e1003<br/>
                             <b>SHA256:</b>197aa64a6676da578dac1097824accda7a89d5ab21c0829e05bfde92a176f4a1
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">p6spy-3.9.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-jdbc@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">p6spy-3.9.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-jdbc@8.39.0
                         </p>
                         <h4 id="header195" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content195" class="subsectioncontent standardsubsection hidden">
@@ -10730,17 +10737,17 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l107_6b5269da1699b7eb5af86c99dc2ed7dd29c838dc"></a>sentry-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l107_f42ae3a541fe1a6c9471fa7722a0a3b2e8536abe"></a>sentry-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry/8.38.0/sentry-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;2d6094503199eb795cf0fba8ffb14621<br/>
-                            <b>SHA1:</b>&nbsp;6b5269da1699b7eb5af86c99dc2ed7dd29c838dc<br/>
-                            <b>SHA256:</b>89ba682a7247e18bde0baefe72489f450eba9b018bd9b6c0aea7693858e5a1c4
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry/8.39.0/sentry-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;b11d325e3c98b96b1940052d17e4b50a<br/>
+                            <b>SHA1:</b>&nbsp;f42ae3a541fe1a6c9471fa7722a0a3b2e8536abe<br/>
+                            <b>SHA256:</b>6ad1a87cc45e92fe5841dd9f3dcba1a93a7bcf59c9337abff893ecebd6e52860
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header219" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content219" class="subsectioncontent standardsubsection hidden">
@@ -10771,32 +10778,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header220" class="subsectionheader white">Identifiers</h4>
                         <div id="content220" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l108_192de8a7b84ff642b6de8ea601444904119aff52"></a>sentry-jdbc-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l108_7cc6eb249dd5147f28efdffb6c544e0a18ae6b51"></a>sentry-jdbc-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-jdbc/8.38.0/sentry-jdbc-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;33cca83eb24fb0c696b84f8847db3f8f<br/>
-                            <b>SHA1:</b>&nbsp;192de8a7b84ff642b6de8ea601444904119aff52<br/>
-                            <b>SHA256:</b>3ce4e714f80f2a8df9868c9fc6ea19af233569ef14d585cba3d838972ffaa8dd
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-jdbc/8.39.0/sentry-jdbc-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;daf4878b08be9f289ed42bee67d08250<br/>
+                            <b>SHA1:</b>&nbsp;7cc6eb249dd5147f28efdffb6c544e0a18ae6b51<br/>
+                            <b>SHA256:</b>149bc4173e0c190b56a96c78f30a2fbf3b420926ef9b24a53d52d95a312c40e9
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-jdbc-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-jdbc-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header221" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content221" class="subsectioncontent standardsubsection hidden">
@@ -10829,32 +10836,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header222" class="subsectionheader white">Identifiers</h4>
                         <div id="content222" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-jdbc@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-jdbc@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l109_41eac2ebecd2f20e4e0b60874829c906d80984e4"></a>sentry-quartz-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l109_ce595d6cae9917e12c977e99b52a9602080db44f"></a>sentry-quartz-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-quartz/8.38.0/sentry-quartz-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;a0b37ebfbff588d38424a92820b44a88<br/>
-                            <b>SHA1:</b>&nbsp;41eac2ebecd2f20e4e0b60874829c906d80984e4<br/>
-                            <b>SHA256:</b>fa37e95493b61449fe02f23ad14a2bc5ebdd9be9d9e87eb85434804cb7b2e086
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-quartz/8.39.0/sentry-quartz-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;3c2dc0600e900849942080b84721cefe<br/>
+                            <b>SHA1:</b>&nbsp;ce595d6cae9917e12c977e99b52a9602080db44f<br/>
+                            <b>SHA256:</b>59591278afd4f6511dd93eb7f1252b9d31bbf2c5b453e347078e9fa8c5bfad9d
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-quartz-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-quartz-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header223" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content223" class="subsectioncontent standardsubsection hidden">
@@ -10887,32 +10894,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header224" class="subsectionheader white">Identifiers</h4>
                         <div id="content224" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-quartz@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-quartz@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l110_6a5af6644db1c86b0a7be06ed2dc884e6e7e43c7"></a>sentry-reactor-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l110_03b136b88c5b2baf9878654c2a077c96dea1ad1a"></a>sentry-reactor-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-reactor/8.38.0/sentry-reactor-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;cd199711cd90e4ac8ae2be225834b1e6<br/>
-                            <b>SHA1:</b>&nbsp;6a5af6644db1c86b0a7be06ed2dc884e6e7e43c7<br/>
-                            <b>SHA256:</b>4bc26949aa0311995fb87f3a9b5144e3d6396b53595be3adf60812abe194e514
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-reactor/8.39.0/sentry-reactor-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;8efaf8186b37c14f3ea37ede974cdb2d<br/>
+                            <b>SHA1:</b>&nbsp;03b136b88c5b2baf9878654c2a077c96dea1ad1a<br/>
+                            <b>SHA256:</b>90dbc62210aa8bb9b7f901304c65bbe3e7c2a13897a4a0b2bce2f5c0672a59a0
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-reactor-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-reactor-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header225" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content225" class="subsectioncontent standardsubsection hidden">
@@ -10945,32 +10952,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header226" class="subsectionheader white">Identifiers</h4>
                         <div id="content226" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-reactor@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-reactor@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l111_2e374f35f14024f1c774ef95ccc8047e0c54b9b3"></a>sentry-spring-7-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l111_b31d833946d37ddc51f279100743016186d6afc9"></a>sentry-spring-7-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-7/8.38.0/sentry-spring-7-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;3507de4374558db12eb56dda45de0d49<br/>
-                            <b>SHA1:</b>&nbsp;2e374f35f14024f1c774ef95ccc8047e0c54b9b3<br/>
-                            <b>SHA256:</b>ba759b0e996dbc8dd05f4d9a47a8fc83d90a6606d0714e32ca040fc334c343b3
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-7/8.39.0/sentry-spring-7-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;d3a33b0ca65c0dec1bb28d6a5c3e2bb6<br/>
+                            <b>SHA1:</b>&nbsp;b31d833946d37ddc51f279100743016186d6afc9<br/>
+                            <b>SHA256:</b>45b4631526832da3f4b7506376d49ddd6fd356748ce7b4e043f2cba5f285d925
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-7-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-7-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header227" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content227" class="subsectioncontent standardsubsection hidden">
@@ -11001,32 +11008,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header228" class="subsectionheader white">Identifiers</h4>
                         <div id="content228" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-spring-7@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-spring-7@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l112_041e388f8eb0b1966ab2886c7b24af7280cd170c"></a>sentry-spring-boot-4-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l112_aa85021828a86dd23371afab4a027fb5e9c0821f"></a>sentry-spring-boot-4-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-boot-4/8.38.0/sentry-spring-boot-4-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;15016282f21762e23383e1148de1cf96<br/>
-                            <b>SHA1:</b>&nbsp;041e388f8eb0b1966ab2886c7b24af7280cd170c<br/>
-                            <b>SHA256:</b>817a4dd6747d75fd0c448776c729157a9301b02bc05fb15466c8cb2b50218248
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-boot-4/8.39.0/sentry-spring-boot-4-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;190c38661665983d6b277217c7ac973b<br/>
+                            <b>SHA1:</b>&nbsp;aa85021828a86dd23371afab4a027fb5e9c0821f<br/>
+                            <b>SHA256:</b>ef74b1d504fe6bb511b21e75bc5da5f2c515d99ace6a00d2b4250bf80f60e4e2
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-boot-4-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-boot-4-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header229" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content229" class="subsectioncontent standardsubsection hidden">
@@ -11059,32 +11066,32 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header230" class="subsectionheader white">Identifiers</h4>
                         <div id="content230" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-spring-boot-4@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-spring-boot-4@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l113_bfaeed9be36ecdc47538eb6394717ac27c1df4aa"></a>sentry-spring-boot-4-starter-8.38.0.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l113_c951ec0ed4091764731d3fc3fdcb8f90139a3517"></a>sentry-spring-boot-4-starter-8.39.0.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>SDK for sentry.io</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">MIT: http://www.opensource.org/licenses/mit-license.php</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-boot-4-starter/8.38.0/sentry-spring-boot-4-starter-8.38.0.jar<br/>
-                            <b>MD5:</b>&nbsp;89d3c199131254b3a885087183dc210a<br/>
-                            <b>SHA1:</b>&nbsp;bfaeed9be36ecdc47538eb6394717ac27c1df4aa<br/>
-                            <b>SHA256:</b>f6f2e40df7dddfad663fa48bb84b9bd77303ebe1e69a0cf3741dd8bef0781835
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/sentry/sentry-spring-boot-4-starter/8.39.0/sentry-spring-boot-4-starter-8.39.0.jar<br/>
+                            <b>MD5:</b>&nbsp;b2ac89eceaccc8abd747a01b54a419e6<br/>
+                            <b>SHA1:</b>&nbsp;c951ec0ed4091764731d3fc3fdcb8f90139a3517<br/>
+                            <b>SHA256:</b>718958ad6b24af90082b96137c8224efa456d3d0e15ceda66eeb6b37b2cfa72e
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-boot-4-starter-8.38.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">sentry-spring-boot-4-starter-8.39.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header231" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content231" class="subsectioncontent standardsubsection hidden">
@@ -11111,16 +11118,16 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.sentry</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Sentry SDK</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>getsentry/sentry-java</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.38.0</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.38.0</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.38.0</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Implementation-Version</td><td>8.39.0</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>sentry-version-name</td><td>8.39.0</td><td>Medium</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>8.39.0</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header232" class="subsectionheader white">Identifiers</h4>
                         <div id="content232" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                    <li>pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
                             </ul>
@@ -11303,7 +11310,7 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <b>SHA1:</b>&nbsp;2d53ddec134280cb384c1e35d094e5f71c1f2316<br/>
                             <b>SHA256:</b>e6682acf1ace77508ef13649cbf4f8d09d2cf5457bdb61d25ffb6ac0233d78dd
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">snakeyaml-2.5.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.38.0
+                                <br/><span class="tooltip"><span class="tooltiptext">snakeyaml-2.5.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/io.sentry/sentry-spring-boot-4-starter@8.39.0
                         </p>
                         <h4 id="header239" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content239" class="subsectioncontent standardsubsection hidden">
@@ -13151,17 +13158,17 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l135_1c5232f33bf5bf2146e64532551fa11894f9f682"></a>swagger-annotations-2.2.47.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l135_149e215edb850c8acdfcc782db2d60a086bfc5c1"></a>swagger-annotations-2.2.48.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>swagger-annotations</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">&quot;Apache License 2.0&quot;;link=&quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.47/swagger-annotations-2.2.47.jar<br/>
-                            <b>MD5:</b>&nbsp;5e5192e45e4d8a34795a5c2a54933c7d<br/>
-                            <b>SHA1:</b>&nbsp;1c5232f33bf5bf2146e64532551fa11894f9f682<br/>
-                            <b>SHA256:</b>bfb08ef6068b9effc19083f8646a8a8031bffe61370ad2086a2ad8bf918d7163
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.48/swagger-annotations-2.2.48.jar<br/>
+                            <b>MD5:</b>&nbsp;141250f41c16f2616bc2cdf927a651b4<br/>
+                            <b>SHA1:</b>&nbsp;149e215edb850c8acdfcc782db2d60a086bfc5c1<br/>
+                            <b>SHA256:</b>fea309bce0b075cb7767469982e98bd68d8c0ed3ff23ab3452b22a72c6770e8b
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-2.2.47.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-2.2.48.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header283" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content283" class="subsectioncontent standardsubsection hidden">
@@ -13201,21 +13208,21 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.swagger.core.v3</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>swagger-annotations</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>parent-artifactid</td><td>swagger-project</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>2.2.47</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>2.2.47</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>implementation-version</td><td>2.2.47</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.47</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>2.2.48</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>2.2.48</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>implementation-version</td><td>2.2.48</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.48</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header284" class="subsectionheader white">Identifiers</h4>
                         <div id="content284" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.47
+                                    <li>pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.48
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
-                                <li>cpe:2.3:a:http-swagger_project:http-swagger:2.2.47:*:*:*:*:*:*:*
+                                <li>cpe:2.3:a:http-swagger_project:http-swagger:2.2.48:*:*:*:*:*:*:*
                                     &nbsp;&nbsp;(<i>Confidence</i>:Low)
-                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-annotations-2.2.47.jar" data-sha1="1c5232f33bf5bf2146e64532551fa11894f9f682" data-pkgurl="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.47" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
+                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-annotations-2.2.48.jar" data-sha1="149e215edb850c8acdfcc782db2d60a086bfc5c1" data-pkgurl="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.48" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
                             </li>
                             </ul>
                         </div>
@@ -13309,17 +13316,17 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l138_261726168712ed6c6a9fd0f470cf01e42f8b601e"></a>swagger-ui-5.32.1.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l138_6fe200e69b262ccc15fb0c9e2c6a9e51b9125f1d"></a>swagger-ui-5.32.4.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>WebJar for Swagger UI</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">Apache-2.0</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar<br/>
-                            <b>MD5:</b>&nbsp;a3eb1debe6b3ce7c604bdca6c783869d<br/>
-                            <b>SHA1:</b>&nbsp;261726168712ed6c6a9fd0f470cf01e42f8b601e<br/>
-                            <b>SHA256:</b>33ba1fd003441af3a0b24133e1bdd8449de6e934a1651ae8560b83f4cf056b46
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar<br/>
+                            <b>MD5:</b>&nbsp;4b3ab78abf7b6c8bedaa854b21980c64<br/>
+                            <b>SHA1:</b>&nbsp;6fe200e69b262ccc15fb0c9e2c6a9e51b9125f1d<br/>
+                            <b>SHA256:</b>55a4433071ca40a0f2648cae70057f044a55be279a9ff0b38f0cc1ab45fd9f59
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">swagger-ui-5.32.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">swagger-ui-5.32.4.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
                         <h4 id="header289" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content289" class="subsectioncontent standardsubsection hidden">
@@ -13343,28 +13350,28 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>org.webjars</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>Swagger UI</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>url</td><td>https://www.webjars.org</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>5.32.1</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>5.32.1</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>5.32.1</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>5.32.4</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>5.32.4</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>5.32.4</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header290" class="subsectionheader white">Identifiers</h4>
                         <div id="content290" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/org.webjars/swagger-ui@5.32.1
+                                    <li>pkg:maven/org.webjars/swagger-ui@5.32.4
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
-                                <li>cpe:2.3:a:http-swagger_project:http-swagger:5.32.1:*:*:*:*:*:*:*
+                                <li>cpe:2.3:a:http-swagger_project:http-swagger:5.32.4:*:*:*:*:*:*:*
                                     &nbsp;&nbsp;(<i>Confidence</i>:Low)
-                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-ui-5.32.1.jar" data-sha1="261726168712ed6c6a9fd0f470cf01e42f8b601e" data-pkgurl="pkg:maven/org.webjars/swagger-ui@5.32.1" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
+                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-ui-5.32.4.jar" data-sha1="6fe200e69b262ccc15fb0c9e2c6a9e51b9125f1d" data-pkgurl="pkg:maven/org.webjars/swagger-ui@5.32.4" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
                             </li>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l139_d9df3eb79cf8ab7d1bd9df14d3264350c270b51b"></a>swagger-ui-5.32.1.jar: oauth2-redirect.js</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l139_d9df3eb79cf8ab7d1bd9df14d3264350c270b51b"></a>swagger-ui-5.32.4.jar: oauth2-redirect.js</h3>
                     <div class="subsectioncontent notvulnerable">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/oauth2-redirect.js<br/>
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/oauth2-redirect.js<br/>
                             <b>MD5:</b>&nbsp;d170ff78b648354d9005ff7dce2b141d<br/>
                             <b>SHA1:</b>&nbsp;d9df3eb79cf8ab7d1bd9df14d3264350c270b51b<br/>
                             <b>SHA256:</b>a5c8a34e09e49737382cc5019446eec7c3db3461963fc5bfe448361d3c5549e9
@@ -13381,10 +13388,10 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l140_c434dd8fbfa625a10351681d3037ee79d5682207"></a>swagger-ui-5.32.1.jar: swagger-initializer.js</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l140_c434dd8fbfa625a10351681d3037ee79d5682207"></a>swagger-ui-5.32.4.jar: swagger-initializer.js</h3>
                     <div class="subsectioncontent notvulnerable">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-initializer.js<br/>
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-initializer.js<br/>
                             <b>MD5:</b>&nbsp;ff995915f51c051c59fed883f5d7be28<br/>
                             <b>SHA1:</b>&nbsp;c434dd8fbfa625a10351681d3037ee79d5682207<br/>
                             <b>SHA256:</b>a895034f24f12d7cd81ec47c98da4f15721d9d9a8d2405f22f21704821f81d02
@@ -13401,93 +13408,275 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l141_3e69048f19402b71f6f68adf62ccf333b00c61db"></a>swagger-ui-5.32.1.jar: swagger-ui-bundle.js</h3>
-                    <div class="subsectioncontent notvulnerable">
+                    <h3 class="subsectionheader standardsubsection"><a name="l141_5f9278b867c750274663e10fed4686c4847aa450"></a>swagger-ui-5.32.4.jar: swagger-ui-bundle.js</h3>
+                    <div class="subsectioncontent">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-ui-bundle.js<br/>
-                            <b>MD5:</b>&nbsp;f2d6bf5b0cd23e232a34ea8e64769934<br/>
-                            <b>SHA1:</b>&nbsp;3e69048f19402b71f6f68adf62ccf333b00c61db<br/>
-                            <b>SHA256:</b>4d48f8d2e691dd56ee4c7ea26d786a10aac26c9bd3d80601bd8e957d51f4ea99
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-ui-bundle.js<br/>
+                            <b>MD5:</b>&nbsp;45ccffa901bb9a18069b6c20d3363413<br/>
+                            <b>SHA1:</b>&nbsp;5f9278b867c750274663e10fed4686c4847aa450<br/>
+                            <b>SHA256:</b>82c56ace487aa04c1f92602eb14739cecf600379741eb40c8810ebd03d98a033
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
                         <h4 id="header295" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content295" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
+                                    <tr><td>Vendor</td><td>RetireJS</td><td>name</td><td>DOMPurify</td><td>High</td></tr>
+                                    <tr><td>Product</td><td>RetireJS</td><td>name</td><td>DOMPurify</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>RetireJS</td><td>version</td><td>3.3.2</td><td>High</td></tr>
                             </table>
                         </div>
                         <h4 id="header296" class="subsectionheader white">Identifiers</h4>
                         <div id="content296" class="subsectioncontent standardsubsection">
-                            <ul><li><b>None</b></li></ul>
+                            <ul>
+                                    <li>pkg:javascript/DOMPurify@3.3.2
+                                    &nbsp;&nbsp;(<i>Confidence</i>:Highest)
+                                </li>
+                            </ul>
                         </div>
+                    <h4 id="header297" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content297" class="subsectioncontent standardsubsection">
+                                <p><span class="underline"><b>## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)</b>&nbsp;(RETIREJS)</span>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this vulnerability for this file" data-display-name="swagger-ui-5.32.4.jar: swagger-ui-bundle.js" data-sha1="5f9278b867c750274663e10fed4686c4847aa450" data-pkgurl="pkg:javascript/DOMPurify@3.3.2" data-type-to-suppress="vulnerabilityName" data-id-to-suppress="## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)">suppress</button></p>
+                            <p>                            <pre>## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)</pre>
+
+                            Unscored:
+                                <ul><li>Severity: medium</li></ul>
+                                <br/>References:<ul>
+                                    <li>githubID - GHSA-39q2-94rc-95cp</li>
+                                    <li>info - <a target="_blank" href="https://github.com/cure53/DOMPurify/security/advisories/GHSA-39q2-94rc-95cp">https://github.com/cure53/DOMPurify/security/advisories/GHSA-39q2-94rc-95cp</a></li>
+                                </ul>
+                            </p>
+                    </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l142_1a75f6b95d87c707ac90994cdf3f73c557696450"></a>swagger-ui-5.32.1.jar: swagger-ui-es-bundle-core.js</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l142_d753c55c83461beedd3a4a256ab1f03110675d38"></a>swagger-ui-5.32.4.jar: swagger-ui-es-bundle-core.js</h3>
                     <div class="subsectioncontent notvulnerable">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-ui-es-bundle-core.js<br/>
-                            <b>MD5:</b>&nbsp;7fcbd0384d31480cdfdc85b37b348b50<br/>
-                            <b>SHA1:</b>&nbsp;1a75f6b95d87c707ac90994cdf3f73c557696450<br/>
-                            <b>SHA256:</b>6e379239905b5d85a28c0bd46cc4ee4183c908f0c728d965010ebd728bfe2dec
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-ui-es-bundle-core.js<br/>
+                            <b>MD5:</b>&nbsp;9d13da031f16172f1eebdf5a612237ea<br/>
+                            <b>SHA1:</b>&nbsp;d753c55c83461beedd3a4a256ab1f03110675d38<br/>
+                            <b>SHA256:</b>24abdb869daeceeb949e71d9fdc306a7207173a5ecaec25a5557d5e7dfea9201
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header297" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content297" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header298" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content298" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                             </table>
                         </div>
-                        <h4 id="header298" class="subsectionheader white">Identifiers</h4>
-                        <div id="content298" class="subsectioncontent standardsubsection">
+                        <h4 id="header299" class="subsectionheader white">Identifiers</h4>
+                        <div id="content299" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l143_fbdb115f0729709b19ce5997cc54eaed7667ddbc"></a>swagger-ui-5.32.1.jar: swagger-ui-es-bundle.js</h3>
-                    <div class="subsectioncontent notvulnerable">
+                    <h3 class="subsectionheader standardsubsection"><a name="l143_d7c546af7ae56e99231c0087480e95d44e7014c3"></a>swagger-ui-5.32.4.jar: swagger-ui-es-bundle.js</h3>
+                    <div class="subsectioncontent">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-ui-es-bundle.js<br/>
-                            <b>MD5:</b>&nbsp;968a33dc800b9dc551938c39dbc997bc<br/>
-                            <b>SHA1:</b>&nbsp;fbdb115f0729709b19ce5997cc54eaed7667ddbc<br/>
-                            <b>SHA256:</b>39d5c28c488f32a893b60c22db4db402c000672ec2fbcd6f0d33fe24361de7b7
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-ui-es-bundle.js<br/>
+                            <b>MD5:</b>&nbsp;fb97d9c05935d15ed81fbc16227357e6<br/>
+                            <b>SHA1:</b>&nbsp;d7c546af7ae56e99231c0087480e95d44e7014c3<br/>
+                            <b>SHA256:</b>5c609364246d315dbc710a6f6b726b428c906a67407bb1602b04a9013ba97e4c
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header299" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content299" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header300" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content300" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
+                                    <tr><td>Vendor</td><td>RetireJS</td><td>name</td><td>DOMPurify</td><td>High</td></tr>
+                                    <tr><td>Product</td><td>RetireJS</td><td>name</td><td>DOMPurify</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>RetireJS</td><td>version</td><td>3.3.2</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header300" class="subsectionheader white">Identifiers</h4>
-                        <div id="content300" class="subsectioncontent standardsubsection">
-                            <ul><li><b>None</b></li></ul>
+                        <h4 id="header301" class="subsectionheader white">Identifiers</h4>
+                        <div id="content301" class="subsectioncontent standardsubsection">
+                            <ul>
+                                    <li>pkg:javascript/DOMPurify@3.3.2
+                                    &nbsp;&nbsp;(<i>Confidence</i>:Highest)
+                                </li>
+                            </ul>
                         </div>
+                    <h4 id="header302" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content302" class="subsectioncontent standardsubsection">
+                                <p><span class="underline"><b>## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)</b>&nbsp;(RETIREJS)</span>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this vulnerability for this file" data-display-name="swagger-ui-5.32.4.jar: swagger-ui-es-bundle.js" data-sha1="d7c546af7ae56e99231c0087480e95d44e7014c3" data-pkgurl="pkg:javascript/DOMPurify@3.3.2" data-type-to-suppress="vulnerabilityName" data-id-to-suppress="## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)">suppress</button></p>
+                            <p>                            <pre>## Summary
+In `src/purify.ts:1117-1123`, `ADD_TAGS` as a function (via `EXTRA_ELEMENT_HANDLING.tagCheck`) bypasses `FORBID_TAGS` due to short-circuit evaluation.
+
+The condition:
+```
+!(tagCheck(tagName)) &amp;&amp; (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName])
+```
+When `tagCheck(tagName)` returns `true`, the entire condition is `false` and the element is kept &mdash; `FORBID_TAGS[tagName]` is never evaluated.
+
+## Inconsistency
+This contradicts the attribute-side pattern at line 1214 where `FORBID_ATTR` explicitly wins first:
+```
+if (FORBID_ATTR[lcName]) { continue; }
+```
+For tags, FORBID should also take precedence over ADD.
+
+## Impact
+Applications using both `ADD_TAGS` as a function and `FORBID_TAGS` simultaneously get unexpected behavior &mdash; forbidden tags are allowed through. Config-dependent but a genuine logic inconsistency.
+
+## Suggested Fix
+Check `FORBID_TAGS` before `tagCheck`:
+```
+if (FORBID_TAGS[tagName]) { /* remove */ }
+else if (tagCheck(tagName) || ALLOWED_TAGS[tagName]) { /* keep */ }
+```
+
+## Affected Version
+v3.3.3 (commit 883ac15)</pre>
+
+                            Unscored:
+                                <ul><li>Severity: medium</li></ul>
+                                <br/>References:<ul>
+                                    <li>githubID - GHSA-39q2-94rc-95cp</li>
+                                    <li>info - <a target="_blank" href="https://github.com/cure53/DOMPurify/security/advisories/GHSA-39q2-94rc-95cp">https://github.com/cure53/DOMPurify/security/advisories/GHSA-39q2-94rc-95cp</a></li>
+                                </ul>
+                            </p>
+                    </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l144_296ac957b2bd263971de6f608409b11337387160"></a>swagger-ui-5.32.1.jar: swagger-ui-standalone-preset.js</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l144_296ac957b2bd263971de6f608409b11337387160"></a>swagger-ui-5.32.4.jar: swagger-ui-standalone-preset.js</h3>
                     <div class="subsectioncontent notvulnerable">
                         <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-ui-standalone-preset.js<br/>
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-ui-standalone-preset.js<br/>
                             <b>MD5:</b>&nbsp;7289ecfaa5507c519cb95606e6216dbb<br/>
                             <b>SHA1:</b>&nbsp;296ac957b2bd263971de6f608409b11337387160<br/>
                             <b>SHA256:</b>38f7334300f524e1d456b1c5f6ec45383316283c257444aa9453143fdb434c73
-                                <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                        </p>
-                        <h4 id="header301" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content301" class="subsectioncontent standardsubsection hidden">
-                            <table class="lined fullwidth" border="0">
-                                <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
-                            </table>
-                        </div>
-                        <h4 id="header302" class="subsectionheader white">Identifiers</h4>
-                        <div id="content302" class="subsectioncontent standardsubsection">
-                            <ul><li><b>None</b></li></ul>
-                        </div>
-                </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l145_f5f3254d57589329179ee646d576fbf2cdae431d"></a>swagger-ui-5.32.1.jar: swagger-ui.js</h3>
-                    <div class="subsectioncontent notvulnerable">
-                        <p>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.1/swagger-ui-5.32.1.jar/META-INF/resources/webjars/swagger-ui/5.32.1/swagger-ui.js<br/>
-                            <b>MD5:</b>&nbsp;ae712707b02bc83130e5a7b91c1d197e<br/>
-                            <b>SHA1:</b>&nbsp;f5f3254d57589329179ee646d576fbf2cdae431d<br/>
-                            <b>SHA256:</b>11b9436394ba3757aeeca9dc1082ba1655e271dc1e2e57ffd98a6222182cde67
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
                         <h4 id="header303" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
@@ -13498,6 +13687,26 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                         </div>
                         <h4 id="header304" class="subsectionheader white">Identifiers</h4>
                         <div id="content304" class="subsectioncontent standardsubsection">
+                            <ul><li><b>None</b></li></ul>
+                        </div>
+                </div>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l145_427bfddf8f8a0d2ac04c2f822fe94c9fe1f3bb2a"></a>swagger-ui-5.32.4.jar: swagger-ui.js</h3>
+                    <div class="subsectioncontent notvulnerable">
+                        <p>
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/org/webjars/swagger-ui/5.32.4/swagger-ui-5.32.4.jar/META-INF/resources/webjars/swagger-ui/5.32.4/swagger-ui.js<br/>
+                            <b>MD5:</b>&nbsp;8aaaa0dde665c0176c01626dcd6553ad<br/>
+                            <b>SHA1:</b>&nbsp;427bfddf8f8a0d2ac04c2f822fe94c9fe1f3bb2a<br/>
+                            <b>SHA256:</b>5e7b2edddd95d3ab2336fd531ea71be50a05fa05f2d95f63d6f20f82e59d6905
+                                <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
+                        </p>
+                        <h4 id="header305" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content305" class="subsectioncontent standardsubsection hidden">
+                            <table class="lined fullwidth" border="0">
+                                <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
+                            </table>
+                        </div>
+                        <h4 id="header306" class="subsectionheader white">Identifiers</h4>
+                        <div id="content306" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -13513,8 +13722,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">systems-common-2.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@34.3
                         </p>
-                        <h4 id="header305" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content305" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header307" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content307" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>systems-common</td><td>High</td></tr>
@@ -13556,8 +13765,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header306" class="subsectionheader white">Identifiers</h4>
-                        <div id="content306" class="subsectioncontent standardsubsection">
+                        <h4 id="header308" class="subsectionheader white">Identifiers</h4>
+                        <div id="content308" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/systems.uom/systems-common@2.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13577,8 +13786,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-core-11.0.20.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.0.5
                         </p>
-                        <h4 id="header307" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content307" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header309" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content309" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-core</td><td>High</td></tr>
@@ -13646,8 +13855,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.20</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header308" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content308" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header310" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content310" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>tomcat-embed-websocket-11.0.20.jar
                                     <ul>
@@ -13660,8 +13869,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header309" class="subsectionheader white">Identifiers</h4>
-                        <div id="content309" class="subsectioncontent standardsubsection">
+                        <h4 id="header311" class="subsectionheader white">Identifiers</h4>
+                        <div id="content311" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13676,8 +13885,8 @@ Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt</pre
                             </li>
                             </ul>
                         </div>
-                    <h4 id="header310" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
-                    <div id="content310" class="subsectioncontent standardsubsection">
+                    <h4 id="header312" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content312" class="subsectioncontent standardsubsection">
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34483">CVE-2026-34483</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34483">suppress</button></p>
                             <p>                            <pre>Improper Encoding or Escaping of Output vulnerability in the JsonAccessLogValve component of Apache Tomcat.
 
@@ -13688,18 +13897,18 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117 , which 
                                 CWE-116 Improper Encoding or Escaping of Output<br/><br/>
                             CVSSv3:
                             <ul><li>Base Score: HIGH (7.5)</li>
-                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:P/RC:R/MAV:A</li></ul>
                                 <br/>References:<ul>
                                     <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/26">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/j1w7304yonlr8vo1tkb5nfs7od1y228b">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs1">show all</a>)<ul>
-                                        <li class="vs1"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs1">...</li>
-                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
-                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs1 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.40; versions up to (excluding) 9.0.117</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs3">show all</a>)<ul>
+                                        <li class="vs3"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs3">...</li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.40; versions up to (excluding) 9.0.117</a></li>
                                     </ul></p>
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34486">CVE-2026-34486</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34486">suppress</button></p>
                             <p>                            <pre>Missing Encryption of Sensitive Data vulnerability in Apache Tomcat due to the&nbsp;fix for CVE-2026-29146 allowing the bypass of the EncryptInterceptor.
@@ -13711,17 +13920,17 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 CWE-311 Missing Encryption of Sensitive Data<br/><br/>
                             CVSSv3:
                             <ul><li>Base Score: HIGH (7.5)</li>
-                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:P/RC:R/MAV:A</li></ul>
                                 <br/>References:<ul>
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/9510k5p5zdvt9pkkgtyp85mvwxo2qrly">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs2">show all</a>)<ul>
-                                        <li class="vs2"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
-                                        <li class="vs2">...</li>
-                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A9.0.116%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:9.0.116:*:*:*:*:*:*:*</a></li>
-                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A10.1.53%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:10.1.53:*:*:*:*:*:*:*</a></li>
-                                        <li class="vs2 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs4">show all</a>)<ul>
+                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs4">...</li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A9.0.116%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:9.0.116:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A10.1.53%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:10.1.53:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.20:*:*:*:*:*:*:*</a></li>
                                     </ul></p>
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34487">CVE-2026-34487</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34487">suppress</button></p>
                             <p>                            <pre>Insertion of Sensitive Information into Log File vulnerability in the cloud membership for clustering component of Apache Tomcat exposed the Kubernetes bearer token.
@@ -13733,18 +13942,18 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 CWE-532 Insertion of Sensitive Information into Log File<br/><br/>
                             CVSSv3:
                             <ul><li>Base Score: HIGH (7.5)</li>
-                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:3.9/RC:R/MAV:A</li></ul>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N/E:P/RC:R/MAV:A</li></ul>
                                 <br/>References:<ul>
                                     <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/28">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/4xpkwolpkrj8v5xzp5nyovtlqp3y850h">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs3">show all</a>)<ul>
-                                        <li class="vs3"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs3">...</li>
-                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
-                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs3 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.13; versions up to (excluding) 9.0.117</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs5">show all</a>)<ul>
+                                        <li class="vs5"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs5">...</li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.0; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.0; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.13; versions up to (excluding) 9.0.117</a></li>
                                     </ul></p>
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-34500">CVE-2026-34500</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="tomcat-embed-core-11.0.20.jar" data-sha1="384f1db7c5a017bf0381fc03693606a08b252c23" data-pkgurl="pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.20" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-34500">suppress</button></p>
                             <p>                            <pre>CLIENT_CERT authentication does not fail as expected for some scenarios when soft fail is disabled and FFM is used in Apache Tomcat.
@@ -13756,31 +13965,31 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 CWE-287 Improper Authentication<br/><br/>
                             CVSSv3:
                             <ul><li>Base Score: MEDIUM (6.5)</li>
-                                <li>Vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N/E:2.2/RC:R/MAV:A</li></ul>
+                                <li>Vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N/E:P/RC:R/MAV:A</li></ul>
                                 <br/>References:<ul>
                                     <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/04/09/29">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/7rcl4zdxryc8hy3htyfyxkbqpxjtfdl2">VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs4">show all</a>)<ul>
-                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs4">...</li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.22; versions up to (excluding) 10.1.54</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.92; versions up to (excluding) 9.0.117</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone14%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone14:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone15%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone15:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone16%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone16:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone17%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone17:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone18%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone18:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone19%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone19:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone20:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone21%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone21:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone22%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone22:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone23%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone23:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone24%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone24:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone25%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone25:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone26%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone26:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs6">show all</a>)<ul>
+                                        <li class="vs6"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs6">...</li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.22; versions up to (excluding) 10.1.54</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.21</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.92; versions up to (excluding) 9.0.117</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone14%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone14:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone15%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone15:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone16%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone16:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone17%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone17:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone18%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone18:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone19%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone19:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone20:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone21%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone21:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone22%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone22:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone23%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone23:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone24%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone24:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone25%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone25:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone26%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone26:*:*:*:*:*:*</a></li>
                                     </ul></p>
                     </div>
                 </div>
@@ -13796,8 +14005,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-el-11.0.20.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-validation@4.0.5
                         </p>
-                        <h4 id="header311" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content311" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header313" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content313" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-el</td><td>High</td></tr>
@@ -13835,8 +14044,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.20</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header312" class="subsectionheader white">Identifiers</h4>
-                        <div id="content312" class="subsectioncontent standardsubsection">
+                        <h4 id="header314" class="subsectionheader white">Identifiers</h4>
+                        <div id="content314" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.20
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13855,10 +14064,10 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                             <b>SHA1:</b>&nbsp;4f4cd53b5ff9a2c5aa1211f15ed2569c57dfb044<br/>
                             <b>SHA256:</b>fcc749785412ef3806fde1ce70f93ef5a0065dcc47fe449bc871db0795cb11af
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
-                                <br/><span class="tooltip"><span class="tooltiptext">txw2-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.0.Final
+                                <br/><span class="tooltip"><span class="tooltiptext">txw2-4.0.6.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.3.1.Final
                         </p>
-                        <h4 id="header313" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content313" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header315" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content315" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>txw2</td><td>High</td></tr>
@@ -13897,8 +14106,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.0.6</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header314" class="subsectionheader white">Identifiers</h4>
-                        <div id="content314" class="subsectioncontent standardsubsection">
+                        <h4 id="header316" class="subsectionheader white">Identifiers</h4>
+                        <div id="content316" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.glassfish.jaxb/txw2@4.0.6
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -13920,8 +14129,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">unit-api-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@34.3
                         </p>
-                        <h4 id="header315" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content315" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header317" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content317" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>unit-api</td><td>High</td></tr>
@@ -14035,8 +14244,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header316" class="subsectionheader white">Identifiers</h4>
-                        <div id="content316" class="subsectioncontent standardsubsection">
+                        <h4 id="header318" class="subsectionheader white">Identifiers</h4>
+                        <div id="content318" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/javax.measure/unit-api@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14056,8 +14265,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">uom-lib-common-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@34.3
                         </p>
-                        <h4 id="header317" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content317" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header319" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content319" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>uom-lib-common</td><td>High</td></tr>
@@ -14105,8 +14314,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header318" class="subsectionheader white">Identifiers</h4>
-                        <div id="content318" class="subsectioncontent standardsubsection">
+                        <h4 id="header320" class="subsectionheader white">Identifiers</h4>
+                        <div id="content320" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/tech.uom.lib/uom-lib-common@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14124,8 +14333,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">utilities-0.9.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-main@34.3
                         </p>
-                        <h4 id="header319" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content319" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header321" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content321" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>utilities</td><td>High</td></tr>
@@ -14154,8 +14363,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header320" class="subsectionheader white">Identifiers</h4>
-                        <div id="content320" class="subsectioncontent standardsubsection">
+                        <h4 id="header322" class="subsectionheader white">Identifiers</h4>
+                        <div id="content322" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/utilities@0.9.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14175,8 +14384,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">value-2.12.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
-                        <h4 id="header321" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content321" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header323" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content323" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>value</td><td>High</td></tr>
@@ -14206,8 +14415,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.12.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header322" class="subsectionheader white">Identifiers</h4>
-                        <div id="content322" class="subsectioncontent standardsubsection">
+                        <h4 id="header324" class="subsectionheader white">Identifiers</h4>
+                        <div id="content324" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.immutables/value@2.12.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14227,8 +14436,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">webjars-locator-core-0.59.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.6.2-SNAPSHOT
                         </p>
-                        <h4 id="header323" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content323" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header325" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content325" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>webjars-locator-core</td><td>High</td></tr>
@@ -14256,8 +14465,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.59</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header324" class="subsectionheader white">Identifiers</h4>
-                        <div id="content324" class="subsectioncontent standardsubsection">
+                        <h4 id="header326" class="subsectionheader white">Identifiers</h4>
+                        <div id="content326" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.webjars/webjars-locator-core@0.59
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14275,8 +14484,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xml-commons-resolver-1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-xml@34.3
                         </p>
-                        <h4 id="header325" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content325" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header327" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content327" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xml-commons-resolver</td><td>High</td></tr>
@@ -14300,8 +14509,8 @@ Users are recommended to upgrade to version 11.0.21, 10.1.54 or 9.0.117, which f
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>1.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header326" class="subsectionheader white">Identifiers</h4>
-                        <div id="content326" class="subsectioncontent standardsubsection">
+                        <h4 id="header328" class="subsectionheader white">Identifiers</h4>
+                        <div id="content328" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xml/xml-commons-resolver@1.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
