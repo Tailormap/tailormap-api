@@ -51,6 +51,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.controller.LayerExtractController;
+import org.tailormap.api.geotools.data.excel.ExcelDataStoreFactory;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.util.UUIDv7;
@@ -65,7 +66,6 @@ public class CreateLayerExtractService {
   private final SseEventBus eventBus;
   private final JsonMapper jsonMapper;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
   // we can safely use the tmp dir as a default here because we are running in a docker container so access is limited
@@ -223,7 +223,8 @@ public class CreateLayerExtractService {
       logger.debug("Filtered source counts {}", featCount);
       final AtomicInteger featsAdded = new AtomicInteger();
 
-      FileDataStore outputDataStore = getExtractDataStore(extractOutputFormat, outputFileName, clientId);
+      FileDataStore outputDataStore =
+          getExtractDataStore(extractOutputFormat, outputFileName, clientId, inputTmFeatureType.getName());
       SimpleFeatureType fType =
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
@@ -268,7 +269,10 @@ public class CreateLayerExtractService {
   }
 
   private FileDataStore getExtractDataStore(
-      LayerExtractController.ExtractOutputFormat extractOutputFormat, String outputFileName, String clientId)
+      LayerExtractController.ExtractOutputFormat extractOutputFormat,
+      String outputFileName,
+      String clientId,
+      String typeName)
       throws IOException {
 
     final File outputFile = Files.createFile(Path.of(exportFilesLocation, outputFileName))
@@ -302,8 +306,17 @@ public class CreateLayerExtractService {
             true);
         return (FileDataStore) new CSVDataStoreFactory().createNewDataStore(params);
       }
+      case XLSX -> {
+        Map<String, Serializable> params = Map.of(
+            ExcelDataStoreFactory.FILE_PARAM.key,
+            outputFile,
+            ExcelDataStoreFactory.SHEET_PARAM.key,
+            // typeName could hve a prefix; for Excel sheet names ':' is disallowed, max length is 31
+            typeName.substring(typeName.lastIndexOf(":") + 1, Math.min(typeName.length(), 31)));
+        return (FileDataStore) new ExcelDataStoreFactory().createNewDataStore(params);
+      }
       // TODO implement
-      case GEOJSON, XLSX, SHAPE -> {
+      case GEOJSON, SHAPE -> {
         emitError(clientId, "Output format " + extractOutputFormat + " is not yet supported");
         logger.error("Output format {} is not yet supported", extractOutputFormat);
         throw new IOException("Unsupported output format: " + extractOutputFormat);
