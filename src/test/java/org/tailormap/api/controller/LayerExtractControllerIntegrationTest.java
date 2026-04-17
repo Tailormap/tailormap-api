@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,8 +23,14 @@ import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -254,6 +261,90 @@ class LayerExtractControllerIntegrationTest {
       assertThat(header, startsWith("\"the_geom_wkt\",\"naam\",\"code\""));
       assertThat(header, not(containsString("ligtInLandNaam")));
     });
+  }
+
+  @Test
+  void should_export_large_filter_to_excel() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", "xlsx")
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    // The SseEventBus may dispatch events slightly after the POST returns.
+    // Awaitility polls the buffered SSE response until the expected content appears.
+    Awaitility.await()
+        .atMost(10, SECONDS)
+        .untilAsserted(() -> assertThat(
+            sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
+
+    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
+    });
+
+    final String lastCompletedEventJson =
+        getLastCompletedEventJson(sseResult.getResponse().getContentAsString());
+    assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
+
+    final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
+    assertThat(extractedDownloadId, containsString(".xlsx"));
+
+    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+        .andExpect(status().isOk())
+        .andExpect(result -> {
+          String contentType = result.getResponse().getContentType();
+          assertThat(
+              contentType,
+              containsString("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+          String contentDisposition = result.getResponse().getHeader("Content-Disposition");
+          assertThat(contentDisposition, containsString("attachment; filename="));
+          assertThat(contentDisposition, containsString(extractedDownloadId));
+        })
+        .andReturn();
+
+    // open the Excel file and check that we have the expected content
+    try (InputStream inp = new ByteArrayInputStream(download.getResponse().getContentAsByteArray());
+        Workbook wb = WorkbookFactory.create(inp)) {
+      Sheet sheet = wb.getSheetAt(0);
+
+      assertEquals(
+          18 + /*header row*/ 1,
+          sheet.getPhysicalNumberOfRows(),
+          () -> "Expected " + 18 + /*header row*/ 1
+              + " rows in the Excel sheet, including header and 18 data rows");
+
+      assertAll(
+          "Check header and first data row",
+          () -> assertEquals(
+              "begroeidterreindeel",
+              sheet.getSheetName(),
+              "Expected sheet name to be begroeidterreindeel"),
+          () -> assertEquals(
+              14, sheet.getRow(0).getPhysicalNumberOfCells(), "Expected 14 columns in the header row"));
+
+      assertAll(
+          "Check first data row",
+          () -> assertEquals(
+              CellType.NUMERIC,
+              sheet.getRow(1).getCell(0).getCellType(),
+              "Expected first cell in header to be numeric (with date format)"),
+          () -> assertEquals(
+              CellType.STRING,
+              sheet.getRow(1).getCell(1).getCellType(),
+              "Expected second cell in header to be a string"),
+          () -> assertEquals("geenWaarde", sheet.getRow(1).getCell(1).getStringCellValue()),
+          () -> assertEquals("G0344", sheet.getRow(1).getCell(2).getStringCellValue()));
+    }
   }
 
   /**
