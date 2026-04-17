@@ -22,7 +22,7 @@ set content_root = jsonb_set(
                    else node
                    end
                    )
-            from jsonb_array_elements(coalesce(content_root -> 'layerNodes', '[]'::jsonb)) as node
+            from jsonb_array_elements(coalesce(nullif(content_root -> 'layerNodes', 'null'::jsonb), '[]'::jsonb)) as node
         ),
         '[]'::jsonb
     ),
