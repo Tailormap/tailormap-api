@@ -200,16 +200,6 @@ SPDX-License-Identifier: MIT
     </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.5.1</version>
-        </dependency>
-        <dependency>
             <groupId>ch.rasc</groupId>
             <artifactId>sse-eventbus</artifactId>
             <version>3.0.0</version>
@@ -328,6 +318,11 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-excel-writer</artifactId>
+            <version>[35-SNAPSHOT,)</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -692,6 +687,14 @@ SPDX-License-Identifier: MIT
             <id>OSGeo</id>
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>repo.b3p.nl</id>
+            <name>B3Partners public repository</name>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
     <pluginRepositories />
@@ -1623,8 +1626,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                         <exclude>org.apache.solr:solr-solrj</exclude>
                                         <exclude>com.jayway.jsonpath</exclude>
-                                        <exclude>org.apache.poi:poi</exclude>
-                                        <exclude>org.apache.poi:poi-ooxml</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
