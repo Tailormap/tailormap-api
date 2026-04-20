@@ -21,7 +21,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +46,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.data.excel.ExcelDataStore;
+import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -57,14 +65,18 @@ public class LayerExtractController {
   private static final Pattern SAFE_DOWNLOAD_ID = Pattern.compile("^[A-Za-z0-9._-]+$");
   private final FeatureSourceRepository featureSourceRepository;
   private final CreateLayerExtractService createLayerExtractService;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   @Value("#{'${tailormap-api.extract.allowed-outputformats}'.split(',')}")
   private List<ExtractOutputFormat> allowedExtractOutputFormats;
 
   public LayerExtractController(
-      FeatureSourceRepository featureSourceRepository, CreateLayerExtractService createLayerExtractService) {
+      FeatureSourceRepository featureSourceRepository,
+      CreateLayerExtractService createLayerExtractService,
+      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
     this.featureSourceRepository = featureSourceRepository;
     this.createLayerExtractService = createLayerExtractService;
+    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
   }
 
   /**
@@ -186,6 +198,10 @@ public class LayerExtractController {
       attributes.add(sourceFT.getDefaultGeometryAttribute());
     }
 
+    if (outputFormat == ExtractOutputFormat.XLSX) {
+      validateExcelLimits(sourceFT, attributes, filter);
+    }
+
     SortOrder sortingOrder = SortOrder.ASCENDING;
     if (null != sortOrder && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
       sortingOrder = SortOrder.valueOf(sortOrder.toUpperCase(Locale.ROOT));
@@ -202,6 +218,52 @@ public class LayerExtractController {
     //noinspection JvmTaintAnalysis Not an XSS sink because the response is a json message
     return ResponseEntity.accepted()
         .body(Map.of("message", "Extract request accepted", "downloadId", outputFileName));
+  }
+
+  /**
+   * Check that neither the number of columns nor the number of rows requested for the extract exceed the limits of
+   * Excel format. This is required to block extract requests that would fail later on in the ExcelFeatureWriter when
+   * the limits are exceeded. NOTE: cell size limits are handled in the ExcelFeatureWriter.
+   *
+   * @param featureType requested FT
+   * @param attributes requested attributes
+   * @param filterCQL requested filter
+   */
+  private void validateExcelLimits(TMFeatureType featureType, Set<String> attributes, String filterCQL) {
+    if (attributes.size() > ExcelDataStore.getMaxColumns()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Excel format does not support more than " + ExcelDataStore.getMaxColumns() + " columns");
+    }
+    SimpleFeatureSource inputFeatureSource = null;
+    try {
+      // count all the features; this is expensive but required to block extract when the Excel limits for
+      // row/columns are exceeded
+      inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(featureType);
+      Query q = new Query(inputFeatureSource.getName().toString());
+      if (!attributes.isEmpty()) {
+        q.setPropertyNames(attributes.toArray(new String[0]));
+      }
+
+      if (!StringUtils.isBlank(filterCQL)) {
+        Filter filter = ECQL.toFilter(filterCQL);
+        q.setFilter(filter);
+      }
+      final int featCount = inputFeatureSource.getCount(q);
+      if (featCount >= ExcelDataStore.getMaxRows()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Excel format does not support more than " + ExcelDataStore.getMaxRows() + " rows");
+      }
+    } catch (CQLException | IOException e) {
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "Failed to count all features for Excel extract: " + e.getMessage());
+    } finally {
+      if (inputFeatureSource != null) {
+        inputFeatureSource.getDataStore().dispose();
+      }
+    }
   }
 
   public enum ExtractOutputFormat {
