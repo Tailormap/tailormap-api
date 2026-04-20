@@ -50,7 +50,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.controller.LayerExtractController;
+import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.data.excel.ExcelDataStoreFactory;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -221,6 +223,17 @@ public class CreateLayerExtractService {
 
       final int featCount = inputFeatureSource.getCount(q);
       logger.debug("Filtered source counts {}", featCount);
+      if (featCount >= ExcelDataStore.getMaxRows()) {
+        this.emitError(
+            clientId,
+            "Extract result contains %d features, which exceeds the maximum of %d for Excel output format. Please refine your filter or choose a different output format."
+                .formatted(featCount, ExcelDataStore.getMaxRows()));
+        throw new ResponseStatusException(
+            org.springframework.http.HttpStatus.BAD_REQUEST,
+            "Extract result contains %d features, which exceeds the maximum of %d for Excel output format. Please refine your filter or choose a different output format."
+                .formatted(featCount, ExcelDataStore.getMaxRows()));
+      }
+
       final AtomicInteger featsAdded = new AtomicInteger();
 
       FileDataStore outputDataStore =
