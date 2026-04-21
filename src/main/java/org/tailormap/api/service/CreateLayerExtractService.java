@@ -7,24 +7,9 @@ package org.tailormap.api.service;
 
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.DataStore;
 import org.geotools.api.data.FeatureEvent;
-import org.geotools.api.data.FileDataStore;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.data.SimpleFeatureStore;
@@ -40,6 +25,8 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.geopkg.GeoPackage;
+import org.geotools.geopkg.GeoPkgDataStoreFactory;
 import org.geotools.util.factory.GeoTools;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -57,6 +44,22 @@ import org.tailormap.api.util.UUIDv7;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Service
 public class CreateLayerExtractService {
@@ -223,12 +226,13 @@ public class CreateLayerExtractService {
       logger.debug("Filtered source counts {}", featCount);
       final AtomicInteger featsAdded = new AtomicInteger();
 
-      FileDataStore outputDataStore = getExtractDataStore(extractOutputFormat, outputFileName, clientId);
+      DataStore outputDataStore = getExtractDataStore(extractOutputFormat, outputFileName, clientId);
       SimpleFeatureType fType =
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
-
-      if (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
+      // FileDataStore API: (outputDataStore.getFeatureSource()
+      // DataStore API: outputDataStore.getFeatureSource(typeName)
+      if (outputDataStore.getFeatureSource(fType.getName()) instanceof SimpleFeatureStore featureStore) {
         featureStore.setTransaction(outputTransaction);
         featureStore.addFeatureListener(event -> {
           if (event.getType().equals(FeatureEvent.Type.ADDED)) {
@@ -245,6 +249,7 @@ public class CreateLayerExtractService {
             }
           }
         });
+        // SimpleFeatureStore / FeatureStore API
         featureStore.addFeatures(inputFeatureSource.getFeatures(q));
         outputTransaction.commit();
       } else {
@@ -267,7 +272,7 @@ public class CreateLayerExtractService {
     }
   }
 
-  private FileDataStore getExtractDataStore(
+  private DataStore getExtractDataStore(
       LayerExtractController.ExtractOutputFormat extractOutputFormat, String outputFileName, String clientId)
       throws IOException {
 
@@ -300,13 +305,25 @@ public class CreateLayerExtractService {
             false,
             CSVDataStoreFactory.QUOTEALL.key,
             true);
-        return (FileDataStore) new CSVDataStoreFactory().createNewDataStore(params);
+        return new CSVDataStoreFactory().createNewDataStore(params);
       }
       // TODO implement
       case GEOJSON, XLSX, SHAPE -> {
         emitError(clientId, "Output format " + extractOutputFormat + " is not yet supported");
         logger.error("Output format {} is not yet supported", extractOutputFormat);
         throw new IOException("Unsupported output format: " + extractOutputFormat);
+      }
+      case GEOPACKAGE -> {
+        // create a new GeoPackage
+        try (GeoPackage geoPackage = new GeoPackage(outputFile)) {
+          geoPackage.init();
+        }
+        return new GeoPkgDataStoreFactory()
+            .createDataStore(Map.of(
+                GeoPkgDataStoreFactory.DBTYPE.key,
+                "geopkg",
+                GeoPkgDataStoreFactory.DATABASE.key,
+                outputFile));
       }
       default -> {
         // should never happen

@@ -5,25 +5,6 @@
  */
 package org.tailormap.api.controller;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
-import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -43,6 +24,27 @@ import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
 import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOPACKAGE;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -74,6 +76,58 @@ class LayerExtractControllerIntegrationTest {
             .acceptCharset(StandardCharsets.UTF_8))
         .andExpect(request().asyncStarted())
         .andReturn();
+  }
+
+  @Test
+  void should_export_large_filter_to_geopackage() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", GEOPACKAGE.getValue())
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    // The SseEventBus may dispatch events slightly after the POST returns.
+    // Awaitility polls the buffered SSE response until the expected content appears.
+    Awaitility.await()
+        .atMost(10, SECONDS)
+        .untilAsserted(() -> assertThat(
+            sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
+
+    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
+    });
+
+    final String lastCompletedEventJson =
+        getLastCompletedEventJson(sseResult.getResponse().getContentAsString());
+    assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
+
+    final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
+    assertThat(extractedDownloadId, containsString(GEOPACKAGE.getExtension()));
+
+    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+        .andExpect(status().isOk())
+        .andExpect(result -> {
+          String contentType = result.getResponse().getContentType();
+          assertThat(contentType, containsString("application/geopackage+sqlite3"));
+
+          String contentDisposition = result.getResponse().getHeader("Content-Disposition");
+          assertThat(contentDisposition, containsString("attachment; filename="));
+          assertThat(contentDisposition, containsString(extractedDownloadId));
+        })
+        .andReturn();
+
+    final String gpkg = download.getResponse().getContentAsString();
+    assertEquals(
+        19, gpkg.lines().count(), "Expected 19 lines in the CSV output, including header and 18 data rows");
   }
 
   @Test

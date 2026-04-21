@@ -207,6 +207,7 @@ public class LayerExtractController {
   public enum ExtractOutputFormat {
     CSV("csv", "csv"),
     GEOJSON("geojson", "json"),
+    GEOPACKAGE("geopackage", ".gpkg"),
     XLSX("xlsx", "xlsx"),
     SHAPE("shape", "zip");
 
