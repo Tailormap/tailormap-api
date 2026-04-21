@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminRevisionListener.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence.listener</a> &gt; <span class="el_source">AdminRevisionListener.java</span></div><h1>AdminRevisionListener.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.persistence.listener;
+
+import jakarta.persistence.PrePersist;
+import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.tailormap.api.persistence.AdminRevision;
+
+@Component
+<span class="nc" id="L18">public class AdminRevisionListener {</span>
+<span class="nc" id="L19">  private static final Logger logger =</span>
+<span class="nc" id="L20">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  @PrePersist
+  public void prePersist(AdminRevision entity) {
+<span class="nc" id="L24">    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">    if (authentication == null) {</span>
+<span class="nc" id="L26">      logger.warn(&quot;No authentication info available, cannot set modifiedBy on revision entity&quot;);</span>
+<span class="nc" id="L27">      return;</span>
+    }
+<span class="nc" id="L29">    logger.debug(&quot;Updating revision entity {}, with authentication info from: {}&quot;, entity, authentication);</span>
+<span class="nc" id="L30">    entity.setModifiedBy(authentication.getName());</span>
+<span class="nc" id="L31">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
