@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.outputTimestamp>2026-04-21T11:04:09Z</project.build.outputTimestamp>
-        <geotools.version>34.3</geotools.version>
+        <geotools.version>35-SNAPSHOT</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.3.2</okhttp.version>
         <greenmail.version>2.1.8</greenmail.version>
@@ -323,6 +323,10 @@ SPDX-License-Identifier: MIT
             <groupId>org.geotools</groupId>
             <artifactId>gt-excel-writer</artifactId>
             <version>[35-SNAPSHOT,)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson-store</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -695,6 +699,14 @@ SPDX-License-Identifier: MIT
             <id>repo.b3p.nl</id>
             <name>B3Partners public repository</name>
             <url>https://repo.b3p.nl/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>OSGeo-snapshots</id>
+            <name>Snapshots hosted by OSGeo</name>
+            <url>https://repo.osgeo.org/repository/snapshot/</url>
         </repository>
     </repositories>
     <pluginRepositories />
