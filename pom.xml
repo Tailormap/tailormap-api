@@ -408,6 +408,10 @@ SPDX-License-Identifier: MIT
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geopkg</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.geotools.xsd</groupId>
             <artifactId>gt-xsd-core</artifactId>
         </dependency>
