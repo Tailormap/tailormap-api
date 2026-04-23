@@ -28,6 +28,7 @@ import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.sort.SortOrder;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -198,8 +199,18 @@ public class LayerExtractController {
       attributes.add(sourceFT.getDefaultGeometryAttribute());
     }
 
-    if (outputFormat == ExtractOutputFormat.XLSX) {
-      validateExcelLimits(sourceFT, attributes, filter);
+    // check if filter has valid syntax (it could still be invalid wrt feature type)
+    Filter parsedCQL = null;
+    try {
+      if (!StringUtils.isBlank(filter)) {
+        parsedCQL = ECQL.toFilter(filter);
+      }
+    } catch (CQLException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid filter");
+    }
+
+    if (ExtractOutputFormat.XLSX.equals(outputFormat)) {
+      validateExcelLimits(sourceFT, attributes, parsedCQL);
     }
 
     SortOrder sortingOrder = SortOrder.ASCENDING;
@@ -213,7 +224,7 @@ public class LayerExtractController {
 
     //noinspection JvmTaintAnalysis Not a Path Traversal Sink because the clientId is validated
     this.createLayerExtractService.createLayerExtract(
-        clientId, sourceFT, attributes, filter, sortBy, sortingOrder, outputFormat, outputFileName);
+        clientId, sourceFT, attributes, parsedCQL, sortBy, sortingOrder, outputFormat, outputFileName);
 
     //noinspection JvmTaintAnalysis Not an XSS sink because the response is a json message
     return ResponseEntity.accepted()
@@ -227,9 +238,9 @@ public class LayerExtractController {
    *
    * @param featureType requested FT
    * @param attributes requested attributes
-   * @param filterCQL requested filter
+   * @param filter requested filter
    */
-  private void validateExcelLimits(TMFeatureType featureType, Set<String> attributes, String filterCQL) {
+  private void validateExcelLimits(TMFeatureType featureType, Set<String> attributes, @Nullable Filter filter) {
     if (attributes.size() > ExcelDataStore.getMaxColumns()) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
@@ -245,8 +256,7 @@ public class LayerExtractController {
         q.setPropertyNames(attributes.toArray(new String[0]));
       }
 
-      if (!StringUtils.isBlank(filterCQL)) {
-        Filter filter = ECQL.toFilter(filterCQL);
+      if (filter != null) {
         q.setFilter(filter);
       }
       final int featCount = inputFeatureSource.getCount(q);
@@ -255,10 +265,12 @@ public class LayerExtractController {
             HttpStatus.BAD_REQUEST,
             "Excel format does not support more than " + ExcelDataStore.getMaxRows() + " rows");
       }
-    } catch (CQLException | IOException e) {
+    } catch (IOException e) {
       throw new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR,
           "Failed to count all features for Excel extract: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid filter");
     } finally {
       if (inputFeatureSource != null) {
         inputFeatureSource.getDataStore().dispose();
