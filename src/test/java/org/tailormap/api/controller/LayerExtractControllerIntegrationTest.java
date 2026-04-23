@@ -9,6 +9,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
@@ -17,9 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.CSV;
+import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOJSON;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
@@ -91,7 +95,7 @@ class LayerExtractControllerIntegrationTest {
             .with(setServletPath(extractUrl))
             .with(csrf())
             .param("attributes", "")
-            .param("outputFormat", "csv")
+            .param("outputFormat", CSV.getValue())
             .param("filter", StaticTestData.get("large_cql_filter"))
             .acceptCharset(StandardCharsets.UTF_8)
             .characterEncoding(StandardCharsets.UTF_8)
@@ -115,7 +119,7 @@ class LayerExtractControllerIntegrationTest {
     assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
 
     final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
-    assertThat(extractedDownloadId, containsString(".csv"));
+    assertThat(extractedDownloadId, endsWith(CSV.getExtension()));
 
     final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
     MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
@@ -145,7 +149,7 @@ class LayerExtractControllerIntegrationTest {
             .with(setServletPath(extractUrl))
             .with(csrf())
             .param("attributes", "identificatie, class")
-            .param("outputFormat", "csv")
+            .param("outputFormat", CSV.getValue())
             .acceptCharset(StandardCharsets.UTF_8)
             .characterEncoding(StandardCharsets.UTF_8)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -168,7 +172,7 @@ class LayerExtractControllerIntegrationTest {
     assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
 
     final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
-    assertThat(extractedDownloadId, containsString(".csv"));
+    assertThat(extractedDownloadId, endsWith(CSV.getExtension()));
 
     final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
     MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
@@ -210,7 +214,7 @@ class LayerExtractControllerIntegrationTest {
             .with(setServletPath(extractUrl))
             .with(csrf())
             .param("attributes", "geom,naam,code")
-            .param("outputFormat", "csv")
+            .param("outputFormat", CSV.getValue())
             .acceptCharset(StandardCharsets.UTF_8)
             .characterEncoding(StandardCharsets.UTF_8)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -233,7 +237,7 @@ class LayerExtractControllerIntegrationTest {
     assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
 
     final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
-    assertThat(extractedDownloadId, containsString(".csv"));
+    assertThat(extractedDownloadId, endsWith(CSV.getExtension()));
 
     final String downloadUrl = apiBasePath + layerProxiedWithAuthInPublicApp + downloadPath + extractedDownloadId;
     MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
@@ -345,6 +349,63 @@ class LayerExtractControllerIntegrationTest {
           () -> assertEquals("geenWaarde", sheet.getRow(1).getCell(1).getStringCellValue()),
           () -> assertEquals("G0344", sheet.getRow(1).getCell(2).getStringCellValue()));
     }
+  }
+
+  @Test
+  void should_export_large_filter_to_geojson() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", GEOJSON.getValue())
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    // The SseEventBus may dispatch events slightly after the POST returns.
+    // Awaitility polls the buffered SSE response until the expected content appears.
+    Awaitility.await()
+        .atMost(10, SECONDS)
+        .untilAsserted(() -> assertThat(
+            sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
+
+    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
+    });
+
+    final String lastCompletedEventJson =
+        getLastCompletedEventJson(sseResult.getResponse().getContentAsString());
+    assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
+
+    final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
+    assertThat(extractedDownloadId, endsWith(GEOJSON.getExtension()));
+
+    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+        .andExpect(status().isOk())
+        .andExpect(result -> {
+          String contentType = result.getResponse().getContentType();
+          assertThat(contentType, containsString("application/geo+json"));
+
+          String contentDisposition = result.getResponse().getHeader("Content-Disposition");
+          assertThat(contentDisposition, containsString("attachment; filename="));
+          assertThat(contentDisposition, containsString(extractedDownloadId));
+        })
+        .andExpect(jsonPath("$.type").value("FeatureCollection"))
+        .andExpect(jsonPath("$.features.length()").value(18))
+        .andExpect(jsonPath("$.features[0].type").value("Feature"))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].properties.length()").value(13))
+        .andExpect(jsonPath("$.features[0].properties.bronhouder").value("G0344"))
+        .andExpect(jsonPath("$.features[0].geometry.type").value("Polygon"))
+        // no CRS members
+        .andExpect(jsonPath("$.crs").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].crs").doesNotHaveJsonPath());
   }
 
   /**
