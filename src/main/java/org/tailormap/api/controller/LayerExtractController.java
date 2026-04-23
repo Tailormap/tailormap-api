@@ -267,10 +267,10 @@ public class LayerExtractController {
   }
 
   public enum ExtractOutputFormat {
-    CSV("csv", "csv"),
-    GEOJSON("geojson", "json"),
-    XLSX("xlsx", "xlsx"),
-    SHAPE("shape", "zip");
+    CSV("csv", ".csv"),
+    GEOJSON("geojson", ".geojson"),
+    XLSX("xlsx", ".xlsx"),
+    SHAPE("shape", ".zip");
 
     private final String value;
     private final String extension;
