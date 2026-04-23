@@ -24,7 +24,8 @@ jobs:
             contains(steps.metadata.outputs.dependency-names, 'sentry') ||
             contains(steps.metadata.outputs.dependency-names, 'hibernate') || 
             contains(steps.metadata.outputs.dependency-names, 'swagger-ui') ||
-            contains(steps.metadata.outputs.dependency-names, 'swagger-annotations')
+            contains(steps.metadata.outputs.dependency-names, 'swagger-annotations') ||
+            contains(steps.metadata.outputs.dependency-names, 'sse-eventbus')
           ) && (
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
