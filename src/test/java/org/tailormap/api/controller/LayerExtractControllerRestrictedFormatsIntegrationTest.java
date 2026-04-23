@@ -48,6 +48,7 @@ class LayerExtractControllerRestrictedFormatsIntegrationTest {
     final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + formatsPath;
     mockMvc.perform(get(extractUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(extractUrl)))
         .andExpect(status().isOk())
+        // formats are configured above
         .andExpect(result -> assertThat(result.getResponse().getContentAsString(), is("[\"csv\",\"shape\"]")));
   }
 
@@ -68,7 +69,7 @@ class LayerExtractControllerRestrictedFormatsIntegrationTest {
             .with(setServletPath(extractUrl))
             .with(csrf())
             .param("attributes", "")
-            // disallowed through properties
+            // disallowed through properties configured above
             .param("outputFormat", "geojson")
             .acceptCharset(StandardCharsets.UTF_8)
             .characterEncoding(StandardCharsets.UTF_8)
@@ -105,6 +106,15 @@ class LayerExtractControllerRestrictedFormatsIntegrationTest {
         .andExpect(status().isNotFound())
         .andExpect(result -> assertThat(
             result.getResponse().getContentAsString(), containsString("Download file not found")));
+  }
+
+  @Test
+  void invalid_download_id_2_should_return_bad_request_on_download() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + "./invalidDownloadId";
+    mockMvc.perform(get(extractUrl)
+            .accept(MediaType.APPLICATION_OCTET_STREAM)
+            .with(setServletPath(extractUrl)))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
