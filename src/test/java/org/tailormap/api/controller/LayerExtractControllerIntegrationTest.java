@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.CSV;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOJSON;
+import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.SHAPE;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
@@ -31,6 +32,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -200,6 +205,51 @@ class LayerExtractControllerIntegrationTest {
       // these - among others - should not be exported
       assertThat(header, not(containsString("bronhouder")));
       assertThat(header, not(containsString("lv_publicatiedatum")));
+    });
+  }
+
+  @Test
+  void invalid_filter_should_return_bad_request_on_extract_request() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", "csv")
+            .param("filter", "this does not parse")
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isBadRequest())
+        .andExpect(result ->
+            assertThat(result.getResponse().getContentAsString(), containsString("Invalid filter")));
+  }
+
+  @Test
+  void invalid_filter_should_fail_on_extract() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", "csv")
+            .param("filter", "does_not_exist IN ('1000')")
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted())
+        .andExpect(result -> assertThat(
+            result.getResponse().getContentAsString(), containsString("Extract request accepted")));
+
+    Awaitility.await().atMost(30, SECONDS).untilAsserted(() -> {
+      assertThat(
+          sseResult.getResponse().getContentAsString(),
+          containsString("An error occurred during extract creation"));
+      assertThat(
+          sseResult.getResponse().getContentAsString(),
+          containsString("Property 'does_not_exist' could not be found in begroeidterreindeel"));
     });
   }
 
@@ -406,6 +456,82 @@ class LayerExtractControllerIntegrationTest {
         // no CRS members
         .andExpect(jsonPath("$.crs").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].crs").doesNotHaveJsonPath());
+  }
+
+  @Test
+  void should_export_large_filter_to_shape() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", SHAPE.getValue())
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    // The SseEventBus may dispatch events slightly after the POST returns.
+    // Awaitility polls the buffered SSE response until the expected content appears.
+    Awaitility.await()
+        .atMost(10, SECONDS)
+        .untilAsserted(() -> assertThat(
+            sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
+
+    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
+    });
+
+    final String lastCompletedEventJson =
+        getLastCompletedEventJson(sseResult.getResponse().getContentAsString());
+    assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
+
+    final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
+    assertThat(extractedDownloadId, endsWith(SHAPE.getExtension()));
+
+    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+        .andExpect(status().isOk())
+        .andExpect(result -> {
+          String contentType = result.getResponse().getContentType();
+          assertThat(contentType, containsString("application/zip"));
+
+          String contentDisposition = result.getResponse().getHeader("Content-Disposition");
+          assertThat(contentDisposition, containsString("attachment; filename="));
+          assertThat(contentDisposition, containsString(extractedDownloadId));
+        })
+        .andReturn();
+
+    // open the downloaded zip file and check that we have the expected content:
+    // 6 files with name "begroeidterreindeelPolygon" and 6 different extensions
+    try (InputStream inp = new ByteArrayInputStream(download.getResponse().getContentAsByteArray());
+        ZipInputStream zipInputStream = new ZipInputStream(inp, StandardCharsets.UTF_8)) {
+      Set<String> fileNames = new HashSet<>();
+      Set<String> extensions = new HashSet<>();
+
+      ZipEntry entry;
+      while ((entry = zipInputStream.getNextEntry()) != null) {
+        if (entry.isDirectory()) {
+          continue;
+        }
+
+        String entryName = entry.getName();
+        String fileName =
+            entryName.contains("/") ? entryName.substring(entryName.lastIndexOf('/') + 1) : entryName;
+        fileNames.add(fileName);
+
+        int lastDot = fileName.lastIndexOf('.');
+        assertThat(lastDot, greaterThanOrEqualTo("begroeidterreindeelPolygon".length()));
+        assertThat(fileName, startsWith("begroeidterreindeelPolygon."));
+        extensions.add(fileName.substring(lastDot + 1));
+      }
+
+      assertEquals(6, fileNames.size(), "Expected 6 files in the shapefile zip");
+      assertEquals(6, extensions.size(), "Expected 6 unique file extensions in the shapefile zip");
+    }
   }
 
   /**
