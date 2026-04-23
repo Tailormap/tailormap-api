@@ -326,6 +326,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson-store</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
             <artifactId>gt-http</artifactId>
         </dependency>
         <dependency>
@@ -695,6 +699,14 @@ SPDX-License-Identifier: MIT
             <id>repo.b3p.nl</id>
             <name>B3Partners public repository</name>
             <url>https://repo.b3p.nl/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>OSGeo-snapshots</id>
+            <name>Snapshots hosted by OSGeo</name>
+            <url>https://repo.osgeo.org/repository/snapshot/</url>
         </repository>
     </repositories>
     <pluginRepositories />
