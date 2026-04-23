@@ -36,6 +36,7 @@ import org.geotools.api.filter.sort.SortOrder;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.csv.CSVDataStoreFactory;
+import org.geotools.data.geojson.store.GeoJSONDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.text.cql2.CQLException;
@@ -183,11 +184,11 @@ public class CreateLayerExtractService {
     if (cleanFTName.contains(":")) {
       // clip off the WFS namespace part
       cleanFTName = cleanFTName.substring(cleanFTName.lastIndexOf(":") + 1);
-      // remove: . _ which are used as separators in the filename and could cause issues when parsing the filename
-      // later on
+      // remove: '.' and '_' which are used as separators in the filename and could cause issues when parsing the
+      // filename later on
       cleanFTName = cleanFTName.replaceAll("[._]", "");
     }
-    return "%s_%s_%s.%s".formatted(cleanFTName, clientId, UUIDv7.randomV7(), outputFormat.getExtension());
+    return "%s_%s_%s%s".formatted(cleanFTName, clientId, UUIDv7.randomV7(), outputFormat.getExtension());
   }
 
   @Async("extractTaskExecutor")
@@ -241,7 +242,10 @@ public class CreateLayerExtractService {
       SimpleFeatureType fType =
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
-
+      // as a workaround for https://osgeo-org.atlassian.net/browse/GEOT-7894 we could instead call
+      //   if (outputDataStore.getFeatureSource(fType.getName()) instanceof SimpleFeatureStore featureStore) {
+      // but I'd rather wait for a release of geotools with a fix for that issue, because it does not work with
+      // the CSV store
       if (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
         featureStore.setTransaction(outputTransaction);
         featureStore.addFeatureListener(event -> {
@@ -261,12 +265,13 @@ public class CreateLayerExtractService {
         });
         featureStore.addFeatures(inputFeatureSource.getFeatures(q));
         outputTransaction.commit();
+        this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
+        outputDataStore.dispose();
       } else {
+        outputDataStore.dispose();
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
-      outputDataStore.dispose();
-      this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
     } catch (IOException | CQLException | SchemaException e) {
       emitError(clientId, e.getMessage());
       logger.error("Creating extract failed", e);
@@ -324,12 +329,16 @@ public class CreateLayerExtractService {
             ExcelDataStoreFactory.FILE_PARAM.key,
             outputFile,
             ExcelDataStoreFactory.SHEET_PARAM.key,
-            // typeName could hve a prefix; for Excel sheet names ':' is disallowed, max length is 31
+            // typeName could have a prefix; for Excel sheet names ':' is disallowed, max length is 31
             typeName.substring(typeName.lastIndexOf(":") + 1, Math.min(typeName.length(), 31)));
         return (FileDataStore) new ExcelDataStoreFactory().createNewDataStore(params);
       }
+      case GEOJSON -> {
+        Map<String, Serializable> params = Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile);
+        return (FileDataStore) new GeoJSONDataStoreFactory().createNewDataStore(params);
+      }
       // TODO implement
-      case GEOJSON, SHAPE -> {
+      case SHAPE -> {
         emitError(clientId, "Output format " + extractOutputFormat + " is not yet supported");
         logger.error("Output format {} is not yet supported", extractOutputFormat);
         throw new IOException("Unsupported output format: " + extractOutputFormat);
