@@ -350,6 +350,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
             <artifactId>gt-wfs-ng</artifactId>
             <exclusions>
                 <exclusion>

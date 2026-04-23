@@ -11,10 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.api.data.FeatureEvent;
 import org.geotools.api.data.FileDataStore;
@@ -37,10 +41,9 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.csv.CSVDataStoreFactory;
 import org.geotools.data.geojson.store.GeoJSONDataStoreFactory;
+import org.geotools.data.shapefile.ShapefileDumper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.SchemaException;
-import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.util.factory.GeoTools;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -53,6 +56,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.controller.LayerExtractController;
+import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
 import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.data.excel.ExcelDataStoreFactory;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -71,12 +75,19 @@ public class CreateLayerExtractService {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
-  // we can safely use the tmp dir as a default here because we are running in a docker container so access is limited
+  // we can safely use the tmp dir as a default here because we are running in a docker container without a shell so
+  // access is limited
   @Value("${tailormap-api.extract.location:#{systemProperties['java.io.tmpdir']}}")
   private String exportFilesLocation;
 
   @Value("${tailormap-api.extract.cleanup-minutes:120}")
   private int cleanupIntervalMinutes;
+
+  @Value("#{T(java.lang.Math).max(1, ${tailormap-api.extract.progress-report-interval:100})}")
+  private int progressReportInterval;
+
+  @Value("${tailormap-api.features.wfs_count_exact:false}")
+  private boolean exactWfsCounts;
 
   public CreateLayerExtractService(
       SseEventBus eventBus, JsonMapper jsonMapper, FeatureSourceFactoryHelper featureSourceFactoryHelper) {
@@ -115,10 +126,9 @@ public class CreateLayerExtractService {
       int progress,
       boolean completed,
       @Nullable String message) {
-    logger.debug("Emitting progress {} for layer with id {}", progress, clientId);
-
     message = StringUtils.isBlank(message) ? "Extract task started" : message;
     fileId = StringUtils.isBlank(fileId) ? "" : fileId;
+    logger.debug("Emitting progress {}% for client [{}], message: '{}'", progress, clientId, message);
 
     eventBus.handleEvent(SseEvent.builder()
         .addClientId(clientId)
@@ -139,7 +149,7 @@ public class CreateLayerExtractService {
   }
 
   /**
-   * Check the sse client id is valid and exists.
+   * Check that the sse client id is valid and exists.
    *
    * @param clientId the SSE client id
    * @throws IllegalArgumentException when the SSE client id is invalid or not found on the event bus
@@ -161,7 +171,7 @@ public class CreateLayerExtractService {
 
   /**
    * Create a validated filename for an extract. The naming follows the pattern
-   * {@code "%s_%s_%s.%s".formatted(sourceFT.getName(), clientId, UUIDv7.randomV7(), outputFormat.getExtension()) }
+   * {@code "%s_%s_%s%s".formatted(sourceFT.getName(), clientId, UUIDv7.randomV7(), outputFormat.getExtension()) }
    * where the first part is the source feature type name (this is cleaned from some characters), the second part is
    * the SSE client id, the third part is a random UUIDv7 and the fourth part is the file extension based on the
    * requested output format.
@@ -197,34 +207,52 @@ public class CreateLayerExtractService {
       @NonNull String clientId,
       @NonNull TMFeatureType inputTmFeatureType,
       @NonNull Set<String> attributes,
-      String filterCQL,
+      @Nullable Filter filter,
       String sortBy,
       SortOrder sortOrder,
       LayerExtractController.@NonNull ExtractOutputFormat extractOutputFormat,
       @NonNull String outputFileName) {
-    SimpleFeatureSource inputFeatureSource = null;
 
     this.emitProgress(clientId, outputFileName, 0, false, "Starting extract");
 
+    switch (extractOutputFormat) {
+      case SHAPE ->
+        this.handleWithShapeDumper(
+            clientId, inputTmFeatureType, attributes, filter, sortBy, sortOrder, outputFileName);
+      case CSV, GEOJSON, XLSX ->
+        this.handleSingleFileFormats(
+            clientId,
+            inputTmFeatureType,
+            attributes,
+            filter,
+            sortBy,
+            sortOrder,
+            extractOutputFormat,
+            outputFileName);
+    }
+  }
+
+  private void handleSingleFileFormats(
+      @NonNull String clientId,
+      @NonNull TMFeatureType inputTmFeatureType,
+      @NonNull Set<String> attributes,
+      Filter filter,
+      String sortBy,
+      SortOrder sortOrder,
+      LayerExtractController.@NonNull ExtractOutputFormat extractOutputFormat,
+      @NonNull String outputFileName) {
+
+    SimpleFeatureSource inputFeatureSource = null;
+    FileDataStore outputDataStore = null;
     try (Transaction outputTransaction = new DefaultTransaction("tailormap-extract-output")) {
       inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
 
-      Query q = new Query(inputFeatureSource.getName().toString());
-      if (!attributes.isEmpty()) {
-        q.setPropertyNames(attributes.toArray(new String[0]));
-      }
+      Query q = createQuery(inputFeatureSource, attributes, filter, sortBy, sortOrder);
 
-      if (!StringUtils.isBlank(filterCQL)) {
-        Filter filter = ECQL.toFilter(filterCQL);
-        q.setFilter(filter);
-      }
-      if (!StringUtils.isBlank(sortBy)) {
-        q.setSortBy(ff.sort(sortBy, Objects.requireNonNullElse(sortOrder, SortOrder.ASCENDING)));
-      }
+      int featCount = getFeatureCount(inputFeatureSource, q);
 
-      final int featCount = inputFeatureSource.getCount(q);
-      logger.debug("Filtered source counts {}", featCount);
-      if (featCount >= ExcelDataStore.getMaxRows()) {
+      if (extractOutputFormat == LayerExtractController.ExtractOutputFormat.XLSX
+          && featCount >= ExcelDataStore.getMaxRows()) {
         this.emitError(
             clientId,
             "Extract result contains %d features, which exceeds the maximum of %d for Excel output format. Please refine your filter or choose a different output format."
@@ -235,17 +263,13 @@ public class CreateLayerExtractService {
                 .formatted(featCount, ExcelDataStore.getMaxRows()));
       }
 
-      final AtomicInteger featsAdded = new AtomicInteger();
-
-      FileDataStore outputDataStore =
-          getExtractDataStore(extractOutputFormat, outputFileName, clientId, inputTmFeatureType.getName());
+      outputDataStore = this.getExtractDataStore(
+          extractOutputFormat, outputFileName, clientId, inputTmFeatureType.getName());
       SimpleFeatureType fType =
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
-      // as a workaround for https://osgeo-org.atlassian.net/browse/GEOT-7894 we could instead call
-      //   if (outputDataStore.getFeatureSource(fType.getName()) instanceof SimpleFeatureStore featureStore) {
-      // but I'd rather wait for a release of geotools with a fix for that issue, because it does not work with
-      // the CSV store
+
+      final AtomicInteger featsAdded = new AtomicInteger();
       if (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
         featureStore.setTransaction(outputTransaction);
         featureStore.addFeatureListener(event -> {
@@ -253,7 +277,7 @@ public class CreateLayerExtractService {
             featsAdded.getAndIncrement();
           }
           if (featCount > 0) {
-            if (featsAdded.get() % 50 == 0) {
+            if (featsAdded.get() % progressReportInterval == 0) {
               this.emitProgress(
                   clientId,
                   outputFileName,
@@ -272,10 +296,13 @@ public class CreateLayerExtractService {
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
-    } catch (IOException | CQLException | SchemaException e) {
+    } catch (IOException | SchemaException | IllegalArgumentException e) {
       emitError(clientId, e.getMessage());
       logger.error("Creating extract failed", e);
     } finally {
+      if (outputDataStore != null) {
+        outputDataStore.dispose();
+      }
       if (inputFeatureSource != null) {
         try {
           inputFeatureSource.getDataStore().dispose();
@@ -286,6 +313,34 @@ public class CreateLayerExtractService {
     }
   }
 
+  private File getValidatedOutputFile(String outputFileName) throws IOException {
+    Path exportRoot = Path.of(exportFilesLocation).toRealPath();
+    Path outputPath = exportRoot.resolve(outputFileName).normalize();
+    if (!outputPath.startsWith(exportRoot)) {
+      throw new IOException("Invalid file path");
+    }
+    Path createdFilePath = Files.createFile(outputPath).toRealPath();
+    if (!createdFilePath.startsWith(exportRoot)) {
+      throw new IOException("Invalid file path");
+    }
+    return createdFilePath.toFile();
+  }
+
+  /**
+   * Create a writable GeoTools {@link FileDataStore} for the requested extract format. The format must be must be
+   * supported by a {@link FileDataStore} implementation, for example CSV, Excel or GeoJSON. For unsupported formats
+   * (for example Shapefile) a custom handling is used in the calling method.
+   *
+   * <p>The output file is validated to ensure it is created under the configured extract location.
+   *
+   * @param extractOutputFormat the requested extract output format
+   * @param outputFileName the target output filename
+   * @param clientId the SSE client id, used for error reporting
+   * @param typeName the source feature type name, used to derive format-specific metadata (for example Excel sheet
+   *     name)
+   * @return a newly created {@link FileDataStore} configured for the requested format
+   * @throws IOException when the output file path is invalid or the datastore cannot be created
+   */
   private FileDataStore getExtractDataStore(
       LayerExtractController.ExtractOutputFormat extractOutputFormat,
       String outputFileName,
@@ -293,15 +348,7 @@ public class CreateLayerExtractService {
       String typeName)
       throws IOException {
 
-    final File outputFile = Files.createFile(Path.of(exportFilesLocation, outputFileName))
-        .toFile()
-        .getCanonicalFile();
-    if (!outputFile
-        .getPath()
-        .startsWith(Path.of(exportFilesLocation).toFile().getCanonicalPath())) {
-      throw new IOException("Invalid file path");
-    }
-
+    final File outputFile = getValidatedOutputFile(outputFileName);
     if (!logger.isDebugEnabled()) {
       // delete in production after JVM exit because the event bus will be reset when the JVM exits, and then we
       // are unlikely to have a reference to the file anymore.
@@ -311,18 +358,18 @@ public class CreateLayerExtractService {
 
     switch (extractOutputFormat) {
       case CSV -> {
-        Map<String, Serializable> params = Map.of(
-            CSVDataStoreFactory.FILE_PARAM.key,
-            outputFile,
-            CSVDataStoreFactory.STRATEGYP.key,
-            CSVDataStoreFactory.WKT_STRATEGY,
-            CSVDataStoreFactory.WKTP.key,
-            "the_geom_wkt",
-            CSVDataStoreFactory.WRITEPRJ.key,
-            false,
-            CSVDataStoreFactory.QUOTEALL.key,
-            true);
-        return (FileDataStore) new CSVDataStoreFactory().createNewDataStore(params);
+        return (FileDataStore) new CSVDataStoreFactory()
+            .createNewDataStore(Map.of(
+                CSVDataStoreFactory.FILE_PARAM.key,
+                outputFile,
+                CSVDataStoreFactory.STRATEGYP.key,
+                CSVDataStoreFactory.WKT_STRATEGY,
+                CSVDataStoreFactory.WKTP.key,
+                "the_geom_wkt",
+                CSVDataStoreFactory.WRITEPRJ.key,
+                false,
+                CSVDataStoreFactory.QUOTEALL.key,
+                true));
       }
       case XLSX -> {
         Map<String, Serializable> params = Map.of(
@@ -334,14 +381,8 @@ public class CreateLayerExtractService {
         return (FileDataStore) new ExcelDataStoreFactory().createNewDataStore(params);
       }
       case GEOJSON -> {
-        Map<String, Serializable> params = Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile);
-        return (FileDataStore) new GeoJSONDataStoreFactory().createNewDataStore(params);
-      }
-      // TODO implement
-      case SHAPE -> {
-        emitError(clientId, "Output format " + extractOutputFormat + " is not yet supported");
-        logger.error("Output format {} is not yet supported", extractOutputFormat);
-        throw new IOException("Unsupported output format: " + extractOutputFormat);
+        return (FileDataStore) new GeoJSONDataStoreFactory()
+            .createNewDataStore(Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile));
       }
       default -> {
         // should never happen
@@ -350,6 +391,121 @@ public class CreateLayerExtractService {
         throw new IllegalArgumentException("Unknown output format: " + extractOutputFormat);
       }
     }
+  }
+
+  private int getFeatureCount(SimpleFeatureSource source, Query query) throws IOException {
+    int count = source.getCount(query);
+    logger.debug("Filtered source counts {} features", count);
+    if (count < 0 && exactWfsCounts) {
+      count = source.getFeatures(query).size();
+    }
+    return count;
+  }
+
+  private void handleWithShapeDumper(
+      @NonNull String clientId,
+      @NonNull TMFeatureType inputTmFeatureType,
+      @NonNull Set<String> attributes,
+      Filter filter,
+      String sortBy,
+      SortOrder sortOrder,
+      @NonNull String outputFileName) {
+    SimpleFeatureSource inputFeatureSource = null;
+    File outputDirectory = null;
+    try {
+      File outputFile = getValidatedOutputFile(outputFileName);
+      String baseName = outputFile
+          .getName()
+          .substring(
+              0,
+              outputFile
+                  .getName()
+                  .lastIndexOf(LayerExtractController.ExtractOutputFormat.SHAPE.getExtension()));
+      outputDirectory = outputFile
+          .getParentFile()
+          .toPath()
+          .resolve(baseName)
+          .toFile()
+          .getCanonicalFile();
+      if (logger.isDebugEnabled()) {
+        // delete in production after JVM exit because the event bus will be reset when the JVM exits, and then
+        // we
+        // are unlikely to have a reference to the file anymore.
+        // In debug/development mode we want to keep the directory for inspection.
+        outputDirectory.deleteOnExit();
+      }
+      Files.createDirectories(outputDirectory.toPath());
+
+      ShapefileDumper dumper = new ShapefileDumper(outputDirectory);
+      dumper.setCharset(StandardCharsets.UTF_8);
+      dumper.setEmptyShapefileAllowed(false);
+
+      inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
+
+      Query q = createQuery(inputFeatureSource, attributes, filter, sortBy, sortOrder);
+
+      final int featCount = getFeatureCount(inputFeatureSource, q);
+      final boolean hasKnownFeatureCount = featCount > 0;
+
+      AtomicInteger lastProgress = new AtomicInteger(0);
+
+      dumper.dump(new ProgressReportingFeatureCollection(
+          inputFeatureSource.getFeatures(q), progressReportInterval, processed -> {
+            int progress = hasKnownFeatureCount ? (int) ((processed / (double) featCount) * 99) : 0;
+            lastProgress.set(progress);
+            String progressMessage = hasKnownFeatureCount
+                ? "Extracting shapes: %d/%d features processed".formatted(processed, featCount)
+                : "Extracting shapes: %d features processed".formatted(processed);
+            this.emitProgress(clientId, outputFileName, progress, false, progressMessage);
+          }));
+      this.emitProgress(
+          clientId,
+          outputFileName,
+          Math.max(99, lastProgress.get()),
+          false,
+          "Extract shapes dumped successfully");
+
+      zipDirectory(outputDirectory.toPath(), outputFile.toPath());
+      this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
+    } catch (IOException | IllegalArgumentException e) {
+      emitError(clientId, e.getMessage());
+      logger.error("Creating extract failed", e);
+    } finally {
+      if (outputDirectory != null) {
+        try {
+          deleteDirectoryRecursively(outputDirectory.toPath());
+        } catch (IOException e) {
+          logger.error("Failed to delete output directory {}", outputDirectory, e);
+        }
+      }
+      if (inputFeatureSource != null) {
+        try {
+          inputFeatureSource.getDataStore().dispose();
+        } catch (Exception e) {
+          logger.warn("Error disposing datastore for feature source {}", inputFeatureSource.getName(), e);
+        }
+      }
+    }
+  }
+
+  private Query createQuery(
+      SimpleFeatureSource inputFeatureSource,
+      Set<String> attributes,
+      Filter filter,
+      String sortBy,
+      SortOrder sortOrder) {
+    Query q = new Query(inputFeatureSource.getName().toString());
+    if (!attributes.isEmpty()) {
+      q.setPropertyNames(attributes.toArray(new String[0]));
+    }
+
+    if (filter != null) {
+      q.setFilter(filter);
+    }
+    if (!StringUtils.isBlank(sortBy)) {
+      q.setSortBy(ff.sort(sortBy, Objects.requireNonNullElse(sortOrder, SortOrder.ASCENDING)));
+    }
+    return q;
   }
 
   /**
@@ -384,6 +540,27 @@ public class CreateLayerExtractService {
         }
       });
 
+      try (Stream<Path> paths = Files.walk(Path.of(exportFilesLocation))) {
+        paths.filter(Files::isDirectory).forEach(path -> {
+          File file = path.toFile();
+          String filename = file.getName();
+          String[] parts = filename.split("[_]", -1);
+          if (parts.length < 3) {
+            logger.warn("Unexpected directory in extract location: {}", filename);
+            return;
+          }
+          String clientId = parts[1];
+          if (!validClientIds.contains(clientId)) {
+            if (!file.delete()) {
+              logger.error("Failed to delete unattached extract file {}", filename);
+            }
+          } else {
+            Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+            clientFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+          }
+        });
+      }
+
       // delete any files are older than the cutoff
       clientFilesOnDisk.stream()
           .filter(f -> f.timestamp()
@@ -397,6 +574,45 @@ public class CreateLayerExtractService {
           });
     } catch (IOException e) {
       logger.error("Error while cleaning up expired extracts", e);
+    }
+  }
+
+  private void zipDirectory(Path sourceDir, Path zipFile) throws IOException {
+    try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipFile));
+        Stream<Path> pathStream = Files.walk(sourceDir)) {
+      pathStream.filter(Files::isRegularFile).forEach(path -> {
+        String entryName = sourceDir.relativize(path).toString().replace(File.separatorChar, '/');
+        try {
+          zos.putNextEntry(new ZipEntry(entryName));
+          Files.copy(path, zos);
+          zos.closeEntry();
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to add file to zip: " + path, e);
+        }
+      });
+    } catch (RuntimeException e) {
+      if (e.getCause() instanceof IOException ioException) {
+        throw ioException;
+      }
+      throw e;
+    }
+  }
+
+  private void deleteDirectoryRecursively(Path directory) throws IOException {
+    try (Stream<Path> paths = Files.walk(directory)) {
+      paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+        try {
+          logger.debug("Deleting path {}", path);
+          Files.deleteIfExists(path);
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to delete path: " + path, e);
+        }
+      });
+    } catch (RuntimeException e) {
+      if (e.getCause() instanceof IOException ioException) {
+        throw ioException;
+      }
+      throw e;
     }
   }
 
