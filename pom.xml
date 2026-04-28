@@ -1370,6 +1370,7 @@ SPDX-License-Identifier: MIT
                     <format>ALL</format>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <autoUpdate>${dependencyCheckAutoUpdate}</autoUpdate>
+                    <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
                 </configuration>
             </plugin>
             <plugin>
