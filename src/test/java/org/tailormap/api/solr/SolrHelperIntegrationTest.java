@@ -38,7 +38,6 @@ class SolrHelperIntegrationTest {
 
   @Test
   @Issue("https://b3partners.atlassian.net/browse/HTM-1428")
-  @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
   @Transactional
   void index_without_primary_key() throws Exception {
     searchIndexRepository
