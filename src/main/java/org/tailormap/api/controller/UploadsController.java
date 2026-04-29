@@ -25,6 +25,8 @@ import org.tailormap.api.repository.UploadRepository;
 
 @RestController
 public class UploadsController {
+  //  public record UploadMetadata(String mimeType, String description, Integer imageWidth, Integer imageHeight,
+  // Boolean hiDpiImage) {}
   private final UploadRepository uploadRepository;
 
   public UploadsController(UploadRepository uploadRepository) {
@@ -67,6 +69,24 @@ public class UploadsController {
         .contentLength(upload.getContentLength())
         .cacheControl(CacheControl.noCache().cachePublic())
         .body(upload.getContent());
+  }
+
+  @GetMapping(path = "/api/uploads/{category}/{id}/{filename}/description")
+  public ResponseEntity<String> getUploadDescription(
+      @PathVariable String category,
+      @PathVariable(name = "id") String idString,
+      @PathVariable(required = false) String filename) {
+
+    if (!idString.matches(UUID_REGEX)) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    UUID id = UUID.fromString(idString);
+    Upload upload = uploadRepository
+        .findByIdAndCategory(id, category)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
+    return ResponseEntity.ok(upload.getDescription());
   }
 
   /**
