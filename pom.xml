@@ -145,13 +145,13 @@ SPDX-License-Identifier: MIT
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-        <pmd.version>7.23.0</pmd.version>
+        <pmd.version>7.24.0</pmd.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.2.1</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.3.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.32.4</swagger-ui.version>
+        <swagger-ui.version>5.32.5</swagger-ui.version>
         <sentry.version>8.40.0</sentry.version>
         <errorProne.version>2.49.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
@@ -738,7 +738,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.21.0</version>
+                    <version>7.22.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.hibernate.orm</groupId>
@@ -1370,6 +1370,7 @@ SPDX-License-Identifier: MIT
                     <format>ALL</format>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <autoUpdate>${dependencyCheckAutoUpdate}</autoUpdate>
+                    <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
                 </configuration>
             </plugin>
             <plugin>

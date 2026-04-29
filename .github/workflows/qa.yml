@@ -54,5 +54,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Cleanup snapshots'
+        if: always()
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
