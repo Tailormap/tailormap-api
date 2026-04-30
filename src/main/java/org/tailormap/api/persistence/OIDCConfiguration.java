@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,6 +34,8 @@ public class OIDCConfiguration extends AuditMetadata {
   @NotNull private String clientId;
 
   private String clientSecret;
+
+  private LocalDate clientSecretExpiry;
 
   @NotNull private String issuerUrl;
 
@@ -84,6 +87,15 @@ public class OIDCConfiguration extends AuditMetadata {
 
   public OIDCConfiguration setClientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
+    return this;
+  }
+
+  public LocalDate getClientSecretExpiry() {
+    return clientSecretExpiry;
+  }
+
+  public OIDCConfiguration setClientSecretExpiry(LocalDate clientSecretExpiry) {
+    this.clientSecretExpiry = clientSecretExpiry;
     return this;
   }
 
