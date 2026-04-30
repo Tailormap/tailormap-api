@@ -12,8 +12,15 @@ on:
   pull_request:
     paths:
       - 'pom.xml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/owasp-dependency-check.yml'
   schedule:
-    - cron: "17 23 * * 0"
+    # run every workday to keep cached db in sync
+    - cron: "4 23 * * 1-5"
+      timezone: 'Europe/Amsterdam'
   workflow_dispatch:
 
 jobs:
