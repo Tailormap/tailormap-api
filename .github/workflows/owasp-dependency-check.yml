@@ -13,7 +13,8 @@ on:
     paths:
       - 'pom.xml'
   schedule:
-    - cron: "17 23 * * 0"
+    - cron: "4 23 * * *"
+      timezone: 'Europe/Amsterdam'
   workflow_dispatch:
 
 jobs:
