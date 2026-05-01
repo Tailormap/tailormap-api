@@ -28,6 +28,8 @@ public class UploadsController {
 
   private final UploadRepository uploadRepository;
 
+  private static final String DESCRIPTION_HEADER_NAME = "TM-Description";
+
   public UploadsController(UploadRepository uploadRepository) {
     this.uploadRepository = uploadRepository;
   }
@@ -64,7 +66,7 @@ public class UploadsController {
 
     return ResponseEntity.ok()
         .header("Content-Type", upload.getMimeType())
-        .header("TM-Description", upload.getDescription())
+        .header(DESCRIPTION_HEADER_NAME, upload.getDescription())
         .lastModified(upload.getLastModified().toInstant())
         .contentLength(upload.getContentLength())
         .cacheControl(CacheControl.noCache().cachePublic())
@@ -81,7 +83,7 @@ public class UploadsController {
         .findFirstWithContentByCategoryOrderByLastModifiedDesc(category)
         .map(upload -> ResponseEntity.ok()
             .header("Content-Type", upload.getMimeType())
-            .header("TM-Description", upload.getDescription())
+            .header(DESCRIPTION_HEADER_NAME, upload.getDescription())
             .lastModified(upload.getLastModified().toInstant())
             .contentLength(upload.getContentLength())
             .cacheControl(CacheControl.noCache().cachePublic())
