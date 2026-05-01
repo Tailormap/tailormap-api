@@ -754,126 +754,6 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerId}/export/capabilities:
-    description: Returns layer export capabilities. Retrieving this information may take some time.
-    get:
-      operationId: 'getLayerExportCapabilities'
-      security:
-        - formAuth: [ ]
-      parameters:
-        - in: path
-          name: viewerKind
-          required: true
-          schema:
-            type: string
-            enum:
-              - app
-              - service
-        - description: 'viewer name'
-          in: path
-          name: name
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: appLayerId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: './viewer-schemas.yaml#/components/schemas/LayerExportCapabilities'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
-
-  /{viewerKind}/{name}/layer/{appLayerId}/export/download:
-    description: Directly stream layer data export response for download. POST request to allow a large filter in the
-      request body.
-    post:
-      operationId: 'downloadLayerExport'
-      security:
-        - formAuth: [ ]
-      parameters:
-        - in: path
-          name: viewerKind
-          required: true
-          schema:
-            type: string
-            enum:
-              - app
-              - service
-        - description: 'viewer name'
-          in: path
-          name: name
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: appLayerId
-          required: true
-          schema:
-            type: string
-        - name: outputFormat
-          description: Output format from capabilities.
-          in: query
-          schema:
-            type: string
-        - name: attributes
-          description: 'Attributes to include in export. If omitted all configured attributes are exported. For some
-            geo formats the geometry is included even if unchecked for display by the admin. For textual or spreadsheet 
-            formats geometries are not included. Attribute item order is significant.'
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: filter
-          description: 'ECQL filter. See description for /app/{appId}/layer/{layerId}/features.'
-          required: false
-          schema:
-            type: string
-        - description: 'Attribute to sort by. See description for  /app/{appId}/layer/{layerId}/features.'
-          in: query
-          name: sortBy
-          required: false
-          schema:
-            type: string
-        - description: 'Sort order for sortBy.'
-          in: query
-          name: sortOrder
-          required: false
-          schema:
-            type: string
-            default: asc
-            enum:
-              - asc
-              - desc
-        - description: 'Projection for geometry output.'
-          in: query
-          name: crs
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
-
   /{viewerKind}/{name}/layer/{appLayerId}/features:
     summary: 'Use this endpoint to access features.'
     parameters:
@@ -928,14 +808,14 @@ paths:
         schema:
           type: boolean
           default: false
-      - description: '
+      - name: filter
+        description: '
           A filter to be applied, possibly in combination with any other request parameters. 
           The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
           Filtering is supported when requesting a page of features, not when requesting a single 
           feature (using `__fid`) nor when using x/y coordinates.
           '
         in: query
-        name: filter
         required: false
         schema:
           type: string
@@ -1924,6 +1804,237 @@ paths:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /events/{clientId}:
+    description: 'Subscribe to server-sent events for a viewer. The `clientId` is a client-generated identifier.'
+    get:
+      operationId: 'subscribeToEvents'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: 'A client-generated identifier; 
+            this must be the same as the clientId used in eg. the `/{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}` request to correlate the events with the extract request.
+             The format should use the "Nano ID" format, for example `V1StGXR8_Z5jdHi6B-myT`.'
+          schema:
+            type: string
+            pattern: '[A-Za-z0-9_-]+'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/event-stream:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ServerSentEventResponse'
+              example:
+                eventType: 'keep-alive'
+                id: '123e4567-e89b-12d3-a456-426614174000'
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/formats:
+    description: 'Get the configured output formats for layer attribute extraction for this viewer/layer. 
+    Currently this is set per instance using the `tailormap-api.extract.allowed-outputformats` property, but in the future this may be configurable per layer/viewer.'
+    get:
+      operationId: 'getAllowedExtractFormats'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: viewerKind
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - name: viewerName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appLayerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: '["csv","shape"]'
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}:
+    description: 'Export the attributes as shown in the attribute list for a layer.'
+    post:
+      operationId: 'extractLayerAttributes'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: viewerKind
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - name: viewerName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appLayerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: clientId
+          in: path
+          required: true
+          description: 'The client-generated id to identify the extract request; this must be the same as the clientId used to initiate the SSE stream in `/events/`. 
+            This is used to correlate the extract response and the download request. The format should use the "Nano ID" format, for example `V1StGXR8_Z5jdHi6B-myT`.'
+          schema:
+            type: string
+            pattern: '[A-Za-z0-9_-]+'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - outputFormat
+              properties:
+                outputFormat:
+                  description: 'Output format.
+                    The allowed formats are configured per instance using `tailormap-api.extract.allowed-outputformats`.
+                    The (default) geometry is included even if not requested.'
+                  type: string
+                  nullable: false
+                  example: 'application/geo+json'
+                attributes:
+                  description: 'Attributes to include in export. 
+                  If omitted or empty, all configured attributes are exported. Attribute item order is significant.'
+                  type: array
+                  items:
+                    type: string
+                filter:
+                  description: 'ECQL filter. See description for /app/{appId}/layer/{layerId}/features.'
+                  type: string
+                sortBy:
+                  description: 'Attribute to sort by. See description for /app/{appId}/layer/{layerId}/features.'
+                  type: string
+                sortOrder:
+                  description: 'Sort order for sortBy. Ignored if sortBy is not set. See description for /app/{appId}/layer/{layerId}/features.'
+                  type: string
+                  default: asc
+                  enum:
+                    - asc
+                    - desc
+      responses:
+        '202':
+          description: 'Export started/queued. The client should listen to the `/events/` stream and wait for an 
+          `extract-completed` event with `message: Extract task completed` to know when the export is finished and the 
+          file is ready to be downloaded. If the connection is closed before that, the export may be cancelled.'
+          content:
+            application/json:
+              schema:
+                title: 'extractRequestResponse'
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                  message: 'Extract request accepted'
+                  downloadId: '123e4567-e89b-12d3-a456-426614174001.csv'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/download/{downloadId}:
+    description: 'Download the result of an extract request. The extract should be initiated first by a POST to 
+      `/{viewerKind}/{viewerName}/layer/{appLayerId}/extract`. 
+      The "extract-completed" response of that request will include a `downloadId` which can then be used to download the file from this endpoint. 
+      This two-step process is needed to allow for large extracts which can not be generated within a single request-response cycle.'
+    get:
+      operationId: 'downloadExtractedLayerAttributes'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: viewerKind
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - name: viewerName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appLayerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: downloadId
+          in: path
+          description: 'The id from the extract response to identify the file to download.'
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: 'Extract not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Internal Server Error'
           content:
             application/json:
               schema:
