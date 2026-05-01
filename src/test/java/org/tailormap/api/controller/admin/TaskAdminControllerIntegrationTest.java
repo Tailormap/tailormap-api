@@ -6,7 +6,6 @@
 package org.tailormap.api.controller.admin;
 
 import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -74,7 +73,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(4)))
+        .andExpect(jsonPath("$.tasks.length()").value(4))
         // value is any of the available task types
         .andExpect(jsonPath("$.tasks[0].type")
             .value(anyOf(
@@ -123,7 +122,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(2)))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andExpect(jsonPath("$.tasks[0].type").value(TEST_TASK_TYPE))
         .andExpect(jsonPath("$.tasks[1].type").value(TEST_TASK_TYPE))
         .andReturn();
@@ -154,6 +153,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(1)
   void details_of_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
@@ -161,7 +161,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(2)))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andReturn();
 
     final String detailsUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
@@ -201,7 +201,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(2)))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andReturn();
 
     final String unstoppableUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
@@ -241,7 +241,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(2)))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andReturn();
 
     final String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
@@ -263,7 +263,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(greaterThanOrEqualTo(1)))
+        .andExpect(jsonPath("$.tasks.length()").value(1))
         .andReturn();
 
     final String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
