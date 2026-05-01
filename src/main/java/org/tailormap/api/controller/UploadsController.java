@@ -25,9 +25,7 @@ import org.tailormap.api.repository.UploadRepository;
 
 @RestController
 public class UploadsController {
-
   private final UploadRepository uploadRepository;
-
   private static final String DESCRIPTION_HEADER_NAME = "TM-Description";
 
   public UploadsController(UploadRepository uploadRepository) {
