@@ -10,8 +10,10 @@ import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.tailormap.api.util.UUIDv7;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.SerializationFeature;
@@ -33,7 +36,7 @@ public class ServerSentEventsController {
 
   private final JsonMapper jsonMapper;
 
-  public ServerSentEventsController(SseEventBus eventBus, JsonMapper jsonMapper) {
+  public ServerSentEventsController(@Qualifier("viewerSseEventBus") SseEventBus eventBus, JsonMapper jsonMapper) {
     this.eventBus = eventBus;
     // force unindented/single line output for SSE messages, because we may have set
     // spring.jackson.serialization.indent_output=true for debugging/development/test
@@ -60,7 +63,9 @@ public class ServerSentEventsController {
 
   @Scheduled(fixedRate = 60_000)
   public void keepAlive() throws JacksonException {
-    this.eventBus.handleEvent(SseEvent.ofData(jsonMapper.writeValueAsString(
-        new ServerSentEventResponse().eventType(ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE))));
+    this.eventBus.handleEvent(SseEvent.ofData(jsonMapper.writeValueAsString(new ServerSentEventResponse()
+        .eventType(ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE)
+        .id(UUIDv7.randomV7())
+        .details(Collections.emptyMap()))));
   }
 }

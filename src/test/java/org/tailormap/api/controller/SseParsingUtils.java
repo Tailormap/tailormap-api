@@ -46,4 +46,39 @@ abstract class SseParsingUtils {
     }
     return count;
   }
+
+  int count_all_keep_alive_messages(String stream) {
+    int count = 0;
+    int index = 0;
+    final String marker = "\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"";
+    while ((index = stream.indexOf(marker, index)) != -1) {
+      count++;
+      index += marker.length();
+    }
+    return count;
+  }
+
+  int count_viewer_keep_alive_messages(String stream) {
+    int count = 0;
+    int index = 0;
+    final String marker =
+        "\"details\":{},\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\",\"id\"";
+    while ((index = stream.indexOf(marker, index)) != -1) {
+      count++;
+      index += marker.length();
+    }
+    return count;
+  }
+
+  int count_admin_keep_alive_messages(String stream) {
+    int count = 0;
+    int index = 0;
+    final String marker =
+        "\"details\":null,\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"";
+    while ((index = stream.indexOf(marker, index)) != -1) {
+      count++;
+      index += marker.length();
+    }
+    return count;
+  }
 }
