@@ -9,7 +9,6 @@ import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -269,6 +268,10 @@ public class CreateLayerExtractService {
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
 
+      if (outputDataStore instanceof ExcelDataStore excelDataStore) {
+        excelDataStore.setEnableCellAutoSizing(featCount >= 0 && featCount < 1000);
+      }
+
       final AtomicInteger featsAdded = new AtomicInteger();
       if (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
         featureStore.setTransaction(outputTransaction);
@@ -289,8 +292,8 @@ public class CreateLayerExtractService {
         });
         featureStore.addFeatures(inputFeatureSource.getFeatures(q));
         outputTransaction.commit();
-        this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
         outputDataStore.dispose();
+        this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
       } else {
         outputDataStore.dispose();
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
@@ -372,13 +375,19 @@ public class CreateLayerExtractService {
                 true));
       }
       case XLSX -> {
-        Map<String, Serializable> params = Map.of(
-            ExcelDataStoreFactory.FILE_PARAM.key,
-            outputFile,
-            ExcelDataStoreFactory.SHEET_PARAM.key,
-            // typeName could have a prefix; for Excel sheet names ':' is disallowed, max length is 31
-            typeName.substring(typeName.lastIndexOf(":") + 1, Math.min(typeName.length(), 31)));
-        return (FileDataStore) new ExcelDataStoreFactory().createNewDataStore(params);
+        // replace any invalid characters such as /\?*[] with '_' and clip to 31 characters because Excel has
+        // limitations on sheet names. Also clip off any WFS namespace prefix in the type name, which is often
+        // separated by a ':' character, because ':' is not allowed in Excel sheet names.
+        typeName = typeName.contains(":")
+            ? typeName.substring(typeName.lastIndexOf(":") + 1).replaceAll("[\\\\/?*\\[\\]:]", "_")
+            : typeName.replaceAll("[\\\\/?*\\[\\]:]", "_");
+        typeName = typeName.substring(0, Math.min(typeName.length(), 31));
+        return (FileDataStore) new ExcelDataStoreFactory()
+            .createNewDataStore(Map.of(
+                ExcelDataStoreFactory.FILE_PARAM.key,
+                outputFile,
+                ExcelDataStoreFactory.SHEET_PARAM.key,
+                typeName));
       }
       case GEOJSON -> {
         return (FileDataStore) new GeoJSONDataStoreFactory()
