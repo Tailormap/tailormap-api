@@ -541,7 +541,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.28.0</version>
+            <version>3.28.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
