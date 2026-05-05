@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpProxyUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.util</a> &gt; <span class="el_source">HttpProxyUtil.java</span></div><h1>HttpProxyUtil.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.util;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Locale;
+import java.util.Set;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+
+<span class="nc" id="L26">public class HttpProxyUtil {</span>
+  public static void addForwardedForRequestHeaders(HttpRequest.Builder requestBuilder, HttpServletRequest request) {
+    try {
+<span class="nc" id="L29">      String ip = request.getRemoteAddr();</span>
+<span class="nc" id="L30">      InetAddress inetAddress = InetAddress.getByName(ip);</span>
+
+<span class="nc bnc" id="L32" title="All 2 branches missed.">      if (inetAddress instanceof Inet6Address inet6Address) {</span>
+        // https://stackoverflow.com/questions/33168783/
+<span class="nc" id="L34">        int scopeId = inet6Address.getScopeId();</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (scopeId &gt; 0) {</span>
+<span class="nc" id="L37">          ip = inet6Address.getHostName().replaceAll(&quot;%&quot; + scopeId + &quot;$&quot;, &quot;&quot;);</span>
+        }
+
+        // IPv6 address must be bracketed and quoted
+<span class="nc" id="L41">        ip = &quot;\&quot;[&quot; + ip + &quot;]\&quot;&quot;;</span>
+      }
+<span class="nc" id="L43">      requestBuilder.header(&quot;X-Forwarded-For&quot;, ip);</span>
+<span class="nc" id="L44">      requestBuilder.header(&quot;Forwarded&quot;, &quot;for=&quot; + ip);</span>
+<span class="nc" id="L45">    } catch (UnknownHostException ignored) {</span>
+      // Don't care
+<span class="nc" id="L47">    }</span>
+<span class="nc" id="L48">  }</span>
+
+  public static void passthroughRequestHeaders(
+      HttpRequest.Builder requestBuilder, HttpServletRequest request, Set&lt;String&gt; headers) {
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    for (String header : headers) {</span>
+<span class="nc" id="L53">      String value = request.getHeader(header);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">      if (value != null) {</span>
+<span class="nc" id="L55">        requestBuilder.header(header, value);</span>
+      }
+<span class="nc" id="L57">    }</span>
+<span class="nc" id="L58">  }</span>
+
+  public static HttpHeaders passthroughResponseHeaders(
+      java.net.http.HttpHeaders upstreamHeaders, Set&lt;String&gt; allowedResponseHeaders) {
+<span class="nc" id="L62">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    for (String header : allowedResponseHeaders) {</span>
+<span class="nc" id="L64">      headers.addAll(header, upstreamHeaders.allValues(header));</span>
+<span class="nc" id="L65">    }</span>
+<span class="nc" id="L66">    return headers;</span>
+  }
+
+  public static void setHttpBasicAuthenticationHeader(
+      HttpRequest.Builder requestBuilder, String username, String password) {
+<span class="nc bnc" id="L71" title="All 4 branches missed.">    if (username != null &amp;&amp; password != null) {</span>
+<span class="nc" id="L72">      String toEncode = username + &quot;:&quot; + password;</span>
+<span class="nc" id="L73">      String encoded = Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));</span>
+<span class="nc" id="L74">      requestBuilder.header(AUTHORIZATION, &quot;Basic &quot; + encoded);</span>
+    }
+<span class="nc" id="L76">  }</span>
+
+  /**
+   * If the original request was a POST with x-www-urlencoded content type, configure the requestBuilder for a proxy
+   * request to do a POST request with all parameters in the body to handle large POST parameters.
+   *
+   * @param requestBuilder builder for proxy request
+   * @param uri URI of the proxy target, including query parameters
+   * @param request the original request to be proxied
+   */
+  public static void configureProxyRequestBuilderForUri(
+      HttpRequest.Builder requestBuilder, URI uri, HttpServletRequest request) {
+    // When the original request is a POST with x-www-form-urlencoded content type, do the same (for long parameters
+    // like CQL_FILTER which may trigger a URI Too Long or Bad Request response)
+<span class="nc bnc" id="L90" title="All 2 branches missed.">    if (HttpMethod.POST.matches(request.getMethod())</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        &amp;&amp; request.getContentType() != null</span>
+<span class="nc" id="L92">        &amp;&amp; request.getContentType()</span>
+<span class="nc" id="L93">            .toLowerCase(Locale.ROOT)</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            .contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {</span>
+
+      // The original request could have had some parameters in the URL and some in the body. However, in the
+      // proxied request we put all parameters in the body
+      // Make sure to not decode the query so '+' stays encoded as &quot;%2B&quot; and does not become a space
+<span class="nc" id="L99">      String query = uri.getRawQuery();</span>
+<span class="nc" id="L100">      URI uriWithoutQuery = URI.create(uri.toString().split(&quot;\\?&quot;, 2)[0]);</span>
+<span class="nc" id="L101">      requestBuilder.uri(uriWithoutQuery);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">      if (isNotEmpty(query)) {</span>
+<span class="nc" id="L104">        requestBuilder</span>
+<span class="nc" id="L105">            .POST(HttpRequest.BodyPublishers.ofString(query))</span>
+<span class="nc" id="L106">            .header(CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);</span>
+      } else {
+<span class="nc" id="L108">        requestBuilder.uri(uri);</span>
+      }
+<span class="nc" id="L110">    } else {</span>
+<span class="nc" id="L111">      requestBuilder.uri(uri);</span>
+    }
+<span class="nc" id="L113">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
