@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
 @RestController
@@ -34,7 +35,16 @@ public class ServerSentEventsAdminController {
 
   public ServerSentEventsAdminController(SseEventBus eventBus, JsonMapper jsonMapper) {
     this.eventBus = eventBus;
-    this.jsonMapper = jsonMapper;
+    // force unindented/single line output for SSE messages, because we may have set
+    // spring.jackson.serialization.indent_output=true for debugging/development/test
+    if (jsonMapper.isEnabled(SerializationFeature.INDENT_OUTPUT)) {
+      this.jsonMapper = jsonMapper
+          .rebuild()
+          .configure(SerializationFeature.INDENT_OUTPUT, false)
+          .build();
+    } else {
+      this.jsonMapper = jsonMapper;
+    }
   }
 
   /**

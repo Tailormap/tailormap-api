@@ -48,6 +48,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -89,7 +90,9 @@ public class CreateLayerExtractService {
   private boolean exactWfsCounts;
 
   public CreateLayerExtractService(
-      SseEventBus eventBus, JsonMapper jsonMapper, FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+      @Qualifier("viewerSseEventBus") SseEventBus eventBus,
+      JsonMapper jsonMapper,
+      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
     this.eventBus = eventBus;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     // force unindented/single line output for SSE messages, because we may have set

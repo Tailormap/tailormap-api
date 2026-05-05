@@ -217,6 +217,23 @@ mvn -Pdeveloping,postgresql verify -Dspring-boot.run.profiles=dev,populate-testd
 * You can use `mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates` to search for dependency
   updates
 
+#### SSE streams
+
+We have 2 SSE streams available, one in the admin API at: `api/admin/events/{clientId}` and one in the viewer API 
+at: `api/events/{clientId}`. When using these streams you must make sure that you are using/injecting the correct
+`SseEventBus` for each API.
+
+For the admin use the default `eventBus` bean, inject using: `SseEventBus eventBus` (defined using the 
+`@EnableSseEventBus` annotation in the `TailormapConfig` class).
+For the viewer use the `viewerSseEventBus` bean, inject using: `@Qualifier("viewerSseEventBus") SseEventBus eventBus` 
+(defined in the `TailormapConfig` class). 
+See: 
+- [ServerSentEventsAdminController](src/main/java/org/tailormap/api/controller/admin/ServerSentEventsAdminController.java) for the admin configuration
+- [ServerSentEventsController](src/main/java/org/tailormap/api/controller/ServerSentEventsController.java) for the viewer configuration
+- [TailormapConfig](src/main/java/org/tailormap/api/configuration/TailormapConfig.java) for the bean definitions
+
+If you inject the wrong one you may not receive the events you want, and you risk sending administrative events to the viewer.
+
 ## Releasing
 
 ### Prerequisites
