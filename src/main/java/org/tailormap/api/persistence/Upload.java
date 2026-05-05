@@ -58,6 +58,8 @@ public class Upload extends AuditMetadata {
 
   private String hash;
 
+  private String description;
+
   // <editor-fold desc="getters and setters">
   public int getContentLength() {
     return getContent() == null ? 0 : content.length;
@@ -162,5 +164,14 @@ public class Upload extends AuditMetadata {
     } else {
       this.hash = null;
     }
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public Upload setDescription(String description) {
+    this.description = description;
+    return this;
   }
 }

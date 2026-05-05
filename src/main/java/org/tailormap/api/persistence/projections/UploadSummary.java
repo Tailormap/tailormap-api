@@ -31,4 +31,6 @@ public interface UploadSummary {
   OffsetDateTime getLastModified();
 
   int getContentLength();
+
+  String getDescription();
 }
