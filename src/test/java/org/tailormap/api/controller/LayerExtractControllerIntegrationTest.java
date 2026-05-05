@@ -29,7 +29,6 @@ import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPost
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
@@ -57,15 +56,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
-import org.tailormap.api.viewer.model.ServerSentEventResponse;
-import tools.jackson.databind.ObjectMapper;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class LayerExtractControllerIntegrationTest {
+class LayerExtractControllerIntegrationTest extends SseParsingUtils {
   private static final String extractPath = "/extract/";
   private static final String downloadPath = "/extract/download/";
   // Use a unique clientId per test instance to avoid cross-test interference
@@ -532,41 +529,5 @@ class LayerExtractControllerIntegrationTest {
       assertEquals(6, fileNames.size(), "Expected 6 files in the shapefile zip");
       assertEquals(6, extensions.size(), "Expected 6 unique file extensions in the shapefile zip");
     }
-  }
-
-  /**
-   * Parse the last non-empty line from the SSE stream that looks something like:
-   * {@code data:{"details":{"message":"Extract task
-   * completed","progress":100,"file":"begroeidterreindeel15061479295163305053.csv"},"eventType":"extract-completed","id":"019d6838-7f48-7053-9256-dd4b57c14264"}
-   * } as JSON and extract the file from the details.
-   */
-  private String getLastCompletedEventJson(String sseMessages) throws IOException {
-    return java.util.Arrays.stream(sseMessages.split("\\R"))
-        .map(String::trim)
-        .filter(line -> !line.isEmpty())
-        .filter(line -> line.startsWith("data:"))
-        .filter(line -> line.contains("\"eventType\":\"extract-completed\""))
-        .reduce((first, second) -> second)
-        .orElseThrow()
-        .substring("data:".length());
-  }
-
-  private String getDownloadId(String eventJson) {
-    return new ObjectMapper()
-        .readTree(eventJson)
-        .path("details")
-        .path("downloadId")
-        .asString();
-  }
-
-  private int count_completed_messages(String s) {
-    int count = 0;
-    int index = 0;
-    final String marker = "\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.EXTRACT_COMPLETED + "\"";
-    while ((index = s.indexOf(marker, index)) != -1) {
-      count++;
-      index += marker.length();
-    }
-    return count;
   }
 }
