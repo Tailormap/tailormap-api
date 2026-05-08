@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +33,12 @@ import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublic
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -554,7 +561,7 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
         .untilAsserted(() -> assertThat(
             sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
 
-    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+    Awaitility.await().pollInterval(5, SECONDS).atMost(45, SECONDS).untilAsserted(() -> {
       final String stream = sseResult.getResponse().getContentAsString();
       assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
     });
@@ -564,10 +571,10 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
     assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
 
     final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
-    assertThat(extractedDownloadId, containsString(GEOPACKAGE.getExtension()));
+    assertThat(extractedDownloadId, endsWith(GEOPACKAGE.getExtension()));
 
     final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
-    mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+    MvcResult download = mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
         .andExpect(status().isOk())
         .andExpect(result -> {
           String contentType = result.getResponse().getContentType();
@@ -576,6 +583,27 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
           String contentDisposition = result.getResponse().getHeader("Content-Disposition");
           assertThat(contentDisposition, containsString("attachment; filename="));
           assertThat(contentDisposition, containsString(extractedDownloadId));
-        });
+        })
+        .andReturn();
+
+    byte[] geopackageBytes = download.getResponse().getContentAsByteArray();
+    Path tempFile = Files.createTempFile("tm-extract-", ".gpkg");
+
+    try {
+      Files.write(tempFile, geopackageBytes);
+
+      try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + tempFile);
+          PreparedStatement statement =
+              connection.prepareStatement("SELECT COUNT(*) FROM begroeidterreindeel");
+          ResultSet resultSet = statement.executeQuery()) {
+
+        assertTrue(
+            resultSet.next(), // NOPMD  - we just want to check that it returns a row
+            "Expected COUNT(*) query to return a row");
+        assertEquals(18, resultSet.getInt(1), "Expected 18 records in begroeidterreindeel table");
+      }
+    } finally {
+      Files.deleteIfExists(tempFile);
+    }
   }
 }

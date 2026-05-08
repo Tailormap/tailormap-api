@@ -1017,6 +1017,8 @@ SPDX-License-Identifier: MIT
                              See https://github.com/orgs/paketo-buildpacks/discussions/241
                              -->
                             <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                            <!-- for GeoPackage support which uses a native driver -->
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> --enable-native-access=ALL-UNNAMED</BPE_APPEND_JAVA_TOOL_OPTIONS>
                             <!-- Headroom is used by the memory calculator to reduce the max total memory limit. The default is 0%,
                              but since Tailormap is usually run with unconstrained container memory, set it to 10% to prevent taking
                              too much host memory. Although Tailormap should not exhaust heap memory, reduce it as a preventive safety
