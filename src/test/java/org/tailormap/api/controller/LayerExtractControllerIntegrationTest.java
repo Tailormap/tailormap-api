@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.CSV;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOJSON;
+import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOPACKAGE;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.SHAPE;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
@@ -529,5 +530,52 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
       assertEquals(6, fileNames.size(), "Expected 6 files in the shapefile zip");
       assertEquals(6, extensions.size(), "Expected 6 unique file extensions in the shapefile zip");
     }
+  }
+
+  @Test
+  void should_export_to_geopackage() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", GEOPACKAGE.getValue())
+            .param("filter", StaticTestData.get("large_cql_filter"))
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    // The SseEventBus may dispatch events slightly after the POST returns.
+    // Awaitility polls the buffered SSE response until the expected content appears.
+    Awaitility.await()
+        .atMost(10, SECONDS)
+        .untilAsserted(() -> assertThat(
+            sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
+
+    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
+    });
+
+    final String lastCompletedEventJson =
+        getLastCompletedEventJson(sseResult.getResponse().getContentAsString());
+    assertThat(lastCompletedEventJson.length(), greaterThanOrEqualTo(100));
+
+    final String extractedDownloadId = getDownloadId(lastCompletedEventJson);
+    assertThat(extractedDownloadId, containsString(GEOPACKAGE.getExtension()));
+
+    final String downloadUrl = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath + extractedDownloadId;
+    mockMvc.perform(get(downloadUrl).with(setServletPath(downloadUrl)))
+        .andExpect(status().isOk())
+        .andExpect(result -> {
+          String contentType = result.getResponse().getContentType();
+          assertThat(contentType, containsString("application/geopackage+sqlite3"));
+
+          String contentDisposition = result.getResponse().getHeader("Content-Disposition");
+          assertThat(contentDisposition, containsString("attachment; filename="));
+          assertThat(contentDisposition, containsString(extractedDownloadId));
+        });
   }
 }
