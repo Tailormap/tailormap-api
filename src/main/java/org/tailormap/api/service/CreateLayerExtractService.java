@@ -7,25 +7,8 @@ package org.tailormap.api.service;
 
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
-import java.io.File;
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.DataStore;
 import org.geotools.api.data.FeatureEvent;
 import org.geotools.api.data.FileDataStore;
 import org.geotools.api.data.Query;
@@ -43,6 +26,7 @@ import org.geotools.data.geojson.store.GeoJSONDataStoreFactory;
 import org.geotools.data.shapefile.ShapefileDumper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.SchemaException;
+import org.geotools.geopkg.GeoPkgDataStoreFactory;
 import org.geotools.util.factory.GeoTools;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -65,6 +49,25 @@ import org.tailormap.api.util.UUIDv7;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class CreateLayerExtractService {
@@ -218,6 +221,9 @@ public class CreateLayerExtractService {
     this.emitProgress(clientId, outputFileName, 0, false, "Starting extract");
 
     switch (extractOutputFormat) {
+      case GEOPACKAGE ->
+        this.handleGeoPackage(
+            clientId, inputTmFeatureType, attributes, filter, sortBy, sortOrder, outputFileName);
       case SHAPE ->
         this.handleWithShapeDumper(
             clientId, inputTmFeatureType, attributes, filter, sortBy, sortOrder, outputFileName);
@@ -231,6 +237,82 @@ public class CreateLayerExtractService {
             sortOrder,
             extractOutputFormat,
             outputFileName);
+    }
+  }
+
+  private void handleGeoPackage(
+      @NonNull String clientId,
+      @NonNull TMFeatureType inputTmFeatureType,
+      @NonNull Set<String> attributes,
+      Filter filter,
+      String sortBy,
+      SortOrder sortOrder,
+      @NonNull String outputFileName) {
+
+    SimpleFeatureSource inputFeatureSource = null;
+    DataStore outputDataStore = null;
+
+    try (Transaction outputTransaction = new DefaultTransaction("tailormap-extract-output")) {
+      inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
+
+      Query q = createQuery(inputFeatureSource, attributes, filter, sortBy, sortOrder);
+
+      int featCount = getFeatureCount(inputFeatureSource, q);
+      if (featCount < 0) {
+        logger.warn("Could not determine feature count for extract, progress reporting will be omitted");
+      }
+
+      outputDataStore = new GeoPkgDataStoreFactory()
+          .createDataStore(Map.of(
+              GeoPkgDataStoreFactory.DBTYPE.key,
+              "geopkg",
+              GeoPkgDataStoreFactory.DATABASE.key,
+              getValidatedOutputFile(outputFileName),
+              GeoPkgDataStoreFactory.CONTENTS_ONLY.key,
+              false));
+
+      SimpleFeatureType fType =
+          DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
+      outputDataStore.createSchema(fType);
+
+      final AtomicInteger featsAdded = new AtomicInteger();
+      if (outputDataStore.getFeatureSource(fType.getName()) instanceof SimpleFeatureStore featureStore) {
+        featureStore.setTransaction(outputTransaction);
+        featureStore.addFeatureListener(event -> {
+          if (event.getType().equals(FeatureEvent.Type.ADDED)) {
+            featsAdded.getAndIncrement();
+            logger.debug("Added feature {}", featsAdded.get());
+          }
+          if (featCount > 0) {
+            if (featsAdded.get() % progressReportInterval == 0) {
+              this.emitProgress(
+                  clientId,
+                  outputFileName,
+                  (int) ((featsAdded.doubleValue() / featCount) * 100),
+                  false,
+                  null);
+            }
+          }
+        });
+        featureStore.addFeatures(inputFeatureSource.getFeatures(q));
+        outputTransaction.commit();
+        outputDataStore.dispose();
+        this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
+      }
+    } catch (SchemaException | IOException | IllegalArgumentException e) {
+      emitError(clientId, e.getMessage());
+      logger.error("Creating extract failed", e);
+    } finally {
+      if (inputFeatureSource != null) {
+        try {
+          inputFeatureSource.getDataStore().dispose();
+        } catch (Exception e) {
+          logger.warn("Error disposing datastore for feature source {}", inputFeatureSource.getName(), e);
+        }
+      }
+      if (outputDataStore != null) {
+        outputDataStore.dispose();
+      }
     }
   }
 
