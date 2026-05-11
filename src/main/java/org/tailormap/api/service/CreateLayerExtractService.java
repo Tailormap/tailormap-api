@@ -7,8 +7,10 @@ package org.tailormap.api.service;
 
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -56,7 +58,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.controller.LayerExtractController;
 import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
 import org.tailormap.api.geotools.data.excel.ExcelDataStore;
@@ -77,9 +78,13 @@ public class CreateLayerExtractService {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
+  private static final String EXTRACT_SUBDIRECTORY = "tm-extracts";
   // we can safely use the tmp dir as a default here because we are running in a docker container without a shell so
   // access is limited
+  // Base directory from config; actual export dir is <base>/tm-extracts
   @Value("${tailormap-api.extract.location:#{systemProperties['java.io.tmpdir']}}")
+  private String exportFilesBaseLocation;
+
   private String exportFilesLocation;
 
   @Value("${tailormap-api.extract.cleanup-minutes:120}")
@@ -90,6 +95,19 @@ public class CreateLayerExtractService {
 
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
+
+  @PostConstruct
+  void initializeExtractDirectory() {
+    try {
+      Path exportRoot = Path.of(exportFilesBaseLocation, EXTRACT_SUBDIRECTORY);
+      Files.createDirectories(exportRoot);
+      this.exportFilesLocation = exportRoot.toRealPath().toString();
+      logger.info("Using extract output directory: {}", this.exportFilesLocation);
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "Failed to initialize extract directory under base path: " + exportFilesBaseLocation, e);
+    }
+  }
 
   public CreateLayerExtractService(
       @Qualifier("viewerSseEventBus") SseEventBus eventBus,
@@ -249,13 +267,12 @@ public class CreateLayerExtractService {
       @NonNull String outputFileName) {
 
     SimpleFeatureSource inputFeatureSource = null;
-    File outputFile = null;
+    File outputFile;
     try {
       outputFile = getValidatedOutputFile(outputFileName);
       if (!logger.isDebugEnabled()) {
         // delete in production after JVM exit because the event bus will be reset when the JVM exits, and then
-        // we
-        // are unlikely to have a reference to the file anymore.
+        // we are unlikely to have a reference to the file anymore.
         // In debug/development mode we want to keep the file for inspection.
         outputFile.deleteOnExit();
       }
@@ -347,10 +364,15 @@ public class CreateLayerExtractService {
             clientId,
             "Extract result contains %d features, which exceeds the maximum of %d for Excel output format. Please refine your filter or choose a different output format."
                 .formatted(featCount, ExcelDataStore.getMaxRows()));
-        throw new ResponseStatusException(
-            org.springframework.http.HttpStatus.BAD_REQUEST,
-            "Extract result contains %d features, which exceeds the maximum of %d for Excel output format. Please refine your filter or choose a different output format."
-                .formatted(featCount, ExcelDataStore.getMaxRows()));
+        logger.error(
+            "Extract result contains {} features, which exceeds the maximum of {} for Excel output format. Please refine your filter or choose a different output format.",
+            featCount,
+            ExcelDataStore.getMaxRows());
+        // nothing we can do now as we are in a background/async process, so we just return without creating an
+        // extract file.
+        // The client will receive no extract completed event, and we have already emitted an error message with
+        // details.
+        return;
       }
 
       outputDataStore = this.getExtractDataStore(
@@ -390,7 +412,7 @@ public class CreateLayerExtractService {
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
-    } catch (IOException | SchemaException | IllegalArgumentException e) {
+    } catch (IOException | SchemaException | IllegalArgumentException | NullPointerException e) {
       emitError(clientId, e.getMessage());
       logger.error("Creating extract failed", e);
     } finally {
@@ -527,10 +549,9 @@ public class CreateLayerExtractService {
           .resolve(baseName)
           .toFile()
           .getCanonicalFile();
-      if (logger.isDebugEnabled()) {
+      if (!logger.isDebugEnabled()) {
         // delete in production after JVM exit because the event bus will be reset when the JVM exits, and then
-        // we
-        // are unlikely to have a reference to the file anymore.
+        // we are unlikely to have a reference to the file anymore.
         // In debug/development mode we want to keep the directory for inspection.
         outputDirectory.deleteOnExit();
       }
@@ -616,7 +637,7 @@ public class CreateLayerExtractService {
   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
   public void cleanupExpiredExtracts() {
     logger.debug("Running expired extracts cleanup...");
-    List<FileWithAttributes> clientFilesOnDisk = new ArrayList<>();
+    List<FileWithAttributes> oldDownloadFilesOnDisk = new ArrayList<>();
     Set<String> validClientIds = eventBus.getAllClientIds();
 
     // list download files in export location and delete those that are not bound to an active sse stream client
@@ -635,8 +656,12 @@ public class CreateLayerExtractService {
             logger.error("Failed to delete unattached extract file {}", filename);
           }
         } else {
-          Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
-          clientFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+          try {
+            Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+            oldDownloadFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+          } catch (IllegalArgumentException ignored) {
+            // not a valid v7 uuid
+          }
         }
       });
 
@@ -651,25 +676,39 @@ public class CreateLayerExtractService {
           }
           String clientId = parts[1];
           if (!validClientIds.contains(clientId)) {
-            if (!file.delete()) {
-              logger.error("Failed to delete unattached extract file {}", filename);
+            try {
+              deleteDirectoryRecursively(file.toPath());
+            } catch (IOException e) {
+              logger.error("Failed to delete unattached extract directory {}", filename);
             }
           } else {
-            Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
-            clientFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+            try {
+              Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+              oldDownloadFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+            } catch (IllegalArgumentException ignored) {
+              // not a valid v7 uuid
+            }
           }
         });
       }
 
-      // delete any files are older than the cutoff
-      clientFilesOnDisk.stream()
+      // delete any files/directories are older than the cutoff
+      oldDownloadFilesOnDisk.stream()
           .filter(f -> f.timestamp()
               .isBefore(Instant.now().minusSeconds(TimeUnit.MINUTES.toSeconds(cleanupIntervalMinutes))))
           .forEach(f -> {
-            if (!f.file().delete()) {
-              logger.error(
-                  "Failed to delete expired extract file {}",
-                  f.file().getName());
+            if (f.file.isDirectory()) {
+              try {
+                deleteDirectoryRecursively(f.file().toPath());
+              } catch (IOException ignored) {
+                logger.warn("Failed to delete directory {}", f.file());
+              }
+            } else {
+              if (!f.file().delete()) {
+                logger.error(
+                    "Failed to delete expired extract file {}",
+                    f.file().getName());
+              }
             }
           });
     } catch (IOException e) {
