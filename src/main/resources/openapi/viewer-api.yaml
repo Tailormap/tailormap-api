@@ -1871,7 +1871,7 @@ paths:
                 type: array
                 items:
                   type: string
-                example: '["csv","shape"]'
+                example: ["csv","shape"]
 
   /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}:
     description: 'Export the attributes as shown in the attribute list for a layer.'
@@ -1954,6 +1954,9 @@ paths:
                 properties:
                   message:
                     type: string
+                  downloadId:
+                    type: string
+                    description: 'The id to use to download the file once the extract is completed.'
                 required:
                   - message
               example:
@@ -2012,7 +2015,6 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: 'OK'

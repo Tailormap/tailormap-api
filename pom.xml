@@ -322,11 +322,14 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-excel-writer</artifactId>
-            <version>[35-SNAPSHOT,)</version>
+            <!-- gt-excel-writer is not in the gt-bom, so we need to specify the version here -->
+            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson-store</artifactId>
+            <!-- override version to get latest bug fixes, see: https://osgeo-org.atlassian.net/browse/GEOT-7894 -->
+            <version>35-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -701,20 +704,21 @@ SPDX-License-Identifier: MIT
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
         <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>repo.b3p.nl</id>
-            <name>B3Partners public repository</name>
-            <url>https://repo.b3p.nl/nexus/repository/public/</url>
-        </repository>
-        <repository>
+            <!-- TODO remove this repository once gt-geojson-store 35.0 is released with the latest bug fixes -->
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <id>OSGeo-snapshots</id>
             <name>Snapshots hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/snapshot/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>repo.b3p.nl</id>
+            <name>B3Partners public repository</name>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
     <pluginRepositories />
@@ -1011,14 +1015,14 @@ SPDX-License-Identifier: MIT
                              alternatively, use environment variable BPL_JVM_CLASS_ADJUSTMENT when deploying the docker container
                              -->
                             <BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>120%</BPE_DEFAULT_BPL_JVM_CLASS_ADJUSTMENT>
-                            <!-- JVM default is the same as -Xmx. However, the Paketo Java Buildpack memory calculator sets it to
-                             10M by default, which is too low causing OOM in our application (Netty Solr client and Hikari use more
-                             than 10MB in direct buffer pools after some time), set it to 256M
-                             See https://github.com/orgs/paketo-buildpacks/discussions/241
-                             -->
-                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M</BPE_APPEND_JAVA_TOOL_OPTIONS>
-                            <!-- for GeoPackage support which uses a native driver -->
-                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> --enable-native-access=ALL-UNNAMED</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                            <!--
+                             - JVM default is the same as -Xmx. However, the Paketo Java Buildpack memory calculator sets it to
+                               10M by default, which is too low causing OOM in our application (Netty Solr client and Hikari use more
+                               than 10MB in direct buffer pools after some time), set it to 256M
+                               See https://github.com/orgs/paketo-buildpacks/discussions/241
+
+                             - Enable native access for GeoPackage support which uses a native driver -->
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M --enable-native-access=ALL-UNNAMED</BPE_APPEND_JAVA_TOOL_OPTIONS>
                             <!-- Headroom is used by the memory calculator to reduce the max total memory limit. The default is 0%,
                              but since Tailormap is usually run with unconstrained container memory, set it to 10% to prevent taking
                              too much host memory. Although Tailormap should not exhaust heap memory, reduce it as a preventive safety
