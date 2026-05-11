@@ -17,7 +17,7 @@ facilitates collaboration, makes coding simpler, and ensures that best practices
 
 # Development Environment
 
-Tailormap API is written in **Java 25** using **GeoTools 34.x**, **Hibernate 7.2.x** and **Spring Boot 4.0.x** and
+Tailormap API is written in **Java 25** using **GeoTools 35.x**, **Hibernate 7.3.x** and **Spring Boot 4.0.x** and
 leverages **OpenApi 3.0.4**.
 Dependencies for this project are managed using Maven in the file `pom.xml` in the root of the repository.
 Code for this project is generated using Maven using the file `pom.xml` in the root of the repository.
