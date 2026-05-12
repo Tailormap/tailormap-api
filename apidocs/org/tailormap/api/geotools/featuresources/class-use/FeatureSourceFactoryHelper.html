@@ -68,8 +68,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.tailormap.api.scheduling">org.tailormap.api.scheduling</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.solr">org.tailormap.api.solr</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.service">org.tailormap.api.service</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.solr">org.tailormap.api.solr</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -124,9 +126,14 @@ loadScripts(document, 'script');</script>
  <a href="../../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../../controller/UniqueValuesController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureSourceRepository)" class="member-name-link">UniqueValuesController</a><wbr>(<a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
- <a href="../../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository)</code></div>
+<div class="col-second odd-row-color"><code><a href="../../../controller/LayerExtractController.html#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.service.CreateLayerExtractService,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)" class="member-name-link">LayerExtractController</a><wbr>(<a href="../../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
+ <a href="../../../service/CreateLayerExtractService.html" title="class in org.tailormap.api.service">CreateLayerExtractService</a>&nbsp;createLayerExtractService,
+ <a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../../controller/UniqueValuesController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureSourceRepository)" class="member-name-link">UniqueValuesController</a><wbr>(<a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ <a href="../../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -179,6 +186,22 @@ loadScripts(document, 'script');</script>
  <a href="../../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
  ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
  tools.jackson.databind.json.JsonMapper&nbsp;mapper)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.service">
+<h2>Uses of <a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a> in <a href="../../../service/package-summary.html">org.tailormap.api.service</a></h2>
+<div class="caption"><span>Constructors in <a href="../../../service/package-summary.html">org.tailormap.api.service</a> with parameters of type <a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../../service/CreateLayerExtractService.html#%3Cinit%3E(ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)" class="member-name-link">CreateLayerExtractService</a><wbr>(ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ tools.jackson.databind.json.JsonMapper&nbsp;jsonMapper,
+ <a href="../FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

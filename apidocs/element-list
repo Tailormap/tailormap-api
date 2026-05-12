@@ -10,6 +10,7 @@ org.tailormap.api.controller
 org.tailormap.api.controller.admin
 org.tailormap.api.drawing
 org.tailormap.api.geotools
+org.tailormap.api.geotools.collection
 org.tailormap.api.geotools.featuresources
 org.tailormap.api.geotools.processing
 org.tailormap.api.geotools.wfs

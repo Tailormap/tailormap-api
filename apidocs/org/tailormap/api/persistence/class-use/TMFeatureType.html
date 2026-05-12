@@ -66,10 +66,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.solr">org.tailormap.api.solr</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.service">org.tailormap.api.service</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.solr">org.tailormap.api.solr</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -327,6 +329,34 @@ configured settings, taking into account the configured attribute order and hidd
 <div class="col-last even-row-color">
 <div class="block">Get a feature type by name and feature source.</div>
 </div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.service">
+<h2>Uses of <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a> in <a href="../../service/package-summary.html">org.tailormap.api.service</a></h2>
+<div class="caption"><span>Methods in <a href="../../service/package-summary.html">org.tailormap.api.service</a> with parameters of type <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">CreateLayerExtractService.</span><code><a href="../../service/CreateLayerExtractService.html#createExtractFilename(java.lang.String,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat)" class="member-name-link">createExtractFilename</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId,
+ @NonNull <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;sourceFT,
+ @NonNull <a href="../../controller/LayerExtractController.ExtractOutputFormat.html" title="enum class in org.tailormap.api.controller">LayerExtractController.ExtractOutputFormat</a>&nbsp;outputFormat)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a validated filename for an extract.</div>
+</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">CreateLayerExtractService.</span><code><a href="../../service/CreateLayerExtractService.html#createLayerExtract(java.lang.String,org.tailormap.api.persistence.TMFeatureType,java.util.Set,org.geotools.api.filter.Filter,java.lang.String,org.geotools.api.filter.sort.SortOrder,org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat,java.lang.String)" class="member-name-link">createLayerExtract</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId,
+ @NonNull <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;inputTmFeatureType,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;attributes,
+ @Nullable org.geotools.api.filter.Filter&nbsp;filter,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortBy,
+ org.geotools.api.filter.sort.SortOrder&nbsp;sortOrder,
+ @NonNull <a href="../../controller/LayerExtractController.ExtractOutputFormat.html" title="enum class in org.tailormap.api.controller">LayerExtractController.ExtractOutputFormat</a>&nbsp;extractOutputFormat,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;outputFileName)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

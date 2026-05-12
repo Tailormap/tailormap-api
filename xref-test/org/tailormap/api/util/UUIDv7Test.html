@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>UUIDv7Test xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../testapidocs/org/tailormap/api/util/UUIDv7Test.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright (C) 2026 B3Partners B.V.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.util;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.MatcherAssert.assertThat;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.closeTo;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertEquals;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertNotNull;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertTrue;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.util.UUID;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">class</strong> <a name="UUIDv7Test" href="../../../../org/tailormap/api/util/UUIDv7Test.html#UUIDv7Test">UUIDv7Test</a> {
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    @Test
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">void</strong> testExtractUuid() <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      ArrayList&lt;UUID&gt; uuids = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 10; i++) {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>        Thread.sleep(10); <em class="jxr_comment">// Ensure different timestamps for each UUID</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>        UUID uuid = UUIDv7.randomV7();
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>        assertNotNull(uuid);
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        uuids.add(uuid);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>        assertEquals(7, uuid.version(), () -&gt; <span class="jxr_string">"Expected version 7, got "</span> + uuid.version());
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>        assertEquals(2, uuid.variant(), () -&gt; <span class="jxr_string">"Expected RFC 4122 variant, got "</span> + uuid.variant());
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>        assertThat((<strong class="jxr_keyword">double</strong>) (Instant.now().toEpochMilli() - UUIDv7.timestamp(uuid)), closeTo(0d, 100d));
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      }
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      UUID[] cloned = uuids.toArray(<strong class="jxr_keyword">new</strong> UUID[0]).clone();
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      uuids.sort(UUID::compareTo);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; uuids.size(); i++) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        assertEquals(cloned[i], uuids.get(i), <span class="jxr_string">"Expected UUIDs to be in the same order after sorting "</span> + i);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        <strong class="jxr_keyword">if</strong> (i &gt; 0) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          assertTrue(
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>              UUIDv7.timestampAsInstant(uuids.get(i)).isAfter(UUIDv7.timestampAsInstant(uuids.get(i - 1))),
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>              <span class="jxr_string">"Expected timestamps to be in ascending order "</span> + i);
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Test
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">void</strong> testRoundTrip() {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      UUID uuid = UUIDv7.randomV7();
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      Instant timestamp = UUIDv7.timestampAsInstant(uuid);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      assertNotNull(timestamp);
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <em class="jxr_comment">// uuid v4 check</em>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      assertNotNull(UUID.fromString(uuid.toString()));
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      UUID parsed = UUIDv7.fromString(uuid.toString());
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      assertNotNull(parsed);
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      assertEquals(7, parsed.version(), () -&gt; <span class="jxr_string">"Expected version 7, got "</span> + parsed.version());
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      assertEquals(timestamp.toEpochMilli(), UUIDv7.timestamp(parsed));
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      assertEquals(uuid, parsed);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+</body>
+</html>

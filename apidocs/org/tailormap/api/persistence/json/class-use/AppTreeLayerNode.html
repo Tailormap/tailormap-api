@@ -122,17 +122,31 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fid)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LayerExportController.</span><code><a href="../../../controller/LayerExportController.html#download(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String,java.util.Set,java.lang.String,java.lang.String,java.lang.String,java.lang.String,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">download</a><wbr>(<a href="../../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+<div class="col-second even-row-color"><span class="type-name-label">LayerExtractController.</span><code><a href="../../../controller/LayerExtractController.html#download(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String)" class="member-name-link">download</a><wbr>(<a href="../../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  <a href="../../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;outputFormat,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;downloadId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Download the result of an extract request.</div>
+</div>
+<div class="col-first odd-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LayerExtractController.</span><code><a href="../../../controller/LayerExtractController.html#extract(org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String,org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat,java.util.Set,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">extract</a><wbr>(@Valid <a href="../GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ <a href="../../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ <a href="../../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId,
+ <a href="../../../controller/LayerExtractController.ExtractOutputFormat.html" title="enum class in org.tailormap.api.controller">LayerExtractController.ExtractOutputFormat</a>&nbsp;outputFormat,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;attributes,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filter,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortBy,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortOrder,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;crs,
- jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sortOrder)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LayerExtractController.</span><code><a href="../../../controller/LayerExtractController.html#formats(org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">formats</a><wbr>(@Valid <a href="../GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+ <a href="../../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
+ <a href="../../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LayerDescriptionController.</span><code><a href="../../../controller/LayerDescriptionController.html#getAppLayerDescription(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">getAppLayerDescription</a><wbr>(<a href="../../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,

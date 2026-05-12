@@ -66,6 +66,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#getTimeout()" tabindex="0">getTimeout()</a></li>
 <li><a href="#setTimeout(int)" tabindex="0">setTimeout(int)</a></li>
 <li><a href="#localeResolver()" tabindex="0">localeResolver()</a></li>
+<li><a href="#viewerSseEventBus(ch.rasc.sse.eventbus.config.SseEventBusConfigurer,tools.jackson.databind.ObjectMapper,java.util.List,ch.rasc.sse.eventbus.SubscriptionRegistry,ch.rasc.sse.eventbus.ReplayStore,io.micrometer.observation.ObservationRegistry,ch.rasc.sse.eventbus.observation.SseEventBusObservationConvention,ch.rasc.sse.eventbus.DistributedEventBus)" tabindex="0">viewerSseEventBus(SseEventBusConfigurer, ObjectMapper, List, SubscriptionRegistry, ReplayStore, ObservationRegistry, SseEventBusObservationConvention, DistributedEventBus)</a></li>
 </ol>
 </li>
 </ol>
@@ -125,6 +126,18 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TailormapConfig.html" title="class in org.tailormap.api.configuration">TailormapConfig</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTimeout(int)" class="member-name-link">setTimeout</a><wbr>(int&nbsp;timeout)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>ch.rasc.sse.eventbus.SseEventBus</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#viewerSseEventBus(ch.rasc.sse.eventbus.config.SseEventBusConfigurer,tools.jackson.databind.ObjectMapper,java.util.List,ch.rasc.sse.eventbus.SubscriptionRegistry,ch.rasc.sse.eventbus.ReplayStore,io.micrometer.observation.ObservationRegistry,ch.rasc.sse.eventbus.observation.SseEventBusObservationConvention,ch.rasc.sse.eventbus.DistributedEventBus)" class="member-name-link">viewerSseEventBus</a><wbr>(@Nullable ch.rasc.sse.eventbus.config.SseEventBusConfigurer&nbsp;configurer,
+ @Nullable tools.jackson.databind.ObjectMapper&nbsp;objectMapper,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;ch.rasc.sse.eventbus.DataObjectConverter&gt;&nbsp;dataObjectConverters,
+ @Nullable ch.rasc.sse.eventbus.SubscriptionRegistry&nbsp;subscriptionRegistry,
+ @Nullable ch.rasc.sse.eventbus.ReplayStore&nbsp;replayStore,
+ @Nullable io.micrometer.observation.ObservationRegistry&nbsp;observationRegistry,
+ @Nullable ch.rasc.sse.eventbus.observation.SseEventBusObservationConvention&nbsp;observationConvention,
+ @Nullable ch.rasc.sse.eventbus.DistributedEventBus&nbsp;distributedEventBus)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Define a new viewer SseEventBus bean for viewer-specific SSE traffic.</div>
+</div>
 </div>
 </div>
 </div>
@@ -180,6 +193,35 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Bean
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.web.servlet.LocaleResolver</span>&nbsp;<span class="element-name">localeResolver</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="viewerSseEventBus(ch.rasc.sse.eventbus.config.SseEventBusConfigurer,tools.jackson.databind.ObjectMapper,java.util.List,ch.rasc.sse.eventbus.SubscriptionRegistry,ch.rasc.sse.eventbus.ReplayStore,io.micrometer.observation.ObservationRegistry,ch.rasc.sse.eventbus.observation.SseEventBusObservationConvention,ch.rasc.sse.eventbus.DistributedEventBus)">
+<h3>viewerSseEventBus</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@Bean("viewerSseEventBus")
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">ch.rasc.sse.eventbus.SseEventBus</span>&nbsp;<span class="element-name">viewerSseEventBus</span><wbr><span class="parameters">(@Autowired(required=false)
+ @Nullable ch.rasc.sse.eventbus.config.SseEventBusConfigurer&nbsp;configurer,
+ @Autowired(required=false)
+ @Nullable tools.jackson.databind.ObjectMapper&nbsp;objectMapper,
+ @Autowired(required=false)
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;ch.rasc.sse.eventbus.DataObjectConverter&gt;&nbsp;dataObjectConverters,
+ @Autowired(required=false)
+ @Nullable ch.rasc.sse.eventbus.SubscriptionRegistry&nbsp;subscriptionRegistry,
+ @Autowired(required=false)
+ @Nullable ch.rasc.sse.eventbus.ReplayStore&nbsp;replayStore,
+ @Autowired(required=false)
+ @Nullable io.micrometer.observation.ObservationRegistry&nbsp;observationRegistry,
+ @Autowired(required=false)
+ @Nullable ch.rasc.sse.eventbus.observation.SseEventBusObservationConvention&nbsp;observationConvention,
+ @Autowired(required=false)
+ @Nullable ch.rasc.sse.eventbus.DistributedEventBus&nbsp;distributedEventBus)</span></div>
+<div class="block">Define a new viewer SseEventBus bean for viewer-specific SSE traffic.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the viewerSseEventBus instance</dd>
+</dl>
 </div>
 </section>
 </li>
