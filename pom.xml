@@ -328,8 +328,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson-store</artifactId>
-            <!-- override version to get latest bug fixes, see: https://osgeo-org.atlassian.net/browse/GEOT-7894 -->
-            <version>35-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -702,15 +700,6 @@ SPDX-License-Identifier: MIT
             <id>OSGeo</id>
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
-        </repository>
-        <repository>
-            <!-- TODO remove this repository once gt-geojson-store 35.0 is released with the latest bug fixes -->
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>OSGeo-snapshots</id>
-            <name>Snapshots hosted by OSGeo</name>
-            <url>https://repo.osgeo.org/repository/snapshot/</url>
         </repository>
         <repository>
             <snapshots>
