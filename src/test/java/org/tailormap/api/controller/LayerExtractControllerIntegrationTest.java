@@ -5,6 +5,42 @@
  */
 package org.tailormap.api.controller;
 
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junitpioneer.jupiter.Stopwatch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.tailormap.api.StaticTestData;
+import org.tailormap.api.annotation.PostgresIntegrationTest;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,42 +65,6 @@ import static org.tailormap.api.controller.LayerExtractController.ExtractOutputF
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.SHAPE;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.DisabledUntil;
-import org.junitpioneer.jupiter.Stopwatch;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.tailormap.api.StaticTestData;
-import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -407,10 +407,6 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
     }
   }
 
-  @DisabledUntil(
-      date = "2026-06-01",
-      reason =
-          "This test relies on GeoTools 35.0 (or 34.4), see https://osgeo-org.atlassian.net/browse/GEOT-7894")
   @Test
   void should_export_large_filter_to_geojson() throws Exception {
     final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
