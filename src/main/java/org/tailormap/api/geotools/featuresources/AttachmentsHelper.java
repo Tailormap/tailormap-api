@@ -454,12 +454,15 @@ mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   }
 
   public static void deleteAttachment(UUID attachmentId, TMFeatureType featureType) throws IOException, SQLException {
-    String deleteSql = MessageFormat.format("""
-DELETE FROM {0}_attachments WHERE attachment_id = ?
-""", featureType.getName());
     JDBCDataStore ds = null;
     try {
       ds = (JDBCDataStore) new JDBCFeatureSourceHelper().createDataStore(featureType.getFeatureSource());
+
+      String deleteSql = MessageFormat.format(
+          """
+DELETE FROM {1}{0}_attachments WHERE attachment_id = ?
+""", featureType.getName(), ds.getDatabaseSchema().isEmpty() ? "" : ds.getDatabaseSchema() + ".");
+
       try (Connection conn = ds.getDataSource().getConnection();
           PreparedStatement stmt = conn.prepareStatement(deleteSql)) {
         if (featureType
