@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           allow-dependencies-licenses: pkg:maven/org.eclipse.angus/jakarta.mail@2.0.5?type=jar, pkg:maven/jakarta.ws.rs:jakarta.ws.rs-api@4.0.0?type=jar
           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, MPL-2.0, LGPL-2.1-only, EPL-2.0, EPL-1.0
