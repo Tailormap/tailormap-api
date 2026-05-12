@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +47,7 @@ import org.tailormap.api.scheduling.TaskType;
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 class TaskAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
@@ -68,6 +71,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(1)
   void list_all_tasks() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -139,6 +143,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(1)
   void list_tasks_for_non_existent_type() throws Exception {
     mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, "does-not-exist")
@@ -179,6 +184,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(10)
   void start_non_existent_task() throws Exception {
     mockMvc.perform(put(
                 adminBasePath + "/tasks/{type}/{uuid}/start",
@@ -194,6 +200,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(10)
   void stop_unstoppable_task() throws Exception {
     MvcResult result = mockMvc.perform(get(adminBasePath + "/tasks")
             .queryParam(TYPE_KEY, TEST_TASK_TYPE)
@@ -218,6 +225,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(10)
   void delete_non_existent_task() throws Exception {
     mockMvc.perform(delete(
                 adminBasePath + "/tasks/{type}/{uuid}",
