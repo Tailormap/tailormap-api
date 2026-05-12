@@ -54,6 +54,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junitpioneer.jupiter.DisabledUntil;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -406,6 +407,10 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
     }
   }
 
+  @DisabledUntil(
+      date = "2026-06-01",
+      reason =
+          "This test relies on GeoTools 35.0 (or 34.4), see https://osgeo-org.atlassian.net/browse/GEOT-7894")
   @Test
   void should_export_large_filter_to_geojson() throws Exception {
     final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
