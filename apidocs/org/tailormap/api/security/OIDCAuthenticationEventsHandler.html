@@ -64,7 +64,6 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#onSuccess(org.springframework.security.authentication.event.AuthenticationSuccessEvent)" tabindex="0">onSuccess(AuthenticationSuccessEvent)</a></li>
-<li><a href="#onOAuth2AuthenticationFailureEvent(org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent)" tabindex="0">onOAuth2AuthenticationFailureEvent(OAuth2AuthenticationFailureEvent)</a></li>
 </ol>
 </li>
 </ol>
@@ -112,11 +111,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onOAuth2AuthenticationFailureEvent(org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent)" class="member-name-link">onOAuth2AuthenticationFailureEvent</a><wbr>(<a href="events/OAuth2AuthenticationFailureEvent.html" title="class in org.tailormap.api.security.events">OAuth2AuthenticationFailureEvent</a>&nbsp;event)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onSuccess(org.springframework.security.authentication.event.AuthenticationSuccessEvent)" class="member-name-link">onSuccess</a><wbr>(org.springframework.security.authentication.event.AuthenticationSuccessEvent&nbsp;success)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onSuccess(org.springframework.security.authentication.event.AuthenticationSuccessEvent)" class="member-name-link">onSuccess</a><wbr>(org.springframework.security.authentication.event.AuthenticationSuccessEvent&nbsp;success)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -157,15 +153,6 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations">@EventListener
 @Transactional
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onSuccess</span><wbr><span class="parameters">(org.springframework.security.authentication.event.AuthenticationSuccessEvent&nbsp;success)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="onOAuth2AuthenticationFailureEvent(org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent)">
-<h3>onOAuth2AuthenticationFailureEvent</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@EventListener
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onOAuth2AuthenticationFailureEvent</span><wbr><span class="parameters">(<a href="events/OAuth2AuthenticationFailureEvent.html" title="class in org.tailormap.api.security.events">OAuth2AuthenticationFailureEvent</a>&nbsp;event)</span></div>
 </div>
 </section>
 </li>
