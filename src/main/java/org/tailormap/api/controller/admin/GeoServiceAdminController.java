@@ -63,13 +63,13 @@ public class GeoServiceAdminController {
     // service ID in their additional properties
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    boolean isAdmin = false;
+    assert authentication != null;
+    boolean isAdmin =
+        authentication.getAuthorities().stream().anyMatch(a -> Objects.equals(a.getAuthority(), Group.ADMIN));
+    boolean hasRefreshCapabilities = authentication.getAuthorities().stream()
+        .anyMatch(a -> Objects.equals(a.getAuthority(), Group.REFRESH_CAPABILITIES));
 
-    if (authentication != null && authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-      isAdmin =
-          userDetails.getAuthorities().stream().anyMatch(a -> Objects.equals(a.getAuthority(), Group.ADMIN));
-      boolean hasRefreshCapabilities = userDetails.getAuthorities().stream()
-          .anyMatch(a -> Objects.equals(a.getAuthority(), Group.REFRESH_CAPABILITIES));
+    if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
       if (!isAdmin) {
         if (!hasRefreshCapabilities) {
           // Should not be allowed by securityMatchers in ApiSecurityConfiguration
