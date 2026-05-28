@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -56,7 +55,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
   @Value("${tailormap-api.default-language:en}")
   private String defaultLanguage;
 
-  private List<String> supportedLanguages = Collections.emptyList();
+  private List<String> supportedLanguages = List.of();
 
   private AcceptHeaderLocaleResolver localeResolver;
 

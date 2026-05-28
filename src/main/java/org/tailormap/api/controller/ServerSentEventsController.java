@@ -10,7 +10,7 @@ import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,6 +66,6 @@ public class ServerSentEventsController {
     this.eventBus.handleEvent(SseEvent.ofData(jsonMapper.writeValueAsString(new ServerSentEventResponse()
         .eventType(ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE)
         .id(UUIDv7.randomV7())
-        .details(Collections.emptyMap()))));
+        .details(Map.of()))));
   }
 }

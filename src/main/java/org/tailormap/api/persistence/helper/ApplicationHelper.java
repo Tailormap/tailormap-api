@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
+import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.referencing.util.CRSUtilities;
 import org.geotools.referencing.wkt.Formattable;
@@ -384,12 +385,12 @@ public class ApplicationHelper {
           service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
       // These settings can be overridden per appLayer
-
+      @SuppressModernizer
       String description = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getDescription()),
           nullIfEmpty(serviceLayerSettings.getDescription()),
           nullIfEmpty(defaultLayerSettings.getDescription()));
-
+      @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getAttribution()),
           nullIfEmpty(serviceLayerSettings.getAttribution()),
@@ -397,13 +398,16 @@ public class ApplicationHelper {
 
       // These settings can't be overridden per appLayer but can be set on a per-layer and
       // service-level default basis
-
+      @SuppressModernizer
       boolean tilingDisabled = ObjectUtils.firstNonNull(
           serviceLayerSettings.getTilingDisabled(), defaultLayerSettings.getTilingDisabled(), true);
+      @SuppressModernizer
       Integer tilingGutter = ObjectUtils.firstNonNull(
           serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
+      @SuppressModernizer
       boolean hiDpiDisabled = ObjectUtils.firstNonNull(
           serviceLayerSettings.getHiDpiDisabled(), defaultLayerSettings.getHiDpiDisabled(), true);
+      @SuppressModernizer
       TileLayerHiDpiMode hiDpiMode = ObjectUtils.firstNonNull(
           serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);
       // Do not get from defaultLayerSettings because a default wouldn't make sense

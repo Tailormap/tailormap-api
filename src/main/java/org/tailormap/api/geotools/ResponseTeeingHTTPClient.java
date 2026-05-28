@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -126,7 +125,7 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
       Set<String> responseHeadersToCache) {
     this.wrapped = wrapped;
     this.requestConsumer = requestConsumer == null ? (url, response) -> {} : requestConsumer;
-    this.responseHeadersToCache = responseHeadersToCache == null ? Collections.emptySet() : responseHeadersToCache;
+    this.responseHeadersToCache = responseHeadersToCache == null ? Set.of() : responseHeadersToCache;
   }
 
   @Override

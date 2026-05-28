@@ -9,7 +9,6 @@ package org.tailormap.api.controller;
 import static org.springframework.beans.BeanUtils.copyProperties;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -104,7 +103,7 @@ public class PageController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
           }
         })
-        .orElse(Collections.emptyList());
+        .orElse(List.of());
 
     List<ViewerMenuItem> viewerMenuItems = menuItems.stream()
         .filter(menuItem -> menuItem.getExclusiveOnPageId() == null

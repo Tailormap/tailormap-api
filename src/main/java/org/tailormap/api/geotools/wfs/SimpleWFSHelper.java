@@ -223,8 +223,7 @@ public class SimpleWFSHelper {
         logger.debug("{}. Set log level to TRACE for stacktrace.", msg);
       }
     }
-
-    return Collections.emptyMap();
+    return Map.of();
   }
 
   private static String getWfsUrl(LayerDescription ld, WebMapServer wms) {
