@@ -139,6 +139,9 @@ public class ApiSecurityConfiguration {
             /* (debug) log user making the request */ new AuditInterceptor(),
             AnonymousAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> {
+          authorize
+              .requestMatchers(adminApiBasePath + "/geo-services/*/refresh-capabilities")
+              .hasAnyAuthority(Group.ADMIN, Group.REFRESH_CAPABILITIES);
           authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN);
           authorize.requestMatchers(apiBasePath + "/**").permitAll();
         })
