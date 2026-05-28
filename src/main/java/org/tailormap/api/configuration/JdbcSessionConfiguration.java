@@ -35,6 +35,8 @@ public class JdbcSessionConfiguration implements BeanClassLoaderAware {
   private static final String CREATE_SESSION_ATTRIBUTE_QUERY = """
 INSERT INTO %TABLE_NAME%_ATTRIBUTES (SESSION_PRIMARY_ID, ATTRIBUTE_NAME, ATTRIBUTE_BYTES)
 VALUES (?, ?, convert_from(?, 'UTF8')::jsonb)
+ON CONFLICT (SESSION_PRIMARY_ID, ATTRIBUTE_NAME)
+DO UPDATE SET ATTRIBUTE_BYTES = EXCLUDED.ATTRIBUTE_BYTES
 """;
 
   private static final String UPDATE_SESSION_ATTRIBUTE_QUERY = """
