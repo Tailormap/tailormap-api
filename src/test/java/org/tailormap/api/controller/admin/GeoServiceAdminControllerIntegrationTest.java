@@ -23,6 +23,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -137,6 +138,43 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(jsonPath("$.layers[2].crs.length()").value(1))
           .andExpect(jsonPath("$.layers[2].crs[0]").value("EPSG:4326"));
     }
+  }
+
+  @Test
+  @WithUserDetails("foo")
+  // No authorities: should not be able to refresh capabilities
+  void refresh_capabilities_user_not_allowed() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/snapshot-geoserver/refresh-capabilities"))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithUserDetails("user")
+  void refresh_capabilities_geo_service_not_found() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/does-not-exist/refresh-capabilities"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithUserDetails("user")
+  void refresh_capabilities_geo_service_not_configured_not_allowed() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/pdok-kadaster-bestuurlijkegebieden/refresh-capabilities"))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithUserDetails("user")
+  void refresh_capabilities_user_allowed() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/snapshot-geoserver/refresh-capabilities"))
+        .andExpect(status().isOk());
   }
 
   /**
