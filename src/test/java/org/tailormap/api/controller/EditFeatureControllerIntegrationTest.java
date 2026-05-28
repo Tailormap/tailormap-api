@@ -522,9 +522,9 @@ class EditFeatureControllerIntegrationTest {
     final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
     final String osm_id = __fid.replace("osm_polygon.", "");
     final String url = apiBasePath + osm_polygonUrlPostgis;
-    final String json = String.format(
-        "{\"__fid\": \"%s\",\"attributes\" : { \"osm_id\":%s,\"building\":\"abandoned industrial complex\", \"way\" : \"%s\"}}",
-        __fid, osm_id, StaticTestData.get("osm_polygon__geom_edit_28992"));
+    final String json =
+        "{\"__fid\": \"%s\",\"attributes\" : { \"osm_id\":%s,\"building\":\"abandoned industrial complex\", \"way\" : \"%s\"}}"
+            .formatted(__fid, osm_id, StaticTestData.get("osm_polygon__geom_edit_28992"));
 
     final MvcResult result = mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)

@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -79,7 +79,7 @@ public class ApiSecurityConfiguration {
         new DefaultAuthenticationEventPublisher(applicationEventPublisher);
 
     authenticationEventPublisher.setAdditionalExceptionMappings(
-        Collections.singletonMap(OAuth2AuthenticationException.class, OAuth2AuthenticationFailureEvent.class));
+        Map.of(OAuth2AuthenticationException.class, OAuth2AuthenticationFailureEvent.class));
 
     authenticationEventPublisher.setDefaultAuthenticationFailureEvent(DefaultAuthenticationFailureEvent.class);
 

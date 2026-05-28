@@ -8,14 +8,14 @@ package org.tailormap.api.security;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface TailormapUserDetails extends Serializable, UserDetails {
 
   default Collection<TailormapAdditionalProperty> getAdditionalProperties() {
-    return Collections.emptyList();
+    return List.of();
   }
 
   Collection<TailormapAdditionalProperty> getAdditionalGroupProperties();

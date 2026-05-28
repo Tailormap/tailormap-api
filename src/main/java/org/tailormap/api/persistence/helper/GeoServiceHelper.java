@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -392,7 +391,7 @@ public class GeoServiceHelper {
         geoService,
         wms.getCapabilities().getLayerList(),
         wms.getCapabilities().getLayer(),
-        Collections.emptySet());
+        Set.of());
   }
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
@@ -410,7 +409,7 @@ public class GeoServiceHelper {
     // TODO: report back progress
 
     if (CollectionUtils.isEmpty(geoService.getLayers())) {
-      return Collections.emptyMap();
+      return Map.of();
     }
 
     // Do one DescribeLayer request for all layers in a WMS. This is faster than one request per

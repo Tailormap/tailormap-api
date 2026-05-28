@@ -205,8 +205,9 @@ public class GeoServiceProxyController {
     if (layerNameParamValue != null && !layer.getName().equals(layerNameParamValue)) {
       // check if layer matches any passthrough pattern, if not throw bad request
       if (proxyLayerPassthroughPatterns.stream().noneMatch(pattern -> {
-        String regex = String.format(pattern, Pattern.quote(layer.getName()));
-        return Pattern.compile(regex).matcher(layerNameParamValue).matches();
+        return Pattern.compile(pattern.formatted(Pattern.quote(layer.getName())))
+            .matcher(layerNameParamValue)
+            .matches();
       })) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Requested layer name does not match expected layer");

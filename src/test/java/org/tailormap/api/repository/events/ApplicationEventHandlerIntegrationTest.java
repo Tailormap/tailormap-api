@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.IntegrationTestOrdering.APPLICATION_EVENT_HANDLER_INTEGRATION_TEST_ORDER;
 
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -97,8 +97,8 @@ class ApplicationEventHandlerIntegrationTest {
     // create a new app content (only the part we need for this test)
     final AppContent appContentCopy = new AppContent();
     // Remove all app layers and update the application
-    appContentCopy.setLayerNodes(Collections.emptyList());
-    appContentCopy.setBaseLayerNodes(Collections.emptyList());
+    appContentCopy.setLayerNodes(List.of());
+    appContentCopy.setBaseLayerNodes(List.of());
     application.setContentRoot(appContentCopy);
 
     assertTrue(application.getAllOldAppTreeLayerNode().findAny().isPresent(), "Old node IDs should now exist");
