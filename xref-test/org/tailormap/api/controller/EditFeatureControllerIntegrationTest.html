@@ -530,9 +530,9 @@
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>     <strong class="jxr_keyword">final</strong> String __fid = StaticTestData.get(<span class="jxr_string">"osm_polygon__fid_edit"</span>) + <span class="jxr_string">"1234"</span>;
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>     <strong class="jxr_keyword">final</strong> String osm_id = __fid.replace(<span class="jxr_string">"osm_polygon."</span>, <span class="jxr_string">""</span>);
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + osm_polygonUrlPostgis;
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">final</strong> String json = String.format(
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>         <span class="jxr_string">"{\&quot;__fid\&quot;: \&quot;%s\&quot;,\&quot;attributes\&quot; : { \&quot;osm_id\&quot;:%s,\&quot;building\&quot;:\&quot;abandoned industrial complex\&quot;, \&quot;way\&quot; : \&quot;%s\&quot;}}"</span>,
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>         __fid, osm_id, StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>));
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">final</strong> String json =
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>         <span class="jxr_string">"{\&quot;__fid\&quot;: \&quot;%s\&quot;,\&quot;attributes\&quot; : { \&quot;osm_id\&quot;:%s,\&quot;building\&quot;:\&quot;abandoned industrial complex\&quot;, \&quot;way\&quot; : \&quot;%s\&quot;}}"</span>
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>             .formatted(__fid, osm_id, StaticTestData.get(<span class="jxr_string">"osm_polygon__geom_edit_28992"</span>));
 <a class="jxr_linenumber" name="L528" href="#L528">528</a> 
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>     <strong class="jxr_keyword">final</strong> MvcResult result = mockMvc.perform(post(url)
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>             .accept(MediaType.APPLICATION_JSON)
