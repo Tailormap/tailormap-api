@@ -14,6 +14,7 @@ import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.authentication.ProviderNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
@@ -98,6 +99,15 @@ public class AuthenticationEventsLogger {
   public void onFailure(AbstractAuthenticationFailureEvent failure) {
     Throwable exception = failure.getException();
     Throwable rootCause = getRootCause(exception);
+
+    if (exception instanceof ProviderNotFoundException
+        && failure.getAuthentication() instanceof OAuth2LoginAuthenticationToken) {
+      // Ignore, because after this generic exception another event will come with details about the actual OIDC
+      // authentication failure
+      // Prevents logging and incrementing the Micrometer counter for the authentication failure twice
+      logger.trace("Ignoring ProviderNotFoundException for OAuth2LoginAuthenticationToken", exception);
+      return;
+    }
 
     String oauth2Message = "";
     if (exception instanceof OAuth2AuthenticationException oauth2Ex && oauth2Ex.getError() != null) {
