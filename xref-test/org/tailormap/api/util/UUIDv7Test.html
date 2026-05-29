@@ -26,7 +26,7 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">class</strong> <a name="UUIDv7Test" href="../../../../org/tailormap/api/util/UUIDv7Test.html#UUIDv7Test">UUIDv7Test</a> {
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>    @Test
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">void</strong> testExtractUuid() <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">void</strong> test_uuid_v7_generation_ordering_and_timestamp_extraction() <strong class="jxr_keyword">throws</strong> InterruptedException {
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>      ArrayList&lt;UUID&gt; uuids = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 10; i++) {
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>        Thread.sleep(10); <em class="jxr_comment">// Ensure different timestamps for each UUID</em>
@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      UUID uuid = UUIDv7.randomV7();
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      Instant timestamp = UUIDv7.timestampAsInstant(uuid);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      assertNotNull(timestamp);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <em class="jxr_comment">// uuid v4 check</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <em class="jxr_comment">// Verify compatibility with standard Java UUID string parsing</em>
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      assertNotNull(UUID.fromString(uuid.toString()));
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      UUID parsed = UUIDv7.fromString(uuid.toString());
