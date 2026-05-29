@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 class UUIDv7Test {
   @Test
-  void testExtractUuid() throws InterruptedException {
+  void testUuidV7GenerationOrderingAndTimestampExtraction() throws InterruptedException {
     ArrayList<UUID> uuids = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       Thread.sleep(10); // Ensure different timestamps for each UUID
@@ -47,7 +47,7 @@ class UUIDv7Test {
     UUID uuid = UUIDv7.randomV7();
     Instant timestamp = UUIDv7.timestampAsInstant(uuid);
     assertNotNull(timestamp);
-    // uuid v4 check
+    // Verify compatibility with standard Java UUID string parsing
     assertNotNull(UUID.fromString(uuid.toString()));
 
     UUID parsed = UUIDv7.fromString(uuid.toString());
