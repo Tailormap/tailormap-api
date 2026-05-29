@@ -17,11 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 
@@ -68,46 +66,28 @@ class ActuatorSecurityConfigurationIntegrationTest {
         .andExpect(content().json("{\"status\":\"UP\"}"));
   }
 
-  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-  private static final RequestPostProcessor internetRequest = (MockHttpServletRequest request) -> {
-    request.setRemoteAddr("8.8.8.8");
-    return request;
-  };
-
-  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-  private static final RequestPostProcessor localNetworkRequest = (MockHttpServletRequest request) -> {
-    request.setRemoteAddr("172.1.1.1");
-    return request;
-  };
-
   @Test
-  void unauthenticated_prometheus_from_internet() throws Exception {
-    mockMvc.perform(get(basePath + "/prometheus")
-            .accept(MediaType.TEXT_PLAIN)
-            .with(internetRequest))
+  void unauthenticated_prometheus() throws Exception {
+    mockMvc.perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
-  void unauthenticated_prometheus_from_local_network() throws Exception {
-    mockMvc.perform(get(basePath + "/prometheus")
-            .accept(MediaType.TEXT_PLAIN)
-            .with(localNetworkRequest))
-        .andExpect(status().isOk())
-        .andExpect(content().string(startsWith("# HELP")));
-  }
-
-  @Test
   @WithMockUser(
-      username = "tm-admin",
-      authorities = {Group.ADMIN})
-  void authenticated_prometheus_from_internet() throws Exception {
-    mockMvc.perform(get(basePath + "/prometheus")
-            .accept(MediaType.TEXT_PLAIN)
-            .with(internetRequest))
+      username = "tm-actuator",
+      authorities = {Group.ACTUATOR})
+  void authenticated_prometheus() throws Exception {
+    mockMvc.perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
         .andExpect(content().string(startsWith("# HELP")))
         .andExpect(content().string(containsString("# HELP jvm_memory_used_bytes The amount of used memory")));
+  }
+
+  @Test
+  @WithMockUser(username = "tm-user")
+  void blocks_prometheus_without_any_authority() throws Exception {
+    mockMvc.perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
+        .andExpect(status().isForbidden());
   }
 }

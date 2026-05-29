@@ -14,9 +14,10 @@ ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
 SQLSERVER_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" sqlserver)
 POSTGRES_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgres)
 SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
+PROMETHEUS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" prometheus)
 _WAIT=0;
 
-printf "%(%T)T Waiting for databases to be ready..."
+printf "%(%T)T Waiting for services to be ready..."
 while :
 do
   printf " %d" "$_WAIT"
@@ -24,7 +25,8 @@ do
       [ "$ORACLE_HEALTHY" == "healthy" ] &&
       [ "$SQLSERVER_HEALTHY" == "healthy" ] &&
       [ "$POSTGRES_HEALTHY" == "healthy" ] &&
-      [ "$SOLR_HEALTHY" == "healthy" ]; then
+      [ "$SOLR_HEALTHY" == "healthy" ] &&
+      [ "$PROMETHEUS_HEALTHY" == "healthy" ]; then
     printf "\n%(%T)T Docker containers are healthy\n" -1
     break
   fi
@@ -37,6 +39,7 @@ do
   SQLSERVER_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" sqlserver)
   POSTGRES_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgres)
   SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
+  PROMETHEUS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" prometheus)
 done
 
 printf "\n%(%T)T Waiting for Oracle database to report it is ready to use... "

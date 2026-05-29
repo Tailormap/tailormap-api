@@ -636,7 +636,7 @@ public class CreateLayerExtractService {
    */
   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
   public void cleanupExpiredExtracts() {
-    logger.debug("Running expired extracts cleanup...");
+    logger.info("Running expired extracts cleanup in {}", exportFilesLocation);
     List<FileWithAttributes> oldDownloadFilesOnDisk = new ArrayList<>();
     Set<String> validClientIds = eventBus.getAllClientIds();
 
