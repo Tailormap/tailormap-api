@@ -156,6 +156,9 @@ public class PopulateTestData {
   @Value("${tailormap-api.database.populate-testdata.admin-hashed-password}")
   private String adminHashedPassword;
 
+  @Value("${tailormap-api.database.populate-testdata.management-hashed-password}")
+  private String managementHashedPassword;
+
   @Value("${tailormap-api.database.populate-testdata.exit:false}")
   private boolean exit;
 
@@ -316,6 +319,10 @@ public class PopulateTestData {
     u.addOrUpdateAdminProperty("admin-property", "private-value", false);
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
     u.getGroups().add(groupBar);
+    userRepository.save(u);
+
+    u = new User().setUsername(Group.ACTUATOR).setPassword(managementHashedPassword);
+    u.getGroups().add(groupRepository.findById(Group.ACTUATOR).orElseThrow());
     userRepository.save(u);
   }
 

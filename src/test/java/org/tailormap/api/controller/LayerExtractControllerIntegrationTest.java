@@ -408,7 +408,7 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
   }
 
   @DisabledUntil(
-      date = "2026-06-01",
+      date = "2026-07-01",
       reason =
           "This test relies on GeoTools 35.0 (or 34.4), see https://osgeo-org.atlassian.net/browse/GEOT-7894")
   @Test

@@ -7,6 +7,7 @@
 package org.tailormap.api.security;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class ActuatorSecurityConfiguration {
           msg = "with a different password from";
         }
         logger.info(
-            "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable", msg);
+            "Actuator account already exists {} the MANAGEMENT_HASHED_PASSWORD environment variable", msg);
       } else {
         if (!hashedPassword.startsWith("{bcrypt}")) {
           logger.error("Invalid password hash, must start with {bcrypt}");
@@ -96,20 +97,14 @@ public class ActuatorSecurityConfiguration {
             .requestMatchers(basePath + "/info")
             .permitAll()
             .requestMatchers(basePath + "/**")
-            .access((authentication, context) -> {
-              String remoteAddr = context.getRequest().getRemoteAddr();
-              if (remoteAddr.startsWith("10.")
-                  || remoteAddr.startsWith("192.168.")
-                  || remoteAddr.startsWith("172.")
-                  || remoteAddr.startsWith("127.")) {
-                return new AuthorizationDecision(true);
-              }
+            .access((authentication, _context) -> {
               if (authentication.get() == null) {
                 return new AuthorizationDecision(false);
               }
-              return new AuthorizationDecision(authentication.get().getAuthorities().stream()
-                  .anyMatch(a -> a.getAuthority().equals(Group.ADMIN)
-                      || a.getAuthority().equals(Group.ACTUATOR)));
+              return new AuthorizationDecision(
+                  Objects.requireNonNull(authentication.get()).getAuthorities().stream()
+                      .anyMatch(a -> Objects.equals(a.getAuthority(), Group.ADMIN)
+                          || Objects.equals(a.getAuthority(), Group.ACTUATOR)));
             }))
         .httpBasic(Customizer.withDefaults())
         .addFilterAfter(

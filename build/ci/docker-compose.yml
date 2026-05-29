@@ -145,16 +145,42 @@ services:
       timeout: 5s
       retries: 3
 
-
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v3.12.0
     environment:
       TZ: Europe/Amsterdam
+      # Prometheus scrape/configuration file is created on startup from this environment variable
+      PROM_CONFIG: |-
+        global:
+          scrape_interval: '5s'
+        scrape_configs:
+          - job_name: 'tailormap-api-snapshot'
+            scheme: 'http'
+            static_configs:
+              - targets:
+                  - 'host.docker.internal:8080'
+            metrics_path: '/api/actuator/prometheus'
+            metric_relabel_configs:
+              - source_labels: [__name__]
+                regex: '^tailormap_.*'
+                action: keep
+            basic_auth:
+              username: 'actuator'
+              password: '${MANAGEMENT_PASSWORD:-actuator}'
+      # config for development//test purposes only!
+      CMD: >-
+            --config.file=/etc/prometheus/prometheus.yml
+            --web.enable-admin-api
+            --web.enable-lifecycle
+            --storage.tsdb.retention.time=91d
+            --storage.tsdb.retention.size=100MB
+            --log.level=debug
+            --enable-feature=exemplar-storage
+    entrypoint: /bin/sh -c 'echo "$$PROM_CONFIG" > /etc/prometheus/prometheus.yml && /bin/prometheus $$CMD'
     depends_on:
       - solr
     volumes:
-      - ./compose-config-files/prometheus.yaml:/prometheus.yaml:ro
       - prometheus-data:/prometheus
     ports:
       - "127.0.0.1:9090:9090"
@@ -163,19 +189,6 @@ services:
     networks:
       - tailormap-ci
     restart: unless-stopped
-    command:
-      - --enable-feature=exemplar-storage
-      - --config.file=/prometheus.yaml
-      # see: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
-      # keep data for 91 days or 100MB, whichever comes first
-      - --storage.tsdb.retention.time=91d
-      - --storage.tsdb.retention.size=100MB
-      - --log.level=debug
-      # to be able to reload the config file without restarting the container, development-only!
-      - --web.enable-lifecycle
-      # to be able to delete/cleanup metrics on request we need the admin API
-      # see: https://prometheus.io/docs/prometheus/latest/querying/api/#tsdb-admin-apis
-      - --web.enable-admin-api
     healthcheck:
       test: 'wget --server-response --spider http://localhost:9090/query?query=up || exit 1'
       start_period: 60s
