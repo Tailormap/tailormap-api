@@ -103,7 +103,7 @@ class ApplicationEventHandlerIntegrationTest {
 
     assertTrue(application.getAllOldAppTreeLayerNode().findAny().isPresent(), "Old node IDs should now exist");
 
-    // trigger the delete event handler
+    // trigger the before-save event handler
     applicationEventHandler.beforeSaveApplicationEventHandler(application);
 
     mockMvc.perform(get(adminBasePath + "/graph/applayers/1"))
