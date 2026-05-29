@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 class UUIDv7Test {
   @Test
-  void testUuidV7GenerationOrderingAndTimestampExtraction() throws InterruptedException {
+  void test_uuid_v7_generation_ordering_and_timestamp_extraction() throws InterruptedException {
     ArrayList<UUID> uuids = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       Thread.sleep(10); // Ensure different timestamps for each UUID
