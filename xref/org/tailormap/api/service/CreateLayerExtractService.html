@@ -644,7 +644,7 @@
 <a class="jxr_linenumber" name="L636" href="#L636">636</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L637" href="#L637">637</a>   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
 <a class="jxr_linenumber" name="L638" href="#L638">638</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cleanupExpiredExtracts() {
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>     logger.debug(<span class="jxr_string">"Running expired extracts cleanup..."</span>);
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>     logger.info(<span class="jxr_string">"Running expired extracts cleanup in {}"</span>, exportFilesLocation);
 <a class="jxr_linenumber" name="L640" href="#L640">640</a>     List&lt;FileWithAttributes&gt; oldDownloadFilesOnDisk = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L641" href="#L641">641</a>     Set&lt;String&gt; validClientIds = eventBus.getAllClientIds();
 <a class="jxr_linenumber" name="L642" href="#L642">642</a> 
