@@ -160,7 +160,10 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @WithUserDetails("user")
+  // TODO use custom UserDetailsService for test that either returns Group without the KEY_REFRESH_CAPABILITIES_SERVICES
+  // property (or which doesn't contain the service to refresh) and that does, to test this and next use cases
+  @WithUserDetails("refresher")
+
   void refresh_capabilities_geo_service_not_configured_not_allowed() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -169,7 +172,7 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @WithUserDetails("user")
+  @WithUserDetails("refresher")
   void refresh_capabilities_user_allowed() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 

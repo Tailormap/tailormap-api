@@ -299,6 +299,10 @@ public class PopulateTestData {
     u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz, refreshCapabilities));
     userRepository.save(u);
 
+    u = new User().setUsername("refresher").setPassword("{noop}refresher").setName("Refresh geo services only");
+    u.getGroups().add(groupRepository.findById(Group.REFRESH_CAPABILITIES).orElseThrow());
+    userRepository.save(u);
+
     // Foo only user
     u = new User()
         .setUsername("foo")
