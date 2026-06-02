@@ -27,7 +27,7 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  @RepositoryRestResource
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> <strong class="jxr_keyword">extends</strong> JpaRepository&lt;Group, String&gt;, RevisionRepository&lt;Group, String, Long&gt; {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <strong class="jxr_keyword">default</strong> List&lt;TailormapAdditionalProperty&gt; findAdditionalPropertiesByGroups(List&lt;String&gt; groups) {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <strong class="jxr_keyword">default</strong> List&lt;TailormapAdditionalProperty&gt; findAdditionalPropertiesByGroups(Collection&lt;String&gt; groups) {
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.findAllById(groups).stream()
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>          .map(Group::getAdditionalProperties)
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>          .filter(Objects::nonNull)

@@ -1930,7 +1930,7 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html#filterTool(org.tailormap.api.viewer.model.FilterEditConfiguration.FilterToolEnum)" class="member-name-link">filterTool(FilterEditConfiguration.FilterToolEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html" title="class in org.tailormap.api.viewer.model">FilterEditConfiguration</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/GroupRepository.html#findAdditionalPropertiesByGroups(java.util.List)" class="member-name-link">findAdditionalPropertiesByGroups(List)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a></dt>
+<dt><a href="org/tailormap/api/repository/GroupRepository.html#findAdditionalPropertiesByGroups(java.util.Collection)" class="member-name-link">findAdditionalPropertiesByGroups(Collection)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/GroupRepository.html#findAliasesForGroups(java.util.Collection)" class="member-name-link">findAliasesForGroups(Collection)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a></dt>
 <dd>&nbsp;</dd>
@@ -2966,6 +2966,8 @@ configured settings, taking into account the configured attribute order and hidd
 <dd>
 <div class="block">A map of access type to decision.</div>
 </dd>
+<dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#getDefaultAuthorities()" class="member-name-link">getDefaultAuthorities()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/projections/TMFeatureSourceSummary.TMFeatureTypeSummary.html#getDefaultGeometryAttribute()" class="member-name-link">getDefaultGeometryAttribute()</a> - Method in interface org.tailormap.api.persistence.projections.<a href="org/tailormap/api/persistence/projections/TMFeatureSourceSummary.TMFeatureTypeSummary.html" title="interface in org.tailormap.api.persistence.projections">TMFeatureSourceSummary.TMFeatureTypeSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#getDefaultGeometryAttribute()" class="member-name-link">getDefaultGeometryAttribute()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
@@ -7667,6 +7669,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AuthorizationRule.html#setDecisions(java.util.Map)" class="member-name-link">setDecisions(Map)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AuthorizationRule.html" title="class in org.tailormap.api.persistence.json">AuthorizationRule</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#setDefaultAuthorities(java.util.List)" class="member-name-link">setDefaultAuthorities(List)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#setDefaultGeometryAttribute(java.lang.String)" class="member-name-link">setDefaultGeometryAttribute(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppI18nSettings.html#setDefaultLanguage(java.lang.String)" class="member-name-link">setDefaultLanguage(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppI18nSettings.html" title="class in org.tailormap.api.persistence.json">AppI18nSettings</a></dt>
@@ -9214,7 +9218,7 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/TailormapOidcUserService.html" class="type-name-link" title="class in org.tailormap.api.security">TailormapOidcUserService</a> - Class in <a href="org/tailormap/api/security/package-summary.html">org.tailormap.api.security</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/security/TailormapOidcUserService.html#%3Cinit%3E(org.tailormap.api.repository.GroupRepository)" class="member-name-link">TailormapOidcUserService(GroupRepository)</a> - Constructor for class org.tailormap.api.security.<a href="org/tailormap/api/security/TailormapOidcUserService.html" title="class in org.tailormap.api.security">TailormapOidcUserService</a></dt>
+<dt><a href="org/tailormap/api/security/TailormapOidcUserService.html#%3Cinit%3E(org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.OIDCConfigurationRepository)" class="member-name-link">TailormapOidcUserService(GroupRepository, OIDCConfigurationRepository)</a> - Constructor for class org.tailormap.api.security.<a href="org/tailormap/api/security/TailormapOidcUserService.html" title="class in org.tailormap.api.security">TailormapOidcUserService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/TailormapPasswordStrengthConfig.html" class="type-name-link" title="class in org.tailormap.api.configuration">TailormapPasswordStrengthConfig</a> - Class in <a href="org/tailormap/api/configuration/package-summary.html">org.tailormap.api.configuration</a></dt>
 <dd>
