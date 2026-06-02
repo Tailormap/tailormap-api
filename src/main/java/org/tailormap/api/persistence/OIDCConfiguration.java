@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.persistence;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -13,8 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
@@ -44,6 +48,10 @@ public class OIDCConfiguration extends AuditMetadata {
   private String status;
 
   private UUID image;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private List<String> defaultAuthorities;
 
   public Long getId() {
     return id;
@@ -132,6 +140,15 @@ public class OIDCConfiguration extends AuditMetadata {
 
   public OIDCConfiguration setImage(UUID image) {
     this.image = image;
+    return this;
+  }
+
+  public List<String> getDefaultAuthorities() {
+    return defaultAuthorities;
+  }
+
+  public OIDCConfiguration setDefaultAuthorities(List<String> defaultAuthorities) {
+    this.defaultAuthorities = defaultAuthorities;
     return this;
   }
 }

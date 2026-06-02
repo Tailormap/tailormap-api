@@ -8,7 +8,7 @@ package org.tailormap.api.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,22 +19,35 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.repository.GroupRepository;
+import org.tailormap.api.repository.OIDCConfigurationRepository;
 
 @Service
 public class TailormapOidcUserService extends OidcUserService {
   private final GroupRepository groupRepository;
+  private final OIDCConfigurationRepository oidcConfigurationRepository;
 
-  public TailormapOidcUserService(GroupRepository groupRepository) {
+  public TailormapOidcUserService(
+      GroupRepository groupRepository, OIDCConfigurationRepository oidcConfigurationRepository) {
     this.groupRepository = groupRepository;
+    this.oidcConfigurationRepository = oidcConfigurationRepository;
   }
 
   @Override
   public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
     OidcUser user = super.loadUser(userRequest);
 
-    List<String> groups = new ArrayList<>();
+    Set<String> groups = new HashSet<>();
     Optional.ofNullable(userRequest.getIdToken().getClaimAsStringList("roles"))
         .ifPresent(groups::addAll);
+
+    // Add default authorities for OIDC registration
+    String registrationId = userRequest.getClientRegistration().getRegistrationId();
+    if (!"static".equals(registrationId)) {
+      oidcConfigurationRepository
+          .findById(Long.valueOf(userRequest.getClientRegistration().getRegistrationId()))
+          .filter(oc -> oc.getDefaultAuthorities() != null)
+          .ifPresent(configuration -> groups.addAll(configuration.getDefaultAuthorities()));
+    }
 
     // Add aliases for groups (with the same name as the role) as authorities, even if the group does not exist
     Set<String> aliases = groupRepository.findAliasesForGroups(groups);
