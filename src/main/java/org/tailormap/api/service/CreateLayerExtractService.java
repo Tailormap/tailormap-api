@@ -636,7 +636,7 @@ public class CreateLayerExtractService {
    */
   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
   public void cleanupExpiredExtracts() {
-    logger.info("Running expired extracts cleanup in {}", exportFilesLocation);
+    logger.debug("Running expired extracts cleanup in {}", exportFilesLocation);
     List<FileWithAttributes> oldDownloadFilesOnDisk = new ArrayList<>();
     Set<String> validClientIds = eventBus.getAllClientIds();
 
@@ -666,30 +666,33 @@ public class CreateLayerExtractService {
       });
 
       try (Stream<Path> paths = Files.walk(Path.of(exportFilesLocation))) {
-        paths.filter(Files::isDirectory).forEach(path -> {
-          File file = path.toFile();
-          String filename = file.getName();
-          String[] parts = filename.split("[_]", -1);
-          if (parts.length < 3) {
-            logger.warn("Unexpected directory in extract location: {}", filename);
-            return;
-          }
-          String clientId = parts[1];
-          if (!validClientIds.contains(clientId)) {
-            try {
-              deleteDirectoryRecursively(file.toPath());
-            } catch (IOException e) {
-              logger.error("Failed to delete unattached extract directory {}", filename);
-            }
-          } else {
-            try {
-              Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
-              oldDownloadFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
-            } catch (IllegalArgumentException ignored) {
-              // not a valid v7 uuid
-            }
-          }
-        });
+        paths.filter(Files::isDirectory)
+            .filter(path -> !path.equals(Path.of(exportFilesLocation)))
+            .forEach(path -> {
+              logger.debug("Checking directory {} for expired extracts", path);
+              File file = path.toFile();
+              String filename = file.getName();
+              String[] parts = filename.split("[_]", -1);
+              if (parts.length < 3) {
+                logger.warn("Unexpected directory in extract location: {}", filename);
+                return;
+              }
+              String clientId = parts[1];
+              if (!validClientIds.contains(clientId)) {
+                try {
+                  deleteDirectoryRecursively(file.toPath());
+                } catch (IOException e) {
+                  logger.error("Failed to delete unattached extract directory {}", filename);
+                }
+              } else {
+                try {
+                  Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+                  oldDownloadFilesOnDisk.add(new FileWithAttributes(file, timestampPart, clientId));
+                } catch (IllegalArgumentException ignored) {
+                  // not a valid v7 uuid
+                }
+              }
+            });
       }
 
       // delete any files/directories are older than the cutoff
