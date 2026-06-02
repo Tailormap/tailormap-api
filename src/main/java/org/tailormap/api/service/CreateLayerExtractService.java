@@ -381,10 +381,6 @@ public class CreateLayerExtractService {
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
 
-      if (outputDataStore instanceof ExcelDataStore excelDataStore) {
-        excelDataStore.setEnableCellAutoSizing(featCount >= 0 && featCount < 1000);
-      }
-
       final AtomicInteger featsAdded = new AtomicInteger();
       if (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
         featureStore.setTransaction(outputTransaction);
