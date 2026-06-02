@@ -201,10 +201,7 @@ public class FeaturesController implements Constants {
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
 
-      // TODO evaluate; do we want geometry in this response or not?
-      //  if we do the geometry attribute must not be removed from propNames
-
-      // Property names for query: only non-geometry attributes that aren't hidden
+      // Property names for sorting: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
           .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)
           .filter(a -> !isGeometry(a.getType()))
@@ -248,6 +245,11 @@ public class FeaturesController implements Constants {
 
       // setup query, attributes and filter
       Query q = new Query(fs.getName().toString());
+
+      // add default geometry attribute to the property names for query
+      if (!skipGeometryOutput && !onlyGeometries) {
+        propNames.add(tmft.getDefaultGeometryAttribute());
+      }
       q.setPropertyNames(propNames);
 
       // count can be -1 if too costly eg. some WFS
