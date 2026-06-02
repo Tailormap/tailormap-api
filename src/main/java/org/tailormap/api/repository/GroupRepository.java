@@ -19,7 +19,7 @@ import org.tailormap.api.security.TailormapAdditionalProperty;
 
 @RepositoryRestResource
 public interface GroupRepository extends JpaRepository<Group, String>, RevisionRepository<Group, String, Long> {
-  default List<TailormapAdditionalProperty> findAdditionalPropertiesByGroups(List<String> groups) {
+  default List<TailormapAdditionalProperty> findAdditionalPropertiesByGroups(Collection<String> groups) {
     return this.findAllById(groups).stream()
         .map(Group::getAdditionalProperties)
         .filter(Objects::nonNull)
