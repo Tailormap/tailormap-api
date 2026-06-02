@@ -139,6 +139,37 @@ class GeoServiceAdminControllerIntegrationTest {
     }
   }
 
+  @Test
+  @WithMockUser(username = "some-user")
+  void refresh_capabilities_user_not_allowed() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/snapshot-geoserver/refresh-capabilities"))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "some-user",
+      authorities = {Group.REFRESH_CAPABILITIES})
+  void refresh_capabilities_geo_service_not_found() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/does-not-exist/refresh-capabilities"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "some-user",
+      authorities = {Group.REFRESH_CAPABILITIES})
+  void refresh_capabilities_user_allowed() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    mockMvc.perform(post(adminBasePath + "/geo-services/snapshot-geoserver/refresh-capabilities"))
+        .andExpect(status().isOk());
+  }
+
   /**
    * Tests whether {@link AdminRepositoryRestExceptionHandler} is applied and converting validation exceptions to
    * JSON.

@@ -42,6 +42,7 @@ public class Group extends AuditMetadata {
   // Group to make authorization rules for authenticated users
   public static final String AUTHENTICATED = "authenticated";
   public static final String ADMIN = "admin";
+  public static final String REFRESH_CAPABILITIES = "refresh-capabilities";
   public static final String ACTUATOR = "actuator";
 
   @Id
