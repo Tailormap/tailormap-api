@@ -77,10 +77,11 @@ public class TailormapOidcUserService extends OidcUserService {
       groups.addAll(roles);
     }
 
-    // Add default authorities for OIDC registration
-    if (oidcConfiguration.isPresent() && oidcConfiguration.get().getDefaultAuthorities() != null) {
-      groups.addAll(oidcConfiguration.orElseThrow().getDefaultAuthorities());
-    }
+    oidcConfiguration.ifPresent(oc -> {
+      if (oc.getDefaultAuthorities() != null) {
+        groups.addAll(oc.getDefaultAuthorities());
+      }
+    });
 
     // Add aliases for groups (with the same name as the role) as authorities, even if the group does not exist
     Set<String> aliases = groupRepository.findAliasesForGroups(groups);
