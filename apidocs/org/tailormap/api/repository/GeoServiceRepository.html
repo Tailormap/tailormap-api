@@ -76,7 +76,8 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">GeoServiceRepository</span><span class="extends-implements">
+<div class="type-signature"><span class="annotations">@PreAuthorize("hasAnyAuthority('admin', 'refresh-capabilities')")
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">GeoServiceRepository</span><span class="extends-implements">
 extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;, org.springframework.data.repository.history.RevisionRepository&lt;<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&gt;</span></div>
 </div>
 </section>

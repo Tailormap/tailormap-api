@@ -23,9 +23,9 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.data.<strong class="jxr_keyword">rest</strong>.core.annotation.RepositoryRestResource;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.access.prepost.PreAuthorize;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.GeoService;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.annotation.PreAuthorizeAdmin;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Group;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  @PreAuthorizeAdmin
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  @PreAuthorize(<span class="jxr_string">"hasAnyAuthority('"</span> + Group.ADMIN + <span class="jxr_string">"', '"</span> + Group.REFRESH_CAPABILITIES + <span class="jxr_string">"')"</span>)
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  @RepositoryRestResource(path = <span class="jxr_string">"geo-services"</span>, collectionResourceRel = <span class="jxr_string">"geo-services"</span>, itemResourceRel = <span class="jxr_string">"geo-service"</span>)
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="GeoServiceRepository" href="../../../../org/tailormap/api/repository/GeoServiceRepository.html#GeoServiceRepository">GeoServiceRepository</a>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">extends</strong> JpaRepository&lt;GeoService, String&gt;, RevisionRepository&lt;GeoService, String, Long&gt; {

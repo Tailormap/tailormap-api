@@ -147,29 +147,32 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>             <em class="jxr_comment">/* (debug) log user making the request */</em> <strong class="jxr_keyword">new</strong> <a name="AuditInterceptor" href="../../../../org/tailormap/api/security/AuditInterceptor.html#AuditInterceptor">AuditInterceptor</a>(),
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>             AnonymousAuthenticationFilter.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         .authorizeHttpRequests(authorize -&gt; {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>           authorize.requestMatchers(adminApiBasePath + <span class="jxr_string">"/**"</span>).hasAuthority(Group.ADMIN);
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>           authorize.requestMatchers(apiBasePath + <span class="jxr_string">"/**"</span>).permitAll();
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         })
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         .formLogin(formLogin -&gt;
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>             formLogin.loginPage(apiBasePath + <span class="jxr_string">"/unauthorized"</span>).loginProcessingUrl(apiBasePath + <span class="jxr_string">"/login"</span>))
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         .oauth2Login(login -&gt; login.authorizationEndpoint(
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>                 endpoint -&gt; endpoint.baseUri(apiBasePath + <span class="jxr_string">"/oauth2/authorization"</span>)
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>                     .authorizationRedirectStrategy(redirectStrategy))
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>             .redirectionEndpoint(endpoint -&gt; endpoint.baseUri(apiBasePath + <span class="jxr_string">"/oauth2/callback"</span>))
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>             .userInfoEndpoint(endpoint -&gt; endpoint.oidcUserService(oidcUserService))
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>             .successHandler(authenticationSuccessHandler))
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>         .anonymous(anonymous -&gt; anonymous.authorities(Group.ANONYMOUS))
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>         .logout(logout -&gt; logout.logoutUrl(apiBasePath + <span class="jxr_string">"/logout"</span>)
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>             .logoutSuccessHandler((request, response, authentication) -&gt;
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>                 response.sendError(HttpStatus.OK.value(), <span class="jxr_string">"OK"</span>)));
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">return</strong> http.build();
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>   @Bean
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>   <strong class="jxr_keyword">public</strong> <a name="OIDCRepository" href="../../../../org/tailormap/api/security/OIDCRepository.html#OIDCRepository">OIDCRepository</a> clientRegistrationRepository(<a name="OIDCConfigurationRepository" href="../../../../org/tailormap/api/repository/OIDCConfigurationRepository.html#OIDCConfigurationRepository">OIDCConfigurationRepository</a> repository) {
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="OIDCRepository" href="../../../../org/tailormap/api/security/OIDCRepository.html#OIDCRepository">OIDCRepository</a>(repository);
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>   }
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> }
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>           authorize
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>               .requestMatchers(adminApiBasePath + <span class="jxr_string">"/geo-services/*/refresh-capabilities"</span>)
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>               .hasAnyAuthority(Group.ADMIN, Group.REFRESH_CAPABILITIES);
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>           authorize.requestMatchers(adminApiBasePath + <span class="jxr_string">"/**"</span>).hasAuthority(Group.ADMIN);
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>           authorize.requestMatchers(apiBasePath + <span class="jxr_string">"/**"</span>).permitAll();
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         })
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         .formLogin(formLogin -&gt;
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             formLogin.loginPage(apiBasePath + <span class="jxr_string">"/unauthorized"</span>).loginProcessingUrl(apiBasePath + <span class="jxr_string">"/login"</span>))
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         .oauth2Login(login -&gt; login.authorizationEndpoint(
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>                 endpoint -&gt; endpoint.baseUri(apiBasePath + <span class="jxr_string">"/oauth2/authorization"</span>)
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     .authorizationRedirectStrategy(redirectStrategy))
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>             .redirectionEndpoint(endpoint -&gt; endpoint.baseUri(apiBasePath + <span class="jxr_string">"/oauth2/callback"</span>))
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>             .userInfoEndpoint(endpoint -&gt; endpoint.oidcUserService(oidcUserService))
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>             .successHandler(authenticationSuccessHandler))
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         .anonymous(anonymous -&gt; anonymous.authorities(Group.ANONYMOUS))
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         .logout(logout -&gt; logout.logoutUrl(apiBasePath + <span class="jxr_string">"/logout"</span>)
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>             .logoutSuccessHandler((request, response, authentication) -&gt;
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 response.sendError(HttpStatus.OK.value(), <span class="jxr_string">"OK"</span>)));
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">return</strong> http.build();
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>   }
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> 
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   @Bean
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">public</strong> <a name="OIDCRepository" href="../../../../org/tailormap/api/security/OIDCRepository.html#OIDCRepository">OIDCRepository</a> clientRegistrationRepository(<a name="OIDCConfigurationRepository" href="../../../../org/tailormap/api/repository/OIDCConfigurationRepository.html#OIDCConfigurationRepository">OIDCConfigurationRepository</a> repository) {
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="OIDCRepository" href="../../../../org/tailormap/api/security/OIDCRepository.html#OIDCRepository">OIDCRepository</a>(repository);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>   }
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
