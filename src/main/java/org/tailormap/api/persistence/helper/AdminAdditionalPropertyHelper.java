@@ -11,8 +11,6 @@ import java.util.function.Function;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 
 public class AdminAdditionalPropertyHelper {
-  public static final String KEY_REFRESH_CAPABILITIES_SERVICES = "refresh-capabilities-services";
-
   // these are known keys used in this API and other projects, do not reuse them for other purposes:
   //      used in Drawing
   public static final String KEY_DRAWINGS_ADMIN = "drawings-admin";

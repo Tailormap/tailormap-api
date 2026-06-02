@@ -63,9 +63,7 @@ import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.User;
-import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
-import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppSettings;
@@ -286,21 +284,9 @@ public class PopulateTestData {
     Group groupBaz = new Group().setName("test-baz").setDescription("Used for integration tests.");
     groupRepository.save(groupBaz);
 
-    Group refreshCapabilities =
-        groupRepository.findById(Group.REFRESH_CAPABILITIES).orElseThrow();
-    refreshCapabilities.setAdditionalProperties(List.of(new AdminAdditionalProperty()
-        .key(AdminAdditionalPropertyHelper.KEY_REFRESH_CAPABILITIES_SERVICES)
-        .isPublic(false)
-        .value(List.of("snapshot-geoserver", "does-not-exist"))));
-    groupRepository.flush();
-
     // Normal user
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
-    u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz, refreshCapabilities));
-    userRepository.save(u);
-
-    u = new User().setUsername("refresher").setPassword("{noop}refresher").setName("Refresh geo services only");
-    u.getGroups().add(groupRepository.findById(Group.REFRESH_CAPABILITIES).orElseThrow());
+    u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz));
     userRepository.save(u);
 
     // Foo only user

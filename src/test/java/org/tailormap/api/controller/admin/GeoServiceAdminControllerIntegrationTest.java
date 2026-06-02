@@ -23,7 +23,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -141,8 +140,7 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @WithUserDetails("foo")
-  // No authorities: should not be able to refresh capabilities
+  @WithMockUser(username = "some-user")
   void refresh_capabilities_user_not_allowed() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -151,7 +149,9 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @WithUserDetails("user")
+  @WithMockUser(
+      username = "some-user",
+      authorities = {Group.REFRESH_CAPABILITIES})
   void refresh_capabilities_geo_service_not_found() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
@@ -160,19 +160,9 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  // TODO use custom UserDetailsService for test that either returns Group without the KEY_REFRESH_CAPABILITIES_SERVICES
-  // property (or which doesn't contain the service to refresh) and that does, to test this and next use cases
-  @WithUserDetails("refresher")
-
-  void refresh_capabilities_geo_service_not_configured_not_allowed() throws Exception {
-    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
-
-    mockMvc.perform(post(adminBasePath + "/geo-services/pdok-kadaster-bestuurlijkegebieden/refresh-capabilities"))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @WithUserDetails("refresher")
+  @WithMockUser(
+      username = "some-user",
+      authorities = {Group.REFRESH_CAPABILITIES})
   void refresh_capabilities_user_allowed() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 

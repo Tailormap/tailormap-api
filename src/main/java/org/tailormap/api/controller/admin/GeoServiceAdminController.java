@@ -7,15 +7,8 @@
 package org.tailormap.api.controller.admin;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
@@ -29,15 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.Group;
-import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.repository.GeoServiceRepository;
-import org.tailormap.api.security.TailormapUserDetails;
 
 @RestController
 public class GeoServiceAdminController {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final GeoServiceRepository geoServiceRepository;
   private final ApplicationContext applicationContext;
@@ -59,8 +48,6 @@ public class GeoServiceAdminController {
     GeoService geoService =
         geoServiceRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-    // Check authorization: admins have full access, users with REFRESH_CAPABILITIES role need
-    // service ID in their additional properties
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     assert authentication != null;
@@ -69,46 +56,9 @@ public class GeoServiceAdminController {
     boolean hasRefreshCapabilities = authentication.getAuthorities().stream()
         .anyMatch(a -> Objects.equals(a.getAuthority(), Group.REFRESH_CAPABILITIES));
 
-    if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-      if (!isAdmin) {
-        if (!hasRefreshCapabilities) {
-          // Should not be allowed by securityMatchers in ApiSecurityConfiguration
-          throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        final Set<String> allowedGeoServiceIds = userDetails.getAdditionalGroupProperties().stream()
-            .filter(p -> Objects.equals(
-                p.key(), AdminAdditionalPropertyHelper.KEY_REFRESH_CAPABILITIES_SERVICES))
-            .findFirst()
-            .map(p -> {
-              Set<String> allowedIds = new HashSet<>();
-              switch (p.value()) {
-                case null -> {
-                  return allowedIds;
-                }
-                case String stringValue ->
-                  allowedIds.addAll(Arrays.stream(stringValue.split(","))
-                      .map(String::trim)
-                      .toList());
-                case ArrayList<?> list ->
-                  list.stream()
-                      .filter(item -> item instanceof String)
-                      .map(item -> (String) item)
-                      .forEach(allowedIds::add);
-                default -> {}
-              }
-              return allowedIds;
-            })
-            .orElse(new HashSet<>());
-
-        if (!allowedGeoServiceIds.contains(geoService.getId())) {
-          throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        logger.debug(
-            "User {} is authorized to refresh capabilities for GeoService {} (id: {})",
-            userDetails.getUsername(),
-            geoService.getTitle(),
-            geoService.getId());
-      }
+    if (!isAdmin && !hasRefreshCapabilities) {
+      // Should not be allowed by securityMatchers in ApiSecurityConfiguration
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     geoService.setRefreshCapabilities(true);
