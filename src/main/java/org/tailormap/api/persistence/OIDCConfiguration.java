@@ -53,6 +53,8 @@ public class OIDCConfiguration extends AuditMetadata {
   @Column(columnDefinition = "jsonb")
   private List<String> defaultAuthorities;
 
+  private String rolesClaimFilterRegex;
+
   public Long getId() {
     return id;
   }
@@ -149,6 +151,15 @@ public class OIDCConfiguration extends AuditMetadata {
 
   public OIDCConfiguration setDefaultAuthorities(List<String> defaultAuthorities) {
     this.defaultAuthorities = defaultAuthorities;
+    return this;
+  }
+
+  public String getRolesClaimFilterRegex() {
+    return rolesClaimFilterRegex;
+  }
+
+  public OIDCConfiguration setRolesClaimFilterRegex(String rolesClaimFilter) {
+    this.rolesClaimFilterRegex = rolesClaimFilter;
     return this;
   }
 }
