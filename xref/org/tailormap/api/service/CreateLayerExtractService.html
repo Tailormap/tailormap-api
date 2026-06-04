@@ -389,385 +389,381 @@
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(<strong class="jxr_keyword">new</strong> String[0]));
 <a class="jxr_linenumber" name="L382" href="#L382">382</a>       outputDataStore.createSchema(fType);
 <a class="jxr_linenumber" name="L383" href="#L383">383</a> 
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>       <strong class="jxr_keyword">if</strong> (outputDataStore instanceof ExcelDataStore excelDataStore) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>         excelDataStore.setEnableCellAutoSizing(featCount &gt;= 0 &amp;&amp; featCount &lt; 1000);
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>       }
-<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>       <strong class="jxr_keyword">final</strong> AtomicInteger featsAdded = <strong class="jxr_keyword">new</strong> AtomicInteger();
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>       <strong class="jxr_keyword">if</strong> (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>         featureStore.setTransaction(outputTransaction);
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>         featureStore.addFeatureListener(event -&gt; {
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>           <strong class="jxr_keyword">if</strong> (event.getType().equals(FeatureEvent.Type.ADDED)) {
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>             featsAdded.getAndIncrement();
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>           }
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>           <strong class="jxr_keyword">if</strong> (featCount &gt; 0) {
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>             <strong class="jxr_keyword">if</strong> (featsAdded.get() % progressReportInterval == 0) {
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>               <strong class="jxr_keyword">this</strong>.emitProgress(
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>                   clientId,
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>                   outputFileName,
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>                   (<strong class="jxr_keyword">int</strong>) ((featsAdded.doubleValue() / featCount) * 100),
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>                   false,
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>                   <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>             }
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>           }
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>         });
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>         featureStore.addFeatures(inputFeatureSource.getFeatures(q));
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         outputTransaction.commit();
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         outputDataStore.dispose();
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, 100, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"Extract completed successfully"</span>);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         outputDataStore.dispose();
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>         <strong class="jxr_keyword">this</strong>.emitError(clientId, <span class="jxr_string">"Output datastore is not a SimpleFeatureStore, cannot write features"</span>);
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         logger.error(<span class="jxr_string">"Output datastore is not a SimpleFeatureStore, cannot write features"</span>);
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>       }
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>     } <strong class="jxr_keyword">catch</strong> (IOException | SchemaException | IllegalArgumentException | NullPointerException e) {
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>       emitError(clientId, e.getMessage());
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>       logger.error(<span class="jxr_string">"Creating extract failed"</span>, e);
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>       <strong class="jxr_keyword">if</strong> (outputDataStore != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>         outputDataStore.dispose();
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>       }
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>       <strong class="jxr_keyword">if</strong> (inputFeatureSource != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>           inputFeatureSource.getDataStore().dispose();
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>           logger.warn(<span class="jxr_string">"Error disposing datastore for feature source {}"</span>, inputFeatureSource.getName(), e);
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         }
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>       }
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>     }
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>   }
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> 
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>   <strong class="jxr_keyword">private</strong> File getValidatedOutputFile(String outputFileName) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     Path exportRoot = Path.of(exportFilesLocation).toRealPath();
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>     Path outputPath = exportRoot.resolve(outputFileName).normalize();
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>     <strong class="jxr_keyword">if</strong> (!outputPath.startsWith(exportRoot)) {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>       <strong class="jxr_keyword">final</strong> AtomicInteger featsAdded = <strong class="jxr_keyword">new</strong> AtomicInteger();
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>       <strong class="jxr_keyword">if</strong> (outputDataStore.getFeatureSource() instanceof SimpleFeatureStore featureStore) {
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>         featureStore.setTransaction(outputTransaction);
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>         featureStore.addFeatureListener(event -&gt; {
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>           <strong class="jxr_keyword">if</strong> (event.getType().equals(FeatureEvent.Type.ADDED)) {
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>             featsAdded.getAndIncrement();
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>           }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>           <strong class="jxr_keyword">if</strong> (featCount &gt; 0) {
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>             <strong class="jxr_keyword">if</strong> (featsAdded.get() % progressReportInterval == 0) {
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>               <strong class="jxr_keyword">this</strong>.emitProgress(
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>                   clientId,
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                   outputFileName,
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>                   (<strong class="jxr_keyword">int</strong>) ((featsAdded.doubleValue() / featCount) * 100),
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>                   false,
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>                   <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>           }
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>         });
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         featureStore.addFeatures(inputFeatureSource.getFeatures(q));
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         outputTransaction.commit();
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>         outputDataStore.dispose();
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, 100, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"Extract completed successfully"</span>);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>         outputDataStore.dispose();
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         <strong class="jxr_keyword">this</strong>.emitError(clientId, <span class="jxr_string">"Output datastore is not a SimpleFeatureStore, cannot write features"</span>);
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>         logger.error(<span class="jxr_string">"Output datastore is not a SimpleFeatureStore, cannot write features"</span>);
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>       }
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     } <strong class="jxr_keyword">catch</strong> (IOException | SchemaException | IllegalArgumentException | NullPointerException e) {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>       emitError(clientId, e.getMessage());
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>       logger.error(<span class="jxr_string">"Creating extract failed"</span>, e);
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>       <strong class="jxr_keyword">if</strong> (outputDataStore != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>         outputDataStore.dispose();
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>       }
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>       <strong class="jxr_keyword">if</strong> (inputFeatureSource != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>           inputFeatureSource.getDataStore().dispose();
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>           logger.warn(<span class="jxr_string">"Error disposing datastore for feature source {}"</span>, inputFeatureSource.getName(), e);
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         }
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       }
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>   }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a> 
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>   <strong class="jxr_keyword">private</strong> File getValidatedOutputFile(String outputFileName) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     Path exportRoot = Path.of(exportFilesLocation).toRealPath();
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     Path outputPath = exportRoot.resolve(outputFileName).normalize();
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">if</strong> (!outputPath.startsWith(exportRoot)) {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Invalid file path"</span>);
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>     }
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>     Path createdFilePath = Files.createFile(outputPath).toRealPath();
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>     <strong class="jxr_keyword">if</strong> (!createdFilePath.startsWith(exportRoot)) {
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Invalid file path"</span>);
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>     }
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     Path createdFilePath = Files.createFile(outputPath).toRealPath();
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>     <strong class="jxr_keyword">if</strong> (!createdFilePath.startsWith(exportRoot)) {
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Invalid file path"</span>);
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>     }
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>     <strong class="jxr_keyword">return</strong> createdFilePath.toFile();
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>   }
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">   * Create a writable GeoTools {@link FileDataStore} for the requested extract format. The format must be must be</em>
-<a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">   * supported by a {@link FileDataStore} implementation, for example CSV, Excel or GeoJSON. For unsupported formats</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">   * (for example Shapefile) a custom handling is used in the calling method.</em>
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">   * &lt;p&gt;The output file is validated to ensure it is created under the configured extract location.</em>
-<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">   * @param extractOutputFormat the requested extract output format</em>
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">   * @param outputFileName the target output filename</em>
-<a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">   * @param clientId the SSE client id, used for error reporting</em>
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">   * @param typeName the source feature type name, used to derive format-specific metadata (for example Excel sheet</em>
-<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">   *     name)</em>
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">   * @return a newly created {@link FileDataStore} configured for the requested format</em>
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">   * @throws IOException when the output file path is invalid or the datastore cannot be created</em>
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>   <strong class="jxr_keyword">private</strong> FileDataStore getExtractDataStore(
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>       LayerExtractController.ExtractOutputFormat extractOutputFormat,
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>       String outputFileName,
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>       String clientId,
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>       String typeName)
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>       <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L466" href="#L466">466</a> 
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>     <strong class="jxr_keyword">final</strong> File outputFile = getValidatedOutputFile(outputFileName);
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>     <strong class="jxr_keyword">if</strong> (!logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>       <em class="jxr_comment">// delete in production after JVM exit because the event bus will be reset when the JVM exits, and then we</em>
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>       <em class="jxr_comment">// are unlikely to have a reference to the file anymore.</em>
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>       <em class="jxr_comment">// In debug/development mode we want to keep the file for inspection.</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>       outputFile.deleteOnExit();
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>     }
-<a class="jxr_linenumber" name="L474" href="#L474">474</a> 
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>     <strong class="jxr_keyword">switch</strong> (extractOutputFormat) {
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>       <strong class="jxr_keyword">case</strong> CSV -&gt; {
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> CSVDataStoreFactory()
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>             .createNewDataStore(Map.of(
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>                 CSVDataStoreFactory.FILE_PARAM.key,
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>                 outputFile,
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>                 CSVDataStoreFactory.STRATEGYP.key,
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>                 CSVDataStoreFactory.WKT_STRATEGY,
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 CSVDataStoreFactory.WKTP.key,
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>                 <span class="jxr_string">"the_geom_wkt"</span>,
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>                 CSVDataStoreFactory.WRITEPRJ.key,
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>                 false,
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 CSVDataStoreFactory.QUOTEALL.key,
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>                 <strong class="jxr_keyword">true</strong>));
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>       }
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>       <strong class="jxr_keyword">case</strong> XLSX -&gt; {
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>         <em class="jxr_comment">// replace any invalid characters such as /\?*[] with '_' and clip to 31 characters because Excel has</em>
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>         <em class="jxr_comment">// limitations on sheet names. Also clip off any WFS namespace prefix in the type name, which is often</em>
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>         <em class="jxr_comment">// separated by a ':' character, because ':' is not allowed in Excel sheet names.</em>
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>         typeName = typeName.contains(<span class="jxr_string">":"</span>)
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>             ? typeName.substring(typeName.lastIndexOf(<span class="jxr_string">":"</span>) + 1).replaceAll(<span class="jxr_string">"[&#92;&#92;&#92;&#92;/?*&#92;&#92;[&#92;&#92;]:]"</span>, <span class="jxr_string">"_"</span>)
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>             : typeName.replaceAll(<span class="jxr_string">"[&#92;&#92;&#92;&#92;/?*&#92;&#92;[&#92;&#92;]:]"</span>, <span class="jxr_string">"_"</span>);
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>         typeName = typeName.substring(0, Math.min(typeName.length(), 31));
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> ExcelDataStoreFactory()
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>             .createNewDataStore(Map.of(
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>                 ExcelDataStoreFactory.FILE_PARAM.key,
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>                 outputFile,
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>                 ExcelDataStoreFactory.SHEET_PARAM.key,
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>                 typeName));
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     <strong class="jxr_keyword">return</strong> createdFilePath.toFile();
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>   }
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L442" href="#L442">442</a> <em class="jxr_javadoccomment">   * Create a writable GeoTools {@link FileDataStore} for the requested extract format. The format must be must be</em>
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> <em class="jxr_javadoccomment">   * supported by a {@link FileDataStore} implementation, for example CSV, Excel or GeoJSON. For unsupported formats</em>
+<a class="jxr_linenumber" name="L444" href="#L444">444</a> <em class="jxr_javadoccomment">   * (for example Shapefile) a custom handling is used in the calling method.</em>
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">   * &lt;p&gt;The output file is validated to ensure it is created under the configured extract location.</em>
+<a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">   * @param extractOutputFormat the requested extract output format</em>
+<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">   * @param outputFileName the target output filename</em>
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">   * @param clientId the SSE client id, used for error reporting</em>
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">   * @param typeName the source feature type name, used to derive format-specific metadata (for example Excel sheet</em>
+<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">   *     name)</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">   * @return a newly created {@link FileDataStore} configured for the requested format</em>
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">   * @throws IOException when the output file path is invalid or the datastore cannot be created</em>
+<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>   <strong class="jxr_keyword">private</strong> FileDataStore getExtractDataStore(
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       LayerExtractController.ExtractOutputFormat extractOutputFormat,
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>       String outputFileName,
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>       String clientId,
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>       String typeName)
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> 
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <strong class="jxr_keyword">final</strong> File outputFile = getValidatedOutputFile(outputFileName);
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>     <strong class="jxr_keyword">if</strong> (!logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>       <em class="jxr_comment">// delete in production after JVM exit because the event bus will be reset when the JVM exits, and then we</em>
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>       <em class="jxr_comment">// are unlikely to have a reference to the file anymore.</em>
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>       <em class="jxr_comment">// In debug/development mode we want to keep the file for inspection.</em>
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>       outputFile.deleteOnExit();
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     }
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> 
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>     <strong class="jxr_keyword">switch</strong> (extractOutputFormat) {
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>       <strong class="jxr_keyword">case</strong> CSV -&gt; {
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> CSVDataStoreFactory()
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>             .createNewDataStore(Map.of(
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>                 CSVDataStoreFactory.FILE_PARAM.key,
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>                 outputFile,
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>                 CSVDataStoreFactory.STRATEGYP.key,
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>                 CSVDataStoreFactory.WKT_STRATEGY,
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>                 CSVDataStoreFactory.WKTP.key,
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>                 <span class="jxr_string">"the_geom_wkt"</span>,
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>                 CSVDataStoreFactory.WRITEPRJ.key,
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>                 false,
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 CSVDataStoreFactory.QUOTEALL.key,
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>                 <strong class="jxr_keyword">true</strong>));
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>       }
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>       <strong class="jxr_keyword">case</strong> XLSX -&gt; {
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>         <em class="jxr_comment">// replace any invalid characters such as /\?*[] with '_' and clip to 31 characters because Excel has</em>
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>         <em class="jxr_comment">// limitations on sheet names. Also clip off any WFS namespace prefix in the type name, which is often</em>
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>         <em class="jxr_comment">// separated by a ':' character, because ':' is not allowed in Excel sheet names.</em>
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         typeName = typeName.contains(<span class="jxr_string">":"</span>)
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>             ? typeName.substring(typeName.lastIndexOf(<span class="jxr_string">":"</span>) + 1).replaceAll(<span class="jxr_string">"[&#92;&#92;&#92;&#92;/?*&#92;&#92;[&#92;&#92;]:]"</span>, <span class="jxr_string">"_"</span>)
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>             : typeName.replaceAll(<span class="jxr_string">"[&#92;&#92;&#92;&#92;/?*&#92;&#92;[&#92;&#92;]:]"</span>, <span class="jxr_string">"_"</span>);
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>         typeName = typeName.substring(0, Math.min(typeName.length(), 31));
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> ExcelDataStoreFactory()
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>             .createNewDataStore(Map.of(
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>                 ExcelDataStoreFactory.FILE_PARAM.key,
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>                 outputFile,
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>                 ExcelDataStoreFactory.SHEET_PARAM.key,
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>                 typeName));
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>       }
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>       <strong class="jxr_keyword">case</strong> GEOJSON -&gt; {
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> GeoJSONDataStoreFactory()
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>             .createNewDataStore(Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile));
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>       }
-<a class="jxr_linenumber" name="L505" href="#L505">505</a>       <strong class="jxr_keyword">case</strong> GEOJSON -&gt; {
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>         <strong class="jxr_keyword">return</strong> (FileDataStore) <strong class="jxr_keyword">new</strong> GeoJSONDataStoreFactory()
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>             .createNewDataStore(Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile));
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>       }
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>       <strong class="jxr_keyword">default</strong> -&gt; {
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>         <em class="jxr_comment">// should never happen</em>
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>         emitError(clientId, <span class="jxr_string">"Unknown output format: "</span> + extractOutputFormat);
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>         logger.error(<span class="jxr_string">"Unknown output format: {}"</span>, extractOutputFormat);
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Unknown output format: "</span> + extractOutputFormat);
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>       }
-<a class="jxr_linenumber" name="L515" href="#L515">515</a>     }
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>   }
-<a class="jxr_linenumber" name="L517" href="#L517">517</a> 
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> getFeatureCount(SimpleFeatureSource source, Query query) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>     <strong class="jxr_keyword">int</strong> count = source.getCount(query);
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>     logger.debug(<span class="jxr_string">"Filtered source counts {} features"</span>, count);
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>     <strong class="jxr_keyword">if</strong> (count &lt; 0 &amp;&amp; exactWfsCounts) {
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>       count = source.getFeatures(query).size();
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>     }
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>     <strong class="jxr_keyword">return</strong> count;
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>   }
-<a class="jxr_linenumber" name="L526" href="#L526">526</a> 
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> handleWithShapeDumper(
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>       @NonNull String clientId,
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>       @NonNull TMFeatureType inputTmFeatureType,
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>       @NonNull Set&lt;String&gt; attributes,
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>       Filter filter,
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>       String sortBy,
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>       SortOrder sortOrder,
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>       @NonNull String outputFileName) {
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>     SimpleFeatureSource inputFeatureSource = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>     File outputDirectory = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>       File outputFile = getValidatedOutputFile(outputFileName);
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>       String baseName = outputFile
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>           .getName()
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>           .substring(
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>               0,
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>               outputFile
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>                   .getName()
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>                   .lastIndexOf(LayerExtractController.ExtractOutputFormat.SHAPE.getExtension()));
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>       outputDirectory = outputFile
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>           .getParentFile()
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>           .toPath()
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>           .resolve(baseName)
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>           .toFile()
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>           .getCanonicalFile();
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>       <strong class="jxr_keyword">if</strong> (!logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>         <em class="jxr_comment">// delete in production after JVM exit because the event bus will be reset when the JVM exits, and then</em>
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>         <em class="jxr_comment">// we are unlikely to have a reference to the file anymore.</em>
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>         <em class="jxr_comment">// In debug/development mode we want to keep the directory for inspection.</em>
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>         outputDirectory.deleteOnExit();
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>       }
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>       Files.createDirectories(outputDirectory.toPath());
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>       <strong class="jxr_keyword">default</strong> -&gt; {
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>         <em class="jxr_comment">// should never happen</em>
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>         emitError(clientId, <span class="jxr_string">"Unknown output format: "</span> + extractOutputFormat);
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>         logger.error(<span class="jxr_string">"Unknown output format: {}"</span>, extractOutputFormat);
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Unknown output format: "</span> + extractOutputFormat);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>       }
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>     }
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>   }
+<a class="jxr_linenumber" name="L513" href="#L513">513</a> 
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> getFeatureCount(SimpleFeatureSource source, Query query) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>     <strong class="jxr_keyword">int</strong> count = source.getCount(query);
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>     logger.debug(<span class="jxr_string">"Filtered source counts {} features"</span>, count);
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>     <strong class="jxr_keyword">if</strong> (count &lt; 0 &amp;&amp; exactWfsCounts) {
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>       count = source.getFeatures(query).size();
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>     }
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>     <strong class="jxr_keyword">return</strong> count;
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>   }
+<a class="jxr_linenumber" name="L522" href="#L522">522</a> 
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> handleWithShapeDumper(
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>       @NonNull String clientId,
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>       @NonNull TMFeatureType inputTmFeatureType,
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>       @NonNull Set&lt;String&gt; attributes,
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>       Filter filter,
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>       String sortBy,
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>       SortOrder sortOrder,
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>       @NonNull String outputFileName) {
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>     SimpleFeatureSource inputFeatureSource = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>     File outputDirectory = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>       File outputFile = getValidatedOutputFile(outputFileName);
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>       String baseName = outputFile
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>           .getName()
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>           .substring(
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>               0,
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>               outputFile
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>                   .getName()
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>                   .lastIndexOf(LayerExtractController.ExtractOutputFormat.SHAPE.getExtension()));
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>       outputDirectory = outputFile
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>           .getParentFile()
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>           .toPath()
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>           .resolve(baseName)
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>           .toFile()
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>           .getCanonicalFile();
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>       <strong class="jxr_keyword">if</strong> (!logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         <em class="jxr_comment">// delete in production after JVM exit because the event bus will be reset when the JVM exits, and then</em>
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         <em class="jxr_comment">// we are unlikely to have a reference to the file anymore.</em>
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>         <em class="jxr_comment">// In debug/development mode we want to keep the directory for inspection.</em>
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         outputDirectory.deleteOnExit();
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>       }
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>       Files.createDirectories(outputDirectory.toPath());
+<a class="jxr_linenumber" name="L555" href="#L555">555</a> 
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>       ShapefileDumper dumper = <strong class="jxr_keyword">new</strong> ShapefileDumper(outputDirectory);
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>       dumper.setCharset(StandardCharsets.UTF_8);
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>       dumper.setEmptyShapefileAllowed(false);
 <a class="jxr_linenumber" name="L559" href="#L559">559</a> 
-<a class="jxr_linenumber" name="L560" href="#L560">560</a>       ShapefileDumper dumper = <strong class="jxr_keyword">new</strong> ShapefileDumper(outputDirectory);
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>       dumper.setCharset(StandardCharsets.UTF_8);
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>       dumper.setEmptyShapefileAllowed(false);
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>       inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
+<a class="jxr_linenumber" name="L561" href="#L561">561</a> 
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>       Query q = createQuery(inputFeatureSource, attributes, filter, sortBy, sortOrder);
 <a class="jxr_linenumber" name="L563" href="#L563">563</a> 
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>       inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(inputTmFeatureType);
-<a class="jxr_linenumber" name="L565" href="#L565">565</a> 
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>       Query q = createQuery(inputFeatureSource, attributes, filter, sortBy, sortOrder);
-<a class="jxr_linenumber" name="L567" href="#L567">567</a> 
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> featCount = getFeatureCount(inputFeatureSource, q);
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> hasKnownFeatureCount = featCount &gt; 0;
-<a class="jxr_linenumber" name="L570" href="#L570">570</a> 
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>       AtomicInteger lastProgress = <strong class="jxr_keyword">new</strong> AtomicInteger(0);
-<a class="jxr_linenumber" name="L572" href="#L572">572</a> 
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>       dumper.dump(<strong class="jxr_keyword">new</strong> <a name="ProgressReportingFeatureCollection" href="../../../../org/tailormap/api/geotools/collection/ProgressReportingFeatureCollection.html#ProgressReportingFeatureCollection">ProgressReportingFeatureCollection</a>(
-<a class="jxr_linenumber" name="L574" href="#L574">574</a>           inputFeatureSource.getFeatures(q), progressReportInterval, processed -&gt; {
-<a class="jxr_linenumber" name="L575" href="#L575">575</a>             <strong class="jxr_keyword">int</strong> progress = hasKnownFeatureCount ? (<strong class="jxr_keyword">int</strong>) ((processed / (<strong class="jxr_keyword">double</strong>) featCount) * 99) : 0;
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>             lastProgress.set(progress);
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>             String progressMessage = hasKnownFeatureCount
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>                 ? <span class="jxr_string">"Extracting shapes: %d/%d features processed"</span>.formatted(processed, featCount)
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>                 : <span class="jxr_string">"Extracting shapes: %d features processed"</span>.formatted(processed);
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>             <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, progress, false, progressMessage);
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>           }));
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>       <strong class="jxr_keyword">this</strong>.emitProgress(
-<a class="jxr_linenumber" name="L583" href="#L583">583</a>           clientId,
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>           outputFileName,
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>           Math.max(99, lastProgress.get()),
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>           false,
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>           <span class="jxr_string">"Extract shapes dumped successfully"</span>);
-<a class="jxr_linenumber" name="L588" href="#L588">588</a> 
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>       zipDirectory(outputDirectory.toPath(), outputFile.toPath());
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>       <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, 100, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"Extract completed successfully"</span>);
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>     } <strong class="jxr_keyword">catch</strong> (IOException | IllegalArgumentException e) {
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>       emitError(clientId, e.getMessage());
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>       logger.error(<span class="jxr_string">"Creating extract failed"</span>, e);
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>       <strong class="jxr_keyword">if</strong> (outputDirectory != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>           deleteDirectoryRecursively(outputDirectory.toPath());
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>           logger.error(<span class="jxr_string">"Failed to delete output directory {}"</span>, outputDirectory, e);
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>         }
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>       }
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>       <strong class="jxr_keyword">if</strong> (inputFeatureSource != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L604" href="#L604">604</a>           inputFeatureSource.getDataStore().dispose();
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>           logger.warn(<span class="jxr_string">"Error disposing datastore for feature source {}"</span>, inputFeatureSource.getName(), e);
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>         }
-<a class="jxr_linenumber" name="L608" href="#L608">608</a>       }
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>     }
-<a class="jxr_linenumber" name="L610" href="#L610">610</a>   }
-<a class="jxr_linenumber" name="L611" href="#L611">611</a> 
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>   <strong class="jxr_keyword">private</strong> Query createQuery(
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>       SimpleFeatureSource inputFeatureSource,
-<a class="jxr_linenumber" name="L614" href="#L614">614</a>       Set&lt;String&gt; attributes,
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>       Filter filter,
-<a class="jxr_linenumber" name="L616" href="#L616">616</a>       String sortBy,
-<a class="jxr_linenumber" name="L617" href="#L617">617</a>       SortOrder sortOrder) {
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>     Query q = <strong class="jxr_keyword">new</strong> Query(inputFeatureSource.getName().toString());
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>     <strong class="jxr_keyword">if</strong> (!attributes.isEmpty()) {
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>       q.setPropertyNames(attributes.toArray(<strong class="jxr_keyword">new</strong> String[0]));
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> featCount = getFeatureCount(inputFeatureSource, q);
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>       <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> hasKnownFeatureCount = featCount &gt; 0;
+<a class="jxr_linenumber" name="L566" href="#L566">566</a> 
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>       AtomicInteger lastProgress = <strong class="jxr_keyword">new</strong> AtomicInteger(0);
+<a class="jxr_linenumber" name="L568" href="#L568">568</a> 
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>       dumper.dump(<strong class="jxr_keyword">new</strong> <a name="ProgressReportingFeatureCollection" href="../../../../org/tailormap/api/geotools/collection/ProgressReportingFeatureCollection.html#ProgressReportingFeatureCollection">ProgressReportingFeatureCollection</a>(
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>           inputFeatureSource.getFeatures(q), progressReportInterval, processed -&gt; {
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">int</strong> progress = hasKnownFeatureCount ? (<strong class="jxr_keyword">int</strong>) ((processed / (<strong class="jxr_keyword">double</strong>) featCount) * 99) : 0;
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>             lastProgress.set(progress);
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>             String progressMessage = hasKnownFeatureCount
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>                 ? <span class="jxr_string">"Extracting shapes: %d/%d features processed"</span>.formatted(processed, featCount)
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>                 : <span class="jxr_string">"Extracting shapes: %d features processed"</span>.formatted(processed);
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, progress, false, progressMessage);
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>           }));
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>       <strong class="jxr_keyword">this</strong>.emitProgress(
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>           clientId,
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>           outputFileName,
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>           Math.max(99, lastProgress.get()),
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>           false,
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>           <span class="jxr_string">"Extract shapes dumped successfully"</span>);
+<a class="jxr_linenumber" name="L584" href="#L584">584</a> 
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>       zipDirectory(outputDirectory.toPath(), outputFile.toPath());
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>       <strong class="jxr_keyword">this</strong>.emitProgress(clientId, outputFileName, 100, <strong class="jxr_keyword">true</strong>, <span class="jxr_string">"Extract completed successfully"</span>);
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>     } <strong class="jxr_keyword">catch</strong> (IOException | IllegalArgumentException e) {
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>       emitError(clientId, e.getMessage());
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>       logger.error(<span class="jxr_string">"Creating extract failed"</span>, e);
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>       <strong class="jxr_keyword">if</strong> (outputDirectory != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>           deleteDirectoryRecursively(outputDirectory.toPath());
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>           logger.error(<span class="jxr_string">"Failed to delete output directory {}"</span>, outputDirectory, e);
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>         }
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>       }
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>       <strong class="jxr_keyword">if</strong> (inputFeatureSource != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>           inputFeatureSource.getDataStore().dispose();
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>           logger.warn(<span class="jxr_string">"Error disposing datastore for feature source {}"</span>, inputFeatureSource.getName(), e);
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>         }
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>       }
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>     }
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>   }
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> 
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>   <strong class="jxr_keyword">private</strong> Query createQuery(
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>       SimpleFeatureSource inputFeatureSource,
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>       Set&lt;String&gt; attributes,
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>       Filter filter,
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>       String sortBy,
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>       SortOrder sortOrder) {
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>     Query q = <strong class="jxr_keyword">new</strong> Query(inputFeatureSource.getName().toString());
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>     <strong class="jxr_keyword">if</strong> (!attributes.isEmpty()) {
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>       q.setPropertyNames(attributes.toArray(<strong class="jxr_keyword">new</strong> String[0]));
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>     }
+<a class="jxr_linenumber" name="L618" href="#L618">618</a> 
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>     <strong class="jxr_keyword">if</strong> (filter != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>       q.setFilter(filter);
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>     }
-<a class="jxr_linenumber" name="L622" href="#L622">622</a> 
-<a class="jxr_linenumber" name="L623" href="#L623">623</a>     <strong class="jxr_keyword">if</strong> (filter != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>       q.setFilter(filter);
-<a class="jxr_linenumber" name="L625" href="#L625">625</a>     }
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>     <strong class="jxr_keyword">if</strong> (!StringUtils.isBlank(sortBy)) {
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>       q.setSortBy(ff.sort(sortBy, Objects.requireNonNullElse(sortOrder, SortOrder.ASCENDING)));
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>     }
-<a class="jxr_linenumber" name="L629" href="#L629">629</a>     <strong class="jxr_keyword">return</strong> q;
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>   }
-<a class="jxr_linenumber" name="L631" href="#L631">631</a> 
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L633" href="#L633">633</a> <em class="jxr_javadoccomment">   * Cleanup expired extract files. Filenames are created in {@link CreateLayerExtractService#createExtractFilename }</em>
-<a class="jxr_linenumber" name="L634" href="#L634">634</a> <em class="jxr_javadoccomment">   * and follow the pattern {@code "%s_%s_%s.%s".formatted(sourceFT.getName(), clientId, UUIDv7.randomV7(),</em>
-<a class="jxr_linenumber" name="L635" href="#L635">635</a> <em class="jxr_javadoccomment">   * outputFormat.getExtension()) }</em>
-<a class="jxr_linenumber" name="L636" href="#L636">636</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cleanupExpiredExtracts() {
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>     logger.debug(<span class="jxr_string">"Running expired extracts cleanup in {}"</span>, exportFilesLocation);
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>     List&lt;FileWithAttributes&gt; oldDownloadFilesOnDisk = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>     Set&lt;String&gt; validClientIds = eventBus.getAllClientIds();
-<a class="jxr_linenumber" name="L642" href="#L642">642</a> 
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <em class="jxr_comment">// list download files in export location and delete those that are not bound to an active sse stream client</em>
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>     <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; stream = Files.walk(Path.of(exportFilesLocation))) {
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>       stream.filter(Files::isRegularFile).forEach(path -&gt; {
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>         File file = path.toFile();
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>         String filename = file.getName();
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>         String[] parts = filename.split(<span class="jxr_string">"[_.]"</span>, -1);
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>         <strong class="jxr_keyword">if</strong> (parts.length &lt; 4) {
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>           logger.warn(<span class="jxr_string">"Unexpected file in extract location: {}"</span>, filename);
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>           <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>         }
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>         String clientId = parts[1];
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>         <strong class="jxr_keyword">if</strong> (!validClientIds.contains(clientId)) {
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>           <strong class="jxr_keyword">if</strong> (!file.delete()) {
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>             logger.error(<span class="jxr_string">"Failed to delete unattached extract file {}"</span>, filename);
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>           }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>           <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>             Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>             oldDownloadFilesOnDisk.add(<strong class="jxr_keyword">new</strong> FileWithAttributes(file, timestampPart, clientId));
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>           } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException ignored) {
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>             <em class="jxr_comment">// not a valid v7 uuid</em>
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>           }
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>         }
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>       });
-<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
-<a class="jxr_linenumber" name="L668" href="#L668">668</a>       <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; paths = Files.walk(Path.of(exportFilesLocation))) {
-<a class="jxr_linenumber" name="L669" href="#L669">669</a>         paths.filter(Files::isDirectory)
-<a class="jxr_linenumber" name="L670" href="#L670">670</a>             .filter(path -&gt; !path.equals(Path.of(exportFilesLocation)))
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>             .forEach(path -&gt; {
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>               logger.debug(<span class="jxr_string">"Checking directory {} for expired extracts"</span>, path);
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>               File file = path.toFile();
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>               String filename = file.getName();
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>               String[] parts = filename.split(<span class="jxr_string">"[_]"</span>, -1);
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>               <strong class="jxr_keyword">if</strong> (parts.length &lt; 3) {
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>                 logger.warn(<span class="jxr_string">"Unexpected directory in extract location: {}"</span>, filename);
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>                 <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>               }
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>               String clientId = parts[1];
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>               <strong class="jxr_keyword">if</strong> (!validClientIds.contains(clientId)) {
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>                   deleteDirectoryRecursively(file.toPath());
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>                   logger.error(<span class="jxr_string">"Failed to delete unattached extract directory {}"</span>, filename);
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>                 }
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>                   Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>                   oldDownloadFilesOnDisk.add(<strong class="jxr_keyword">new</strong> FileWithAttributes(file, timestampPart, clientId));
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>                 } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException ignored) {
-<a class="jxr_linenumber" name="L692" href="#L692">692</a>                   <em class="jxr_comment">// not a valid v7 uuid</em>
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>                 }
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>               }
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>             });
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>       }
-<a class="jxr_linenumber" name="L697" href="#L697">697</a> 
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>       <em class="jxr_comment">// delete any files/directories are older than the cutoff</em>
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>       oldDownloadFilesOnDisk.stream()
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>           .filter(f -&gt; f.timestamp()
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>               .isBefore(Instant.now().minusSeconds(TimeUnit.MINUTES.toSeconds(cleanupIntervalMinutes))))
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>           .forEach(f -&gt; {
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>             <strong class="jxr_keyword">if</strong> (f.file.isDirectory()) {
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>               <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>                 deleteDirectoryRecursively(f.file().toPath());
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>               } <strong class="jxr_keyword">catch</strong> (IOException ignored) {
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>                 logger.warn(<span class="jxr_string">"Failed to delete directory {}"</span>, f.file());
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>               }
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>               <strong class="jxr_keyword">if</strong> (!f.file().delete()) {
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>                 logger.error(
-<a class="jxr_linenumber" name="L712" href="#L712">712</a>                     <span class="jxr_string">"Failed to delete expired extract file {}"</span>,
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>                     f.file().getName());
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>               }
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>             }
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>           });
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>       logger.error(<span class="jxr_string">"Error while cleaning up expired extracts"</span>, e);
-<a class="jxr_linenumber" name="L719" href="#L719">719</a>     }
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>   }
-<a class="jxr_linenumber" name="L721" href="#L721">721</a> 
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> zipDirectory(Path sourceDir, Path zipFile) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>     <strong class="jxr_keyword">try</strong> (ZipOutputStream zos = <strong class="jxr_keyword">new</strong> ZipOutputStream(Files.newOutputStream(zipFile));
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>         Stream&lt;Path&gt; pathStream = Files.walk(sourceDir)) {
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>       pathStream.filter(Files::isRegularFile).forEach(path -&gt; {
-<a class="jxr_linenumber" name="L726" href="#L726">726</a>         String entryName = sourceDir.relativize(path).toString().replace(File.separatorChar, '/');
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L728" href="#L728">728</a>           zos.putNextEntry(<strong class="jxr_keyword">new</strong> ZipEntry(entryName));
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>           Files.copy(path, zos);
-<a class="jxr_linenumber" name="L730" href="#L730">730</a>           zos.closeEntry();
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Failed to add file to zip: "</span> + path, e);
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>         }
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>       });
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException e) {
-<a class="jxr_linenumber" name="L736" href="#L736">736</a>       <strong class="jxr_keyword">if</strong> (e.getCause() instanceof IOException ioException) {
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>         <strong class="jxr_keyword">throw</strong> ioException;
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>       }
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>       <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>     }
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>   }
-<a class="jxr_linenumber" name="L742" href="#L742">742</a> 
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteDirectoryRecursively(Path directory) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>     <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; paths = Files.walk(directory)) {
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>       paths.sorted(Comparator.reverseOrder()).forEach(path -&gt; {
-<a class="jxr_linenumber" name="L746" href="#L746">746</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>           logger.debug(<span class="jxr_string">"Deleting path {}"</span>, path);
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>           Files.deleteIfExists(path);
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Failed to delete path: "</span> + path, e);
-<a class="jxr_linenumber" name="L751" href="#L751">751</a>         }
-<a class="jxr_linenumber" name="L752" href="#L752">752</a>       });
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException e) {
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>       <strong class="jxr_keyword">if</strong> (e.getCause() instanceof IOException ioException) {
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>         <strong class="jxr_keyword">throw</strong> ioException;
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>       }
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>       <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L758" href="#L758">758</a>     }
-<a class="jxr_linenumber" name="L759" href="#L759">759</a>   }
-<a class="jxr_linenumber" name="L760" href="#L760">760</a> 
-<a class="jxr_linenumber" name="L761" href="#L761">761</a>   <strong class="jxr_keyword">private</strong> record FileWithAttributes(File file, Instant timestamp, String clientId) {}
-<a class="jxr_linenumber" name="L762" href="#L762">762</a> }
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>     <strong class="jxr_keyword">if</strong> (!StringUtils.isBlank(sortBy)) {
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>       q.setSortBy(ff.sort(sortBy, Objects.requireNonNullElse(sortOrder, SortOrder.ASCENDING)));
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>     }
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>     <strong class="jxr_keyword">return</strong> q;
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>   }
+<a class="jxr_linenumber" name="L627" href="#L627">627</a> 
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L629" href="#L629">629</a> <em class="jxr_javadoccomment">   * Cleanup expired extract files. Filenames are created in {@link CreateLayerExtractService#createExtractFilename }</em>
+<a class="jxr_linenumber" name="L630" href="#L630">630</a> <em class="jxr_javadoccomment">   * and follow the pattern {@code "%s_%s_%s.%s".formatted(sourceFT.getName(), clientId, UUIDv7.randomV7(),</em>
+<a class="jxr_linenumber" name="L631" href="#L631">631</a> <em class="jxr_javadoccomment">   * outputFormat.getExtension()) }</em>
+<a class="jxr_linenumber" name="L632" href="#L632">632</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>   @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 15)
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cleanupExpiredExtracts() {
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>     logger.debug(<span class="jxr_string">"Running expired extracts cleanup in {}"</span>, exportFilesLocation);
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>     List&lt;FileWithAttributes&gt; oldDownloadFilesOnDisk = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>     Set&lt;String&gt; validClientIds = eventBus.getAllClientIds();
+<a class="jxr_linenumber" name="L638" href="#L638">638</a> 
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>     <em class="jxr_comment">// list download files in export location and delete those that are not bound to an active sse stream client</em>
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>     <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; stream = Files.walk(Path.of(exportFilesLocation))) {
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>       stream.filter(Files::isRegularFile).forEach(path -&gt; {
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>         File file = path.toFile();
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>         String filename = file.getName();
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>         String[] parts = filename.split(<span class="jxr_string">"[_.]"</span>, -1);
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>         <strong class="jxr_keyword">if</strong> (parts.length &lt; 4) {
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>           logger.warn(<span class="jxr_string">"Unexpected file in extract location: {}"</span>, filename);
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>           <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>         }
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>         String clientId = parts[1];
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>         <strong class="jxr_keyword">if</strong> (!validClientIds.contains(clientId)) {
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>           <strong class="jxr_keyword">if</strong> (!file.delete()) {
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>             logger.error(<span class="jxr_string">"Failed to delete unattached extract file {}"</span>, filename);
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>           }
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>           <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>             Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>             oldDownloadFilesOnDisk.add(<strong class="jxr_keyword">new</strong> FileWithAttributes(file, timestampPart, clientId));
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>           } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException ignored) {
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>             <em class="jxr_comment">// not a valid v7 uuid</em>
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>           }
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>         }
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>       });
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> 
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>       <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; paths = Files.walk(Path.of(exportFilesLocation))) {
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>         paths.filter(Files::isDirectory)
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>             .filter(path -&gt; !path.equals(Path.of(exportFilesLocation)))
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>             .forEach(path -&gt; {
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>               logger.debug(<span class="jxr_string">"Checking directory {} for expired extracts"</span>, path);
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>               File file = path.toFile();
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>               String filename = file.getName();
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>               String[] parts = filename.split(<span class="jxr_string">"[_]"</span>, -1);
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>               <strong class="jxr_keyword">if</strong> (parts.length &lt; 3) {
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>                 logger.warn(<span class="jxr_string">"Unexpected directory in extract location: {}"</span>, filename);
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>                 <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>               }
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>               String clientId = parts[1];
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>               <strong class="jxr_keyword">if</strong> (!validClientIds.contains(clientId)) {
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>                   deleteDirectoryRecursively(file.toPath());
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>                   logger.error(<span class="jxr_string">"Failed to delete unattached extract directory {}"</span>, filename);
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>                 }
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>               } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                   Instant timestampPart = UUIDv7.timestampAsInstant(UUIDv7.fromString(parts[2]));
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>                   oldDownloadFilesOnDisk.add(<strong class="jxr_keyword">new</strong> FileWithAttributes(file, timestampPart, clientId));
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>                 } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException ignored) {
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>                   <em class="jxr_comment">// not a valid v7 uuid</em>
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>                 }
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>               }
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>             });
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>       }
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> 
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>       <em class="jxr_comment">// delete any files/directories are older than the cutoff</em>
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>       oldDownloadFilesOnDisk.stream()
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>           .filter(f -&gt; f.timestamp()
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>               .isBefore(Instant.now().minusSeconds(TimeUnit.MINUTES.toSeconds(cleanupIntervalMinutes))))
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>           .forEach(f -&gt; {
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>             <strong class="jxr_keyword">if</strong> (f.file.isDirectory()) {
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>               <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>                 deleteDirectoryRecursively(f.file().toPath());
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>               } <strong class="jxr_keyword">catch</strong> (IOException ignored) {
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>                 logger.warn(<span class="jxr_string">"Failed to delete directory {}"</span>, f.file());
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>               }
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>               <strong class="jxr_keyword">if</strong> (!f.file().delete()) {
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>                 logger.error(
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>                     <span class="jxr_string">"Failed to delete expired extract file {}"</span>,
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>                     f.file().getName());
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>               }
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>             }
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>           });
+<a class="jxr_linenumber" name="L713" href="#L713">713</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>       logger.error(<span class="jxr_string">"Error while cleaning up expired extracts"</span>, e);
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>     }
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>   }
+<a class="jxr_linenumber" name="L717" href="#L717">717</a> 
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> zipDirectory(Path sourceDir, Path zipFile) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>     <strong class="jxr_keyword">try</strong> (ZipOutputStream zos = <strong class="jxr_keyword">new</strong> ZipOutputStream(Files.newOutputStream(zipFile));
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>         Stream&lt;Path&gt; pathStream = Files.walk(sourceDir)) {
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>       pathStream.filter(Files::isRegularFile).forEach(path -&gt; {
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>         String entryName = sourceDir.relativize(path).toString().replace(File.separatorChar, '/');
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>           zos.putNextEntry(<strong class="jxr_keyword">new</strong> ZipEntry(entryName));
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>           Files.copy(path, zos);
+<a class="jxr_linenumber" name="L726" href="#L726">726</a>           zos.closeEntry();
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Failed to add file to zip: "</span> + path, e);
+<a class="jxr_linenumber" name="L729" href="#L729">729</a>         }
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>       });
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException e) {
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>       <strong class="jxr_keyword">if</strong> (e.getCause() instanceof IOException ioException) {
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>         <strong class="jxr_keyword">throw</strong> ioException;
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>       }
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>       <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L736" href="#L736">736</a>     }
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>   }
+<a class="jxr_linenumber" name="L738" href="#L738">738</a> 
+<a class="jxr_linenumber" name="L739" href="#L739">739</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteDirectoryRecursively(Path directory) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>     <strong class="jxr_keyword">try</strong> (Stream&lt;Path&gt; paths = Files.walk(directory)) {
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>       paths.sorted(Comparator.reverseOrder()).forEach(path -&gt; {
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>           logger.debug(<span class="jxr_string">"Deleting path {}"</span>, path);
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>           Files.deleteIfExists(path);
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Failed to delete path: "</span> + path, e);
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>         }
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>       });
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>     } <strong class="jxr_keyword">catch</strong> (RuntimeException e) {
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>       <strong class="jxr_keyword">if</strong> (e.getCause() instanceof IOException ioException) {
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>         <strong class="jxr_keyword">throw</strong> ioException;
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>       }
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>       <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>     }
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>   }
+<a class="jxr_linenumber" name="L756" href="#L756">756</a> 
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>   <strong class="jxr_keyword">private</strong> record FileWithAttributes(File file, Instant timestamp, String clientId) {}
+<a class="jxr_linenumber" name="L758" href="#L758">758</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
