@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   private final FrontControllerResolver frontControllerResolver;
   private final IndexHtmlTransformer indexHtmlTransformer;
 
-  @Value("${spring.web.resources.static-locations:file:/home/spring/static/}")
+  @Value("${spring.web.resources.static-locations:file:/home/cnb/static/}")
   private String resourceLocations;
 
   public WebMvcConfig(FrontControllerResolver frontControllerResolver, IndexHtmlTransformer indexHtmlTransformer) {

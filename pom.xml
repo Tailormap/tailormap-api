@@ -122,16 +122,16 @@ SPDX-License-Identifier: MIT
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-codec.version>1.22.0</commons-codec.version>
-        <flyway.version>12.6.1</flyway.version>
+        <flyway.version>12.8.0</flyway.version>
         <hibernate.version>7.3.7.Final</hibernate.version>
-        <jackson-2-bom.version>2.21.3</jackson-2-bom.version>
-        <jackson-bom.version>3.1.3</jackson-bom.version>
+        <jackson-2-bom.version>2.22.0</jackson-2-bom.version>
+        <jackson-bom.version>3.1.4</jackson-bom.version>
         <json-path.version>3.0.0</json-path.version>
         <junit-jupiter.version>6.1.0</junit-jupiter.version>
         <micrometer.version>1.16.5</micrometer.version>
         <mockito.version>5.23.0</mockito.version>
         <mssql-jdbc.version>13.4.0.jre11</mssql-jdbc.version>
-        <oracle-database.version>23.26.1.0.0</oracle-database.version>
+        <oracle-database.version>23.26.2.0.0</oracle-database.version>
         <postgresql.version>42.7.11</postgresql.version>
         <sqlite-jdbc.version>3.53.1.0</sqlite-jdbc.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
@@ -153,7 +153,6 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.4.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.32.6</swagger-ui.version>
         <sentry.version>8.43.1</sentry.version>
         <errorProne.version>2.49.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
@@ -546,15 +545,6 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-session-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>${swagger-ui.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
@@ -735,14 +725,6 @@ SPDX-License-Identifier: MIT
                     <exclude>**/git.properties</exclude>
                     <exclude>**/spy.properties</exclude>
                 </excludes>
-            </resource>
-            <resource>
-                <targetPath>static/swagger-ui</targetPath>
-                <filtering>false</filtering>
-                <directory>${basedir}/src/main/resources</directory>
-                <includes>
-                    <include>**/*.yaml</include>
-                </includes>
             </resource>
         </resources>
         <testResources>
@@ -1253,17 +1235,6 @@ SPDX-License-Identifier: MIT
                             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>generate-spec</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
-                            <generatorName>openapi</generatorName>
-                            <output>${project.build.directory}/classes/static/swagger-ui</output>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -1300,7 +1271,7 @@ SPDX-License-Identifier: MIT
                         <phase>initialize</phase>
                         <configuration>
                             <target name="generate-paths">
-                                <mkdir dir="${project.build.directory}/classes/static/swagger-ui" />
+                                <mkdir dir="${project.build.directory}/classes/static" />
                             </target>
                         </configuration>
                     </execution>
@@ -1361,28 +1332,6 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>unpack-webjars</id>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <!-- for some reason we need to manually extract some webjar stuff to make things work... -->
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.webjars</groupId>
-                                    <artifactId>swagger-ui</artifactId>
-                                    <version>${swagger-ui.version}</version>
-                                    <includes>META-INF/resources/webjars/**/*</includes>
-                                    <excludes>META-INF/resources/webjars/**/*index.html</excludes>
-                                    <excludes>META-INF/resources/webjars/**/**.gz</excludes>
-                                    <excludes>META-INF/resources/webjars/**/*.map</excludes>
-                                    <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>resolve-dependencies</id>
                         <goals>

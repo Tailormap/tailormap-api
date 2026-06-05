@@ -39,8 +39,6 @@ jobs:
         include:
         - language: java-kotlin
           build-mode: none
-        - language: javascript-typescript
-          build-mode: none
         - language: actions
           build-mode: none
 
