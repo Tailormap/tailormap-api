@@ -58,9 +58,8 @@ You can run this application in various ways:
   docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/tailormap/tailormap-api:snapshot
   ```
 
-You can then point your browser at http://localhost:8080/swagger-ui/index.html to see the frontend 
-API as described by the OpenAPI specification and use the admin backend enabled by Spring Data REST
-at http://localhost:8080/api/admin/ if you have activated the `hal-explorer` Maven profile.
+You can then point your browser at http://localhost:8080/api/admin/ to use the admin backend enabled by Spring Data REST
+if you have activated the `hal-explorer` Maven profile.
 
 The easiest way to see the API in action is to run the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 frontends locally. These can be run with a webpack dev server which will reverse proxy a locally 
