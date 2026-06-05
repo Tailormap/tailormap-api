@@ -32,7 +32,6 @@ jobs:
       actions: read
       contents: read
       packages: read
-
     strategy:
       fail-fast: false
       matrix:
@@ -41,32 +40,26 @@ jobs:
           build-mode: none
         - language: actions
           build-mode: none
-
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v6
-
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
           java-version: 25
           distribution: 'temurin'
           cache: 'maven'
-
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Generate sources with Maven'
         run: mvn generate-sources
-
       - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-
       - name: 'Perform CodeQL Analysis'
         uses: github/codeql-action/analyze@v4
         with:
