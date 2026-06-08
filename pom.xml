@@ -123,6 +123,8 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-codec.version>1.22.0</commons-codec.version>
         <flyway.version>12.8.0</flyway.version>
+        <!--  TODO: when updating hibernate to 7.4.1.Final or later, remove
+                    the workaround for HHH-20518, see HTM-2068 -->
         <hibernate.version>7.4.0.Final</hibernate.version>
         <jackson-2-bom.version>2.22.0</jackson-2-bom.version>
         <jackson-bom.version>3.1.4</jackson-bom.version>
@@ -758,6 +760,19 @@ SPDX-License-Identifier: MIT
                     <groupId>org.hibernate.orm</groupId>
                     <artifactId>hibernate-maven-plugin</artifactId>
                     <version>${hibernate.version}</version>
+                    <dependencies>
+                        <!--
+                        TODO: remove after upgrading hibernate-maven-plugin to a version that has a fix
+                               for https://hibernate.atlassian.net/browse/HHH-20518
+                               presumably in hibernate-maven-plugin 7.4.1.Final or later
+                               see https://b3partners.atlassian.net/browse/HTM-2068 for details
+                        -->
+                        <dependency>
+                            <groupId>org.codehaus.plexus</groupId>
+                            <artifactId>plexus-utils</artifactId>
+                            <version>4.0.3</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <artifactId>maven-pmd-plugin</artifactId>
