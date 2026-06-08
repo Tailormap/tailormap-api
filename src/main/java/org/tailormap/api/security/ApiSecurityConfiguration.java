@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -110,7 +111,8 @@ public class ApiSecurityConfiguration {
     // redirect URL.
     RedirectStrategy redirectStrategy = new DefaultRedirectStrategy() {
       @Override
-      public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url)
+      public void sendRedirect(
+          HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull String url)
           throws IOException {
         String redirectUrl = request.getParameter("redirectUrl");
         if (redirectUrl != null && redirectUrl.startsWith("/")) {
