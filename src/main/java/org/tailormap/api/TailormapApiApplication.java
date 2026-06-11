@@ -6,12 +6,14 @@
 
 package org.tailormap.api;
 
+import org.geotools.util.factory.GeoTools;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {"org.tailormap.api.configuration.base"})
 public class TailormapApiApplication {
-  public static void main(String[] args) {
+  static void main(String[] args) {
+    GeoTools.init();
     SpringApplication.run(TailormapApiApplication.class, args);
   }
 }
