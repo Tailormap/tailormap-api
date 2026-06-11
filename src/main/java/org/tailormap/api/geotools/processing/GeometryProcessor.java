@@ -102,7 +102,6 @@ public final class GeometryProcessor {
     final int megabytes = 2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024;
 
     Geometry bbox = geom.getEnvelope();
-    logger.trace("PrecisionModel scale: {}", geom.getPrecisionModel().getScale());
     GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(new PrecisionModel(geom.getPrecisionModel()));
     try {
       geom = gpr.reduce(geom);
