@@ -50,7 +50,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5
+        uses: stCarolas/setup-maven@v5.1
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
       - name: 'Generate sources with Maven'
