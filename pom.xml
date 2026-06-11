@@ -122,7 +122,7 @@ SPDX-License-Identifier: MIT
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-codec.version>1.22.0</commons-codec.version>
-        <flyway.version>12.8.0</flyway.version>
+        <flyway.version>12.8.1</flyway.version>
         <hibernate.version>7.4.1.Final</hibernate.version>
         <jackson-2-bom.version>2.22.0</jackson-2-bom.version>
         <jackson-bom.version>3.2.0</jackson-bom.version>
@@ -1937,7 +1937,6 @@ SPDX-License-Identifier: MIT
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
-                            <!-- <excludedGroups>prometheus-service-testcase</excludedGroups> -->
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Xshare:off -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>
