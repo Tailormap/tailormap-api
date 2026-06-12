@@ -9,11 +9,10 @@ SPDX-License-Identifier: MIT
         <notes><![CDATA[
     file name: affine-0.9.2.jar
 
-    Not a ImageN CVE
+    Not a CVE, affine is not a product but a library, and the CVE is for the product "Affine" which is a different product.
     ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.imagen/affine@.*$</packageUrl>
-        <cve>CVE-2026-21853</cve>
-        <cve>CVE-2026-25477</cve>
+        <cpe>cpe:/a:affine:affine</cpe>
     </suppress>
     <suppress>
         <notes><![CDATA[
