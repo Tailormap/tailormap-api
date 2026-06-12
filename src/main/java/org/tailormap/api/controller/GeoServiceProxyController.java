@@ -139,24 +139,22 @@ public class GeoServiceProxyController {
 
     checkRequestValidity(application, service, layer, protocol, request);
 
-    switch (protocol) {
-      case WMS, WMTS -> {
-        return doProxy(buildWMSUrl(service, request), service, request);
-      }
+    return switch (protocol) {
+      case WMS, WMTS -> doProxy(buildWMSUrl(service, request), service, request);
       case LEGEND -> {
         URI legendURI = buildLegendURI(service, layer, request);
         if (legendURI == null) {
           logger.warn("No legend URL found for layer {}", layer.getName());
-          return null;
+          yield null;
         }
-        return doProxy(legendURI, service, request);
+        yield doProxy(legendURI, service, request);
       }
       case TILES3D ->
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
       default ->
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
-    }
+    };
   }
 
   private void checkRequestValidity(

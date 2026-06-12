@@ -462,15 +462,12 @@ public class CreateLayerExtractService {
 
     final File outputFile = getValidatedOutputFile(outputFileName);
     if (!logger.isDebugEnabled()) {
-      // delete in production after JVM exit because the event bus will be reset when the JVM exits, and then we
-      // are unlikely to have a reference to the file anymore.
-      // In debug/development mode we want to keep the file for inspection.
       outputFile.deleteOnExit();
     }
 
-    switch (extractOutputFormat) {
-      case CSV -> {
-        return (FileDataStore) new CSVDataStoreFactory()
+    return switch (extractOutputFormat) {
+      case CSV ->
+        (FileDataStore) new CSVDataStoreFactory()
             .createNewDataStore(Map.of(
                 CSVDataStoreFactory.FILE_PARAM.key,
                 outputFile,
@@ -482,33 +479,27 @@ public class CreateLayerExtractService {
                 false,
                 CSVDataStoreFactory.QUOTEALL.key,
                 true));
-      }
       case XLSX -> {
-        // replace any invalid characters such as /\?*[] with '_' and clip to 31 characters because Excel has
-        // limitations on sheet names. Also clip off any WFS namespace prefix in the type name, which is often
-        // separated by a ':' character, because ':' is not allowed in Excel sheet names.
-        typeName = typeName.contains(":")
+        String processedTypeName = typeName.contains(":")
             ? typeName.substring(typeName.lastIndexOf(":") + 1).replaceAll("[\\\\/?*\\[\\]:]", "_")
             : typeName.replaceAll("[\\\\/?*\\[\\]:]", "_");
-        typeName = typeName.substring(0, Math.min(typeName.length(), 31));
-        return (FileDataStore) new ExcelDataStoreFactory()
+        processedTypeName = processedTypeName.substring(0, Math.min(processedTypeName.length(), 31));
+        yield (FileDataStore) new ExcelDataStoreFactory()
             .createNewDataStore(Map.of(
                 ExcelDataStoreFactory.FILE_PARAM.key,
                 outputFile,
                 ExcelDataStoreFactory.SHEET_PARAM.key,
-                typeName));
+                processedTypeName));
       }
-      case GEOJSON -> {
-        return (FileDataStore) new GeoJSONDataStoreFactory()
+      case GEOJSON ->
+        (FileDataStore) new GeoJSONDataStoreFactory()
             .createNewDataStore(Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile));
-      }
       default -> {
-        // should never happen
         emitError(clientId, "Unknown output format: " + extractOutputFormat);
         logger.error("Unknown output format: {}", extractOutputFormat);
         throw new IllegalArgumentException("Unknown output format: " + extractOutputFormat);
       }
-    }
+    };
   }
 
   private int getFeatureCount(SimpleFeatureSource source, Query query) throws IOException {
