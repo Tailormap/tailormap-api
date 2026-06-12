@@ -279,36 +279,32 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
 
     JDBCConnectionProperties connProperties = featureType.getFeatureSource().getJdbcConnection();
     fkColumnType = getValidColumnType(fkColumnType, connProperties.getDbtype());
-    switch (connProperties.getDbtype()) {
-      case POSTGIS -> {
-        return getPostGISCreateAttachmentsTableStatement(
+    return switch (connProperties.getDbtype()) {
+      case POSTGIS ->
+        getPostGISCreateAttachmentsTableStatement(
             featureType.getName(),
             featureType.getPrimaryKeyAttribute(),
             fkColumnType,
             typeModifier,
             ds.getDatabaseSchema());
-      }
-
-      case ORACLE -> {
-        return getOracleCreateAttachmentsTableStatement(
+      case ORACLE ->
+        getOracleCreateAttachmentsTableStatement(
             featureType.getName(),
             featureType.getPrimaryKeyAttribute(),
             fkColumnType,
             typeModifier,
             ds.getDatabaseSchema());
-      }
-      case SQLSERVER -> {
-        return getSQLServerCreateAttachmentsTableStatement(
+      case SQLSERVER ->
+        getSQLServerCreateAttachmentsTableStatement(
             featureType.getName(),
             featureType.getPrimaryKeyAttribute(),
             fkColumnType,
             typeModifier,
             ds.getDatabaseSchema());
-      }
       default ->
         throw new IllegalArgumentException(
             "Unsupported database type for attachments: " + connProperties.getDbtype());
-    }
+    };
   }
 
   private static String getValidColumnType(String columnType, JDBCConnectionProperties.DbtypeEnum dbtype) {
@@ -352,30 +348,26 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
     }
 
     JDBCConnectionProperties connProperties = featureType.getFeatureSource().getJdbcConnection();
-    switch (connProperties.getDbtype()) {
-      case POSTGIS -> {
-        return MessageFormat.format(
+    return switch (connProperties.getDbtype()) {
+      case POSTGIS ->
+        MessageFormat.format(
             "CREATE INDEX IF NOT EXISTS {0}_attachments_fk ON {1}{0}_attachments({0}_pk)",
             featureType.getName(), schemaPrefix);
-      }
-      case SQLSERVER -> {
-        return MessageFormat.format("""
+      case SQLSERVER -> MessageFormat.format("""
 IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = ''{0}_attachments_fk'' AND object_id = OBJECT_ID(N''{1}{0}_attachments''))
 BEGIN
 CREATE INDEX {0}_attachments_fk ON {1}{0}_attachments({0}_pk)
 END
 """, featureType.getName(), schemaPrefix);
-      }
-      case ORACLE -> {
-        return MessageFormat.format(
+      case ORACLE ->
+        MessageFormat.format(
                 "CREATE INDEX IF NOT EXISTS {1}{0}_attachments_fk ON {1}{0}_attachments({0}_pk)",
                 featureType.getName(), schemaPrefix)
             .toUpperCase(Locale.ROOT);
-      }
       default ->
         throw new IllegalArgumentException(
             "Unsupported database type for attachments: " + connProperties.getDbtype());
-    }
+    };
   }
 
   /** Convert UUID to byte array for storage in Oracle RAW(16). */
