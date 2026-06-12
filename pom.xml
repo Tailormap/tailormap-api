@@ -154,7 +154,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.4.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <sentry.version>8.43.2</sentry.version>
-        <errorProne.version>2.49.0</errorProne.version>
+        <errorProne.version>2.50.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
