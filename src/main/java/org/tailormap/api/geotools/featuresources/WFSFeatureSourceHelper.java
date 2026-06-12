@@ -14,9 +14,9 @@ import org.geotools.api.data.ResourceInfo;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wfs.internal.FeatureTypeInfo;
+import org.geotools.util.PreventLocalEntityResolver;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.tailormap.api.geotools.PreventLocalAllowNestedJarEntityResolver;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -28,7 +28,7 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
   @Override
   public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
     Map<String, Object> params = new HashMap<>();
-    params.put(WFSDataStoreFactory.ENTITY_RESOLVER.key, PreventLocalAllowNestedJarEntityResolver.INSTANCE);
+    params.put(WFSDataStoreFactory.ENTITY_RESOLVER.key, PreventLocalEntityResolver.INSTANCE);
 
     if (timeout != null) {
       params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
