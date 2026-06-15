@@ -8,6 +8,7 @@ package org.tailormap.api.geotools.wfs;
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -24,16 +25,10 @@ import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import org.geotools.http.HTTPClient;
-import org.geotools.http.SimpleHttpClient;
-import org.geotools.ows.wms.LayerDescription;
-import org.geotools.ows.wms.WMS1_1_1;
-import org.geotools.ows.wms.WebMapServer;
-import org.geotools.ows.wms.request.DescribeLayerRequest;
-import org.geotools.ows.wms.response.DescribeLayerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -44,6 +39,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 public class SimpleWFSHelper {
   private static final Logger logger =
@@ -82,7 +79,7 @@ public class SimpleWFSHelper {
       // We need to encode the parameters manually because UriComponentsBuilder annoyingly does not
       // encode '+' as used in mime types for output formats, see
       // https://stackoverflow.com/questions/18138011
-      parameters.replaceAll((key, values) -> values.stream()
+      parameters.replaceAll((unusedKey, values) -> values.stream()
           .map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8))
           .collect(Collectors.toList()));
       params.addAll(parameters);
@@ -119,17 +116,7 @@ public class SimpleWFSHelper {
     HttpResponse<InputStream> response =
         httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
 
-    // Parse capabilities in DOM
-
-    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    documentBuilderFactory.setNamespaceAware(true);
-    documentBuilderFactory.setExpandEntityReferences(false);
-    documentBuilderFactory.setValidating(false);
-    documentBuilderFactory.setXIncludeAware(false);
-    documentBuilderFactory.setCoalescing(true);
-    documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-    Document doc = documentBuilder.parse(response.body());
+    Document doc = parseSecureXml(response.body());
 
     // WFS 1.1.0 and WFS 2.0.0 use different namespaces, but the same local element names
     boolean wfs2 = "2.0.0".equals(doc.getDocumentElement().getAttribute("version"));
@@ -188,31 +175,15 @@ public class SimpleWFSHelper {
 
   public static Map<String, SimpleWFSLayerDescription> describeWMSLayers(
       String url, String username, String password, List<String> layers) {
-    try {
-      HTTPClient client = new SimpleHttpClient();
-      client.setUser(username);
-      client.setPassword(password);
-      client.setConnectTimeout(TIMEOUT);
-      client.setReadTimeout(TIMEOUT);
-      WebMapServer wms = new WebMapServer(new URI(url).toURL(), client);
-      // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer
-      // about unsupported request in capabilities unless we override WebMapServer to set up
-      // specifications.
-      DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URI(url).toURL());
-      // XXX Otherwise GeoTools will send VERSION=1.1.0...
-      describeLayerRequest.setProperty("VERSION", "1.1.1");
-      describeLayerRequest.setLayers(String.join(",", layers));
-      // GeoTools will throw a ClassCastException when a WMS ServiceException is returned
-      DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
+    try (HttpClient httpClient = getDefaultHttpClient(); ) {
+      URI describeLayerUri = getDescribeLayerRequestUrl(url, layers);
+      HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(describeLayerUri);
+      setHttpBasicAuthenticationHeader(requestBuilder, username, password);
 
-      Map<String, SimpleWFSLayerDescription> descriptions = new HashMap<>();
-      for (LayerDescription ld : describeLayerResponse.getLayerDescs()) {
-        String wfsUrl = getWfsUrl(ld, wms);
-
-        if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-          descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, List.of(ld.getQueries())));
-        }
-      }
+      HttpResponse<InputStream> response =
+          httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+      Document document = parseXmlAllowingDocType(response.body());
+      Map<String, SimpleWFSLayerDescription> descriptions = parseDescribeLayerResponse(document, url);
       return Collections.unmodifiableMap(descriptions);
     } catch (Exception e) {
       String msg =
@@ -226,17 +197,81 @@ public class SimpleWFSHelper {
     return Map.of();
   }
 
-  private static String getWfsUrl(LayerDescription ld, WebMapServer wms) {
-    String wfsUrl = (ld.getWfs() != null) ? ld.getWfs().toString() : null;
-    if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
-      wfsUrl = ld.getOwsURL().toString();
+  private static URI getDescribeLayerRequestUrl(String url, List<String> layers) {
+    MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+    parameters.add("LAYERS", String.join(",", layers));
+    return getOGCRequestURL(url, "WMS", "1.1.1", "DescribeLayer", parameters);
+  }
+
+  private static Document parseSecureXml(InputStream inputStream) throws Exception {
+    return getDocumentBuilder().parse(inputStream);
+  }
+
+  private static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    documentBuilderFactory.setNamespaceAware(true);
+    documentBuilderFactory.setExpandEntityReferences(false);
+    documentBuilderFactory.setValidating(false);
+    documentBuilderFactory.setXIncludeAware(false);
+    documentBuilderFactory.setCoalescing(true);
+    documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return documentBuilderFactory.newDocumentBuilder();
+  }
+
+  private static Document parseXmlAllowingDocType(InputStream inputStream) throws Exception {
+    DocumentBuilder documentBuilder = getDocumentBuilder();
+    EntityResolver entityResolver = (publicId, systemId) -> new InputSource(Reader.of(""));
+    documentBuilder.setEntityResolver(entityResolver);
+
+    return documentBuilder.parse(inputStream);
+  }
+
+  private static Map<String, SimpleWFSLayerDescription> parseDescribeLayerResponse(
+      Document document, String fallbackUrl) {
+    Element root = document.getDocumentElement();
+    if (root == null) {
+      return Map.of();
     }
-    // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but implied. Some
-    // Deegree instance encountered has all attributes empty, and apparently the meaning is that
-    // the WFS URL is the same as the WMS URL (not explicitly defined in the spec).
-    if (wfsUrl == null) {
-      wfsUrl = wms.getInfo().getSource().toString();
+
+    NodeList layerDescriptions = root.getElementsByTagNameNS("*", "LayerDescription");
+    Map<String, SimpleWFSLayerDescription> descriptions = new HashMap<>();
+
+    for (int i = 0; i < layerDescriptions.getLength(); i++) {
+      Element layerDescription = (Element) layerDescriptions.item(i);
+
+      String layerName = layerDescription.getAttribute("name");
+      String wfsUrl = getDescribeLayerWfsUrl(layerDescription, fallbackUrl);
+
+      List<String> typeNames = new ArrayList<>();
+      NodeList queryNodes = layerDescription.getElementsByTagNameNS("*", "Query");
+      for (int j = 0; j < queryNodes.getLength(); j++) {
+        Element query = (Element) queryNodes.item(j);
+        String typeName = query.getAttribute("typeName");
+        if (!typeName.isBlank()) {
+          typeNames.add(typeName);
+        }
+      }
+
+      if (!layerName.isBlank() && wfsUrl != null && !typeNames.isEmpty()) {
+        descriptions.put(layerName, new SimpleWFSLayerDescription(wfsUrl, List.copyOf(typeNames)));
+      }
     }
-    return wfsUrl;
+
+    return descriptions;
+  }
+
+  private static String getDescribeLayerWfsUrl(Element layerDescription, String fallbackUrl) {
+    String wfsUrl = layerDescription.getAttribute("wfs");
+    if (!wfsUrl.isBlank()) {
+      return wfsUrl;
+    }
+
+    String owsType = layerDescription.getAttribute("owsType");
+    String owsUrl = layerDescription.getAttribute("owsURL");
+    if ("WFS".equalsIgnoreCase(owsType) && !owsUrl.isBlank()) {
+      return owsUrl;
+    }
+
+    return fallbackUrl;
   }
 }
