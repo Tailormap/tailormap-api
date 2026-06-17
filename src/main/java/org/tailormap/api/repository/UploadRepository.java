@@ -28,6 +28,10 @@ public interface UploadRepository extends JpaRepository<Upload, UUID>, RevisionR
 
   @PreAuthorize("permitAll()")
   @NonNull @EntityGraph(attributePaths = {"content"})
+  Optional<Upload> findWithContentByCategoryAndFilename(@NonNull String category, @NonNull String filename);
+
+  @PreAuthorize("permitAll()")
+  @NonNull @EntityGraph(attributePaths = {"content"})
   Optional<Upload> findWithContentByIdAndCategory(@NonNull UUID id, @NonNull String category);
 
   @PreAuthorize(value = "permitAll()")
