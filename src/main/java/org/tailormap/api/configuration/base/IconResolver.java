@@ -8,14 +8,11 @@ package org.tailormap.api.configuration.base;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -30,9 +27,6 @@ import org.tailormap.api.repository.UploadRepository;
 
 @Service
 public class IconResolver implements ResourceResolver, InitializingBean {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   private final UploadRepository uploadRepository;
   private CachingResourceResolver iconCachingResolver;
 
@@ -73,7 +67,6 @@ public class IconResolver implements ResourceResolver, InitializingBean {
         .findWithContentByCategoryAndFilename(Upload.CATEGORY_THEME_FAVICON, icon)
         .orElse(null);
     if (upload != null) {
-      logger.info("Favicon returned from uploads: {}", icon);
       return new ByteArrayResource(upload.getContent()) {
         @Override
         public String getFilename() {
