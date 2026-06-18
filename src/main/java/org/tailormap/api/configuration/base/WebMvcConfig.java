@@ -31,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   private final IndexHtmlTransformer indexHtmlTransformer;
   private final IconResolver iconResolver;
 
-  @Value("#{'${spring.web.resources.static-locations}'.split(',')}")
+  @Value("#{'${spring.web.resources.static-locations:file:/home/cnb/static/}'.split(',')}")
   private String[] staticResourceLocations;
 
   @Value("#{'${tailormap-api.web.icons:favicon.ico,favicon.svg,apple-touch-icon.png}'.split(',')}")
@@ -56,6 +56,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     CachingResourceResolver iconCachingResolver =
         new CachingResourceResolver(new ConcurrentMapCache("theme-favicon-cache"));
     String[] iconPatterns = Arrays.stream(iconFilenames)
+        .map(String::trim)
+        .filter(filename -> !filename.isEmpty())
         // Support both multiple localized bundles and a single locale bundle (/favicon.ico and /*/favicon.ico
         // matching /nl/favicon.ico)
         .flatMap(filename -> Stream.of("/" + filename, "/*/" + filename))

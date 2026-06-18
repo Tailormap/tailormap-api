@@ -90,10 +90,12 @@ public class IconResolver implements ResourceResolver, InitializingBean {
       @NonNull String resourcePath,
       @NonNull List<? extends Resource> locations,
       @NonNull ResourceResolverChain chain) {
-    return null;
+    return chain.resolveUrlPath(resourcePath, locations);
   }
 
   public void clearCache() {
-    this.iconCachingResolver.getCache().clear();
+    if (this.iconCachingResolver != null) {
+      this.iconCachingResolver.getCache().clear();
+    }
   }
 }
