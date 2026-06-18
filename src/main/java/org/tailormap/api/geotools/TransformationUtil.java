@@ -35,7 +35,7 @@ public class TransformationUtil {
     final CoordinateReferenceSystem dataSourceCRS =
         simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-    if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
+    if (!CRS.isEquivalent(dataSourceCRS, appCRS)) {
       return CRS.findMathTransform(dataSourceCRS, appCRS);
     } else {
       return null;
@@ -60,7 +60,7 @@ public class TransformationUtil {
     final CoordinateReferenceSystem dataSourceCRS =
         simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-    if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
+    if (!CRS.isEquivalent(dataSourceCRS, appCRS)) {
       transform = CRS.findMathTransform(appCRS, dataSourceCRS);
     }
     return transform;

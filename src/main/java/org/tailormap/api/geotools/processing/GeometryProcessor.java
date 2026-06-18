@@ -13,6 +13,7 @@ import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
 import org.geotools.geometry.jts.WKTWriter2;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.ParseException;
@@ -77,6 +78,18 @@ public final class GeometryProcessor {
       logger.error("Failed to transform geometry", e);
     }
     return geometry;
+  }
+
+  public static Envelope transformEnvelope(@NotNull Envelope envelope, MathTransform transform) {
+    if (null == transform) {
+      return envelope;
+    }
+    try {
+      return JTS.transform(envelope, transform);
+    } catch (TransformException e) {
+      logger.error("Failed to transform envelope", e);
+    }
+    return envelope;
   }
 
   private static String linearizeGeomToWKT(Geometry geometry) {
