@@ -34,6 +34,7 @@ public class Upload extends AuditMetadata {
   public static final String CATEGORY_DRAWING_STYLE = "drawing-style";
   public static final String CATEGORY_DRAWING_STYLE_IMAGE = "drawing-style-image";
   public static final String CATEGORY_SSO_IMAGE = "sso-image";
+  public static final String CATEGORY_THEME_FAVICON = "theme-favicon";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
