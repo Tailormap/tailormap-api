@@ -101,11 +101,13 @@ public class LayerBoundsController {
           // to the default geometry
           MathTransform transform =
               TransformationUtil.getTransformationToDataSource(application, featureSource);
+          String defaultGeom = tmft.getDefaultGeometryAttribute();
           if (transform != null
+              && defaultGeom != null
               // the filter CQL will contain something like "INTERSECTS(geom,..." so look for the
               // opening '(' and closing ',' allowing whitespace so it is not too brittle wrt. formatting
               // note that more than 1 spatial filters may be present, just look for any atm
-              && Pattern.compile("\\(\\s*" + Pattern.quote(tmft.getDefaultGeometryAttribute()) + "\\s*,")
+              && Pattern.compile("\\(\\s*" + Pattern.quote(defaultGeom) + "\\s*,")
                   .matcher(filterCQL)
                   .find()) {
             // TODO https://b3partners.atlassian.net/browse/HTM-2088
@@ -122,7 +124,8 @@ public class LayerBoundsController {
         }
       }
 
-      if (filterCQL == null && featureSource.getDataStore() instanceof JDBCDataStore jdbcDataStore) {
+      if ((filterCQL == null || filterCQL.isBlank())
+          && featureSource.getDataStore() instanceof JDBCDataStore jdbcDataStore) {
         // turn off getting optimised/inaccurate bounds
         logger.debug(
             "Turning off estimated extents for layer {} because no filter is applied and the datastore is a JDBCDataStore",
@@ -145,10 +148,13 @@ public class LayerBoundsController {
         referencedEnvelope = featureSource.getFeatures(query).getBounds();
       }
 
-      if (referencedEnvelope.boundsEquals2D(new ReferencedEnvelope(), 0.1)) {
+      if (referencedEnvelope == null || referencedEnvelope.isNull()) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "No features found for layer " + appTreeLayerNode.getLayerName() + " and filter '" + filterCQL
+            "No features found for layer "
+                + appTreeLayerNode.getLayerName()
+                + " and filter '"
+                + filterCQL
                 + "'");
       }
 

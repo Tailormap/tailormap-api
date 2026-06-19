@@ -134,7 +134,8 @@ class LayerBoundsControllerIntegrationTest {
         arguments(provinciesWfs, "code='non-existent'"));
   }
 
-  private double allowedError = .01;
+  private static final double DEFAULT_ALLOWED_ERROR = 0.1;
+  private static final double OSM_ALLOWED_ERROR = 1.0;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -145,11 +146,8 @@ class LayerBoundsControllerIntegrationTest {
   @ParameterizedTest(name = "#{index} get should return valid envelope for appLayer: {0}")
   @MethodSource("differentFeatureSourcesProvider")
   void get_unfiltered_bounds(String appLayerUrl, Box bounds) throws Exception {
-    if (Objects.equals(appLayerUrl, osm_polygonUrlPostgis)) {
-      allowedError = 1;
-    } else {
-      allowedError = 0.1;
-    }
+    double allowedError =
+        Objects.equals(appLayerUrl, osm_polygonUrlPostgis) ? OSM_ALLOWED_ERROR : DEFAULT_ALLOWED_ERROR;
 
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc.perform(get(appLayerUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(appLayerUrl)))
@@ -171,11 +169,8 @@ class LayerBoundsControllerIntegrationTest {
   @ParameterizedTest(name = "#{index} post should return valid envelope for appLayer: {0}")
   @MethodSource("differentFeatureSourcesProvider")
   void post_unfiltered_bounds(String appLayerUrl, Box bounds) throws Exception {
-    if (Objects.equals(appLayerUrl, osm_polygonUrlPostgis)) {
-      allowedError = 1;
-    } else {
-      allowedError = 0.1;
-    }
+    double allowedError =
+        Objects.equals(appLayerUrl, osm_polygonUrlPostgis) ? OSM_ALLOWED_ERROR : DEFAULT_ALLOWED_ERROR;
 
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc.perform(post(appLayerUrl)
@@ -200,6 +195,9 @@ class LayerBoundsControllerIntegrationTest {
   @ParameterizedTest(name = "#{index} get should return valid envelope for appLayer: {0} and filter {1}")
   @MethodSource("filtersProvider")
   void get_filtered_bounds(String appLayerUrl, String cqlFilter, Box bounds) throws Exception {
+    double allowedError =
+        Objects.equals(appLayerUrl, osm_polygonUrlPostgis) ? OSM_ALLOWED_ERROR : DEFAULT_ALLOWED_ERROR;
+
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc.perform(get(appLayerUrl)
             .param("filter", cqlFilter)
