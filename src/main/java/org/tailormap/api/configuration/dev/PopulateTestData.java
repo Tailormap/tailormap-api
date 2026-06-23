@@ -662,20 +662,34 @@ public class PopulateTestData {
           .id(geoService.getId()));
     }
 
+    List<TMFeatureSource> testWFS = List.of(
+        //            "demo",
+        new TMFeatureSource()
+            .setProtocol(TMFeatureSource.Protocol.WFS)
+            .setUrl("https://demo.tailormap.com/geoserver/geodata/wfs")
+            .setTitle("WFS for Demo")
+            .setLinkedService(geoServiceRepository.findById("demo").orElseThrow()),
+        //            "snapshot-geoserver",
+        new TMFeatureSource()
+            .setProtocol(TMFeatureSource.Protocol.WFS)
+            .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?")
+            .setTitle("WFS for Test GeoServer")
+            .setLinkedService(geoServiceRepository
+                .findById("snapshot-geoserver")
+                .orElseThrow()));
+    featureSourceRepository.saveAll(testWFS);
+
     CatalogNode wfsFeatureSourceCatalogNode =
         new CatalogNode().id("wfs_feature_sources").title("WFS feature sources");
     rootCatalogNode.addChildrenItem(wfsFeatureSourceCatalogNode.getId());
     catalog.getNodes().add(wfsFeatureSourceCatalogNode);
 
-    services.stream().filter(s -> s.getProtocol() == WMS).forEach(s -> {
-      geoServiceHelper.findAndSaveRelatedWFS(s);
-      List<TMFeatureSource> linkedSources = featureSourceRepository.findByLinkedServiceId(s.getId());
-      for (TMFeatureSource linkedSource : linkedSources) {
-        wfsFeatureSourceCatalogNode.addItemsItem(new TailormapObjectRef()
-            .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
-            .id(linkedSource.getId().toString()));
-      }
-    });
+    for (TMFeatureSource featureSource : testWFS) {
+      new WFSFeatureSourceHelper().loadCapabilities(featureSource);
+      wfsFeatureSourceCatalogNode.addItemsItem(new TailormapObjectRef()
+          .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
+          .id(featureSource.getId().toString()));
+    }
 
     String geodataPassword = "980f1c8A-25933b2";
 
