@@ -31,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   private final IndexHtmlTransformer indexHtmlTransformer;
   private final IconResolver iconResolver;
 
-  @Value("#{'${spring.web.resources.static-locations:file:/home/cnb/static/}'.split(',')}")
+  @Value("#{'${spring.web.resources.static-locations}'.split(',')}")
   private String[] staticResourceLocations;
 
   @Value("#{'${tailormap-api.web.icons:favicon.ico,favicon.svg,apple-touch-icon.png}'.split(',')}")
@@ -50,7 +50,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     ResourceResolver encodedResourceResolver = new EncodedResourceResolver();
     registry.addResourceHandler("/version.json")
-        .addResourceLocations(staticResourceLocations)
+        .addResourceLocations(staticResourceLocations[0])
         .setCacheControl(CacheControl.noStore());
 
     CachingResourceResolver iconCachingResolver =
@@ -63,7 +63,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .flatMap(filename -> Stream.of("/" + filename, "/*/" + filename))
         .toArray(String[]::new);
     registry.addResourceHandler(iconPatterns)
-        .addResourceLocations(staticResourceLocations)
+        .addResourceLocations(staticResourceLocations[0])
         .setCachePeriod(5 * 60)
         .resourceChain(false)
         .addResolver(iconCachingResolver)
@@ -79,12 +79,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
             "/*/media/**",
             "/icons/**",
             "/*/icons/**")
-        .addResourceLocations(staticResourceLocations)
+        .addResourceLocations(staticResourceLocations[0])
         .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate())
         .resourceChain(true)
         .addResolver(encodedResourceResolver);
     registry.addResourceHandler("/**")
-        .addResourceLocations(staticResourceLocations)
+        .addResourceLocations(staticResourceLocations[0])
         // no-cache means the browser must revalidate index.html with a conditional HTTP request
         // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
         // browser after deployment of a new release.
