@@ -31,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   private final IndexHtmlTransformer indexHtmlTransformer;
   private final IconResolver iconResolver;
 
-  @Value("#{'${spring.web.resources.static-locations}'.split(',')}")
+  @Value("#{'${spring.web.resources.static-locations:file:/home/cnb/static/}'.split(',')}")
   private String[] staticResourceLocations;
 
   @Value("#{'${tailormap-api.web.icons:favicon.ico,favicon.svg,apple-touch-icon.png}'.split(',')}")
