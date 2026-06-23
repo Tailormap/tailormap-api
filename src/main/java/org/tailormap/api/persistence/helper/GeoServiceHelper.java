@@ -59,14 +59,10 @@ public class GeoServiceHelper {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final TailormapConfig tailormapConfig;
-  //  private final FeatureSourceRepository featureSourceRepository;
 
   @Autowired
-  public GeoServiceHelper(TailormapConfig tailormapConfig
-      //          , FeatureSourceRepository featureSourceRepository
-      ) {
+  public GeoServiceHelper(TailormapConfig tailormapConfig) {
     this.tailormapConfig = tailormapConfig;
-    //    this.featureSourceRepository = featureSourceRepository;
   }
 
   public static org.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(String url) {
@@ -209,7 +205,6 @@ public class GeoServiceHelper {
       AbstractOpenWebService<? extends Capabilities, Layer> ows) {
     geoService.setCapabilities(client.getLatestResponseCopy());
     geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);
-    // geoService.setCapabilitiesContentType(client.getResponse().getContentType());
     geoService.setCapabilitiesFetched(Instant.now());
 
     ServiceInfo info = ows.getInfo();
@@ -309,9 +304,7 @@ public class GeoServiceHelper {
 
       // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to
       // Throwable.initCause() on a SAXException that already has a cause.
-
       // In these cases, try to extract a message from the HTTP response
-
       String contentType = client.getLatestResponse().getContentType();
       if (contentType != null && contentType.contains("text/xml")) {
         String wmsException =
@@ -397,98 +390,6 @@ public class GeoServiceHelper {
     geoService.setLayers(
         layers.stream().map(l -> toGeoServiceLayer(l, layers)).collect(Collectors.toList()));
   }
-
-  //  /** @deprecated Only for test data usage */
-  //  @Deprecated
-  //  private Map<String, SimpleWFSLayerDescription> findRelatedWFS(GeoService geoService) {
-  //    // TODO: report back progress
-  //
-  //    if (CollectionUtils.isEmpty(geoService.getLayers())) {
-  //      return Map.of();
-  //    }
-  //
-  //    // Do one DescribeLayer request for all layers in a WMS. This is faster than one request per
-  //    // layer, but when one layer has an error this prevents describing valid layers. But that's a
-  //    // problem with the WMS / GeoServer.
-  //    // For now at least ignore layers with space in the name because GeoServer chokes out invalid
-  //    // XML for those.
-  //
-  //    List<String> layers = geoService.getLayers().stream()
-  //        .filter(l -> !l.getVirtual())
-  //        .map(GeoServiceLayer::getName)
-  //        .filter(n -> {
-  //          // filter out white-space (non-greedy regex)
-  //          boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
-  //          if (!noWhitespace) {
-  //            logger.warn(
-  //                "Not doing WFS DescribeLayer request for layer name with space: \"{}\" of WMS {}",
-  //                n,
-  //                geoService.getUrl());
-  //          }
-  //          return noWhitespace;
-  //        })
-  //        .collect(Collectors.toList());
-  //
-  //    // TODO: add authentication
-  //    Map<String, SimpleWFSLayerDescription> descriptions =
-  //        SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), null, null, layers);
-  //
-  //    for (Map.Entry<String, SimpleWFSLayerDescription> entry : descriptions.entrySet()) {
-  //      String layerName = entry.getKey();
-  //      SimpleWFSLayerDescription description = entry.getValue();
-  //      if (description.typeNames().size() == 1 && layerName.equals(description.getFirstTypeName())) {
-  //        logger.info(
-  //            "layer \"{}\" linked to feature type with same name of WFS {}",
-  //            layerName,
-  //            description.wfsUrl());
-  //      } else {
-  //        logger.info(
-  //            "layer \"{}\" -> feature type(s) {} of WFS {}",
-  //            layerName,
-  //            description.typeNames(),
-  //            description.wfsUrl());
-  //      }
-  //    }
-  //    return descriptions;
-  //  }
-  //
-  //  /** @deprecated Only for test data usage */
-  //  @Deprecated
-  //  public void findAndSaveRelatedWFS(GeoService geoService) {
-  //    if (geoService.getProtocol() != WMS) {
-  //      throw new IllegalArgumentException();
-  //    }
-  //
-  //    // TODO: report back progress
-  //
-  //    Map<String, SimpleWFSLayerDescription> wfsByLayer = this.findRelatedWFS(geoService);
-  //
-  //    wfsByLayer.values().stream()
-  //        .map(SimpleWFSLayerDescription::wfsUrl)
-  //        .distinct()
-  //        .forEach(url -> {
-  //          TMFeatureSource fs = featureSourceRepository.findByUrl(url);
-  //          if (fs == null) {
-  //            fs = new TMFeatureSource()
-  //                .setProtocol(WFS)
-  //                .setUrl(url)
-  //                .setTitle("WFS for " + geoService.getTitle())
-  //                .setLinkedService(geoService);
-  //            try {
-  //              new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());
-  //            } catch (IOException e) {
-  //              String msg = "Error loading WFS from URL %s: %s: %s"
-  //                  .formatted(url, e.getClass(), e.getMessage());
-  //              if (logger.isTraceEnabled()) {
-  //                logger.error(msg, e);
-  //              } else {
-  //                logger.error(msg);
-  //              }
-  //            }
-  //            featureSourceRepository.save(fs);
-  //          }
-  //        });
-  //  }
 
   /**
    * Try to extract the legend url from the styles of the layer. This works by getting all styles for the layer and
