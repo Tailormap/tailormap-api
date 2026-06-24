@@ -1195,6 +1195,110 @@ paths:
               schema:
                 type: string
 
+  /{viewerKind}/{name}/layer/{appLayerId}/bounds:
+    summary: 'Determine the bounds of a layer.'
+    parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - description: 'viewer name'
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: appLayerId
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: 'getLayerBounds'
+      description: 'Get the bounds of a layer. The bounds are returned in the application CRS. Using the filter parameter will calculate the bounds of the features that fulfill the filter.'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - in: query
+          name: filter
+          description: '
+        A filter to be applied. The bounds will be calculated for the features that fulfill the filter. 
+        The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+        '
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common-schemas.yaml#/components/schemas/Bounds'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters or content that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+    post:
+      operationId: 'layerBounds'
+      description: 'The same as GET, but allows for a large (spatial) filter. Parameters are submitted in the request body instead of the URL.'
+      security:
+        - formAuth: [ ]
+      requestBody:
+        description: 'Supply large filter parameters here to avoid extreme URL lengths.'
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'A filter to be applied. The bounds will be calculated for the features that fulfill the filter. The filter is an ECQL string.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common-schemas.yaml#/components/schemas/Bounds'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters or content that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
 
   /{viewerKind}/{name}/layer/{appLayerId}/edit/feature/{fid}:
     summary: 'Edit operations on a single feature.'
