@@ -68,19 +68,25 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .resourceChain(false)
         .addResolver(iconCachingResolver)
         .addResolver(iconResolver.setCachingResolver(iconCachingResolver));
-    registry
-        // Add cache headers for frontend bundle resources with hash in filename and fonts/images
-        .addResourceHandler(
-            "/*.js",
-            "/*/*.js",
-            "/*.css",
-            "/*/*.css",
-            "/media/**",
-            "/*/media/**",
-            "/icons/**",
-            "/*/icons/**")
+    // Handlers for static resources from a bundle not in a subdirectory with the language. When matching using
+    // '/media/**', we need to add '/media/' to the resource location because the '/media/' part is stripped from
+    // the request path
+    registry.addResourceHandler("/media/**")
+        .addResourceLocations(staticResourceLocations[0] + "/media/")
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate());
+    registry.addResourceHandler("/icons/**")
+        .addResourceLocations(staticResourceLocations[0] + "/icons/")
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate());
+    // Handlers for static resources from a bundle in a subdirectory with the language, the first part is not
+    // stripped from the request path
+    registry.addResourceHandler("/*/media/**", "/*/icons/**")
         .addResourceLocations(staticResourceLocations[0])
-        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate())
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate());
+    registry
+        // Add cache headers for frontend bundle resources with hash in filename
+        .addResourceHandler("/*.js", "/*/*.js", "/*.css", "/*/*.css")
+        .addResourceLocations(staticResourceLocations[0])
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
         .resourceChain(true)
         .addResolver(encodedResourceResolver);
     registry.addResourceHandler("/**")
