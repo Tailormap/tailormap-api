@@ -43,7 +43,7 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">final</strong> CoordinateReferenceSystem dataSourceCRS =
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">final</strong> CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">if</strong> (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">if</strong> (!CRS.isEquivalent(dataSourceCRS, appCRS)) {
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>        <strong class="jxr_keyword">return</strong> CRS.findMathTransform(dataSourceCRS, appCRS);
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>        <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">final</strong> CoordinateReferenceSystem dataSourceCRS =
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">final</strong> CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">if</strong> (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">if</strong> (!CRS.isEquivalent(dataSourceCRS, appCRS)) {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>        transform = CRS.findMathTransform(appCRS, dataSourceCRS);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">return</strong> transform;

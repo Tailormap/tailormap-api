@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PageController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">PageController.java</span></div><h1>PageController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.controller;
+
+import static org.springframework.beans.BeanUtils.copyProperties;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.persistence.Configuration;
+import org.tailormap.api.persistence.Page;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.helper.UploadHelper;
+import org.tailormap.api.persistence.json.MenuItem;
+import org.tailormap.api.persistence.json.PageTile;
+import org.tailormap.api.repository.ApplicationRepository;
+import org.tailormap.api.repository.ConfigurationRepository;
+import org.tailormap.api.repository.PageRepository;
+import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.viewer.model.PageResponse;
+import org.tailormap.api.viewer.model.ViewerMenuItem;
+import org.tailormap.api.viewer.model.ViewerPageTile;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+
+@AppRestController
+public class PageController {
+
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
+  private final AuthorisationService authorisationService;
+  private final PageRepository pageRepository;
+  private final UploadHelper uploadHelper;
+
+  public PageController(
+      ConfigurationRepository configurationRepository,
+      ApplicationRepository applicationRepository,
+      AuthorisationService authorisationService,
+      PageRepository pageRepository,
+<span class="nc" id="L50">      UploadHelper uploadHelper) {</span>
+<span class="nc" id="L51">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L52">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L53">    this.pageRepository = pageRepository;</span>
+<span class="nc" id="L54">    this.authorisationService = authorisationService;</span>
+<span class="nc" id="L55">    this.uploadHelper = uploadHelper;</span>
+<span class="nc" id="L56">  }</span>
+
+  private ResponseStatusException notFound() {
+<span class="nc" id="L59">    return new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+  }
+
+  @GetMapping(path = &quot;${tailormap-api.base-path}/page&quot;)
+  public PageResponse homePage() {
+<span class="nc" id="L64">    Page page = configurationRepository</span>
+<span class="nc" id="L65">        .findByKey(Configuration.HOME_PAGE)</span>
+<span class="nc" id="L66">        .map(Configuration::getValue)</span>
+<span class="nc" id="L67">        .map(Long::parseLong)</span>
+<span class="nc" id="L68">        .flatMap(pageRepository::findById)</span>
+<span class="nc" id="L69">        .orElseThrow(this::notFound);</span>
+<span class="nc" id="L70">    return getPageResponse(page);</span>
+  }
+
+  @GetMapping(path = {&quot;${tailormap-api.base-path}/page/{name}&quot;})
+  public PageResponse page(@PathVariable(required = false) String name) {
+<span class="nc" id="L75">    return pageRepository.findByName(name).map(this::getPageResponse).orElseThrow(this::notFound);</span>
+  }
+
+  private static class ViewerPageTileResult {
+    ViewerPageTile viewerPageTile;
+    boolean shouldBeFiltered;
+  }
+
+  private PageResponse getPageResponse(Page page) {
+<span class="nc" id="L84">    PageResponse pageResponse = new PageResponse();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!authorisationService.userAllowedToViewPage(page)) {</span>
+<span class="nc" id="L86">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+<span class="nc" id="L88">    copyProperties(page, pageResponse);</span>
+<span class="nc" id="L89">    pageResponse.tiles(page.getTiles().stream()</span>
+<span class="nc" id="L90">        .map(this::convert)</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        .filter(viewerPageTileResult -&gt; !viewerPageTileResult.shouldBeFiltered)</span>
+<span class="nc" id="L92">        .map(viewerPageTileResult -&gt; viewerPageTileResult.viewerPageTile)</span>
+<span class="nc" id="L93">        .toList());</span>
+
+<span class="nc" id="L95">    List&lt;MenuItem&gt; menuItems = configurationRepository</span>
+<span class="nc" id="L96">        .findByKey(Configuration.PORTAL_MENU)</span>
+<span class="nc" id="L97">        .map(Configuration::getJsonValue)</span>
+<span class="nc" id="L98">        .filter(JsonNode::isArray)</span>
+<span class="nc" id="L99">        .map(jsonNode -&gt; {</span>
+          try {
+<span class="nc" id="L101">            return Arrays.asList(JsonMapper.shared().treeToValue(jsonNode, MenuItem[].class));</span>
+<span class="nc" id="L102">          } catch (JacksonException e) {</span>
+<span class="nc" id="L103">            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);</span>
+          }
+        })
+<span class="nc" id="L106">        .orElse(List.of());</span>
+
+<span class="nc" id="L108">    List&lt;ViewerMenuItem&gt; viewerMenuItems = menuItems.stream()</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        .filter(menuItem -&gt; menuItem.getExclusiveOnPageId() == null</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            || menuItem.getExclusiveOnPageId().equals(page.getId()))</span>
+<span class="nc" id="L111">        .map(menuItem -&gt; {</span>
+<span class="nc" id="L112">          ViewerMenuItem viewerMenuItem = new ViewerMenuItem();</span>
+<span class="nc" id="L113">          copyProperties(menuItem, viewerMenuItem);</span>
+<span class="nc" id="L114">          Optional.ofNullable(menuItem.getPageId())</span>
+<span class="nc" id="L115">              .flatMap(pageRepository::findById)</span>
+<span class="nc" id="L116">              .ifPresent(linkedPage -&gt; viewerMenuItem.pageUrl(&quot;/page/&quot; + linkedPage.getName()));</span>
+<span class="nc" id="L117">          return viewerMenuItem;</span>
+        })
+<span class="nc" id="L119">        .toList();</span>
+<span class="nc" id="L120">    pageResponse.setMenu(viewerMenuItems);</span>
+
+<span class="nc" id="L122">    return pageResponse;</span>
+  }
+
+  /**
+   * Convert a page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).
+   *
+   * @param tile The page tile configuration
+   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).
+   */
+  private ViewerPageTileResult convert(PageTile tile) {
+<span class="nc" id="L132">    ViewerPageTile viewerPageTile = new ViewerPageTile();</span>
+<span class="nc" id="L133">    ViewerPageTileResult result = new ViewerPageTileResult();</span>
+<span class="nc" id="L134">    result.viewerPageTile = viewerPageTile;</span>
+<span class="nc" id="L135">    result.shouldBeFiltered = false;</span>
+<span class="nc" id="L136">    copyProperties(tile, viewerPageTile);</span>
+
+<span class="nc" id="L138">    PageTile.TileTypeEnum tileType = getTileTypeForPageTile(tile);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">    if (tileType == PageTile.TileTypeEnum.APPLICATION) {</span>
+<span class="nc" id="L140">      Optional.ofNullable(tile.getApplicationId())</span>
+<span class="nc" id="L141">          .flatMap(applicationRepository::findById)</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">          .filter(application -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">              || authorisationService.userAllowedToViewApplication(application))</span>
+<span class="nc" id="L144">          .ifPresentOrElse(</span>
+              application -&gt; {
+<span class="nc" id="L146">                viewerPageTile.applicationUrl(&quot;/app/&quot; + application.getName());</span>
+<span class="nc" id="L147">                viewerPageTile.requiresLogin(</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">                    !authorisationService.userAllowedToViewApplication(application));</span>
+<span class="nc" id="L149">              },</span>
+<span class="nc" id="L150">              () -&gt; result.shouldBeFiltered = true);</span>
+    }
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">    if (tileType == PageTile.TileTypeEnum.PAGE) {</span>
+<span class="nc" id="L154">      Optional.ofNullable(tile.getPageId())</span>
+<span class="nc" id="L155">          .flatMap(pageRepository::findById)</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">          .filter(page -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">              || authorisationService.userAllowedToViewPage(page))</span>
+<span class="nc" id="L158">          .ifPresentOrElse(</span>
+              page -&gt; {
+<span class="nc" id="L160">                viewerPageTile.pageUrl(&quot;/page/&quot; + page.getName());</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                viewerPageTile.requiresLogin(!authorisationService.userAllowedToViewPage(page));</span>
+<span class="nc" id="L162">              },</span>
+<span class="nc" id="L163">              () -&gt; result.shouldBeFiltered = true);</span>
+    }
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (tileType == PageTile.TileTypeEnum.URL</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        &amp;&amp; !tile.getAuthorizationRules().isEmpty()</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        &amp;&amp; !authorisationService.userAllowedToViewPageTile(tile)) {</span>
+<span class="nc" id="L169">      result.shouldBeFiltered = true;</span>
+    }
+
+<span class="nc" id="L172">    viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));</span>
+
+<span class="nc" id="L174">    return result;</span>
+  }
+
+  private PageTile.TileTypeEnum getTileTypeForPageTile(PageTile pageTile) {
+<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (pageTile.getTileType() != null) {</span>
+<span class="nc" id="L179">      return pageTile.getTileType();</span>
+    }
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    if (pageTile.getApplicationId() != null) {</span>
+<span class="nc" id="L182">      return PageTile.TileTypeEnum.APPLICATION;</span>
+    }
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (pageTile.getPageId() != null) {</span>
+<span class="nc" id="L185">      return PageTile.TileTypeEnum.PAGE;</span>
+    }
+<span class="nc bnc" id="L187" title="All 2 branches missed.">    if (pageTile.getUrl() != null) {</span>
+<span class="nc" id="L188">      return PageTile.TileTypeEnum.URL;</span>
+    }
+<span class="nc" id="L190">    return PageTile.TileTypeEnum.APPLICATION;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
