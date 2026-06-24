@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.controller;
 
+import static org.tailormap.api.persistence.Configuration.THEME_SETTINGS;
+
 import java.io.Serializable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,8 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.helper.UploadHelper;
+import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
@@ -28,18 +32,22 @@ import org.tailormap.api.viewer.model.AdditionalProperty;
 import org.tailormap.api.viewer.model.LoginConfiguration;
 import org.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
 import org.tailormap.api.viewer.model.UserResponse;
+import tools.jackson.databind.JsonNode;
 
 /** Provides user and login information */
 @RestController
 public class UserController {
   private final OIDCRepository oidcRepository;
+  private final ConfigurationRepository configurationRepository;
   private final UploadHelper uploadHelper;
 
   @Value("${tailormap-api.password-reset.enabled:false}")
   private boolean passwordResetEnabled;
 
-  public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {
+  public UserController(
+      OIDCRepository oidcRepository, ConfigurationRepository configurationRepository, UploadHelper uploadHelper) {
     this.oidcRepository = oidcRepository;
+    this.configurationRepository = configurationRepository;
     this.uploadHelper = uploadHelper;
   }
 
@@ -94,17 +102,34 @@ public class UserController {
   public ResponseEntity<LoginConfiguration> getLoginConfiguration() {
     LoginConfiguration result = new LoginConfiguration();
 
-    for (ClientRegistration reg : oidcRepository) {
-      OIDCRepository.OIDCRegistrationMetadata metadata =
-          oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());
-      result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()
-          .name(reg.getClientName())
-          .url("/api/oauth2/authorization/" + reg.getRegistrationId())
-          .showForViewer(metadata.getShowForViewer())
-          .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
+    boolean showSsoButtons = true;
+    boolean showLoginForm = true;
+
+    JsonNode themeSettings = configurationRepository
+        .findByKey(THEME_SETTINGS)
+        .map(Configuration::getJsonValue)
+        .orElse(null);
+    if (themeSettings != null) {
+      showSsoButtons = themeSettings.get("showSsoButtons") == null
+          || themeSettings.get("showSsoButtons").booleanValue();
+      showLoginForm = themeSettings.get("showLoginForm") == null
+          || themeSettings.get("showLoginForm").booleanValue();
+    }
+
+    if (showSsoButtons) {
+      for (ClientRegistration reg : oidcRepository) {
+        OIDCRepository.OIDCRegistrationMetadata metadata =
+            oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());
+        result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()
+            .name(reg.getClientName())
+            .url("/api/oauth2/authorization/" + reg.getRegistrationId())
+            .showForViewer(metadata.getShowForViewer())
+            .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
+      }
     }
 
     result.enablePasswordReset(passwordResetEnabled);
+    result.hideLoginForm(!showLoginForm);
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }

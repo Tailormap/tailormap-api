@@ -27,6 +27,8 @@ public class Configuration extends AuditMetadata {
 
   public static final String PORTAL_MENU = "portal-menu";
 
+  public static final String THEME_SETTINGS = "theme-settings";
+
   @Id
   private String key;
 
