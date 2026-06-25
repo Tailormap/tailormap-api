@@ -389,7 +389,8 @@ public class ApplicationHelper {
       String description = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getDescription()),
           nullIfEmpty(serviceLayerSettings.getDescription()),
-          nullIfEmpty(defaultLayerSettings.getDescription()));
+          nullIfEmpty(defaultLayerSettings.getDescription()),
+          nullIfEmpty(serviceLayer.getAbstractText()));
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getAttribution()),

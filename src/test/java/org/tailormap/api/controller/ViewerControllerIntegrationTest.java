@@ -220,6 +220,13 @@ class ViewerControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
+            // layer description from WMS layer abstract
+            jsonPath("$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:bak')].description")
+                .value(
+                    contains(
+                        startsWith(
+                            "Object met een permanent karakter dat dient om iets in te bergen of te verzamelen"))))
+        .andExpect(
             // Application layer description
             jsonPath(
                     "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
