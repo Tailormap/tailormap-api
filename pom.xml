@@ -693,7 +693,6 @@ SPDX-License-Identifier: MIT
                     <include>**/index.html</include>
                     <include>**/application*.properties</include>
                     <include>**/git.properties</include>
-                    <include>**/spy.properties</include>
                 </includes>
             </resource>
             <resource>
@@ -702,7 +701,6 @@ SPDX-License-Identifier: MIT
                     <exclude>**/index.html</exclude>
                     <exclude>**/application*.properties</exclude>
                     <exclude>**/git.properties</exclude>
-                    <exclude>**/spy.properties</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -1534,7 +1532,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                                         <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
-                                        <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>
                                         <exclude>org.geotools.jdbc:*</exclude>
