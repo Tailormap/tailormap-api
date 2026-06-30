@@ -397,194 +397,195 @@
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>       String description = ObjectUtils.firstNonNull(
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>           nullIfEmpty(appLayerSettings.getDescription()),
 <a class="jxr_linenumber" name="L391" href="#L391">391</a>           nullIfEmpty(serviceLayerSettings.getDescription()),
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>           nullIfEmpty(defaultLayerSettings.getDescription()));
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>       @SuppressModernizer
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>       String attribution = ObjectUtils.firstNonNull(
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>           nullIfEmpty(appLayerSettings.getAttribution()),
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>           nullIfEmpty(serviceLayerSettings.getAttribution()),
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>           nullIfEmpty(defaultLayerSettings.getAttribution()));
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> 
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>       <em class="jxr_comment">// These settings can't be overridden per appLayer but can be set on a per-layer and</em>
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>       <em class="jxr_comment">// service-level default basis</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>       @SuppressModernizer
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>       <strong class="jxr_keyword">boolean</strong> tilingDisabled = ObjectUtils.firstNonNull(
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>           serviceLayerSettings.getTilingDisabled(), defaultLayerSettings.getTilingDisabled(), <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>       @SuppressModernizer
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>       Integer tilingGutter = ObjectUtils.firstNonNull(
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>           serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>       @SuppressModernizer
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>       <strong class="jxr_keyword">boolean</strong> hiDpiDisabled = ObjectUtils.firstNonNull(
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>           serviceLayerSettings.getHiDpiDisabled(), defaultLayerSettings.getHiDpiDisabled(), <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>       @SuppressModernizer
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>       TileLayerHiDpiMode hiDpiMode = ObjectUtils.firstNonNull(
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>           serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>       <em class="jxr_comment">// Do not get from defaultLayerSettings because a default wouldn't make sense</em>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>       String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>       TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
-<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>       <strong class="jxr_keyword">boolean</strong> proxied = service.getSettings().getUseProxy();
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>       String legendImageUrl = serviceLayerSettings.getLegendImageId();
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>       AppLayer.LegendTypeEnum legendType = AppLayer.LegendTypeEnum.STATIC;
-<a class="jxr_linenumber" name="L422" href="#L422">422</a> 
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>       <strong class="jxr_keyword">if</strong> (legendImageUrl == <strong class="jxr_keyword">null</strong> &amp;&amp; serviceLayer.getStyles() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         <em class="jxr_comment">// no user defined legend image, try to get legend image from styles</em>
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         legendImageUrl = Optional.ofNullable(
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>                 GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer))
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>             .map(URI::toString)
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>             .orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>         <strong class="jxr_keyword">if</strong> (legendImageUrl != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>           <em class="jxr_comment">// Check whether the legend is dynamic or static based on the original legend URL, before it is</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>           <em class="jxr_comment">// possibly replaced by URL to the proxy controller</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>           legendType = <span class="jxr_string">"GetLegendGraphic"</span>.equalsIgnoreCase(getWmsRequest(legendImageUrl))
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>               ? AppLayer.LegendTypeEnum.DYNAMIC
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>               : AppLayer.LegendTypeEnum.STATIC;
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>           <strong class="jxr_keyword">if</strong> (proxied) {
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>             <em class="jxr_comment">// service styles provides a legend image, but we need to proxy it</em>
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>             legendImageUrl = getLegendProxyUrl(app, layerRef);
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>           }
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>         }
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>       }
-<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>       List&lt;WMSStyle&gt; legendStyles = appLayerSettings.getSelectedStyles();
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>       <strong class="jxr_keyword">if</strong> (proxied &amp;&amp; legendStyles != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         <em class="jxr_comment">// when proxied the urls must be passed through getProxiedLegendStyles to be accessible,</em>
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <em class="jxr_comment">// so don't pass the original style URLs to the frontend</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>         legendStyles = getProxiedLegendStyles(app, layerRef, legendStyles);
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>       }
-<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>       SearchIndex searchIndex = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>       <strong class="jxr_keyword">if</strong> (appLayerSettings.getSearchIndexId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>         searchIndex = searchIndexRepository
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>             .findById(appLayerSettings.getSearchIndexId())
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>             .orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>       }
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> 
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>       <strong class="jxr_keyword">boolean</strong> webMercatorAvailable = <strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>       mapResponse.addAppLayersItem(<strong class="jxr_keyword">new</strong> AppLayer()
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>           .id(layerRef.getId())
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>           .serviceId(serviceLayerServiceIds.get(serviceLayer))
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>           .layerName(layerRef.getLayerName())
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>           .hasAttributes(tmft != <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>           .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>           .url(proxied ? getProxyUrl(service, app, layerRef) : <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>           <em class="jxr_comment">// Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools</em>
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>           <em class="jxr_comment">// gt-wms Layer class?</em>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>           .maxScale(serviceLayer.getMaxScale())
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>           .minScale(serviceLayer.getMinScale())
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>           .title(title)
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>           .tilingDisabled(tilingDisabled)
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>           .tilingGutter(tilingGutter)
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>           .hiDpiDisabled(hiDpiDisabled)
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>           .hiDpiMode(hiDpiMode)
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>           .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>           .minZoom(serviceLayerSettings.getMinZoom())
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>           .maxZoom(serviceLayerSettings.getMaxZoom())
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>           .tileSize(serviceLayerSettings.getTileSize())
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>           .tileGridExtent(serviceLayerSettings.getTileGridExtent())
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>           .opacity(appLayerSettings.getOpacity())
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>           .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>           .searchIndex(
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>               searchIndex != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>                   ? <strong class="jxr_keyword">new</strong> LayerSearchIndex()
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>                       .id(searchIndex.getId())
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>                       .name(searchIndex.getName())
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>                   : <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>           .legendImageUrl(legendImageUrl)
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>           .legendType(legendType)
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>           .visible(layerRef.getVisible())
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>           .attribution(attribution)
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>           .description(description)
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>           .webMercatorAvailable(webMercatorAvailable)
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>           .styles(legendStyles));
-<a class="jxr_linenumber" name="L498" href="#L498">498</a> 
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>     }
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>     <strong class="jxr_keyword">private</strong> ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>       GeoService service =
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>           geoServiceRepository.findById(layerRef.getServiceId()).orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L505" href="#L505">505</a>       <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>         logger.warn(
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; of missing service {}"</span>,
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>             app.getId(),
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>             layerRef.getLayerName(),
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>             layerRef.getServiceId());
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>       }
-<a class="jxr_linenumber" name="L513" href="#L513">513</a> 
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoService(service)) {
-<a class="jxr_linenumber" name="L515" href="#L515">515</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>       }
-<a class="jxr_linenumber" name="L517" href="#L517">517</a> 
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
-<a class="jxr_linenumber" name="L519" href="#L519">519</a> 
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>       <strong class="jxr_keyword">if</strong> (serviceLayer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>         logger.warn(
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; not found in capabilities of service {}"</span>,
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>             app.getId(),
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>             layerRef.getLayerName(),
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>             service.getId());
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>       }
-<a class="jxr_linenumber" name="L528" href="#L528">528</a> 
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>         logger.debug(
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>             <span class="jxr_string">"User not allowed to view layer {} of service {}"</span>, serviceLayer.getName(), service.getId());
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>       }
-<a class="jxr_linenumber" name="L534" href="#L534">534</a> 
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
-<a class="jxr_linenumber" name="L536" href="#L536">536</a> 
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>       <strong class="jxr_keyword">if</strong> (mapResponse.getServices().stream()
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>           .filter(s -&gt; s.getId().equals(service.getId()))
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>           .findAny()
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>           .isEmpty()) {
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         mapResponse.addServicesItem(service.toJsonPojo(geoServiceHelper));
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>       }
-<a class="jxr_linenumber" name="L543" href="#L543">543</a> 
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ServiceLayerInfo(service, serviceLayer, layerSettings);
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>     }
-<a class="jxr_linenumber" name="L547" href="#L547">547</a> 
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>         GeoService service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>       }
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>       }
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>       <strong class="jxr_keyword">if</strong> (hiDpiSubstituteLayer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>         <strong class="jxr_keyword">if</strong> (hiDpiSubstituteServiceLayer != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>             &amp;&amp; !<strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, <strong class="jxr_keyword">null</strong>)) {
-<a class="jxr_linenumber" name="L560" href="#L560">560</a>           <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>         }
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>       }
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L567" href="#L567">567</a>         }
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>         }
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>       }
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>       <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L574" href="#L574">574</a>     }
-<a class="jxr_linenumber" name="L575" href="#L575">575</a> 
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>     record ServiceLayerInfo(
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>         GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>   }
-<a class="jxr_linenumber" name="L579" href="#L579">579</a> }
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>           nullIfEmpty(defaultLayerSettings.getDescription()),
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>           nullIfEmpty(serviceLayer.getAbstractText()));
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>       @SuppressModernizer
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>       String attribution = ObjectUtils.firstNonNull(
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>           nullIfEmpty(appLayerSettings.getAttribution()),
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>           nullIfEmpty(serviceLayerSettings.getAttribution()),
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>           nullIfEmpty(defaultLayerSettings.getAttribution()));
+<a class="jxr_linenumber" name="L399" href="#L399">399</a> 
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>       <em class="jxr_comment">// These settings can't be overridden per appLayer but can be set on a per-layer and</em>
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       <em class="jxr_comment">// service-level default basis</em>
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       @SuppressModernizer
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>       <strong class="jxr_keyword">boolean</strong> tilingDisabled = ObjectUtils.firstNonNull(
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>           serviceLayerSettings.getTilingDisabled(), defaultLayerSettings.getTilingDisabled(), <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>       @SuppressModernizer
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       Integer tilingGutter = ObjectUtils.firstNonNull(
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>           serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>       @SuppressModernizer
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>       <strong class="jxr_keyword">boolean</strong> hiDpiDisabled = ObjectUtils.firstNonNull(
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>           serviceLayerSettings.getHiDpiDisabled(), defaultLayerSettings.getHiDpiDisabled(), <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>       @SuppressModernizer
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>       TileLayerHiDpiMode hiDpiMode = ObjectUtils.firstNonNull(
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>           serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>       <em class="jxr_comment">// Do not get from defaultLayerSettings because a default wouldn't make sense</em>
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>       String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>       TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a> 
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>       <strong class="jxr_keyword">boolean</strong> proxied = service.getSettings().getUseProxy();
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>       String legendImageUrl = serviceLayerSettings.getLegendImageId();
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>       AppLayer.LegendTypeEnum legendType = AppLayer.LegendTypeEnum.STATIC;
+<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       <strong class="jxr_keyword">if</strong> (legendImageUrl == <strong class="jxr_keyword">null</strong> &amp;&amp; serviceLayer.getStyles() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>         <em class="jxr_comment">// no user defined legend image, try to get legend image from styles</em>
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         legendImageUrl = Optional.ofNullable(
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>                 GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer))
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>             .map(URI::toString)
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>             .orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>         <strong class="jxr_keyword">if</strong> (legendImageUrl != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>           <em class="jxr_comment">// Check whether the legend is dynamic or static based on the original legend URL, before it is</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>           <em class="jxr_comment">// possibly replaced by URL to the proxy controller</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>           legendType = <span class="jxr_string">"GetLegendGraphic"</span>.equalsIgnoreCase(getWmsRequest(legendImageUrl))
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>               ? AppLayer.LegendTypeEnum.DYNAMIC
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>               : AppLayer.LegendTypeEnum.STATIC;
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>           <strong class="jxr_keyword">if</strong> (proxied) {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>             <em class="jxr_comment">// service styles provides a legend image, but we need to proxy it</em>
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>             legendImageUrl = getLegendProxyUrl(app, layerRef);
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>           }
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>         }
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>       }
+<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>       List&lt;WMSStyle&gt; legendStyles = appLayerSettings.getSelectedStyles();
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       <strong class="jxr_keyword">if</strong> (proxied &amp;&amp; legendStyles != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <em class="jxr_comment">// when proxied the urls must be passed through getProxiedLegendStyles to be accessible,</em>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>         <em class="jxr_comment">// so don't pass the original style URLs to the frontend</em>
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         legendStyles = getProxiedLegendStyles(app, layerRef, legendStyles);
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>       }
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>       SearchIndex searchIndex = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>       <strong class="jxr_keyword">if</strong> (appLayerSettings.getSearchIndexId() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         searchIndex = searchIndexRepository
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>             .findById(appLayerSettings.getSearchIndexId())
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>             .orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       }
+<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>       <strong class="jxr_keyword">boolean</strong> webMercatorAvailable = <strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> 
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       mapResponse.addAppLayersItem(<strong class="jxr_keyword">new</strong> AppLayer()
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>           .id(layerRef.getId())
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>           .serviceId(serviceLayerServiceIds.get(serviceLayer))
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>           .layerName(layerRef.getLayerName())
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>           .hasAttributes(tmft != <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>           .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>           .url(proxied ? getProxyUrl(service, app, layerRef) : <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>           <em class="jxr_comment">// Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools</em>
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>           <em class="jxr_comment">// gt-wms Layer class?</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>           .maxScale(serviceLayer.getMaxScale())
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>           .minScale(serviceLayer.getMinScale())
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>           .title(title)
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>           .tilingDisabled(tilingDisabled)
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>           .tilingGutter(tilingGutter)
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>           .hiDpiDisabled(hiDpiDisabled)
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>           .hiDpiMode(hiDpiMode)
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>           .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>           .minZoom(serviceLayerSettings.getMinZoom())
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>           .maxZoom(serviceLayerSettings.getMaxZoom())
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>           .tileSize(serviceLayerSettings.getTileSize())
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>           .tileGridExtent(serviceLayerSettings.getTileGridExtent())
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>           .opacity(appLayerSettings.getOpacity())
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>           .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>           .searchIndex(
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>               searchIndex != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>                   ? <strong class="jxr_keyword">new</strong> LayerSearchIndex()
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>                       .id(searchIndex.getId())
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>                       .name(searchIndex.getName())
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>                   : <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>           .legendImageUrl(legendImageUrl)
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>           .legendType(legendType)
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>           .visible(layerRef.getVisible())
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>           .attribution(attribution)
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>           .description(description)
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>           .webMercatorAvailable(webMercatorAvailable)
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>           .styles(legendStyles));
+<a class="jxr_linenumber" name="L499" href="#L499">499</a> 
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>     }
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> 
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>     <strong class="jxr_keyword">private</strong> ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>       GeoService service =
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>           geoServiceRepository.findById(layerRef.getServiceId()).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>       <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>         logger.warn(
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; of missing service {}"</span>,
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>             app.getId(),
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>             layerRef.getLayerName(),
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>             layerRef.getServiceId());
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>       }
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> 
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoService(service)) {
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>       }
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
+<a class="jxr_linenumber" name="L520" href="#L520">520</a> 
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>       <strong class="jxr_keyword">if</strong> (serviceLayer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>         logger.warn(
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; not found in capabilities of service {}"</span>,
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>             app.getId(),
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>             layerRef.getLayerName(),
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>             service.getId());
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>       }
+<a class="jxr_linenumber" name="L529" href="#L529">529</a> 
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>         logger.debug(
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>             <span class="jxr_string">"User not allowed to view layer {} of service {}"</span>, serviceLayer.getName(), service.getId());
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>       }
+<a class="jxr_linenumber" name="L535" href="#L535">535</a> 
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
+<a class="jxr_linenumber" name="L537" href="#L537">537</a> 
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>       <strong class="jxr_keyword">if</strong> (mapResponse.getServices().stream()
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>           .filter(s -&gt; s.getId().equals(service.getId()))
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>           .findAny()
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>           .isEmpty()) {
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>         mapResponse.addServicesItem(service.toJsonPojo(geoServiceHelper));
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>       }
+<a class="jxr_linenumber" name="L544" href="#L544">544</a> 
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ServiceLayerInfo(service, serviceLayer, layerSettings);
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>     }
+<a class="jxr_linenumber" name="L548" href="#L548">548</a> 
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         GeoService service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>       }
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>       }
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>       <strong class="jxr_keyword">if</strong> (hiDpiSubstituteLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>         <strong class="jxr_keyword">if</strong> (hiDpiSubstituteServiceLayer != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>             &amp;&amp; !<strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, <strong class="jxr_keyword">null</strong>)) {
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>           <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>         }
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>       }
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>         }
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>         }
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>       }
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>     }
+<a class="jxr_linenumber" name="L576" href="#L576">576</a> 
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>     record ServiceLayerInfo(
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>         GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>   }
+<a class="jxr_linenumber" name="L580" href="#L580">580</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

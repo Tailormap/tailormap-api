@@ -460,7 +460,7 @@
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>   @Test
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>   @WithMockUser(username = <span class="jxr_string">"user"</span>)
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>   <strong class="jxr_keyword">void</strong> get_3d_tiles_proxy_tile() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + <span class="jxr_string">"/94/tileset.json"</span>;
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + <span class="jxr_string">"/tileset-5-448-512.json"</span>;
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>   }
 <a class="jxr_linenumber" name="L458" href="#L458">458</a> 
