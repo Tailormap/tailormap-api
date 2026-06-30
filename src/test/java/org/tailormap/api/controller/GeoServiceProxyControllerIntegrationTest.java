@@ -452,7 +452,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   @WithMockUser(username = "user")
   void get_3d_tiles_proxy_tile() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/94/tileset.json";
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/tileset-5-448-512.json";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
