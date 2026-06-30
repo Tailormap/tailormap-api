@@ -5,8 +5,6 @@
  */
 package org.tailormap.api.scheduling;
 
-import static io.sentry.quartz.SentryJobListener.SENTRY_SLUG_KEY;
-
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.UUID;
@@ -61,7 +59,6 @@ public class TaskManagerService {
         .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
         .startNow()
         .withPriority(jobData.getPriority())
-        .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_simple_trigger_" + jobData.get(Task.TYPE_KEY))
         .forJob(jobDetail)
         .build();
 
@@ -94,7 +91,6 @@ public class TaskManagerService {
         .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
         .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
         .withPriority(jobData.getPriority())
-        .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get(Task.TYPE_KEY))
         .withSchedule(
             CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionFireAndProceed())
         .build();
@@ -135,10 +131,6 @@ public class TaskManagerService {
             .withIdentity(jobKey.getName(), jobKey.getGroup())
             .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
             .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
-            .usingJobData(
-                SENTRY_SLUG_KEY,
-                "monitor_slug_cron_trigger_"
-                    + jobDataMap.get(Task.TYPE_KEY).toString())
             .withSchedule(CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
                 .withMisfireHandlingInstructionFireAndProceed())
             .build();

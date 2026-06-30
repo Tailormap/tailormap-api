@@ -21,7 +21,6 @@ jobs:
         if: |
           ( 
             contains(steps.metadata.outputs.dependency-names, 'junit') || 
-            contains(steps.metadata.outputs.dependency-names, 'sentry') ||
             contains(steps.metadata.outputs.dependency-names, 'hibernate') ||
             contains(steps.metadata.outputs.dependency-names, 'swagger-annotations') ||
             contains(steps.metadata.outputs.dependency-names, 'sse-eventbus')
