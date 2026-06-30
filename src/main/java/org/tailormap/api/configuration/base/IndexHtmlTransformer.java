@@ -33,7 +33,11 @@ public class IndexHtmlTransformer implements ResourceTransformer {
     }
 
     String html = resource.getContentAsString(UTF_8);
+    String transformed = html;
     // here we could modify the index.html, e.g. replacing a token with a configuration value
-    return new TransformedResource(resource, html.getBytes(UTF_8));
+    if (transformed.equals(html)) {
+      return resource;
+    }
+    return new TransformedResource(resource, transformed.getBytes(UTF_8));
   }
 }
