@@ -5,7 +5,6 @@
  */
 package org.tailormap.api.configuration;
 
-import io.sentry.quartz.SentryJobListener;
 import jakarta.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import org.quartz.SchedulerException;
@@ -30,11 +29,9 @@ public class SchedulerConfiguration {
 
   @PostConstruct
   public void addListeners() throws SchedulerException {
-    schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new SentryJobListener());
     if (logger.isDebugEnabled()) {
       // Add debug logging listeners to the scheduler
       schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new DebugLoggingJobListener());
-
       schedulerFactoryBean
           .getScheduler()
           .getListenerManager()

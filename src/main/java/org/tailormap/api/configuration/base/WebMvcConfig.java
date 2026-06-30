@@ -28,7 +28,6 @@ import org.tailormap.api.scheduling.TaskType;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
   private final FrontControllerResolver frontControllerResolver;
-  private final IndexHtmlTransformer indexHtmlTransformer;
   private final IconResolver iconResolver;
 
   @Value("#{'${spring.web.resources.static-locations:file:/home/cnb/static/}'.split(',')}")
@@ -37,12 +36,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Value("#{'${tailormap-api.web.icons:favicon.ico,favicon.svg,apple-touch-icon.png}'.split(',')}")
   private String[] iconFilenames;
 
-  public WebMvcConfig(
-      FrontControllerResolver frontControllerResolver,
-      IndexHtmlTransformer indexHtmlTransformer,
-      IconResolver iconResolver) {
+  public WebMvcConfig(FrontControllerResolver frontControllerResolver, IconResolver iconResolver) {
     this.frontControllerResolver = frontControllerResolver;
-    this.indexHtmlTransformer = indexHtmlTransformer;
     this.iconResolver = iconResolver;
   }
 
@@ -98,8 +93,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // Don't cache resources which can vary per user because of the Accept-Language header
         .resourceChain(false)
         .addResolver(frontControllerResolver)
-        .addResolver(encodedResourceResolver)
-        .addTransformer(indexHtmlTransformer);
+        .addResolver(encodedResourceResolver);
   }
 
   @Override
