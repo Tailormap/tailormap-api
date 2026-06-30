@@ -153,7 +153,6 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.4.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <sentry.version>8.46.0</sentry.version>
         <errorProne.version>2.50.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -242,26 +241,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry</artifactId>
-            <version>${sentry.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-jdbc</artifactId>
-            <version>${sentry.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-quartz</artifactId>
-            <version>${sentry.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-4-starter</artifactId>
-            <version>${sentry.version}</version>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -1555,7 +1534,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                                         <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
-                                        <exclude>io.sentry:sentry-spring-boot-4-starter</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>

@@ -11,7 +11,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.resource.ResourceTransformer;
@@ -20,8 +19,6 @@ import org.springframework.web.servlet.resource.TransformedResource;
 
 @Component
 public class IndexHtmlTransformer implements ResourceTransformer {
-  @Value("${tailormap-api.sentry.dsn:#{null}}")
-  private String sentryDsn;
 
   @Override
   @NonNull public Resource transform(
@@ -31,12 +28,12 @@ public class IndexHtmlTransformer implements ResourceTransformer {
       throws IOException {
     resource = transformerChain.transform(request, resource);
 
-    if (sentryDsn == null || !"index.html".equals(resource.getFilename())) {
+    if (!"index.html".equals(resource.getFilename())) {
       return resource;
     }
 
     String html = resource.getContentAsString(UTF_8);
-    html = html.replace("@SENTRY_DSN@", sentryDsn);
+    // here we could modify the index.html, e.g. replacing a token with a configuration value
     return new TransformedResource(resource, html.getBytes(UTF_8));
   }
 }
