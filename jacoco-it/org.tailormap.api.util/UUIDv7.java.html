@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UUIDv7.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.util</a> &gt; <span class="el_source">UUIDv7.java</span></div><h1>UUIDv7.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2026 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.util;
+
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * A utility class to create UUID version 7, which is time-sortable.
+ *
+ * @see &lt;a href=&quot;https://antonz.org/uuidv7/#java&quot;&gt;UUIDv7 in 33 languages&lt;/a&gt; for more details.
+ * @see &lt;a href=&quot;https://bugs.openjdk.org/browse/JDK-8357251&quot;&gt;for a potential future built-in implementation in Java
+ *     26.&lt;/a&gt;
+ */
+public class UUIDv7 {
+<span class="nc" id="L21">  private static final SecureRandom random = new SecureRandom();</span>
+
+  private UUIDv7() {
+    // private constructor for utility class
+  }
+
+  /**
+   * Create a random version 7 UUID.
+   *
+   * @return a random version 7 UUID
+   */
+  public static UUID randomV7() {
+<span class="nc" id="L33">    byte[] value = randomBytes();</span>
+<span class="nc" id="L34">    ByteBuffer buf = ByteBuffer.wrap(value);</span>
+<span class="nc" id="L35">    long high = buf.getLong();</span>
+<span class="nc" id="L36">    long low = buf.getLong();</span>
+<span class="nc" id="L37">    return new UUID(high, low);</span>
+  }
+
+  private static byte[] randomBytes() {
+<span class="nc" id="L41">    byte[] value = new byte[16];</span>
+<span class="nc" id="L42">    random.nextBytes(value);</span>
+<span class="nc" id="L43">    ByteBuffer timestamp = ByteBuffer.allocate(Long.BYTES).putLong(System.currentTimeMillis());</span>
+<span class="nc" id="L44">    System.arraycopy(timestamp.array(), 2, value, 0, 6);</span>
+    // set version 7
+<span class="nc" id="L46">    value[6] = (byte) ((value[6] &amp; 0x0F) | 0x70);</span>
+    // set RFC 4122 variant
+<span class="nc" id="L48">    value[8] = (byte) ((value[8] &amp; 0x3F) | 0x80);</span>
+<span class="nc" id="L49">    return value;</span>
+  }
+
+  /**
+   * Extract the Unix epoch timestamp (milliseconds) from a UUIDv7.
+   *
+   * @param uuidv7 the UUIDv7 value
+   * @return the embedded Unix epoch timestamp in milliseconds
+   * @throws IllegalArgumentException if the given UUID is not version 7
+   */
+  public static long timestamp(UUID uuidv7) throws IllegalArgumentException {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    if (uuidv7 == null) {</span>
+<span class="nc" id="L61">      throw new IllegalArgumentException(&quot;UUID cannot be null&quot;);</span>
+    }
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (uuidv7.version() != 7) {</span>
+<span class="nc" id="L64">      throw new IllegalArgumentException(&quot;UUID is not version 7&quot;);</span>
+    }
+    // UUIDv7 stores a 48-bit Unix epoch millisecond timestamp in the first 6 bytes.
+<span class="nc" id="L67">    return (uuidv7.getMostSignificantBits() &gt;&gt;&gt; 16) &amp; 0x0000FFFFFFFFFFFFL;</span>
+  }
+
+  /**
+   * Extract the Unix epoch timestamp as an Instant from a UUIDv7.
+   *
+   * @param uuidv7 the UUIDv7 value
+   * @return the embedded Unix epoch timestamp in milliseconds
+   * @throws IllegalArgumentException if the given UUID is not version 7
+   * @see #timestamp(UUID)
+   */
+  public static Instant timestampAsInstant(UUID uuidv7) throws IllegalArgumentException {
+<span class="nc" id="L79">    return Instant.ofEpochMilli(timestamp(uuidv7));</span>
+  }
+
+  /**
+   * Parse a string representation of a UUIDv7.
+   *
+   * &lt;p&gt;Accepts the standard {@code xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} format.
+   *
+   * @param value the string to parse
+   * @return the parsed UUIDv7
+   * @throws IllegalArgumentException if the string is not a valid UUID or not version 7
+   */
+  public static UUID fromString(String value) throws IllegalArgumentException {
+<span class="nc bnc" id="L92" title="All 4 branches missed.">    if (value == null || value.isBlank()) {</span>
+<span class="nc" id="L93">      throw new IllegalArgumentException(&quot;UUID string cannot be null or blank&quot;);</span>
+    }
+    // Remove hyphens and parse the 32 hex characters directly
+<span class="nc" id="L96">    String hex = value.replace(&quot;-&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (hex.length() != 32) {</span>
+<span class="nc" id="L98">      throw new IllegalArgumentException(&quot;Invalid UUID string: &quot; + value);</span>
+    }
+    try {
+<span class="nc" id="L101">      long high = Long.parseUnsignedLong(hex, 0, 16, 16);</span>
+<span class="nc" id="L102">      long low = Long.parseUnsignedLong(hex, 16, 32, 16);</span>
+<span class="nc" id="L103">      UUID uuid = new UUID(high, low);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">      if (uuid.version() != 7) {</span>
+<span class="nc" id="L105">        throw new IllegalArgumentException(&quot;UUID is not version 7: &quot; + value);</span>
+      }
+<span class="nc" id="L107">      return uuid;</span>
+<span class="nc" id="L108">    } catch (NumberFormatException e) {</span>
+<span class="nc" id="L109">      throw new IllegalArgumentException(&quot;Invalid UUID string: &quot; + value, e);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
