@@ -1227,15 +1227,18 @@ SPDX-License-Identifier: MIT
                             <target name="fix-generated-sources">
                                 <!--
                                 replace deprecated:
-                                 - org.jspecify.annotationsNullable
-                                 not found: org.springframework.lang.NonNull
-                                 with org.jspecify.annotations.* in generated sources
-
+                                 org.springframework.lang.Nullable
+                                 with org.jspecify.annotations.Nullable in generated sources
                                 -->
                                 <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
                                     <include name="**/*.java" />
                                     <replacetoken><![CDATA[import org.springframework.lang.Nullable;]]></replacetoken>
                                     <replacevalue><![CDATA[import org.jspecify.annotations.Nullable;]]></replacevalue>
+                                </replace>
+                                <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/persistence/json/" summary="true">
+                                    <include name="**/AppTreeNode.java" />
+                                    <replacetoken><![CDATA[include = JsonTypeInfo.As.PROPERTY]]></replacetoken>
+                                    <replacevalue><![CDATA[include = JsonTypeInfo.As.EXISTING_PROPERTY]]></replacevalue>
                                 </replace>
                             </target>
                         </configuration>
