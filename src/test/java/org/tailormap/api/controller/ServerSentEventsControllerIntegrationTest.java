@@ -80,7 +80,7 @@ class ServerSentEventsControllerIntegrationTest extends SseParsingUtils {
         .pollInterval(15, SECONDS)
         .atLeast(1, MINUTES)
         .atMost(130, SECONDS)
-        .logging(logPrinter -> logger.debug("Checking for keep-alive messages in SSE stream... {}", logPrinter))
+        .logging(logPrinter -> logger.trace("Checking for keep-alive messages in SSE stream... {}", logPrinter))
         .untilAsserted(() -> {
           final String stream = sseResult.getResponse().getContentAsString();
           assertThat(count_all_keep_alive_messages(stream), greaterThanOrEqualTo(2));
@@ -111,11 +111,11 @@ class ServerSentEventsControllerIntegrationTest extends SseParsingUtils {
         .atLeast(1, MINUTES)
         .atMost(130, SECONDS)
         .logging(
-            logPrinter -> logger.debug("Checking for keep-alive messages in SSE streams... {}", logPrinter))
+            logPrinter -> logger.trace("Checking for keep-alive messages in SSE streams... {}", logPrinter))
         .untilAsserted(() -> {
           // check admin stream
           final String adminStream = adminSseResult.getResponse().getContentAsString();
-          logger.debug("admin stream: {}", adminStream);
+          logger.trace("admin stream: {}", adminStream);
           assertThat(
               "There should be at least 2 keep-alive messages for the admin",
               count_all_keep_alive_messages(adminStream),
@@ -131,7 +131,7 @@ class ServerSentEventsControllerIntegrationTest extends SseParsingUtils {
 
           // and viewer stream
           final String stream = sseResult.getResponse().getContentAsString();
-          logger.debug("viewer stream: {}", stream);
+          logger.trace("viewer stream: {}", stream);
           assertThat(
               "There should be at least 2 keep-alive messages for the viewer",
               count_all_keep_alive_messages(stream),

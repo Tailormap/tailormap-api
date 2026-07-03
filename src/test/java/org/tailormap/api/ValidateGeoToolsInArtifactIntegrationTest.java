@@ -35,7 +35,6 @@ class ValidateGeoToolsInArtifactIntegrationTest {
    */
   @Test
   void check_artifact() {
-    logger.debug("Checking Tailormap API artifact: {} for GeoTools artifacts.", RUNNABLE_JAR);
     try (ZipFile zipFile = new ZipFile(RUNNABLE_JAR)) {
       Enumeration<? extends ZipEntry> e = zipFile.entries();
       List<ZipEntry> gtMainJars = new ArrayList<>();

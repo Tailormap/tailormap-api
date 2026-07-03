@@ -86,7 +86,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.debug("App usage response: {}", root.toPrettyString());
+    logger.trace("App usage response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(countedApps, root.path("data").path("result").size());
@@ -116,7 +116,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.debug("App usage last updated response: {}", root.toPrettyString());
+    logger.trace("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
@@ -143,7 +143,6 @@ public class PrometheusIntegrationTest {
         + ", \"type\", \"totalCount\", \"__name__\", \".*\")"
         + " or label_replace(" + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
         + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")";
-    logger.debug("Complete query: {}", completeQuery);
 
     ResponseEntity<String> response =
         new RestTemplate().getForEntity(prometheusUrl + "/query?query=" + completeQuery, String.class);
@@ -153,7 +152,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.debug("App usage last updated response: {}", root.toPrettyString());
+    logger.trace("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
@@ -197,7 +196,7 @@ public class PrometheusIntegrationTest {
           () -> "Expected " + countedApps + " (countedApps) apps, but got " + combined.size());
       combined.forEach(metricsNode -> {
         String appId = metricsNode.get(METRICS_APP_ID_TAG).asString();
-        logger.debug("Metrics for appId {}: {}", appId, metricsNode);
+        logger.trace("Metrics for appId {}: {}", appId, metricsNode);
         assumingThat(
             "1".equals(appId),
             () -> assertAll(

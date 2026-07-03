@@ -111,8 +111,6 @@ class PrometheusResultProcessorTest {
       assertEquals(3, processedResults.size());
       processedResults.forEach((metric) -> {
         String appId = metric.get(METRICS_APP_ID_TAG);
-        logger.debug("appId: {}\t{}", appId, metric);
-
         assumingThat(
             "1".equals(appId),
             () -> assertAll(
@@ -248,7 +246,6 @@ class PrometheusResultProcessorTest {
 
       processedResults.forEach((metric) -> {
         String appLayerId = metric.get(METRICS_APP_LAYER_ID_TAG);
-        logger.debug("appLayerId: {}\t{}", appLayerId, metric);
         assumingThat(
             "lyr:openbasiskaart:osm".equals(appLayerId),
             () -> assertAll(
