@@ -315,7 +315,7 @@ class PasswordResetControllerIntegrationTest {
           .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
 
       long responseTimeMs = (System.nanoTime() - startTime) / 1_000_000;
-      logger.debug("Password reset response time for {}: {} ms", email, responseTimeMs);
+      logger.trace("Password reset response time for {}: {} ms", email, responseTimeMs);
       responseTimes.add(responseTimeMs);
     }
     // ignore first warmup request
