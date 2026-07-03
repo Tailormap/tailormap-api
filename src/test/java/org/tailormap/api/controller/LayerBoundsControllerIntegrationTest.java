@@ -25,7 +25,6 @@ import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
 import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
 import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
-import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Order;
@@ -36,8 +35,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.Stopwatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -51,8 +48,6 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Stopwatch
 @Order(FIRST_INTEGRATION_TEST_ORDER)
 class LayerBoundsControllerIntegrationTest {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final String controllerPath = "/bounds";
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
@@ -152,7 +147,6 @@ class LayerBoundsControllerIntegrationTest {
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc.perform(get(appLayerUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(appLayerUrl)))
         .andExpect(status().isOk())
-        .andDo(result -> logger.debug("bounds: {}", result.getResponse().getContentAsString()))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isMap())
         .andExpect(jsonPath("$.maxx").isNumber())
