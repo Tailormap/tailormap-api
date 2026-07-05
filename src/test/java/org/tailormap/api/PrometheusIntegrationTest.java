@@ -86,7 +86,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.trace("App usage response: {}", root.toPrettyString());
+    logger.trace("App usage response: {}", () -> root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(countedApps, root.path("data").path("result").size());
@@ -116,7 +116,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.trace("App usage last updated response: {}", root.toPrettyString());
+    logger.trace("App usage last updated response: {}", () -> root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
@@ -152,7 +152,7 @@ public class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
-    logger.trace("App usage last updated response: {}", root.toPrettyString());
+    logger.trace("App usage last updated response: {}", () -> root.toPrettyString());
     assertEquals("success", root.path("status").asString());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(
