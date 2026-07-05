@@ -17,15 +17,11 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 class PrometheusResultProcessorTest {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final PrometheusResultProcessor processor = new PrometheusResultProcessor();
 
   @Test
