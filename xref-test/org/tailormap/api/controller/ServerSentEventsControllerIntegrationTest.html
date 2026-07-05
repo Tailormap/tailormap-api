@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          .pollInterval(15, SECONDS)
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          .atLeast(1, MINUTES)
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          .atMost(130, SECONDS)
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          .logging(logPrinter -&gt; logger.debug(<span class="jxr_string">"Checking for keep-alive messages in SSE stream... {}"</span>, logPrinter))
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          .logging(logPrinter -&gt; logger.trace(<span class="jxr_string">"Checking for keep-alive messages in SSE stream... {}"</span>, logPrinter))
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          .untilAsserted(() -&gt; {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>            <strong class="jxr_keyword">final</strong> String stream = sseResult.getResponse().getContentAsString();
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>            assertThat(count_all_keep_alive_messages(stream), greaterThanOrEqualTo(2));
@@ -119,11 +119,11 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         .atLeast(1, MINUTES)
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         .atMost(130, SECONDS)
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         .logging(
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>             logPrinter -&gt; logger.debug(<span class="jxr_string">"Checking for keep-alive messages in SSE streams... {}"</span>, logPrinter))
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             logPrinter -&gt; logger.trace(<span class="jxr_string">"Checking for keep-alive messages in SSE streams... {}"</span>, logPrinter))
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         .untilAsserted(() -&gt; {
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>           <em class="jxr_comment">// check admin stream</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>           <strong class="jxr_keyword">final</strong> String adminStream = adminSseResult.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>           logger.debug(<span class="jxr_string">"admin stream: {}"</span>, adminStream);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>           logger.trace(<span class="jxr_string">"admin stream: {}"</span>, adminStream);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>           assertThat(
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>               <span class="jxr_string">"There should be at least 2 keep-alive messages for the admin"</span>,
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>               count_all_keep_alive_messages(adminStream),
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>           <em class="jxr_comment">// and viewer stream</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>           <strong class="jxr_keyword">final</strong> String stream = sseResult.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>           logger.debug(<span class="jxr_string">"viewer stream: {}"</span>, stream);
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>           logger.trace(<span class="jxr_string">"viewer stream: {}"</span>, stream);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>           assertThat(
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>               <span class="jxr_string">"There should be at least 2 keep-alive messages for the viewer"</span>,
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>               count_all_keep_alive_messages(stream),
