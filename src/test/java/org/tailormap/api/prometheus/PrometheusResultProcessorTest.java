@@ -13,7 +13,6 @@ import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_NAME_TAG;
 
-import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
