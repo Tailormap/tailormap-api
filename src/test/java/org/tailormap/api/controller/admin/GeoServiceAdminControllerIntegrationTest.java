@@ -12,6 +12,7 @@ import static org.tailormap.api.StaticTestData.getResourceString;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import okhttp3.Headers;
@@ -105,7 +106,9 @@ class GeoServiceAdminControllerIntegrationTest {
 
       assertEquals(
           "GetCapabilities",
-          Objects.requireNonNull(server.takeRequest().getUrl()).queryParameter("REQUEST"));
+          Objects.requireNonNull(Objects.requireNonNull(server.takeRequest(10, TimeUnit.SECONDS))
+                  .getUrl())
+              .queryParameter("REQUEST"));
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
@@ -118,7 +121,9 @@ class GeoServiceAdminControllerIntegrationTest {
 
       assertEquals(
           "GetCapabilities",
-          Objects.requireNonNull(server.takeRequest().getUrl()).queryParameter("REQUEST"));
+          Objects.requireNonNull(Objects.requireNonNull(server.takeRequest(10, TimeUnit.SECONDS))
+                  .getUrl())
+              .queryParameter("REQUEST"));
 
       mockMvc.perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())

@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
 import org.geotools.ows.wmts.model.WMTSLayer;
+import org.geotools.xml.DocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -293,10 +295,15 @@ public class GeoServiceHelper {
     }
   }
 
-  void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
+  private void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapServer wms;
     try {
-      wms = new WebMapServer(new URI(geoService.getUrl()).toURL(), client);
+      wms = new WebMapServer(
+          new URI(geoService.getUrl()).toURL(),
+          client,
+          Map.of(
+              // allow DTD for WMS 1.1.x
+              DocumentFactory.ENABLE_DTD, true));
     } catch (ClassCastException | IllegalStateException e) {
       // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
       // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
@@ -380,7 +387,7 @@ public class GeoServiceHelper {
         Set.of());
   }
 
-  void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
+  private void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);
     setServiceInfo(geoService, client, wmts);
 
