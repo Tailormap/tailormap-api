@@ -22,9 +22,9 @@
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.geotools.api.data.SimpleFeatureSource;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.WFSDataStoreFactory;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.internal.FeatureTypeInfo;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.geotools.util.PreventLocalEntityResolver;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.LinkedCaseInsensitiveMap;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriComponentsBuilder;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.LinkedCaseInsensitiveMap;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriComponentsBuilder;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.TMPreventLocalEntityResolver;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
@@ -36,7 +36,7 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>    @Override
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      params.put(WFSDataStoreFactory.ENTITY_RESOLVER.key, PreventLocalEntityResolver.INSTANCE);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      params.put(WFSDataStoreFactory.ENTITY_RESOLVER.key, TMPreventLocalEntityResolver.INSTANCE);
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">if</strong> (timeout != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>        params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
