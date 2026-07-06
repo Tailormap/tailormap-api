@@ -276,6 +276,7 @@ public class GeoServiceHelper {
             .collect(Collectors.toList()))
         .queryable(l.isQueryable())
         .abstractText(l.get_abstract())
+        .keywords(l.getKeywords() == null ? Set.of() : Set.copyOf(List.of(l.getKeywords())))
         .children(l.getLayerChildren().stream()
             .map(layers::indexOf)
             .map(String::valueOf)

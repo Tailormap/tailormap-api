@@ -504,6 +504,11 @@ components:
           type: boolean
         abstractText:
           type: string
+        keywords:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
         children:
           type: array
           items:
