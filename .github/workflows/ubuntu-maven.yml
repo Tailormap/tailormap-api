@@ -167,6 +167,14 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
+      - uses: actions/cache/restore@v6
+        # restore-only, no saving of this cache
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-db-maven-${{ github.run_id }}
+          restore-keys: |
+            owasp-db-maven
+
       - name: 'Build Maven site'
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
