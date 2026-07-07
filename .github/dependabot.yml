@@ -25,6 +25,9 @@ updates:
       - dependency-name: org.hibernate.orm:hibernate-maven-plugin
         versions:
           - '>= 7.5'
+      - dependency-name: tools.jackson.core:jackson-core
+        versions:
+          - '>= 3.2'
 
   - package-ecosystem: github-actions
     directory: "/"
