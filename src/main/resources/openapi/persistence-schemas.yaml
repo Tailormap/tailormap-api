@@ -385,6 +385,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthorizationRule'
+        hiddenKeywords:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        extraKeywords:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]
