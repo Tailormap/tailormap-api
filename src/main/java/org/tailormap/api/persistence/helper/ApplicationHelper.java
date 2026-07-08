@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -458,6 +459,11 @@ public class ApplicationHelper {
 
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
+      Set<String> keywords = serviceLayer.getKeywords().stream()
+          .filter(k -> !serviceLayerSettings.getHiddenKeywords().contains(k))
+          .collect(Collectors.toSet());
+      keywords.addAll(serviceLayerSettings.getExtraKeywords());
+
       mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -492,6 +498,7 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
+          .keywords(keywords)
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality())

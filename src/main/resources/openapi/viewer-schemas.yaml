@@ -149,6 +149,12 @@ components:
         description:
           description: 'Description text to show for this layer, may contain some links and images (see htmlify pipe)'
           type: string
+        keywords:
+          description: 'Keywords for this layer, to be used for filtering layers'
+          type: array
+          items:
+            type: string
+          uniqueItems: true
         autoRefreshInSeconds:
           description: 'Automatically refresh the layer (in seconds)'
           type: number
