@@ -12,6 +12,8 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -22,7 +24,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.feature.SchemaException;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.tailormap.api.StaticTestData;
+import org.tailormap.api.viewer.model.AttributeStatisticsResponse;
 
 class FeatureSourceStatisticsTest {
 
@@ -63,60 +65,61 @@ class FeatureSourceStatisticsTest {
   @Test
   void get_number_statistics() {
     AtomicInteger progressCount = new AtomicInteger(0);
-    Map<String, Object> statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
+    AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
         randomFeatureSource, "randomNumber", null, 10, progressCount::set);
 
-    assertTrue(statistics.containsKey("min"));
-    assertThat((double) statistics.get("min"), is(closeTo(0, 100)));
-    assertTrue(statistics.containsKey("max"));
-    assertThat((double) statistics.get("max"), is(closeTo(randomFeatureCount - 1, 100)));
-    assertTrue(statistics.containsKey("sum"));
-    assertTrue(statistics.containsKey("average"));
-    assertThat((double) statistics.get("average"), is(closeTo((randomFeatureCount - 1) / 2.0, 100)));
-    assertEquals(randomFeatureCount, statistics.get("count"));
+    assertFalse(statistics.getFilterApplied());
+    assertNotNull(statistics.getMin());
+    assertThat(Double.valueOf(statistics.getMin().toString()), is(closeTo(0, 100)));
+    assertNotNull(statistics.getMax());
+    assertThat(Double.valueOf(statistics.getMax().toString()), is(closeTo(randomFeatureCount - 1, 100)));
+    assertNotNull(statistics.getSum());
+    assertNotNull(statistics.getAvg());
+    assertThat(statistics.getAvg(), is(closeTo((randomFeatureCount - 1) / 2.0, 100)));
+    assertEquals(randomFeatureCount, statistics.getCount());
     assertThat(randomFeatureCount, is(greaterThanOrEqualTo(progressCount.get())));
   }
 
   @Test
   void get_number_statistics_with_filter() {
     AtomicInteger progressCount = new AtomicInteger(0);
-    Map<String, Object> statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
+    AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
         randomFeatureSource, "randomNumber", "randomNumber < 500", 10, progressCount::set);
 
-    assertTrue(statistics.containsKey("min"));
-    assertThat((double) statistics.get("min"), is(closeTo(0, 5)));
-    assertTrue(statistics.containsKey("max"));
-    assertThat((double) statistics.get("max"), is(closeTo(500 - 1, 5)));
-    assertTrue(statistics.containsKey("sum"));
-    assertTrue(statistics.containsKey("average"));
-    assertThat((double) statistics.get("average"), is(closeTo((500 - 1) / 2.0, 10)));
-    assertTrue(statistics.containsKey("count"));
-    assertThat(((Number) statistics.get("count")).doubleValue(), is(closeTo(500, 50)));
-    assertThat((int) statistics.get("count"), is(greaterThanOrEqualTo(progressCount.get())));
+    assertTrue(statistics.getFilterApplied());
+    assertNotNull(statistics.getMin());
+    assertThat(Double.valueOf(statistics.getMin().toString()), is(closeTo(0, 5)));
+    assertNotNull(statistics.getMax());
+    assertThat(Double.valueOf(statistics.getMax().toString()), is(closeTo(500 - 1, 5)));
+    assertNotNull(statistics.getSum());
+    assertNotNull(statistics.getAvg());
+    assertThat(statistics.getAvg(), is(closeTo((500 - 1) / 2.0, 10)));
+    assertNotNull(statistics.getCount());
+    assertThat(statistics.getCount().doubleValue(), is(closeTo(500, 50)));
+    assertThat(statistics.getCount().intValue(), is(greaterThanOrEqualTo(progressCount.get())));
   }
 
   @Test
   @SuppressWarnings("JavaUtilDate")
   void get_date_statistics() {
     AtomicInteger progressCount = new AtomicInteger(0);
-    Map<String, Object> statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
+    AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
         randomFeatureSource, "date", null, 10, progressCount::set);
-    assertTrue(statistics.containsKey("min"));
+
+    assertFalse(statistics.getFilterApplied());
+    assertNotNull(statistics.getMin());
     assertThat(
-        (double) ((Date) statistics.get("min")).getTime(),
+        (double) ((Date) statistics.getMin()).getTime(),
         is(closeTo((double) minEpochMillis, MILLISECONDS_IN_WEEK)));
-    assertTrue(statistics.containsKey("max"));
-
+    assertNotNull(statistics.getMax());
     assertThat(
-        (double) ((Date) statistics.get("max")).getTime(),
+        (double) ((Date) statistics.getMax()).getTime(),
         is(closeTo((double) maxEpochMillis, MILLISECONDS_IN_WEEK)));
-    assertThat((double) ((Date) statistics.get("max")).getTime(), is(greaterThan((double)
-        ((Date) statistics.get("min")).getTime())));
-
-    assertFalse(statistics.containsKey("sum"));
-    assertFalse(statistics.containsKey("average"));
-
-    assertEquals(randomFeatureCount, statistics.get("count"));
+    assertThat((double) ((Date) statistics.getMax()).getTime(), is(greaterThan((double)
+        ((Date) statistics.getMin()).getTime())));
+    assertNull(statistics.getSum());
+    assertNull(statistics.getAvg());
+    assertEquals(randomFeatureCount, statistics.getCount());
     assertThat(randomFeatureCount, is(greaterThanOrEqualTo(progressCount.get())));
   }
 
@@ -131,30 +134,32 @@ class FeatureSourceStatisticsTest {
         .atZone(ZoneOffset.UTC)
         .toLocalDate()
         .toEpochDay();
-    Map<String, Object> statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
+    AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
         randomFeatureSource, "localdate", null, 10, progressCount::set);
 
-    assertTrue(statistics.containsKey("min"));
-    LocalDate min = (LocalDate) statistics.get("min");
+    assertFalse(statistics.getFilterApplied());
+    assertNotNull(statistics.getMin());
+    LocalDate min = (LocalDate) statistics.getMin();
     assertThat((double) min.toEpochDay(), is(closeTo((double) minEpochDays, DAYS_IN_WEEK)));
 
-    assertTrue(statistics.containsKey("max"));
-    LocalDate max = (LocalDate) statistics.get("max");
+    assertNotNull(statistics.getMax());
+    LocalDate max = (LocalDate) statistics.getMax();
     assertThat((double) max.toEpochDay(), is(closeTo((double) maxEpochDays, DAYS_IN_WEEK)));
 
     assertThat((double) max.toEpochDay(), is(greaterThan((double) min.toEpochDay())));
 
-    assertFalse(statistics.containsKey("sum"));
-    assertFalse(statistics.containsKey("average"));
+    assertNull(statistics.getSum());
+    assertNull(statistics.getAvg());
 
-    assertEquals(randomFeatureCount, statistics.get("count"));
+    assertEquals(randomFeatureCount, statistics.getCount());
     assertThat(randomFeatureCount, is(greaterThanOrEqualTo(progressCount.get())));
   }
 
   @Test
   void get_geometry_statistics() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      FeatureSourceStatistics.getFeatureSourceStatistics(randomFeatureSource, "location", null, 10, null);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> FeatureSourceStatistics.getFeatureSourceStatistics(
+            randomFeatureSource, "location", null, 10, null));
   }
 }

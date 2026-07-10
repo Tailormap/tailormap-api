@@ -7,25 +7,27 @@ package org.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.IntConsumer;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeType;
 import org.geotools.api.filter.Filter;
+import org.geotools.feature.visitor.AverageVisitor;
+import org.geotools.feature.visitor.CountVisitor;
+import org.geotools.feature.visitor.MaxVisitor;
+import org.geotools.feature.visitor.MinVisitor;
+import org.geotools.feature.visitor.SumVisitor;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tailormap.api.geotools.collection.ProgressReportingFeatureIterator;
+import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
+import org.tailormap.api.viewer.model.AttributeStatisticsResponse;
 
 /** Calculate statistics (min/max/average/sum) and metadata (count) for an attribute of a feature source. */
 public class FeatureSourceStatistics {
@@ -40,7 +42,7 @@ public class FeatureSourceStatistics {
   /**
    * Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter. The
    * statistics include min, max, average, sum (for numeric attributes), and count. The method also supports progress
-   * reporting via a callback. Don't forget to dispose of the datastore, using eg.
+   * reporting via a callback. Don't forget to dispose of the datastore, using e.g.
    * {@code featureSource.getDataStore().dispose();}
    *
    * @param featureSource the feature source to calculate statistics for
@@ -51,13 +53,13 @@ public class FeatureSourceStatistics {
    * @return a map containing the calculated statistics, the map may be empty
    */
   @SuppressWarnings("JavaUtilDate")
-  @NonNull public static Map<String, Object> getFeatureSourceStatistics(
+  @NonNull public static AttributeStatisticsResponse getFeatureSourceStatistics(
       @NonNull SimpleFeatureSource featureSource,
       @NonNull String attributeName,
       @Nullable String filterCQL,
       int progressInterval,
       @Nullable IntConsumer progressCallback) {
-    Map<String, Object> featureSourceStatistics = new LinkedHashMap<>();
+    AttributeStatisticsResponse featureSourceStatistics = new AttributeStatisticsResponse();
 
     if (progressInterval <= 0 && progressCallback != null) {
       throw new IllegalArgumentException("Progress interval must be greater than 1");
@@ -71,8 +73,8 @@ public class FeatureSourceStatistics {
     if (!isNumeric && !isDate) {
       throw new IllegalArgumentException("Attribute " + attributeName + " is not numeric or date");
     }
-
-    Query query = new Query(featureSource.getSchema().getTypeName());
+    SimpleFeatureType simpleFeatureType = featureSource.getSchema();
+    Query query = new Query(simpleFeatureType.getTypeName());
     query.setHandle("calculateAttributeStatistics");
     query.setPropertyNames(attributeName);
 
@@ -80,77 +82,49 @@ public class FeatureSourceStatistics {
       try {
         Filter parsedFilter = ECQL.toFilter(filterCQL);
         query.setFilter(parsedFilter);
+        featureSourceStatistics.filterApplied(true);
       } catch (CQLException e) {
-        throw new RuntimeException(e);
+        logger.error("Invalid filter cql: {} ", filterCQL);
+        return featureSourceStatistics;
       }
     }
 
-    List<Number> numbers = new ArrayList<>();
-    int counted = 0;
-    try (ProgressReportingFeatureIterator featureIterator = new ProgressReportingFeatureIterator(
-        featureSource.getFeatures(query).features(), progressInterval, progressCallback)) {
-      while (featureIterator.hasNext()) {
-        counted++;
-        Object value = featureIterator.next().getAttribute(attributeName);
-        if (isNumeric && value instanceof Number numberValue) {
-          numbers.add(numberValue);
-          featureSourceStatistics.merge(
-              "min",
-              numberValue,
-              (oldVal, newVal) ->
-                  Math.min(((Number) oldVal).doubleValue(), ((Number) newVal).doubleValue()));
-          featureSourceStatistics.merge(
-              "max",
-              numberValue,
-              (oldVal, newVal) ->
-                  Math.max(((Number) oldVal).doubleValue(), ((Number) newVal).doubleValue()));
-          featureSourceStatistics.merge(
-              "sum",
-              numberValue,
-              (oldVal, newVal) -> ((Number) oldVal).doubleValue() + ((Number) newVal).doubleValue());
-        }
-        if (isDate && value instanceof Temporal dateValue) {
-          ChronoField field;
-          if (dateValue.isSupported(ChronoField.INSTANT_SECONDS)) {
-            field = ChronoField.INSTANT_SECONDS;
-          } else {
-            field = ChronoField.EPOCH_DAY;
-          }
-          featureSourceStatistics.merge(
-              "min",
-              dateValue,
-              (oldVal, newVal) -> ((Temporal) oldVal).getLong(field) <= ((Temporal) newVal).getLong(field)
-                  ? oldVal
-                  : newVal);
-          featureSourceStatistics.merge(
-              "max",
-              dateValue,
-              (oldVal, newVal) -> ((Temporal) oldVal).getLong(field) >= ((Temporal) newVal).getLong(field)
-                  ? oldVal
-                  : newVal);
-        }
+    try {
+      ProgressReportingFeatureCollection featureCollection = new ProgressReportingFeatureCollection(
+          featureSource.getFeatures(query), progressInterval, progressCallback);
 
-        if (isDate && value instanceof Date dateValue) {
-          featureSourceStatistics.merge(
-              "min",
-              dateValue,
-              (oldVal, newVal) -> ((Date) oldVal).before((Date) newVal) ? oldVal : newVal);
-          featureSourceStatistics.merge(
-              "max",
-              dateValue,
-              (oldVal, newVal) -> ((Date) oldVal).after((Date) newVal) ? oldVal : newVal);
-        }
+      MaxVisitor maxVisitor = new MaxVisitor(attributeName, simpleFeatureType);
+      MinVisitor minVisitor = new MinVisitor(attributeName, simpleFeatureType);
+      CountVisitor countVisitor = new CountVisitor();
+      featureCollection.accepts(maxVisitor, null);
+      featureCollection.accepts(minVisitor, null);
+      featureCollection.accepts(countVisitor, null);
+
+      featureSourceStatistics.max(
+          maxVisitor.getResult() != null ? maxVisitor.getResult().getValue() : null);
+      featureSourceStatistics.min(
+          minVisitor.getResult() != null ? minVisitor.getResult().getValue() : null);
+      featureSourceStatistics.count(
+          countVisitor.getResult() != null ? countVisitor.getResult().toLong() : null);
+
+      if (isNumeric) {
+        AverageVisitor averageVisitor = new AverageVisitor(attributeName, simpleFeatureType);
+        SumVisitor sumVisitor = new SumVisitor(attributeName, simpleFeatureType);
+
+        featureCollection.accepts(averageVisitor, null);
+        featureCollection.accepts(sumVisitor, null);
+
+        featureSourceStatistics.avg(
+            averageVisitor.getResult() != null
+                ? averageVisitor.getResult().toDouble()
+                : null);
+
+        featureSourceStatistics.sum(
+            sumVisitor.getResult() != null ? sumVisitor.getResult().toDouble() : null);
       }
     } catch (IOException e) {
       logger.error("Error calculating statistics for attribute {}", attributeName, e);
     }
-
-    numbers.stream()
-        .mapToDouble(Number::doubleValue)
-        .average()
-        .ifPresent(avg -> featureSourceStatistics.put("average", avg));
-
-    featureSourceStatistics.put("count", counted);
 
     return featureSourceStatistics;
   }
