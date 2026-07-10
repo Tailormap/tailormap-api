@@ -7,6 +7,7 @@ package org.tailormap.api;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Properties;
@@ -77,8 +78,8 @@ public class StaticTestData {
       Instant randomDate = Instant.ofEpochMilli(random.nextLong(minEpochMillis, maxEpochMillis));
 
       fb.set("id", id);
-      fb.set("randomNumber", random.nextInt(randomFeatureCount - 1));
-      fb.set("date", randomDate.toEpochMilli());
+      fb.set("randomNumber", random.nextLong(randomFeatureCount - 1));
+      fb.set("date", Date.from(randomDate));
       fb.set("localdate", randomDate.atZone(ZoneOffset.UTC).toLocalDate());
       fb.set("location", gf.createPoint(new Coordinate(xCoords[id], yCoords[id])));
 

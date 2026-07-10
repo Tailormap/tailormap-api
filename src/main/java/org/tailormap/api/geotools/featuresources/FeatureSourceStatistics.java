@@ -59,21 +59,25 @@ public class FeatureSourceStatistics {
       @Nullable String filterCQL,
       int progressInterval,
       @Nullable IntConsumer progressCallback) {
-    AttributeStatisticsResponse featureSourceStatistics = new AttributeStatisticsResponse();
 
+    AttributeStatisticsResponse featureSourceStatistics = new AttributeStatisticsResponse();
     if (progressInterval <= 0 && progressCallback != null) {
-      throw new IllegalArgumentException("Progress interval must be greater than 1");
+      throw new IllegalArgumentException("Progress interval must be greater than 0");
     }
 
-    AttributeType aType = featureSource.getSchema().getType(attributeName);
+    SimpleFeatureType simpleFeatureType = featureSource.getSchema();
+    AttributeType aType = simpleFeatureType.getType(attributeName);
+    if (aType == null) {
+      throw new IllegalArgumentException(
+          "Attribute " + attributeName + " does not exist in the feature source schema");
+    }
     boolean isNumeric = Number.class.isAssignableFrom(aType.getBinding());
     boolean isDate =
         Date.class.isAssignableFrom(aType.getBinding()) || Temporal.class.isAssignableFrom(aType.getBinding());
-
     if (!isNumeric && !isDate) {
       throw new IllegalArgumentException("Attribute " + attributeName + " is not numeric or date");
     }
-    SimpleFeatureType simpleFeatureType = featureSource.getSchema();
+
     Query query = new Query(simpleFeatureType.getTypeName());
     query.setHandle("calculateAttributeStatistics");
     query.setPropertyNames(attributeName);
@@ -85,7 +89,7 @@ public class FeatureSourceStatistics {
         featureSourceStatistics.filterApplied(true);
       } catch (CQLException e) {
         logger.error("Invalid filter cql: {} ", filterCQL);
-        return featureSourceStatistics;
+        throw new IllegalArgumentException("Could not parse requested filter", e);
       }
     }
 

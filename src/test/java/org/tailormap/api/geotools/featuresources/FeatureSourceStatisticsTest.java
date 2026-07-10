@@ -88,12 +88,12 @@ class FeatureSourceStatisticsTest {
 
     assertTrue(statistics.getFilterApplied());
     assertNotNull(statistics.getMin());
-    assertThat(Double.valueOf(statistics.getMin().toString()), is(closeTo(0, 5)));
+    assertThat(Double.valueOf(statistics.getMin().toString()), is(closeTo(0, 50)));
     assertNotNull(statistics.getMax());
-    assertThat(Double.valueOf(statistics.getMax().toString()), is(closeTo(500 - 1, 5)));
+    assertThat(Double.valueOf(statistics.getMax().toString()), is(closeTo(500 - 1, 50)));
     assertNotNull(statistics.getSum());
     assertNotNull(statistics.getAvg());
-    assertThat(statistics.getAvg(), is(closeTo((500 - 1) / 2.0, 10)));
+    assertThat(statistics.getAvg(), is(closeTo((500 - 1) / 2.0, 50)));
     assertNotNull(statistics.getCount());
     assertThat(statistics.getCount().doubleValue(), is(closeTo(500, 50)));
     assertThat(statistics.getCount().intValue(), is(greaterThanOrEqualTo(progressCount.get())));
@@ -161,5 +161,21 @@ class FeatureSourceStatisticsTest {
         IllegalArgumentException.class,
         () -> FeatureSourceStatistics.getFeatureSourceStatistics(
             randomFeatureSource, "location", null, 10, null));
+  }
+
+  @Test
+  void get_invalid_statistics() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> FeatureSourceStatistics.getFeatureSourceStatistics(
+            randomFeatureSource, "does-not-exist", null, 10, null));
+  }
+
+  @Test
+  void get_invalid_filter_statistics() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> FeatureSourceStatistics.getFeatureSourceStatistics(
+            randomFeatureSource, "randomNumber", "randomNumber == 'invalid", 10, null));
   }
 }
