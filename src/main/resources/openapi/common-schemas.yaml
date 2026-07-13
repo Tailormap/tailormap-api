@@ -349,11 +349,13 @@ components:
                     - 'SWITCH'
                     - 'DATE_PICKER'
                     - 'DROPDOWN_LIST'
+                    - 'TEXT'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
                 - $ref: '#/components/schemas/CheckboxDropdownListFilterConfiguration'
                 - $ref: '#/components/schemas/SwitchFilterConfiguration'
                 - $ref: '#/components/schemas/DatePickerFilterConfiguration'
+                - $ref: '#/components/schemas/TextFilterConfiguration'
         attributeAlias:
           description: 'alias for the attribute'
           type: string
@@ -458,6 +460,16 @@ components:
           description: 'initial upper value for a date filter with between condition'
           type: string
           format: date-time
+
+    TextFilterConfiguration:
+      title: TextFilterConfiguration
+      description: Configuration for a text filter
+      type: object
+      properties:
+        initialText:
+          description: 'initial value for the text filter'
+          type: string
+          nullable: true
 
     FormOptions:
       description: 'model with options for an form'
