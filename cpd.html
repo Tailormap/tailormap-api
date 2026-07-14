@@ -67,8 +67,50 @@
         <main id="bodyColumn" class="span10">
 <section><a id="CPD_Results"></a>
 <h1>CPD Results</h1>
-<p>The following document contains the results of PMD's  <a class="externalLink" href="https://pmd.github.io/latest/pmd_userdocs_cpd.html">CPD</a> 7.26.0.</p>
-<p>CPD found no problems in your source code.</p></section>        </main>
+<p>The following document contains the results of PMD's  <a class="externalLink" href="https://pmd.github.io/latest/pmd_userdocs_cpd.html">CPD</a> 7.26.0.</p><section><a id="Duplications"></a>
+<h2>Duplications</h2>
+<table class="table table-striped">
+<tr class="a">
+<th>File</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>org/tailormap/api/controller/admin/AttributeStatisticsAdminController.java</td>
+<td><a href="./xref/org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#L36">36</a></td></tr>
+<tr class="a">
+<td>org/tailormap/api/controller/admin/UniqueValuesAdminController.java</td>
+<td><a href="./xref/org/tailormap/api/controller/admin/UniqueValuesAdminController.html#L42">42</a></td></tr>
+<tr class="b">
+<td colspan="2">
+<pre>public AttributeStatisticsAdminController(
+      FeatureTypeRepository featureTypeRepository, FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+    this.featureTypeRepository = featureTypeRepository;
+    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+  }
+
+  @ExceptionHandler({ResponseStatusException.class})
+  public ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {
+    // wrap the exception in a proper json response
+    return ResponseEntity.status(ex.getStatusCode())
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ErrorResponse()
+            .message(
+                ex.getReason() != null
+                    ? ex.getReason()
+                    : ex.getBody().getTitle())
+            .code(ex.getStatusCode().value()));
+  }
+
+  /**
+   * Retrieve attribute statistics for a feature type.
+   *
+   * @param featureTypeId the feature type id for which to retrieve statistics
+   * @param attributeName the name of the attribute
+   * @param filter an optional CQL filter to apply to the features before calculating statistics
+   * @return @return the calculated statistics; fields may be null when not applicable or when no features match
+   * @throws ResponseStatusException if the feature type or attribute does not exist, or if a bad request was
+   *     submitted
+   */
+  @Operation(</pre></td></tr></table></section></section>        </main>
       </div>
     </div>
     <hr/>

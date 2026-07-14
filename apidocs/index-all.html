@@ -625,6 +625,16 @@ RepositoryConstraintViolationException gets converted to JSON.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/AttributeSettings.html#%3Cinit%3E()" class="member-name-link">AttributeSettings()</a> - Constructor for class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttributeSettings.html" title="class in org.tailormap.api.persistence.json">AttributeSettings</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">AttributeStatisticsAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#%3Cinit%3E(org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)" class="member-name-link">AttributeStatisticsAdminController(FeatureTypeRepository, FeatureSourceFactoryHelper)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html" title="class in org.tailormap.api.controller.admin">AttributeStatisticsAdminController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
+<dd>
+<div class="block">Statistics (min, max, average, sum, count) for a given attribute.</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#%3Cinit%3E()" class="member-name-link">AttributeStatisticsResponse()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/Filter.html#attributeType(org.tailormap.api.persistence.json.Filter.AttributeTypeEnum)" class="member-name-link">attributeType(Filter.AttributeTypeEnum)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/Filter.html" title="class in org.tailormap.api.persistence.json">Filter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Filter.html#attributeType(org.tailormap.api.viewer.model.Filter.AttributeTypeEnum)" class="member-name-link">attributeType(Filter.AttributeTypeEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Filter.html" title="class in org.tailormap.api.viewer.model">Filter</a></dt>
@@ -738,6 +748,8 @@ RepositoryConstraintViolationException gets converted to JSON.</div>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#autoRefreshInSeconds(java.lang.Double)" class="member-name-link">autoRefreshInSeconds(Double)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#autoRefreshInSeconds(java.lang.Double)" class="member-name-link">autoRefreshInSeconds(Double)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#avg(java.lang.Double)" class="member-name-link">avg(Double)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:B">B</h2>
@@ -985,6 +997,8 @@ request to do a POST request with all parameters in the body to handle large POS
 <dt><a href="org/tailormap/api/configuration/CaseInsensitiveEnumConverter.html#convert(java.lang.String)" class="member-name-link">convert(String)</a> - Method in class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/CaseInsensitiveEnumConverter.html" title="class in org.tailormap.api.configuration">CaseInsensitiveEnumConverter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCaps.html#corsAllowOrigin(java.lang.String)" class="member-name-link">corsAllowOrigin(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCaps.html" title="class in org.tailormap.api.persistence.json">TMServiceCaps</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#count(java.lang.Long)" class="member-name-link">count(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/TemporaryTokenRepository.html#countByUsername(java.lang.String)" class="member-name-link">countByUsername(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a></dt>
 <dd>&nbsp;</dd>
@@ -1565,6 +1579,8 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Attribute.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Attribute.html" title="class in org.tailormap.api.viewer.model">Attribute</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttributeValueSettings.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeValueSettings.html" title="class in org.tailormap.api.viewer.model">AttributeValueSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/CheckboxDropdownListFilterConfiguration.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/CheckboxDropdownListFilterConfiguration.html" title="class in org.tailormap.api.viewer.model">CheckboxDropdownListFilterConfiguration</a></dt>
@@ -1802,6 +1818,10 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/FeatureSourceRepository.html" class="type-name-link" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a> - Interface in <a href="org/tailormap/api/repository/package-summary.html">org.tailormap.api.repository</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html" class="type-name-link" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceStatistics</a> - Class in <a href="org/tailormap/api/geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a></dt>
+<dd>
+<div class="block">Calculate statistics (min/max/average/sum) and metadata (count) for an attribute of a feature source.</div>
+</dd>
 <dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" class="type-name-link" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a> - Class in <a href="org/tailormap/api/repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html#%3Cinit%3E()" class="member-name-link">FeatureSourceValidator()</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
@@ -1918,6 +1938,8 @@ default PasswordEncoder (bcrypt).</div>
 <dd>
 <div class="block">type of the filter</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#filterApplied(java.lang.Boolean)" class="member-name-link">filterApplied(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html#filterApplied(java.lang.Boolean)" class="member-name-link">filterApplied(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/base/StaticOnlySecurityConfiguration.html#filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity)" class="member-name-link">filterChain(HttpSecurity)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/StaticOnlySecurityConfiguration.html" title="class in org.tailormap.api.configuration.base">StaticOnlySecurityConfiguration</a></dt>
@@ -2763,6 +2785,10 @@ type.</div>
 </dd>
 <dt><a href="org/tailormap/api/repository/ConfigurationRepository.html#getAvailableForViewer(java.lang.String)" class="member-name-link">getAvailableForViewer(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getAvg()" class="member-name-link">getAvg()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">average value (only for numeric values, otherwise null)</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#getBaseApp()" class="member-name-link">getBaseApp()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>
 <div class="block">Get baseApp</div>
@@ -2955,6 +2981,10 @@ configured settings, taking into account the configured attribute order and hidd
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCaps.html#getCorsAllowOrigin()" class="member-name-link">getCorsAllowOrigin()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCaps.html" title="class in org.tailormap.api.persistence.json">TMServiceCaps</a></dt>
 <dd>
 <div class="block">Value of the 'Access-Control-Allow-Origin' header from the GetCapabilities request.</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getCount()" class="member-name-link">getCount()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">number of values</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#getCreatedAt()" class="member-name-link">getCreatedAt()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>
@@ -3390,6 +3420,10 @@ configured settings, taking into account the configured attribute order and hidd
 </dd>
 <dt><a href="org/tailormap/api/persistence/projections/FormSummary.html#getFeatureSourceId()" class="member-name-link">getFeatureSourceId()</a> - Method in interface org.tailormap.api.persistence.projections.<a href="org/tailormap/api/persistence/projections/FormSummary.html" title="interface in org.tailormap.api.persistence.projections">FormSummary</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics(SimpleFeatureSource, String, String, int, IntConsumer)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceStatistics</a></dt>
+<dd>
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#getFeatureType()" class="member-name-link">getFeatureType()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in org.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
 <dd>
 <div class="block">Get featureType</div>
@@ -3473,6 +3507,10 @@ configured settings, taking into account the configured attribute order and hidd
 <dt><a href="org/tailormap/api/viewer/model/ExtractLayerAttributesRequest.html#getFilter()" class="member-name-link">getFilter()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ExtractLayerAttributesRequest.html" title="class in org.tailormap.api.viewer.model">ExtractLayerAttributesRequest</a></dt>
 <dd>
 <div class="block">ECQL filter.</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getFilterApplied()" class="member-name-link">getFilterApplied()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">true if the filter was applied, false otherwise</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html#getFilterApplied()" class="member-name-link">getFilterApplied()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></dt>
 <dd>
@@ -4249,6 +4287,10 @@ it, which will be logged (only with stacktrace if loglevel is DEBUG).</div>
 <dd>
 <div class="block">Get markupLanguage</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getMax()" class="member-name-link">getMax()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">maximum value, can be a number or a date-time string</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html#getMaxAttachmentSize()" class="member-name-link">getMaxAttachmentSize()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html" title="class in org.tailormap.api.persistence.json">AttachmentAttributeType</a></dt>
 <dd>
 <div class="block">Maximum allowed size of the attachment in bytes</div>
@@ -4364,6 +4406,10 @@ it, which will be logged (only with stacktrace if loglevel is DEBUG).</div>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#getMimeType()" class="member-name-link">getMimeType()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>
 <div class="block">Get mimeType</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getMin()" class="member-name-link">getMin()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">minimum value, can be a number or a date-time string</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html#getMinimumValue()" class="member-name-link">getMinimumValue()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html" title="class in org.tailormap.api.persistence.json">FilterEditConfiguration</a></dt>
 <dd>
@@ -4991,6 +5037,10 @@ minimum: 1</div>
 </dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getState()" class="member-name-link">getState()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#getStatistics(java.lang.Long,java.lang.String,java.lang.String)" class="member-name-link">getStatistics(Long, String, String)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html" title="class in org.tailormap.api.controller.admin">AttributeStatisticsAdminController</a></dt>
+<dd>
+<div class="block">Retrieve attribute statistics for a feature type.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
@@ -5024,6 +5074,10 @@ minimum: 1</div>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#getStyling()" class="member-name-link">getStyling()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
 <dd>
 <div class="block">Get styling</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#getSum()" class="member-name-link">getSum()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>
+<div class="block">sum of all values (only for numeric values, otherwise null)</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#getSummary()" class="member-name-link">getSummary()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
@@ -5768,6 +5822,8 @@ minimum: 1</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/RestExceptionHandler.html#handleException(org.springframework.http.converter.HttpMessageNotReadableException,org.springframework.web.context.request.WebRequest)" class="member-name-link">handleException(HttpMessageNotReadableException, WebRequest)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/RestExceptionHandler.html" title="class in org.tailormap.api.controller.admin">RestExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html" title="class in org.tailormap.api.controller.admin">AttributeStatisticsAdminController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/PrometheusDataController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/PrometheusDataController.html" title="class in org.tailormap.api.controller.admin">PrometheusDataController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
@@ -5945,6 +6001,8 @@ minimum: 1</div>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Attribute.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Attribute.html" title="class in org.tailormap.api.viewer.model">Attribute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttributeValueSettings.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeValueSettings.html" title="class in org.tailormap.api.viewer.model">AttributeValueSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -6670,6 +6728,8 @@ work).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeTemplate.html#markupLanguage(java.lang.String)" class="member-name-link">markupLanguage(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeTemplate.html" title="class in org.tailormap.api.persistence.json">FeatureTypeTemplate</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#max(java.lang.Object)" class="member-name-link">max(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html#maxAttachmentSize(java.lang.Long)" class="member-name-link">maxAttachmentSize(Long)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html" title="class in org.tailormap.api.persistence.json">AttachmentAttributeType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html#maxAttachmentSize(java.lang.Long)" class="member-name-link">maxAttachmentSize(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html" title="class in org.tailormap.api.viewer.model">AttachmentAttributeType</a></dt>
@@ -6743,6 +6803,8 @@ work).</div>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html#mimeType(java.lang.String)" class="member-name-link">mimeType(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html" title="class in org.tailormap.api.viewer.model">AttachmentAttributeType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#mimeType(java.lang.String)" class="member-name-link">mimeType(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#min(java.lang.Object)" class="member-name-link">min(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html#minimumValue(java.lang.Double)" class="member-name-link">minimumValue(Double)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html" title="class in org.tailormap.api.persistence.json">FilterEditConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -7714,6 +7776,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Configuration.html#setAvailableForViewer(boolean)" class="member-name-link">setAvailableForViewer(boolean)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Configuration.html" title="class in org.tailormap.api.persistence">Configuration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setAvg(java.lang.Double)" class="member-name-link">setAvg(Double)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#setBaseApp(java.lang.String)" class="member-name-link">setBaseApp(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setBaseApps(java.util.List)" class="member-name-link">setBaseApps(List)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
@@ -7815,6 +7879,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/persistence/Application.html#setContentRoot(org.tailormap.api.persistence.json.AppContent)" class="member-name-link">setContentRoot(AppContent)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCaps.html#setCorsAllowOrigin(java.lang.String)" class="member-name-link">setCorsAllowOrigin(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCaps.html" title="class in org.tailormap.api.persistence.json">TMServiceCaps</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setCount(java.lang.Long)" class="member-name-link">setCount(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setCreatedAt(java.time.OffsetDateTime)" class="member-name-link">setCreatedAt(OffsetDateTime)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
@@ -8067,6 +8133,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setFileName(java.lang.String)" class="member-name-link">setFileName(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ExtractLayerAttributesRequest.html#setFilter(java.lang.String)" class="member-name-link">setFilter(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ExtractLayerAttributesRequest.html" title="class in org.tailormap.api.viewer.model">ExtractLayerAttributesRequest</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setFilterApplied(java.lang.Boolean)" class="member-name-link">setFilterApplied(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html#setFilterApplied(java.lang.Boolean)" class="member-name-link">setFilterApplied(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></dt>
 <dd>&nbsp;</dd>
@@ -8462,6 +8530,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FeatureTypeTemplate.html#setMarkupLanguage(java.lang.String)" class="member-name-link">setMarkupLanguage(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FeatureTypeTemplate.html" title="class in org.tailormap.api.persistence.json">FeatureTypeTemplate</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setMax(java.lang.Object)" class="member-name-link">setMax(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html#setMaxAttachmentSize(java.lang.Long)" class="member-name-link">setMaxAttachmentSize(Long)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttachmentAttributeType.html" title="class in org.tailormap.api.persistence.json">AttachmentAttributeType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html#setMaxAttachmentSize(java.lang.Long)" class="member-name-link">setMaxAttachmentSize(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html" title="class in org.tailormap.api.viewer.model">AttachmentAttributeType</a></dt>
@@ -8521,6 +8591,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html#setMimeType(java.lang.String)" class="member-name-link">setMimeType(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentAttributeType.html" title="class in org.tailormap.api.viewer.model">AttachmentAttributeType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#setMimeType(java.lang.String)" class="member-name-link">setMimeType(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setMin(java.lang.Object)" class="member-name-link">setMin(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html#setMinimumValue(java.lang.Double)" class="member-name-link">setMinimumValue(Double)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html" title="class in org.tailormap.api.persistence.json">FilterEditConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -8865,6 +8937,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/persistence/Application.html#setStyling(org.tailormap.api.viewer.model.AppStyling)" class="member-name-link">setStyling(AppStyling)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setStyling(org.tailormap.api.viewer.model.AppStyling)" class="member-name-link">setStyling(AppStyling)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#setSum(java.lang.Double)" class="member-name-link">setSum(Double)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#setSummary(org.tailormap.api.admin.model.SearchIndexSummary)" class="member-name-link">setSummary(SearchIndexSummary)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
@@ -9367,6 +9441,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/persistence/json/TileLayerHiDpiMode.html#SUBSTITUTELAYERSHOWNEXTZOOMLEVEL" class="member-name-link">SUBSTITUTELAYERSHOWNEXTZOOMLEVEL</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum class in org.tailormap.api.persistence.json">TileLayerHiDpiMode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TileLayerHiDpiMode.html#SUBSTITUTELAYERTILEPIXELRATIOONLY" class="member-name-link">SUBSTITUTELAYERTILEPIXELRATIOONLY</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum class in org.tailormap.api.persistence.json">TileLayerHiDpiMode</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#sum(java.lang.Double)" class="member-name-link">sum(Double)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/ApplicationValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/ApplicationValidator.html" title="class in org.tailormap.api.repository.validation">ApplicationValidator</a></dt>
 <dd>&nbsp;</dd>
@@ -10033,6 +10109,8 @@ commonly produced by GeoServer.</div>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Attribute.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Attribute.html" title="class in org.tailormap.api.viewer.model">Attribute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttributeValueSettings.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttributeValueSettings.html" title="class in org.tailormap.api.viewer.model">AttributeValueSettings</a></dt>
 <dd>&nbsp;</dd>

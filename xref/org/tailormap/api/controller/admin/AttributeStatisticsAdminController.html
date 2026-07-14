@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>AttributeStatisticsAdminController xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../apidocs/org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright (C) 2026 B3Partners B.V.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.controller.admin;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.Operation;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.media.Content;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.media.Schema;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.responses.ApiResponse;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.geotools.api.data.SimpleFeatureSource;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.ExceptionHandler;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RequestParam;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.server.ResponseStatusException;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceStatistics;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureTypeRepository;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.AttributeStatisticsResponse;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ErrorResponse;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @RestController
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AttributeStatisticsAdminController" href="../../../../../org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#AttributeStatisticsAdminController">AttributeStatisticsAdminController</a> {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureTypeRepository" href="../../../../../org/tailormap/api/repository/FeatureTypeRepository.html#FeatureTypeRepository">FeatureTypeRepository</a> featureTypeRepository;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceFactoryHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">public</strong> <a name="AttributeStatisticsAdminController" href="../../../../../org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#AttributeStatisticsAdminController">AttributeStatisticsAdminController</a>(
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        <a name="FeatureTypeRepository" href="../../../../../org/tailormap/api/repository/FeatureTypeRepository.html#FeatureTypeRepository">FeatureTypeRepository</a> featureTypeRepository, <a name="FeatureSourceFactoryHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">this</strong>.featureTypeRepository = featureTypeRepository;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">this</strong>.featureSourceFactoryHelper = featureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    @ExceptionHandler({ResponseStatusException.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <em class="jxr_comment">// wrap the exception in a proper json response</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(ex.getStatusCode())
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          .body(<strong class="jxr_keyword">new</strong> ErrorResponse()
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>              .message(
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>                  ex.getReason() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>                      ? ex.getReason()
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>                      : ex.getBody().getTitle())
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .code(ex.getStatusCode().value()));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    }
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * Retrieve attribute statistics for a feature type.</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * @param featureTypeId the feature type id for which to retrieve statistics</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @param attributeName the name of the attribute</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   * @param filter an optional CQL filter to apply to the features before calculating statistics</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   * @return @return the calculated statistics; fields may be null when not applicable or when no features match</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   * @throws ResponseStatusException if the feature type or attribute does not exist, or if a bad request was</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   *     submitted</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    @Operation(
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        summary = <span class="jxr_string">"Retrieve attribute statistics for a feature type"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        description = <span class="jxr_string">"Retrieve statistics (min, max, average, sum, count) for a given attribute of a feature type."</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            + <span class="jxr_string">" Optionally, a CQL filter can be applied to filter the features before calculating the"</span>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>            + <span class="jxr_string">" statistics."</span>)
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    @GetMapping(
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        path = <span class="jxr_string">"${tailormap-api.admin.base-path}/statistics/{featureTypeId}/{attributeName}"</span>,
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @ApiResponse(
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        responseCode = <span class="jxr_string">"200"</span>,
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>        description = <span class="jxr_string">"Statistics retrieved successfully"</span>,
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  {<span class="jxr_string">"min"</span>:85746,<span class="jxr_string">"max"</span>:100000,<span class="jxr_string">"average"</span>:92873,<span class="jxr_string">"sum"</span>:371492,<span class="jxr_string">"count"</span>:4}
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <span class="jxr_string">""</span><span class="jxr_string">")))
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;AttributeStatisticsResponse&gt; getStatistics(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        @PathVariable Long featureTypeId,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>        @PathVariable String attributeName,
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        @RequestParam(required = false) String filter) {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(attributeName)) {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Attribute name is required"</span>);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      TMFeatureType tmft = <strong class="jxr_keyword">this</strong>.featureTypeRepository
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          .findById(featureTypeId)
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Feature type not found"</span>));
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (tmft.getAttributeByName(attributeName).isEmpty()) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>            HttpStatus.BAD_REQUEST, <span class="jxr_string">"Attribute does not exist in feature type: "</span> + attributeName);
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      SimpleFeatureSource featureSource = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>        featureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>        <strong class="jxr_keyword">return</strong> ResponseEntity.ok()
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>           .body(FeatureSourceStatistics.getFeatureSourceStatistics(
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>               featureSource, attributeName, filter, 10, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error accessing feature source"</span>, e);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>       <strong class="jxr_keyword">if</strong> (featureSource != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         featureSource.getDataStore().dispose();
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     }
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   }
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> }
+</pre>
+<hr/>
+<div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+</body>
+</html>
