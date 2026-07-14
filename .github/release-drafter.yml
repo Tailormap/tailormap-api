@@ -10,35 +10,45 @@ template: |
 
 categories:
   - title: '🚀 New features and improvements'
-    labels:
-      - 'enhancement'
-      - 'feature'
+    when:
+      labels:
+        - 'enhancement'
+        - 'feature'
   - title: '⛓️‍💥 Breaking changes'
-    label: 'breaking'
+    when:
+      labels:
+        - 'breaking'
   - title: '🔨 Security fixes en updates'
-    labels:
-      - 'security'
+    when:
+      labels:
+        - 'security'
   - title: '🐛 Bug Fixes'
-    labels:
-      - 'bug'
-      - 'fix'
-      - 'bugfix'
-      - 'regression'
+    when:
+      labels:
+        - 'bug'
+        - 'fix'
+        - 'bugfix'
+        - 'regression'
   - title: '📖 Documentation updates'
-    label: 'documentation'
+    when:
+      labels:
+        - 'documentation'
   - title: '🚨 Removed / ⚠️ Deprecated'
-    labels: 
-      - 'removed'
-      - 'deprecated'
+    when:
+      labels:
+        - 'removed'
+        - 'deprecated'
   - title: '🚦 Tests and Infrastructure'
-    labels:
-      - 'tests'
-      - 'infrastructure'
+    when:
+      labels:
+        - 'tests'
+        - 'infrastructure'
     collapse-after: 10
   - title: '🔨 Dependency updates'
-    labels: 
-      - 'dependency'
-      - 'dependencies'
+    when:
+      labels:
+        - 'dependency'
+        - 'dependencies'
     collapse-after: 10
 
 replacers:
