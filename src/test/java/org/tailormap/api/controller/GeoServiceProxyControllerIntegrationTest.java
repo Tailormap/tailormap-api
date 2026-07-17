@@ -39,7 +39,6 @@ import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.DisabledUntil;
 import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,7 +120,6 @@ class GeoServiceProxyControllerIntegrationTest {
     assertImagesEqual(expectedImagesPath + "begroeidterreindeelLegend_expected.png", result, testInfo);
   }
 
-  @DisabledUntil(date = "2025-04-03", reason = "PDOK WMS service is misconfigured, see issue HTM-1451")
   @Issue("https://b3partners.atlassian.net/browse/HTM-1451")
   @Test
   @WithMockUser(username = "user")
