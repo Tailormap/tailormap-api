@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeatureSourceStatistics.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.geotools.featuresources</a> &gt; <span class="el_source">FeatureSourceStatistics.java</span></div><h1>FeatureSourceStatistics.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2026 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.geotools.featuresources;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.temporal.Temporal;
+import java.util.Date;
+import java.util.function.IntConsumer;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.AttributeType;
+import org.geotools.api.filter.Filter;
+import org.geotools.feature.visitor.AverageVisitor;
+import org.geotools.feature.visitor.CountVisitor;
+import org.geotools.feature.visitor.MaxVisitor;
+import org.geotools.feature.visitor.MinVisitor;
+import org.geotools.feature.visitor.SumVisitor;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
+import org.tailormap.api.viewer.model.AttributeStatisticsResponse;
+
+/** Calculate statistics (min/max/average/sum) and metadata (count) for an attribute of a feature source. */
+public class FeatureSourceStatistics {
+
+<span class="nc" id="L35">  private static final Logger logger =</span>
+<span class="nc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private FeatureSourceStatistics() {
+    // utility class
+  }
+
+  /**
+   * Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter. The
+   * statistics include min, max, average, sum (for numeric attributes), and count. The method also supports progress
+   * reporting via a callback. Don't forget to dispose of the datastore, using e.g.
+   * {@code featureSource.getDataStore().dispose();}
+   *
+   * @param featureSource the feature source to calculate statistics for
+   * @param attributeName the name of the attribute to calculate statistics for
+   * @param filterCQL an optional CQL filter to apply to the feature source
+   * @param progressInterval the interval at which to report progress, must be greater than 0
+   * @param progressCallback an optional callback to report progress
+   * @return a map containing the calculated statistics, the map may be empty
+   */
+  @SuppressWarnings(&quot;JavaUtilDate&quot;)
+  @NonNull public static AttributeStatisticsResponse getFeatureSourceStatistics(
+      @NonNull SimpleFeatureSource featureSource,
+      @NonNull String attributeName,
+      @Nullable String filterCQL,
+      int progressInterval,
+      @Nullable IntConsumer progressCallback) {
+
+<span class="nc" id="L63">    AttributeStatisticsResponse featureSourceStatistics = new AttributeStatisticsResponse();</span>
+<span class="nc bnc" id="L64" title="All 4 branches missed.">    if (progressInterval &lt;= 0 &amp;&amp; progressCallback != null) {</span>
+<span class="nc" id="L65">      throw new IllegalArgumentException(&quot;Progress interval must be greater than 0&quot;);</span>
+    }
+
+<span class="nc" id="L68">    SimpleFeatureType simpleFeatureType = featureSource.getSchema();</span>
+<span class="nc" id="L69">    AttributeType aType = simpleFeatureType.getType(attributeName);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (aType == null) {</span>
+<span class="nc" id="L71">      throw new IllegalArgumentException(</span>
+          &quot;Attribute &quot; + attributeName + &quot; does not exist in the feature source schema&quot;);
+    }
+<span class="nc" id="L74">    boolean isNumeric = Number.class.isAssignableFrom(aType.getBinding());</span>
+<span class="nc" id="L75">    boolean isDate =</span>
+<span class="nc bnc" id="L76" title="All 4 branches missed.">        Date.class.isAssignableFrom(aType.getBinding()) || Temporal.class.isAssignableFrom(aType.getBinding());</span>
+<span class="nc bnc" id="L77" title="All 4 branches missed.">    if (!isNumeric &amp;&amp; !isDate) {</span>
+<span class="nc" id="L78">      throw new IllegalArgumentException(&quot;Attribute &quot; + attributeName + &quot; is not numeric or date&quot;);</span>
+    }
+
+<span class="nc" id="L81">    Query query = new Query(simpleFeatureType.getTypeName());</span>
+<span class="nc" id="L82">    query.setHandle(&quot;calculateAttributeStatistics&quot;);</span>
+<span class="nc" id="L83">    query.setPropertyNames(attributeName);</span>
+
+<span class="nc bnc" id="L85" title="All 4 branches missed.">    if (filterCQL != null &amp;&amp; !filterCQL.isEmpty()) {</span>
+      try {
+<span class="nc" id="L87">        Filter parsedFilter = ECQL.toFilter(filterCQL);</span>
+<span class="nc" id="L88">        query.setFilter(parsedFilter);</span>
+<span class="nc" id="L89">        featureSourceStatistics.filterApplied(true);</span>
+<span class="nc" id="L90">      } catch (CQLException e) {</span>
+<span class="nc" id="L91">        logger.error(&quot;Invalid filter cql: {} &quot;, filterCQL);</span>
+<span class="nc" id="L92">        throw new IllegalArgumentException(&quot;Could not parse requested filter&quot;, e);</span>
+<span class="nc" id="L93">      }</span>
+    }
+
+    try {
+<span class="nc" id="L97">      ProgressReportingFeatureCollection featureCollection = new ProgressReportingFeatureCollection(</span>
+<span class="nc" id="L98">          featureSource.getFeatures(query), progressInterval, progressCallback);</span>
+
+<span class="nc" id="L100">      MaxVisitor maxVisitor = new MaxVisitor(attributeName, simpleFeatureType);</span>
+<span class="nc" id="L101">      MinVisitor minVisitor = new MinVisitor(attributeName, simpleFeatureType);</span>
+<span class="nc" id="L102">      CountVisitor countVisitor = new CountVisitor();</span>
+<span class="nc" id="L103">      featureCollection.accepts(maxVisitor, null);</span>
+<span class="nc" id="L104">      featureCollection.accepts(minVisitor, null);</span>
+<span class="nc" id="L105">      featureCollection.accepts(countVisitor, null);</span>
+
+<span class="nc" id="L107">      featureSourceStatistics.max(</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">          maxVisitor.getResult() != null ? maxVisitor.getResult().getValue() : null);</span>
+<span class="nc" id="L109">      featureSourceStatistics.min(</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">          minVisitor.getResult() != null ? minVisitor.getResult().getValue() : null);</span>
+<span class="nc" id="L111">      featureSourceStatistics.count(</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">          countVisitor.getResult() != null ? countVisitor.getResult().toLong() : null);</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (isNumeric) {</span>
+<span class="nc" id="L115">        AverageVisitor averageVisitor = new AverageVisitor(attributeName, simpleFeatureType);</span>
+<span class="nc" id="L116">        SumVisitor sumVisitor = new SumVisitor(attributeName, simpleFeatureType);</span>
+
+<span class="nc" id="L118">        featureCollection.accepts(averageVisitor, null);</span>
+<span class="nc" id="L119">        featureCollection.accepts(sumVisitor, null);</span>
+
+<span class="nc" id="L121">        featureSourceStatistics.avg(</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            averageVisitor.getResult() != null</span>
+<span class="nc" id="L123">                ? averageVisitor.getResult().toDouble()</span>
+<span class="nc" id="L124">                : null);</span>
+
+<span class="nc" id="L126">        featureSourceStatistics.sum(</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            sumVisitor.getResult() != null ? sumVisitor.getResult().toDouble() : null);</span>
+      }
+<span class="nc" id="L129">    } catch (IOException e) {</span>
+<span class="nc" id="L130">      logger.error(&quot;Error calculating statistics for attribute {}&quot;, attributeName, e);</span>
+<span class="nc" id="L131">    }</span>
+
+<span class="nc" id="L133">    return featureSourceStatistics;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

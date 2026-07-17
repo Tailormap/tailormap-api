@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AttributeStatisticsAdminController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller.admin</a> &gt; <span class="el_source">AttributeStatisticsAdminController.java</span></div><h1>AttributeStatisticsAdminController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2026 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller.admin;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.featuresources.FeatureSourceStatistics;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.repository.FeatureTypeRepository;
+import org.tailormap.api.viewer.model.AttributeStatisticsResponse;
+import org.tailormap.api.viewer.model.ErrorResponse;
+
+@RestController
+public class AttributeStatisticsAdminController {
+  private final FeatureTypeRepository featureTypeRepository;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+
+  public AttributeStatisticsAdminController(
+<span class="nc" id="L37">      FeatureTypeRepository featureTypeRepository, FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
+<span class="nc" id="L38">    this.featureTypeRepository = featureTypeRepository;</span>
+<span class="nc" id="L39">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L40">  }</span>
+
+  @ExceptionHandler({ResponseStatusException.class})
+  public ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {
+    // wrap the exception in a proper json response
+<span class="nc" id="L45">    return ResponseEntity.status(ex.getStatusCode())</span>
+<span class="nc" id="L46">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L47">        .body(new ErrorResponse()</span>
+<span class="nc" id="L48">            .message(</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                ex.getReason() != null</span>
+<span class="nc" id="L50">                    ? ex.getReason()</span>
+<span class="nc" id="L51">                    : ex.getBody().getTitle())</span>
+<span class="nc" id="L52">            .code(ex.getStatusCode().value()));</span>
+  }
+
+  /**
+   * Retrieve attribute statistics for a feature type.
+   *
+   * @param featureTypeId the feature type id for which to retrieve statistics
+   * @param attributeName the name of the attribute
+   * @param filter an optional CQL filter to apply to the features before calculating statistics
+   * @return @return the calculated statistics; fields may be null when not applicable or when no features match
+   * @throws ResponseStatusException if the feature type or attribute does not exist, or if a bad request was
+   *     submitted
+   */
+  @Operation(
+      summary = &quot;Retrieve attribute statistics for a feature type&quot;,
+      description = &quot;Retrieve statistics (min, max, average, sum, count) for a given attribute of a feature type.&quot;
+          + &quot; Optionally, a CQL filter can be applied to filter the features before calculating the&quot;
+          + &quot; statistics.&quot;)
+  @GetMapping(
+      path = &quot;${tailormap-api.admin.base-path}/statistics/{featureTypeId}/{attributeName}&quot;,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiResponse(
+      responseCode = &quot;200&quot;,
+      description = &quot;Statistics retrieved successfully&quot;,
+      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(example = &quot;&quot;&quot;
+{&quot;min&quot;:85746,&quot;max&quot;:100000,&quot;average&quot;:92873,&quot;sum&quot;:371492,&quot;count&quot;:4}
+&quot;&quot;&quot;)))
+  public ResponseEntity&lt;AttributeStatisticsResponse&gt; getStatistics(
+      @PathVariable Long featureTypeId,
+      @PathVariable String attributeName,
+      @RequestParam(required = false) String filter) {
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (StringUtils.isBlank(attributeName)) {</span>
+<span class="nc" id="L85">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Attribute name is required&quot;);</span>
+    }
+
+<span class="nc" id="L88">    TMFeatureType tmft = this.featureTypeRepository</span>
+<span class="nc" id="L89">        .findById(featureTypeId)</span>
+<span class="nc" id="L90">        .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Feature type not found&quot;));</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    if (tmft.getAttributeByName(attributeName).isEmpty()) {</span>
+<span class="nc" id="L93">      throw new ResponseStatusException(</span>
+          HttpStatus.BAD_REQUEST, &quot;Attribute does not exist in feature type: &quot; + attributeName);
+    }
+<span class="nc" id="L96">    SimpleFeatureSource featureSource = null;</span>
+    try {
+<span class="nc" id="L98">      featureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);</span>
+<span class="nc" id="L99">      return ResponseEntity.ok()</span>
+<span class="nc" id="L100">          .body(FeatureSourceStatistics.getFeatureSourceStatistics(</span>
+              featureSource, attributeName, filter, 10, null));
+<span class="nc" id="L102">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L103">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);</span>
+<span class="nc" id="L104">    } catch (IOException e) {</span>
+<span class="nc" id="L105">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, &quot;Error accessing feature source&quot;, e);</span>
+    } finally {
+<span class="nc bnc" id="L107" title="All 2 branches missed.">      if (featureSource != null) {</span>
+<span class="nc" id="L108">        featureSource.getDataStore().dispose();</span>
+      }
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

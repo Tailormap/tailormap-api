@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayerExtractController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">LayerExtractController.java</span></div><h1>LayerExtractController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2026 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller;
+
+import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
+
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.data.excel.ExcelDataStore;
+import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.json.AppLayerSettings;
+import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.repository.FeatureSourceRepository;
+import org.tailormap.api.service.CreateLayerExtractService;
+
+@AppRestController
+@RequestMapping(path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/extract&quot;)
+public class LayerExtractController {
+  private static final Logger logger =
+<span class="nc" id="L65">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L66">  private static final Pattern SAFE_DOWNLOAD_ID = Pattern.compile(&quot;^[A-Za-z0-9._-]+$&quot;);</span>
+  private final FeatureSourceRepository featureSourceRepository;
+  private final CreateLayerExtractService createLayerExtractService;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+
+  @Value(&quot;#{'${tailormap-api.extract.allowed-outputformats}'.split(',')}&quot;)
+  private List&lt;ExtractOutputFormat&gt; allowedExtractOutputFormats;
+
+  public LayerExtractController(
+      FeatureSourceRepository featureSourceRepository,
+      CreateLayerExtractService createLayerExtractService,
+<span class="nc" id="L77">      FeatureSourceFactoryHelper featureSourceFactoryHelper) {</span>
+<span class="nc" id="L78">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L79">    this.createLayerExtractService = createLayerExtractService;</span>
+<span class="nc" id="L80">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L81">  }</span>
+
+  /**
+   * Download the result of an extract request. The extract generation should be initiated first by a POST to
+   * {@code /{viewerKind}/{viewerName}/layer/{appLayerId}/extract/{clientId}}.
+   */
+  @GetMapping(path = &quot;/download/{downloadId}&quot;)
+  @Counted(value = &quot;tailormap_api_extract_download&quot;, description = &quot;Count of layer extract downloads&quot;)
+  public ResponseEntity&lt;?&gt; download(
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @PathVariable String downloadId)
+      throws MalformedURLException {
+
+<span class="nc bnc" id="L97" title="All 4 branches missed.">    if (downloadId == null || !SAFE_DOWNLOAD_ID.matcher(downloadId).matches()) {</span>
+<span class="nc" id="L98">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid downloadId&quot;);</span>
+    }
+<span class="nc" id="L100">    Path exportRoot = Path.of(createLayerExtractService.getExportFilesLocation())</span>
+<span class="nc" id="L101">        .toAbsolutePath()</span>
+<span class="nc" id="L102">        .normalize();</span>
+<span class="nc" id="L103">    Path filePath = exportRoot.resolve(downloadId).normalize();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (!filePath.startsWith(exportRoot)) {</span>
+<span class="nc" id="L105">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid downloadId&quot;);</span>
+    }
+
+<span class="nc" id="L108">    Resource resource = new UrlResource(filePath.toUri());</span>
+<span class="nc bnc" id="L109" title="All 6 branches missed.">    if (!resource.exists() || !resource.isReadable() || !resource.isFile()) {</span>
+<span class="nc" id="L110">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Download file not found&quot;);</span>
+    }
+
+<span class="nc" id="L113">    String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;</span>
+    try {
+<span class="nc" id="L115">      String detectedContentType = Files.probeContentType(filePath);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (detectedContentType != null) {</span>
+<span class="nc" id="L117">        contentType = detectedContentType;</span>
+      }
+<span class="nc" id="L119">    } catch (IOException e) {</span>
+<span class="nc" id="L120">      logger.debug(&quot;Could not determine content type for {}&quot;, filePath, e);</span>
+<span class="nc" id="L121">    }</span>
+
+<span class="nc" id="L123">    return ResponseEntity.ok()</span>
+<span class="nc" id="L124">        .contentType(MediaType.parseMediaType(contentType))</span>
+<span class="nc" id="L125">        .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=\&quot;&quot; + filePath.getFileName() + &quot;\&quot;&quot;)</span>
+<span class="nc" id="L126">        .body(resource);</span>
+  }
+
+  @GetMapping(&quot;/formats&quot;)
+  public ResponseEntity&lt;?&gt; formats(
+      @Valid @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute GeoService service,
+      @ModelAttribute Application application,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode) {
+<span class="nc" id="L135">    return ResponseEntity.ok(allowedExtractOutputFormats.stream()</span>
+<span class="nc" id="L136">        .map(ExtractOutputFormat::getValue)</span>
+<span class="nc" id="L137">        .toList());</span>
+  }
+
+  @Transactional
+  @PostMapping(&quot;/{clientId}&quot;)
+  @Timed(value = &quot;tailormap_api_extract&quot;, description = &quot;Time taken to process a layer extract request&quot;)
+  public ResponseEntity&lt;?&gt; extract(
+      @Valid @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute GeoService service,
+      @ModelAttribute Application application,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @PathVariable String clientId,
+      @RequestParam ExtractOutputFormat outputFormat,
+      @RequestParam(required = false) Set&lt;String&gt; attributes,
+      @RequestParam(required = false) String filter,
+      @RequestParam(required = false) String sortBy,
+      @RequestParam(required = false, defaultValue = &quot;asc&quot;) String sortOrder) {
+
+    try {
+<span class="nc" id="L156">      createLayerExtractService.validateClientId(clientId);</span>
+<span class="nc" id="L157">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L158">      logger.warn(&quot;Invalid clientId for extract request: {}&quot;, clientId);</span>
+<span class="nc" id="L159">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());</span>
+<span class="nc" id="L160">    }</span>
+
+<span class="nc bnc" id="L162" title="All 2 branches missed.">    if (!allowedExtractOutputFormats.contains(outputFormat)) {</span>
+<span class="nc" id="L163">      logger.debug(&quot;Invalid output format requested: {}&quot;, outputFormat);</span>
+<span class="nc" id="L164">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid output format&quot;);</span>
+    }
+
+<span class="nc" id="L167">    TMFeatureType sourceFT = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">    if (sourceFT == null) {</span>
+<span class="nc" id="L169">      logger.debug(&quot;Layer export requested for layer without feature type&quot;);</span>
+<span class="nc" id="L170">      throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+    }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    if (attributes == null) {</span>
+<span class="nc" id="L173">      attributes = new HashSet&lt;&gt;();</span>
+    }
+
+<span class="nc" id="L176">    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);</span>
+    // Get attributes in configured or original order
+<span class="nc" id="L178">    Set&lt;String&gt; nonHiddenAttributes =</span>
+<span class="nc" id="L179">        getConfiguredAttributes(sourceFT, appLayerSettings).keySet();</span>
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    if (!attributes.isEmpty()) {</span>
+      // Only export non-hidden property names
+<span class="nc bnc" id="L183" title="All 2 branches missed.">      if (!nonHiddenAttributes.containsAll(attributes)) {</span>
+<span class="nc" id="L184">        throw new ResponseStatusException(</span>
+            HttpStatus.BAD_REQUEST,
+            &quot;One or more requested attributes are not available on the feature type&quot;);
+      }
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    } else if (!sourceFT.getSettings().getHideAttributes().isEmpty()) {</span>
+      // Only specify specific propNames if there are hidden attributes. Having no propNames
+      // request parameter to request all propNames is less error-prone than specifying the ones
+      // we have saved in the feature type
+<span class="nc" id="L192">      attributes = new HashSet&lt;&gt;(nonHiddenAttributes);</span>
+    }
+
+    // Empty attributes means we won't specify propNames in the GetFeature request. However, if we do select only
+    // some property names, we need the geometry attribute which is not in the 'attributes' request param so spatial
+    // export formats don't have the geometry missing.
+<span class="nc bnc" id="L198" title="All 4 branches missed.">    if (!attributes.isEmpty() &amp;&amp; sourceFT.getDefaultGeometryAttribute() != null) {</span>
+<span class="nc" id="L199">      attributes.add(sourceFT.getDefaultGeometryAttribute());</span>
+    }
+
+    // check if filter has valid syntax (it could still be invalid wrt feature type)
+<span class="nc" id="L203">    Filter parsedCQL = null;</span>
+    try {
+<span class="nc bnc" id="L205" title="All 2 branches missed.">      if (!StringUtils.isBlank(filter)) {</span>
+<span class="nc" id="L206">        parsedCQL = ECQL.toFilter(filter);</span>
+      }
+<span class="nc" id="L208">    } catch (CQLException e) {</span>
+<span class="nc" id="L209">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid filter&quot;);</span>
+<span class="nc" id="L210">    }</span>
+
+<span class="nc bnc" id="L212" title="All 2 branches missed.">    if (ExtractOutputFormat.XLSX.equals(outputFormat)) {</span>
+<span class="nc" id="L213">      validateExcelLimits(sourceFT, attributes, parsedCQL);</span>
+    }
+
+<span class="nc" id="L216">    SortOrder sortingOrder = SortOrder.ASCENDING;</span>
+<span class="nc bnc" id="L217" title="All 6 branches missed.">    if (null != sortOrder &amp;&amp; (sortOrder.equalsIgnoreCase(&quot;desc&quot;) || sortOrder.equalsIgnoreCase(&quot;asc&quot;))) {</span>
+<span class="nc" id="L218">      sortingOrder = SortOrder.valueOf(sortOrder.toUpperCase(Locale.ROOT));</span>
+    }
+
+<span class="nc" id="L221">    final String outputFileName =</span>
+<span class="nc" id="L222">        this.createLayerExtractService.createExtractFilename(clientId, sourceFT, outputFormat);</span>
+<span class="nc" id="L223">    this.createLayerExtractService.emitProgress(clientId, outputFileName, 0, false, &quot;Extract task received&quot;);</span>
+
+    //noinspection JvmTaintAnalysis Not a Path Traversal Sink because the clientId is validated
+<span class="nc" id="L226">    this.createLayerExtractService.createLayerExtract(</span>
+        clientId, sourceFT, attributes, parsedCQL, sortBy, sortingOrder, outputFormat, outputFileName);
+
+    //noinspection JvmTaintAnalysis Not an XSS sink because the response is a json message
+<span class="nc" id="L230">    return ResponseEntity.accepted()</span>
+<span class="nc" id="L231">        .body(Map.of(&quot;message&quot;, &quot;Extract request accepted&quot;, &quot;downloadId&quot;, outputFileName));</span>
+  }
+
+  /**
+   * Check that neither the number of columns nor the number of rows requested for the extract exceed the limits of
+   * Excel format. This is required to block extract requests that would fail later on in the ExcelFeatureWriter when
+   * the limits are exceeded. NOTE: cell size limits are handled in the ExcelFeatureWriter.
+   *
+   * @param featureType requested FT
+   * @param attributes requested attributes
+   * @param filter requested filter
+   */
+  private void validateExcelLimits(TMFeatureType featureType, Set&lt;String&gt; attributes, @Nullable Filter filter) {
+<span class="nc bnc" id="L244" title="All 2 branches missed.">    if (attributes.size() &gt; ExcelDataStore.getMaxColumns()) {</span>
+<span class="nc" id="L245">      throw new ResponseStatusException(</span>
+          HttpStatus.BAD_REQUEST,
+<span class="nc" id="L247">          &quot;Excel format does not support more than &quot; + ExcelDataStore.getMaxColumns() + &quot; columns&quot;);</span>
+    }
+<span class="nc" id="L249">    SimpleFeatureSource inputFeatureSource = null;</span>
+    try {
+      // count all the features; this is expensive but required to block extract when the Excel limits for
+      // row/columns are exceeded
+<span class="nc" id="L253">      inputFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(featureType);</span>
+<span class="nc" id="L254">      Query q = new Query(inputFeatureSource.getName().toString());</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">      if (!attributes.isEmpty()) {</span>
+<span class="nc" id="L256">        q.setPropertyNames(attributes.toArray(new String[0]));</span>
+      }
+
+<span class="nc bnc" id="L259" title="All 2 branches missed.">      if (filter != null) {</span>
+<span class="nc" id="L260">        q.setFilter(filter);</span>
+      }
+<span class="nc" id="L262">      final int featCount = inputFeatureSource.getCount(q);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">      if (featCount &gt;= ExcelDataStore.getMaxRows()) {</span>
+<span class="nc" id="L264">        throw new ResponseStatusException(</span>
+            HttpStatus.BAD_REQUEST,
+<span class="nc" id="L266">            &quot;Excel format does not support more than &quot; + ExcelDataStore.getMaxRows() + &quot; rows&quot;);</span>
+      }
+<span class="nc" id="L268">    } catch (IOException e) {</span>
+<span class="nc" id="L269">      throw new ResponseStatusException(</span>
+          HttpStatus.INTERNAL_SERVER_ERROR,
+<span class="nc" id="L271">          &quot;Failed to count all features for Excel extract: &quot; + e.getMessage());</span>
+<span class="nc" id="L272">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L273">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid filter&quot;);</span>
+    } finally {
+<span class="nc bnc" id="L275" title="All 2 branches missed.">      if (inputFeatureSource != null) {</span>
+<span class="nc" id="L276">        inputFeatureSource.getDataStore().dispose();</span>
+      }
+    }
+<span class="nc" id="L279">  }</span>
+
+<span class="nc" id="L281">  public enum ExtractOutputFormat {</span>
+<span class="nc" id="L282">    GEOPACKAGE(&quot;geopackage&quot;, &quot;.gpkg&quot;),</span>
+<span class="nc" id="L283">    CSV(&quot;csv&quot;, &quot;.csv&quot;),</span>
+<span class="nc" id="L284">    GEOJSON(&quot;geojson&quot;, &quot;.geojson&quot;),</span>
+<span class="nc" id="L285">    XLSX(&quot;xlsx&quot;, &quot;.xlsx&quot;),</span>
+<span class="nc" id="L286">    SHAPE(&quot;shape&quot;, &quot;.zip&quot;);</span>
+
+    private final String value;
+    private final String extension;
+
+<span class="nc" id="L291">    ExtractOutputFormat(String value, String extension) {</span>
+<span class="nc" id="L292">      this.value = value;</span>
+<span class="nc" id="L293">      this.extension = extension;</span>
+<span class="nc" id="L294">    }</span>
+
+    public static ExtractOutputFormat fromValue(String value) {
+<span class="nc bnc" id="L297" title="All 2 branches missed.">      for (ExtractOutputFormat format : ExtractOutputFormat.values()) {</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        if (format.value.equalsIgnoreCase(value)) {</span>
+<span class="nc" id="L299">          return format;</span>
+        }
+      }
+<span class="nc" id="L302">      throw new IllegalArgumentException(&quot;Invalid output format: &quot; + value);</span>
+    }
+
+    public String getValue() {
+<span class="nc" id="L306">      return this.value;</span>
+    }
+
+    public String getExtension() {
+<span class="nc" id="L310">      return this.extension;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L315">      return String.valueOf(this.value);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

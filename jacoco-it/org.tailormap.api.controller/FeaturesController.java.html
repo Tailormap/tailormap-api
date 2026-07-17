@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeaturesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">FeaturesController.java</span></div><h1>FeaturesController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
+import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
+
+import io.micrometer.core.annotation.Timed;
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.util.factory.GeoTools;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.util.GeometricShapeFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.TransformationUtil;
+import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
+import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
+import org.tailormap.api.persistence.json.AppLayerSettings;
+import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.FeatureTypeTemplate;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.persistence.json.TMAttributeDescriptor;
+import org.tailormap.api.persistence.json.TMAttributeType;
+import org.tailormap.api.repository.FeatureSourceRepository;
+import org.tailormap.api.util.Constants;
+import org.tailormap.api.viewer.model.AttachmentMetadata;
+import org.tailormap.api.viewer.model.ColumnMetadata;
+import org.tailormap.api.viewer.model.Feature;
+import org.tailormap.api.viewer.model.FeaturesResponse;
+
+@AppRestController
+@Validated
+@RequestMapping(
+    path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/features&quot;,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+public class FeaturesController implements Constants {
+<span class="nc" id="L81">  private static final Logger logger =</span>
+<span class="nc" id="L82">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final TMFeatureTypeHelper featureTypeHelper;
+  private final FeatureSourceRepository featureSourceRepository;
+<span class="nc" id="L87">  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());</span>
+
+  @Value(&quot;${tailormap-api.default-page-size:100}&quot;)
+  private int defaultPageSize;
+
+  @Value(&quot;${tailormap-api.max-page-size:500}&quot;)
+  private int maxPageSize;
+
+  @Value(&quot;${tailormap-api.feature.info.maxitems:30}&quot;)
+  private int maxFeatures;
+
+  @Value(&quot;${tailormap-api.features.wfs_count_exact:false}&quot;)
+  private boolean exactWfsCounts;
+
+  public FeaturesController(
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      TMFeatureTypeHelper featureTypeHelper,
+<span class="nc" id="L104">      FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L105">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L106">    this.featureTypeHelper = featureTypeHelper;</span>
+<span class="nc" id="L107">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L108">  }</span>
+
+  @Transactional
+  @RequestMapping(method = {GET, POST})
+  @Timed(value = &quot;get_features&quot;, description = &quot;time spent to process get features call&quot;)
+  public ResponseEntity&lt;Serializable&gt; getFeatures(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @RequestParam(required = false) Double x,
+      @RequestParam(required = false) Double y,
+      @RequestParam(defaultValue = &quot;4&quot;) Double distance,
+      @RequestParam(required = false) String __fid,
+      @RequestParam(defaultValue = &quot;false&quot;) Boolean simplify,
+      @RequestParam(required = false) String filter,
+      @RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer pageSize,
+      @RequestParam(required = false) String sortBy,
+      @RequestParam(required = false, defaultValue = &quot;asc&quot;) String sortOrder,
+      @RequestParam(defaultValue = &quot;false&quot;) boolean onlyGeometries,
+      @RequestParam(defaultValue = &quot;false&quot;) boolean geometryInAttributes,
+      @RequestParam(defaultValue = &quot;false&quot;) boolean withAttachments) {
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (layer == null) {</span>
+<span class="nc" id="L133">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Can't find layer &quot; + appTreeLayerNode);</span>
+    }
+
+<span class="nc" id="L136">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (tmft == null) {</span>
+<span class="nc" id="L138">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Layer does not have feature type&quot;);</span>
+    }
+<span class="nc" id="L140">    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);</span>
+
+<span class="nc bnc" id="L142" title="All 2 branches missed.">    if (onlyGeometries) {</span>
+<span class="nc" id="L143">      geometryInAttributes = true;</span>
+    }
+
+    FeaturesResponse featuresResponse;
+
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    if (null != __fid) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">      featuresResponse =</span>
+<span class="nc" id="L150">          getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes, withAttachments);</span>
+<span class="nc bnc" id="L151" title="All 4 branches missed.">    } else if (null != x &amp;&amp; null != y) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">      featuresResponse = getFeaturesByXY(</span>
+          tmft,
+          appLayerSettings,
+          filter,
+          x,
+          y,
+          application,
+          distance,
+          simplify,
+          !geometryInAttributes,
+          withAttachments);
+<span class="nc bnc" id="L163" title="All 4 branches missed.">    } else if (null != page &amp;&amp; page &gt; 0) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">      featuresResponse = getAllFeatures(</span>
+          tmft,
+          application,
+          appLayerSettings,
+          page,
+          pageSize,
+          filter,
+          sortBy,
+          sortOrder,
+          onlyGeometries,
+          !geometryInAttributes,
+          withAttachments);
+    } else {
+<span class="nc" id="L177">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Unsupported combination of request parameters&quot;);</span>
+    }
+
+<span class="nc" id="L180">    return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);</span>
+  }
+
+  @NotNull private FeaturesResponse getAllFeatures(
+      @NotNull TMFeatureType tmft,
+      @NotNull Application application,
+      @NotNull AppLayerSettings appLayerSettings,
+      Integer page,
+      Integer pageSize,
+      String filterCQL,
+      String sortBy,
+      String sortOrder,
+      boolean onlyGeometries,
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
+<span class="nc bnc" id="L195" title="All 2 branches missed.">    int requestedPageSize = pageSize != null ? pageSize : defaultPageSize;</span>
+<span class="nc" id="L196">    requestedPageSize = Math.max(1, requestedPageSize);</span>
+<span class="nc" id="L197">    int requestPageSize = Math.min(maxPageSize, requestedPageSize);</span>
+<span class="nc" id="L198">    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(requestPageSize);</span>
+
+<span class="nc" id="L200">    SimpleFeatureSource fs = null;</span>
+    try {
+<span class="nc" id="L202">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);</span>
+
+      // Property names for sorting: only non-geometry attributes that aren't hidden
+<span class="nc" id="L205">      List&lt;String&gt; propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()</span>
+<span class="nc" id="L206">          .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">          .filter(a -&gt; !isGeometry(a.getType()))</span>
+<span class="nc" id="L208">          .map(TMAttributeDescriptor::getName)</span>
+<span class="nc" id="L209">          .collect(Collectors.toList());</span>
+
+      String sortAttrName;
+<span class="nc bnc" id="L212" title="All 2 branches missed.">      if (onlyGeometries) {</span>
+<span class="nc" id="L213">        propNames = List.of(tmft.getDefaultGeometryAttribute());</span>
+        // do not try to sort by geometry
+<span class="nc" id="L215">        sortAttrName = null;</span>
+      } else {
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (propNames.isEmpty()) {</span>
+<span class="nc" id="L218">          return featuresResponse;</span>
+        }
+        // Default sorting attribute if sortBy not specified or not a configured attribute
+<span class="nc bnc" id="L221" title="All 4 branches missed.">        if (tmft.getPrimaryKeyAttribute() != null &amp;&amp; propNames.contains(tmft.getPrimaryKeyAttribute())) {</span>
+          // There is a primary key and it is known, use that for sorting
+<span class="nc" id="L223">          sortAttrName = tmft.getPrimaryKeyAttribute();</span>
+        } else {
+<span class="nc" id="L225">          sortAttrName = propNames.getFirst();</span>
+        }
+
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (null != sortBy) {</span>
+          // Only use sortBy attribute if it is in the list of configured attributes and not a
+          // geometry type (propNames does not contain geometry attributes, see above)
+<span class="nc bnc" id="L231" title="All 2 branches missed.">          if (propNames.contains(sortBy)) {</span>
+<span class="nc" id="L232">            sortAttrName = sortBy;</span>
+          } else {
+<span class="nc" id="L234">            logger.warn(</span>
+                &quot;Requested sortBy attribute {} was not found in configured attributes or is a geometry attribute&quot;,
+                sortBy);
+          }
+        }
+      }
+
+<span class="nc" id="L241">      SortOrder _sortOrder = SortOrder.ASCENDING;</span>
+<span class="nc bnc" id="L242" title="All 6 branches missed.">      if (null != sortOrder &amp;&amp; (sortOrder.equalsIgnoreCase(&quot;desc&quot;) || sortOrder.equalsIgnoreCase(&quot;asc&quot;))) {</span>
+<span class="nc" id="L243">        _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase(Locale.ROOT));</span>
+      }
+
+      // setup query, attributes and filter
+<span class="nc" id="L247">      Query q = new Query(fs.getName().toString());</span>
+
+      // add default geometry attribute to the property names for query
+<span class="nc bnc" id="L250" title="All 4 branches missed.">      if (!skipGeometryOutput &amp;&amp; !onlyGeometries) {</span>
+<span class="nc" id="L251">        propNames.add(tmft.getDefaultGeometryAttribute());</span>
+      }
+<span class="nc" id="L253">      q.setPropertyNames(propNames);</span>
+
+      // count can be -1 if too costly eg. some WFS
+      int featureCount;
+<span class="nc bnc" id="L257" title="All 2 branches missed.">      if (null != filterCQL) {</span>
+<span class="nc" id="L258">        Filter filter = ECQL.toFilter(filterCQL);</span>
+<span class="nc" id="L259">        q.setFilter(filter);</span>
+<span class="nc" id="L260">        featureCount = fs.getCount(q);</span>
+        // this will execute the query twice, once to get the count and once to get the data
+<span class="nc bnc" id="L262" title="All 4 branches missed.">        if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
+<span class="nc" id="L263">          featureCount = fs.getFeatures(q).size();</span>
+        }
+<span class="nc" id="L265">      } else {</span>
+<span class="nc" id="L266">        featureCount = fs.getCount(Query.ALL);</span>
+        // this will execute the query twice, once to get the count and once to get the data
+<span class="nc bnc" id="L268" title="All 4 branches missed.">        if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
+<span class="nc" id="L269">          featureCount = fs.getFeatures(Query.ALL).size();</span>
+        }
+      }
+<span class="nc" id="L272">      featuresResponse.setTotal(featureCount);</span>
+
+      // setup page query
+<span class="nc bnc" id="L275" title="All 2 branches missed.">      if (sortAttrName != null) {</span>
+<span class="nc" id="L276">        q.setSortBy(ff.sort(sortAttrName, _sortOrder));</span>
+      }
+<span class="nc" id="L278">      q.setMaxFeatures(requestPageSize);</span>
+<span class="nc" id="L279">      q.setStartIndex((page - 1) * requestPageSize);</span>
+<span class="nc" id="L280">      logger.debug(&quot;Attribute query: {}&quot;, q);</span>
+
+<span class="nc" id="L282">      executeQueryOnFeatureSourceAndClose(</span>
+          false,
+          featuresResponse,
+          tmft,
+          appLayerSettings,
+          onlyGeometries,
+          fs,
+          q,
+          application,
+          skipGeometryOutput,
+          withAttachments);
+<span class="nc" id="L293">    } catch (IOException e) {</span>
+<span class="nc" id="L294">      logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L295">    } catch (CQLException e) {</span>
+<span class="nc" id="L296">      logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
+<span class="nc" id="L297">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Could not parse requested filter&quot;);</span>
+    } finally {
+<span class="nc bnc" id="L299" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L300">        fs.getDataStore().dispose();</span>
+      }
+    }
+
+<span class="nc" id="L304">    return featuresResponse;</span>
+  }
+
+  @NotNull private FeaturesResponse getFeatureByFID(
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
+      @NotNull String fid,
+      @NotNull Application application,
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
+<span class="nc" id="L314">    FeaturesResponse featuresResponse = new FeaturesResponse();</span>
+
+<span class="nc" id="L316">    SimpleFeatureSource fs = null;</span>
+    try {
+<span class="nc" id="L318">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+<span class="nc" id="L319">      Query q = new Query(fs.getName().toString());</span>
+<span class="nc" id="L320">      q.setFilter(ff.id(ff.featureId(fid)));</span>
+<span class="nc" id="L321">      q.setMaxFeatures(1);</span>
+<span class="nc" id="L322">      logger.debug(&quot;FID query: {}&quot;, q);</span>
+
+<span class="nc" id="L324">      executeQueryOnFeatureSourceAndClose(</span>
+          false,
+          featuresResponse,
+          tmFeatureType,
+          appLayerSettings,
+          false,
+          fs,
+          q,
+          application,
+          skipGeometryOutput,
+          withAttachments);
+<span class="nc" id="L335">    } catch (IOException e) {</span>
+<span class="nc" id="L336">      logger.error(&quot;Could not retrieve attribute data&quot;, e);</span>
+    } finally {
+<span class="nc bnc" id="L338" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L339">        fs.getDataStore().dispose();</span>
+      }
+    }
+
+<span class="nc" id="L343">    return featuresResponse;</span>
+  }
+
+  @NotNull private FeaturesResponse getFeaturesByXY(
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
+      String filterCQL,
+      @NotNull Double x,
+      @NotNull Double y,
+      @NotNull Application application,
+      @NotNull Double distance,
+      @NotNull Boolean simplifyGeometry,
+      boolean skipGeometryOutput,
+      boolean withAttachments) {
+
+<span class="nc bnc" id="L358" title="All 4 branches missed.">    if (null != distance &amp;&amp; 0d &gt;= distance) {</span>
+<span class="nc" id="L359">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Buffer distance must be greater than 0&quot;);</span>
+    }
+
+<span class="nc" id="L362">    FeaturesResponse featuresResponse = new FeaturesResponse();</span>
+
+    SimpleFeatureSource fs;
+    try {
+<span class="nc" id="L366">      GeometricShapeFactory shapeFact = new GeometricShapeFactory();</span>
+<span class="nc" id="L367">      shapeFact.setNumPoints(32);</span>
+<span class="nc" id="L368">      shapeFact.setCentre(new Coordinate(x, y));</span>
+      //noinspection ConstantConditions
+<span class="nc" id="L370">      shapeFact.setSize(distance * 2d);</span>
+<span class="nc" id="L371">      Geometry p = shapeFact.createCircle();</span>
+<span class="nc" id="L372">      logger.trace(&quot;created selection geometry: {}&quot;, p);</span>
+
+<span class="nc" id="L374">      MathTransform transform = null;</span>
+<span class="nc" id="L375">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+      try {
+<span class="nc" id="L377">        transform = TransformationUtil.getTransformationToDataSource(application, fs);</span>
+<span class="nc" id="L378">      } catch (FactoryException e) {</span>
+<span class="nc" id="L379">        logger.warn(&quot;Unable to find transformation from query geometry to desired datasource&quot;, e);</span>
+<span class="nc" id="L380">      }</span>
+<span class="nc bnc" id="L381" title="All 2 branches missed.">      if (null != transform) {</span>
+        try {
+<span class="nc" id="L383">          p = JTS.transform(p, transform);</span>
+<span class="nc" id="L384">          logger.trace(&quot;reprojected selection geometry to: {}&quot;, p);</span>
+<span class="nc" id="L385">        } catch (TransformException e) {</span>
+<span class="nc" id="L386">          logger.warn(&quot;Unable to transform query geometry to desired CRS, trying with original CRS&quot;);</span>
+<span class="nc" id="L387">        }</span>
+      }
+<span class="nc" id="L389">      logger.trace(&quot;using selection geometry: {}&quot;, p);</span>
+<span class="nc" id="L390">      Filter spatialFilter =</span>
+<span class="nc" id="L391">          ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));</span>
+
+<span class="nc" id="L393">      Filter finalFilter = spatialFilter;</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">      if (null != filterCQL) {</span>
+<span class="nc" id="L395">        Filter filter = ECQL.toFilter(filterCQL);</span>
+<span class="nc" id="L396">        finalFilter = ff.and(spatialFilter, filter);</span>
+      }
+<span class="nc" id="L398">      Query q = new Query(fs.getName().toString());</span>
+<span class="nc" id="L399">      q.setFilter(finalFilter);</span>
+<span class="nc" id="L400">      q.setMaxFeatures(maxFeatures);</span>
+
+<span class="nc" id="L402">      executeQueryOnFeatureSourceAndClose(</span>
+<span class="nc" id="L403">          simplifyGeometry,</span>
+          featuresResponse,
+          tmFeatureType,
+          appLayerSettings,
+          false,
+          fs,
+          q,
+          application,
+          skipGeometryOutput,
+          withAttachments);
+<span class="nc" id="L413">    } catch (IOException e) {</span>
+<span class="nc" id="L414">      logger.error(&quot;Could not retrieve attribute data&quot;, e);</span>
+<span class="nc" id="L415">    } catch (CQLException e) {</span>
+<span class="nc" id="L416">      logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
+<span class="nc" id="L417">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Could not parse requested filter&quot;);</span>
+<span class="nc" id="L418">    }</span>
+<span class="nc" id="L419">    return featuresResponse;</span>
+  }
+
+  private void executeQueryOnFeatureSourceAndClose(
+      boolean simplifyGeometry,
+      @NotNull FeaturesResponse featuresResponse,
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
+      boolean onlyGeometries,
+      @NotNull SimpleFeatureSource featureSource,
+      @NotNull Query selectQuery,
+      @NotNull Application application,
+      boolean skipGeometryOutput,
+      boolean withAttachments)
+      throws IOException {
+<span class="nc" id="L434">    boolean addFields = false;</span>
+
+<span class="nc" id="L436">    MathTransform transform = null;</span>
+    try {
+<span class="nc" id="L438">      transform = TransformationUtil.getTransformationToApplication(application, featureSource);</span>
+<span class="nc" id="L439">    } catch (FactoryException e) {</span>
+<span class="nc" id="L440">      logger.error(&quot;Can not transform geometry to desired CRS&quot;, e);</span>
+<span class="nc" id="L441">    }</span>
+
+<span class="nc bnc" id="L443" title="All 2 branches missed.">    boolean ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != null</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">        &amp;&amp; !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();</span>
+
+<span class="nc" id="L446">    List&lt;Object&gt; featurePKs = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L447">    Map&lt;String, TMFeatureTypeHelper.AttributeWithSettings&gt; configuredAttributes =</span>
+<span class="nc" id="L448">        getConfiguredAttributes(tmFeatureType, appLayerSettings);</span>
+
+    // send request to attribute source
+<span class="nc" id="L451">    try (SimpleFeatureIterator feats =</span>
+<span class="nc" id="L452">        featureSource.getFeatures(selectQuery).features()) {</span>
+<span class="nc bnc" id="L453" title="All 2 branches missed.">      while (feats.hasNext()) {</span>
+<span class="nc" id="L454">        addFields = true;</span>
+        // transform found simplefeatures to list of Feature
+<span class="nc" id="L456">        SimpleFeature feature = feats.next();</span>
+
+        // processedGeometry can be null
+<span class="nc" id="L459">        String processedGeometry = GeometryProcessor.processGeometry(</span>
+<span class="nc" id="L460">            feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),</span>
+<span class="nc" id="L461">            simplifyGeometry,</span>
+<span class="nc" id="L462">            true,</span>
+            transform);
+<span class="nc" id="L464">        Feature newFeat = new Feature().fid(feature.getID()).geometry(processedGeometry);</span>
+
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (!onlyGeometries) {</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">          for (String attName : configuredAttributes.keySet()) {</span>
+<span class="nc" id="L468">            Object value = feature.getAttribute(attName);</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">            if (value instanceof Geometry geometry) {</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">              if (skipGeometryOutput) {</span>
+<span class="nc" id="L471">                value = null;</span>
+              } else {
+<span class="nc" id="L473">                value = GeometryProcessor.geometryToWKT(geometry);</span>
+              }
+            }
+<span class="nc" id="L476">            newFeat.putAttributesItem(attName, value);</span>
+<span class="nc" id="L477">          }</span>
+<span class="nc bnc" id="L478" title="All 4 branches missed.">          if (withAttachments &amp;&amp; ftSupportsAttachments) {</span>
+            // Just add the PK as is, no conversion needed
+<span class="nc" id="L480">            featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));</span>
+          }
+        }
+<span class="nc" id="L483">        featuresResponse.addFeaturesItem(newFeat);</span>
+<span class="nc" id="L484">      }</span>
+    } finally {
+<span class="nc" id="L486">      featureSource.getDataStore().dispose();</span>
+    }
+<span class="nc" id="L488">    FeatureTypeTemplate ftt = tmFeatureType.getSettings().getTemplate();</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">    if (ftt != null) {</span>
+<span class="nc" id="L490">      featuresResponse.setTemplate(ftt.getTemplate());</span>
+    }
+<span class="nc bnc" id="L492" title="All 2 branches missed.">    if (addFields) {</span>
+<span class="nc" id="L493">      configuredAttributes.values().stream()</span>
+<span class="nc" id="L494">          .map(attributeWithSettings -&gt; {</span>
+<span class="nc" id="L495">            TMAttributeType type =</span>
+<span class="nc" id="L496">                attributeWithSettings.attributeDescriptor().getType();</span>
+<span class="nc" id="L497">            return new ColumnMetadata()</span>
+<span class="nc" id="L498">                .name(attributeWithSettings</span>
+<span class="nc" id="L499">                    .attributeDescriptor()</span>
+<span class="nc" id="L500">                    .getName())</span>
+<span class="nc" id="L501">                .alias(attributeWithSettings.settings().getTitle())</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">                .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);</span>
+          })
+<span class="nc" id="L504">          .forEach(featuresResponse::addColumnMetadataItem);</span>
+    }
+<span class="nc bnc" id="L506" title="All 2 branches missed.">    if (ftSupportsAttachments) {</span>
+      //  add attachment metadata
+<span class="nc" id="L508">      featuresResponse.setAttachmentMetadata(</span>
+<span class="nc" id="L509">          featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));</span>
+
+<span class="nc bnc" id="L511" title="All 2 branches missed.">      if (withAttachments) {</span>
+        //  fetch all attachments for all features, grouped by feature fid
+<span class="nc" id="L513">        Map&lt;String, List&lt;AttachmentMetadata&gt;&gt; attachmentsByFeatureId =</span>
+<span class="nc" id="L514">            AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);</span>
+        //  add attachment data to features using the feature FID to match
+<span class="nc bnc" id="L516" title="All 2 branches missed.">        for (Feature feature : featuresResponse.getFeatures()) {</span>
+<span class="nc" id="L517">          String primaryKey = feature.getFid();</span>
+<span class="nc" id="L518">          List&lt;AttachmentMetadata&gt; attachments = attachmentsByFeatureId.get(primaryKey);</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">          if (attachments != null) {</span>
+<span class="nc" id="L520">            feature.setAttachments(attachments);</span>
+          }
+<span class="nc" id="L522">        }</span>
+      }
+    }
+<span class="nc" id="L525">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
