@@ -9,6 +9,7 @@ import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfig
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -67,6 +68,7 @@ public class LayerExtractController {
   private final FeatureSourceRepository featureSourceRepository;
   private final CreateLayerExtractService createLayerExtractService;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final EntityManager entityManager;
 
   @Value("#{'${tailormap-api.extract.allowed-outputformats}'.split(',')}")
   private List<ExtractOutputFormat> allowedExtractOutputFormats;
@@ -74,10 +76,12 @@ public class LayerExtractController {
   public LayerExtractController(
       FeatureSourceRepository featureSourceRepository,
       CreateLayerExtractService createLayerExtractService,
-      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      EntityManager entityManager) {
     this.featureSourceRepository = featureSourceRepository;
     this.createLayerExtractService = createLayerExtractService;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.entityManager = entityManager;
   }
 
   /**
@@ -137,7 +141,7 @@ public class LayerExtractController {
         .toList());
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   @PostMapping("/{clientId}")
   @Timed(value = "tailormap_api_extract", description = "Time taken to process a layer extract request")
   public ResponseEntity<?> extract(
@@ -212,6 +216,9 @@ public class LayerExtractController {
     if (ExtractOutputFormat.XLSX.equals(outputFormat)) {
       validateExcelLimits(sourceFT, attributes, parsedCQL);
     }
+
+    // after all validations we can close the JPA session
+    this.entityManager.close();
 
     SortOrder sortingOrder = SortOrder.ASCENDING;
     if (null != sortOrder && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
