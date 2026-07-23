@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.CRS;
@@ -36,7 +37,7 @@ public class GeoToolsEPSGAliasesConfiguration {
   @PostConstruct
   public void addEPSGAliases() throws IOException, FactoryException {
     // The PropertyAuthorityFactory only takes a URL parameter, create a temporary file
-    File f = File.createTempFile("epsg", "properties");
+    File f = Files.createTempFile("epsg", "properties").toFile();
     try (PrintWriter writer = new PrintWriter(f, StandardCharsets.US_ASCII)) {
       for (int[] alias : EPSG_ALIASES) {
         writer.printf("%d=%s\n", alias[0], ((Formattable) CRS.decode("EPSG:" + alias[1])).toWKT(0));
