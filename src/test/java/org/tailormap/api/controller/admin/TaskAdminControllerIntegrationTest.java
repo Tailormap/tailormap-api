@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.IntegrationTestOrdering.SECOND_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.scheduling.Task.TYPE_KEY;
 
 import com.jayway.jsonpath.JsonPath;
@@ -48,6 +49,7 @@ import org.tailormap.api.scheduling.TaskType;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
+@Order(SECOND_INTEGRATION_TEST_ORDER)
 class TaskAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
