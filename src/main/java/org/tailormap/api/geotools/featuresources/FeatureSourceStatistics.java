@@ -15,6 +15,7 @@ import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeType;
 import org.geotools.api.filter.Filter;
+import org.geotools.api.referencing.FactoryException;
 import org.geotools.feature.visitor.AverageVisitor;
 import org.geotools.feature.visitor.CountVisitor;
 import org.geotools.feature.visitor.MaxVisitor;
@@ -26,7 +27,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
+import org.tailormap.api.persistence.Application;
 import org.tailormap.api.viewer.model.AttributeStatisticsResponse;
 
 /** Calculate statistics (min/max/average/sum) and metadata (count) for an attribute of a feature source. */
@@ -54,6 +57,7 @@ public class FeatureSourceStatistics {
    */
   @SuppressWarnings("JavaUtilDate")
   @NonNull public static AttributeStatisticsResponse getFeatureSourceStatistics(
+      @Nullable Application application,
       @NonNull SimpleFeatureSource featureSource,
       @NonNull String attributeName,
       @Nullable String filterCQL,
@@ -84,10 +88,15 @@ public class FeatureSourceStatistics {
 
     if (filterCQL != null && !filterCQL.isEmpty()) {
       try {
-        Filter parsedFilter = ECQL.toFilter(filterCQL);
+        Filter parsedFilter;
+        if (application == null) {
+          parsedFilter = ECQL.toFilter(filterCQL); // NOPMD - admin usage does not have application context
+        } else {
+          parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
+        }
         query.setFilter(parsedFilter);
         featureSourceStatistics.filterApplied(true);
-      } catch (CQLException e) {
+      } catch (CQLException | FactoryException | UnsupportedOperationException e) {
         logger.error("Invalid filter cql: {} ", filterCQL);
         throw new IllegalArgumentException("Could not parse requested filter", e);
       }

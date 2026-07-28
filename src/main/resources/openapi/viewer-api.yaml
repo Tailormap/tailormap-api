@@ -839,6 +839,7 @@ paths:
           The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
           Filtering is supported when requesting a page of features, not when requesting a single 
           feature (using `__fid`) nor when using x/y coordinates.
+          A spatial filter may use EWKT syntax (for example `SRID=28992;POLYGON(...)`), with the SRID equal to the application CRS.
           '
         in: query
         required: false
@@ -993,6 +994,7 @@ paths:
         description: '
         A filter that was already applied to the layer (on a different attribute or this attribute). 
         The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+          A spatial filter may use EWKT syntax (for example `SRID=28992;POLYGON(...)`), with the SRID equal to the application CRS.
         '
         in: query
         schema:
@@ -1178,7 +1180,7 @@ paths:
               type: object
               additionalProperties: true
               example:
-                CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
+                CQL_FILTER: INTERSECTS(geom, POINT(1 2))
                 SLD_BODY: ...
       responses:
         '200':
@@ -1253,6 +1255,7 @@ paths:
           description: '
         A filter to be applied. The bounds will be calculated for the features that fulfill the filter. 
         The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+        A spatial filter may use EWKT syntax (for example `SRID=28992;POLYGON(...)`), with the SRID equal to the application CRS.
         '
           schema:
             type: string
@@ -1297,7 +1300,10 @@ paths:
               properties:
                 filter:
                   type: string
-                  description: 'A filter to be applied. The bounds will be calculated for the features that fulfill the filter. The filter is an ECQL string.'
+                  description: '
+                    A filter to be applied. The bounds will be calculated for the features that fulfill the filter. The filter is an ECQL string.
+                    A spatial filter may use EWKT syntax (for example `SRID=28992;POLYGON(...)`), with the SRID equal to the application CRS.
+                    '
       responses:
         '200':
           description: OK

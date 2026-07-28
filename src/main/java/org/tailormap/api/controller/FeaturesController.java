@@ -32,7 +32,6 @@ import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.util.factory.GeoTools;
 import org.locationtech.jts.geom.Coordinate;
@@ -51,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -170,6 +170,7 @@ public class FeaturesController implements Constants {
           filter,
           sortBy,
           sortOrder,
+          simplify,
           onlyGeometries,
           !geometryInAttributes,
           withAttachments);
@@ -189,6 +190,7 @@ public class FeaturesController implements Constants {
       String filterCQL,
       String sortBy,
       String sortOrder,
+      boolean simplifyGeometry,
       boolean onlyGeometries,
       boolean skipGeometryOutput,
       boolean withAttachments) {
@@ -255,7 +257,7 @@ public class FeaturesController implements Constants {
       // count can be -1 if too costly eg. some WFS
       int featureCount;
       if (null != filterCQL) {
-        Filter filter = ECQL.toFilter(filterCQL);
+        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
         q.setFilter(filter);
         featureCount = fs.getCount(q);
         // this will execute the query twice, once to get the count and once to get the data
@@ -280,7 +282,7 @@ public class FeaturesController implements Constants {
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
-          false,
+          simplifyGeometry,
           featuresResponse,
           tmft,
           appLayerSettings,
@@ -292,9 +294,9 @@ public class FeaturesController implements Constants {
           withAttachments);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
-    } catch (CQLException e) {
-      logger.error("Could not parse requested filter.", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -392,7 +394,7 @@ public class FeaturesController implements Constants {
 
       Filter finalFilter = spatialFilter;
       if (null != filterCQL) {
-        Filter filter = ECQL.toFilter(filterCQL);
+        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
         finalFilter = ff.and(spatialFilter, filter);
       }
       Query q = new Query(fs.getName().toString());
@@ -412,9 +414,9 @@ public class FeaturesController implements Constants {
           withAttachments);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
-    } catch (CQLException e) {
-      logger.error("Could not parse requested filter.", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
     }
     return featuresResponse;
   }

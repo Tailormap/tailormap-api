@@ -226,6 +226,26 @@ class FeaturesControllerIntegrationTest {
             "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
             // value depends on timezone, this is for Europe/Amsterdam. For UTC it is 1933.
             1963),
+        // attributes and spatial filter
+        arguments(
+            begroeidterreindeelUrlPostgis,
+            "(((creationdate BEFORE 2025-06-05T00:00:00.000Z) "
+                + "AND (plus_fysiekvoorkomen IN ('bodembedekkers','bosplantsoen','gras- en kruidachtigen'))) "
+                + "AND INTERSECTS(geom, POLYGON((130957.92 459473.76,130251.16 459329.34,130752.6 458663.66,130957.92 459473.76))))",
+            63),
+        // attributes and combined spatial filter
+        arguments(
+            begroeidterreindeelUrlPostgis,
+            "(((creationdate BEFORE 2025-06-05T00:00:00.000Z) "
+                + "AND (plus_fysiekvoorkomen IN ('bodembedekkers','bosplantsoen','gras- en kruidachtigen'))) "
+                + "AND INTERSECTS(geom, GEOMETRYCOLLECTION(POLYGON((130957.92 459473.76,130251.16 459329.34,130752.6 458663.66,130957.92 459473.76)),LINESTRING(130357.85 459641.55,130750.94 459685.97))))",
+            69),
+        arguments(
+            begroeidterreindeelUrlPostgis,
+            "(((creationdate BEFORE 2025-06-05T00:00:00.000Z) AND (plus_fysiekvoorkomen IN"
+                + " ('bodembedekkers','bosplantsoen','gras- en kruidachtigen'))) "
+                + "AND INTERSECTS(geom, SRID=28992;GEOMETRYCOLLECTION(POLYGON((130957.92 459473.76,130251.16 459329.34,130752.6 458663.66,130957.92 459473.76)),LINESTRING(130357.85 459641.55,130750.94 459685.97))))",
+            69),
         // (not) like / ilike
         arguments(begroeidterreindeelUrlPostgis, "class like 'grasland%'", 85),
         arguments(
@@ -415,7 +435,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_empty_featurecollection_for_out_of_range_page_from_wfs() throws Exception {
+  void should_return_empty_feature_collection_for_out_of_range_page_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 3
     final String url = apiBasePath + provinciesWfs;
@@ -656,7 +676,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_sorted_featurecollections_for_valid_sorting_from_database() throws Exception {
+  void should_return_sorted_feature_collections_for_valid_sorting_from_database() throws Exception {
     // begroeidterreindeel from postgis
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     // page 1, sort ascending by gmlid
@@ -811,12 +831,12 @@ class FeaturesControllerIntegrationTest {
    */
   @ParameterizedTest(
       name =
-          "#{index}: should return non-empty featurecollections for valid page from database: {0}, featuretype: {1}")
+          "#{index}: should return non-empty feature collections for valid page from database: {0}, featuretype: {1}")
   @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_non_empty_featurecollections_for_valid_pages_from_database(String applayerUrl, int totalCcount)
+  void should_return_non_empty_feature_collections_for_valid_pages_from_database(String applayerUrl, int totalCcount)
       throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
     // page 1
@@ -929,6 +949,65 @@ class FeaturesControllerIntegrationTest {
         expected2ndCoordinate, g.getCoordinate().getY(), .1, "y coordinate should be " + expected2ndCoordinate);
   }
 
+  static Stream<Arguments> osmFiltersProvider() {
+    return Stream.of(
+        Arguments.of(
+            "INTERSECTS(way, SRID=28992;POLYGON((129284 461518,129282 460515,130150 461011,129284 461518)))",
+            2165,
+            5),
+        Arguments.of(
+            "((name ILIKE 'Maarssen') "
+                + "AND INTERSECTS(way, srid=28992;polygon((129284 461518,129282 460515,130150 461011,129284 461518))))",
+            1,
+            0));
+  }
+
+  @ParameterizedTest(name = "#{index}: should return non-empty feature collection for filter: {0} on OSM data")
+  @MethodSource("osmFiltersProvider")
+  void should_accept_foreign_spatial_and_attribute_filter_and_reproject(String filter, int total, int resultIndex)
+      throws Exception {
+    final String url = apiBasePath + osm_polygonUrlPostgis;
+
+    final String expectedFid = "osm_polygon.-310859";
+    final String expectedName = "Maarssen";
+    final double expected1stCoordinate = 128713.7;
+    final double expected2ndCoordinate = 461593.9;
+
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("simplify", "true")
+            .param("geometryInAttributes", "true")
+            .param("sortBy", "osm_id")
+            .param("filter", filter)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(total))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpectAll(
+            jsonPath("$.features[" + resultIndex + "]").isMap(),
+            jsonPath("$.features[" + resultIndex + "]").isNotEmpty(),
+            jsonPath("$.features[" + resultIndex + "].__fid").isNotEmpty(),
+            jsonPath("$.features[" + resultIndex + "].__fid").value(expectedFid),
+            jsonPath("$.features[" + resultIndex + "].geometry").isNotEmpty(),
+            jsonPath("$.features[" + resultIndex + "].attributes.boundary")
+                .value("administrative"),
+            jsonPath("$.features[" + resultIndex + "].attributes.name")
+                .value(expectedName))
+        .andReturn();
+
+    String body = result.getResponse().getContentAsString();
+    String geometry = JsonPath.read(body, "$.features[" + resultIndex + "].geometry");
+    Geometry g = new WKTReader().read(geometry);
+    assertEquals(Polygon.class, g.getClass(), "Did not find expected geometry type");
+    assertEquals(
+        expected1stCoordinate, g.getCoordinate().getX(), .1, "x coordinate should be " + expected1stCoordinate);
+    assertEquals(
+        expected2ndCoordinate, g.getCoordinate().getY(), .1, "y coordinate should be " + expected2ndCoordinate);
+  }
+
   @Test
   @DisplayName("should return expected polygon feature for valid coordinates from WFS")
   @WithMockUser(
@@ -982,12 +1061,12 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @ParameterizedTest(
-      name = "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
+      name = "#{index}: should return same feature collection for same page from database: {0}, featuretype: {1}")
   @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_same_featurecollection_for_same_page_database(String applayerUrl, int totalCcount)
+  void should_return_same_feature_collection_for_same_page_database(String applayerUrl, int totalCount)
       throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
 
@@ -998,7 +1077,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.total").value(totalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -1023,7 +1102,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.total").value(totalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -1051,12 +1130,13 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @ParameterizedTest(
-      name = "#{index}: should return empty featurecollection for out of range page from database for layer: {0}")
+      name =
+          "#{index}: should return empty feature collection for out of range page from database for layer: {0}")
   @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_empty_featurecollection_for_out_of_range_page_database(String appLayerUrl, int totalCount)
+  void should_return_empty_feature_collection_for_out_of_range_page_database(String appLayerUrl, int totalCount)
       throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
     // request page ...
@@ -1081,7 +1161,7 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(
-      name = "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
+      name = "#{index} should return a feature collection for various ECQL filters on appLayer: {0}, filter: {1}")
   @MethodSource("filtersProvider")
   @WithMockUser(
       username = "tm-admin",

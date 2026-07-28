@@ -84,7 +84,7 @@ public class UniqueValuesController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
     UniqueValuesResponse uniqueValuesResponse = UniqueValuesHelper.getUniqueValues(
-        tmft, attributeName, filter, ff, featureSourceFactoryHelper, useGeotoolsUniqueFunction);
+        app, tmft, attributeName, filter, ff, featureSourceFactoryHelper, useGeotoolsUniqueFunction);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }
 }

@@ -227,8 +227,8 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
             .characterEncoding(StandardCharsets.UTF_8)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED))
         .andExpect(status().isBadRequest())
-        .andExpect(result ->
-            assertThat(result.getResponse().getContentAsString(), containsString("Invalid filter")));
+        .andExpect(result -> assertThat(
+            result.getResponse().getContentAsString(), containsString("Could not parse requested filter")));
   }
 
   @Test

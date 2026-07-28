@@ -98,7 +98,7 @@ public class AttributeStatisticsAdminController {
       featureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       return ResponseEntity.ok()
           .body(FeatureSourceStatistics.getFeatureSourceStatistics(
-              featureSource, attributeName, filter, 10, null));
+              null, featureSource, attributeName, filter, 10, null));
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     } catch (IOException e) {
