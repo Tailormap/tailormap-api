@@ -26,8 +26,8 @@ import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.api.referencing.FactoryException;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.Application;
@@ -201,14 +202,27 @@ public class LayerExtractController {
 
     // check if filter has valid syntax (it could still be invalid wrt feature type)
     Filter parsedCQL = null;
+    SimpleFeatureSource simpleFeatureSource = null;
     try {
       if (!StringUtils.isBlank(filter)) {
-        parsedCQL = ECQL.toFilter(filter);
+        simpleFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(sourceFT);
+        parsedCQL = FilterUtil.parseFilter(filter, application, simpleFeatureSource);
       }
-    } catch (CQLException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid filter");
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } catch (IOException e) {
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, "Failed to connect to datasource: " + e.getMessage(), e);
+    } finally {
+      if (simpleFeatureSource != null) {
+        try {
+          simpleFeatureSource.getDataStore().dispose();
+        } catch (Exception e) {
+          logger.warn("Failed to dispose feature source", e);
+        }
+      }
     }
-
     if (ExtractOutputFormat.XLSX.equals(outputFormat)) {
       validateExcelLimits(sourceFT, attributes, parsedCQL);
     }

@@ -167,4 +167,26 @@ SPDX-License-Identifier: MIT
             </property>
         </properties>
     </rule>
+    <rule name="UseFilterUtil" language="java" message="Use FilterUtil.parseFilter instead of ECQL.toFilter"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Don't use ECQL.toFilter(...), use FilterUtil.parseFilter(...) instead</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+<!--
+//MethodCall[@MethodName='toFilter' and pmd-java:typeIs('org.geotools.filter.text.ecql.ECQL')]
+//Name[pmd-java:typeIs('org.geotools.filter.text.ecql.ECQL')]
+
+
+//MethodCall[pmd-java:matchesSig("org.geotools.filter.text.ecql.ECQL#toFilter()")]
+
+
+//MethodCall[@MethodName='toFilter'] and //Name[pmd-java:typeIs('org.geotools.filter.text.ecql.ECQL')]
+-->
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.filter.text.ecql.ECQL#toFilter(java.lang.String)')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

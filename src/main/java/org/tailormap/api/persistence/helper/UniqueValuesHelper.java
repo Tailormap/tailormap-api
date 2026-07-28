@@ -15,13 +15,17 @@ import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.filter.expression.Function;
 import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.api.referencing.FactoryException;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.viewer.model.UniqueValuesResponse;
 
@@ -30,6 +34,7 @@ public class UniqueValuesHelper {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static UniqueValuesResponse getUniqueValues(
+      @Nullable Application application,
       TMFeatureType tmft,
       String attributeName,
       String filter,
@@ -40,8 +45,13 @@ public class UniqueValuesHelper {
     SimpleFeatureSource fs = null;
     try {
       Filter existingFilter = null;
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       if (null != filter) {
-        existingFilter = ECQL.toFilter(filter);
+        if (application == null) {
+          existingFilter = ECQL.toFilter(filter); // NOPMD - admin usage does not have application context
+        } else {
+          existingFilter = FilterUtil.parseFilter(filter, application, fs);
+        }
       }
       logger.trace("existingFilter: {}", existingFilter);
 
@@ -57,7 +67,6 @@ public class UniqueValuesHelper {
       q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));
       logger.trace("Unique values query: {}", q);
 
-      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       // and then there are 2 scenarios:
       // there might be a performance benefit for one or the other
       if (!useGeotoolsUniqueFunction) {
@@ -79,9 +88,10 @@ public class UniqueValuesHelper {
           uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
         }
       }
-    } catch (CQLException e) {
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
       logger.error("Could not parse requested filter", e);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {

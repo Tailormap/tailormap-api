@@ -12,17 +12,14 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.regex.Pattern;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.referencing.FactoryException;
-import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.data.oracle.OracleDialect;
 import org.geotools.data.postgis.PostGISDialect;
 import org.geotools.data.sqlserver.SQLServerDialect;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.jdbc.JDBCDataStore;
 import org.locationtech.jts.geom.Envelope;
@@ -38,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
@@ -95,32 +93,11 @@ public class LayerBoundsController {
 
       if (filterCQL != null && !filterCQL.isEmpty()) {
         try {
-          Filter parsedFilter = ECQL.toFilter(filterCQL);
-
-          // check if the application is in the same CRS as the feature type and we have a query that applies
-          // to the default geometry
-          MathTransform transform =
-              TransformationUtil.getTransformationToDataSource(application, featureSource);
-          String defaultGeom = tmft.getDefaultGeometryAttribute();
-          if (transform != null
-              && defaultGeom != null
-              // the filter CQL will contain something like "INTERSECTS(geom,..." so look for the
-              // opening '(' and closing ',' allowing whitespace so it is not too brittle wrt. formatting
-              // note that more than 1 spatial filters may be present, just look for any atm
-              && Pattern.compile("\\(\\s*" + Pattern.quote(defaultGeom) + "\\s*,")
-                  .matcher(filterCQL)
-                  .find()) {
-            // TODO https://b3partners.atlassian.net/browse/HTM-2088
-            //      we need to transform the geometry/geometries in the filter to the feature source CRS
-            //       before applying the filter, for now log a warning and continue
-            logger.warn(
-                "Application CRS is different from feature source CRS and filter '{}' contains spatial predicates on the default geometry, but filter geometries are not transformed. This will lead to incorrect results or errors.",
-                filterCQL);
-          }
-
+          Filter parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
           query.setFilter(parsedFilter);
-        } catch (CQLException e) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
         }
       }
 
@@ -142,7 +119,7 @@ public class LayerBoundsController {
       }
 
       // some datastores optimize getting bounds by using metadata or spatial index; this is inaccurate.
-      // Also featureSource.getBounds(query) can return null in case the GT API thinks it is too costly...
+      // Also, featureSource.getBounds(query) can return null in case the GT API thinks it is too costly...
       ReferencedEnvelope referencedEnvelope = featureSource.getBounds(query);
       if (referencedEnvelope == null) {
         referencedEnvelope = featureSource.getFeatures(query).getBounds();

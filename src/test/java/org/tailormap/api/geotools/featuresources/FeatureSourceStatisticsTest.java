@@ -66,7 +66,7 @@ class FeatureSourceStatisticsTest {
   void get_number_statistics() {
     AtomicInteger progressCount = new AtomicInteger(0);
     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-        randomFeatureSource, "randomNumber", null, 10, progressCount::set);
+        null, randomFeatureSource, "randomNumber", null, 10, progressCount::set);
 
     assertFalse(statistics.getFilterApplied());
     assertNotNull(statistics.getMin());
@@ -84,7 +84,7 @@ class FeatureSourceStatisticsTest {
   void get_number_statistics_with_filter() {
     AtomicInteger progressCount = new AtomicInteger(0);
     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-        randomFeatureSource, "randomNumber", "randomNumber < 500", 10, progressCount::set);
+        null, randomFeatureSource, "randomNumber", "randomNumber < 500", 10, progressCount::set);
 
     assertTrue(statistics.getFilterApplied());
     assertNotNull(statistics.getMin());
@@ -104,7 +104,7 @@ class FeatureSourceStatisticsTest {
   void get_date_statistics() {
     AtomicInteger progressCount = new AtomicInteger(0);
     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-        randomFeatureSource, "date", null, 10, progressCount::set);
+        null, randomFeatureSource, "date", null, 10, progressCount::set);
 
     assertFalse(statistics.getFilterApplied());
     assertNotNull(statistics.getMin());
@@ -135,7 +135,7 @@ class FeatureSourceStatisticsTest {
         .toLocalDate()
         .toEpochDay();
     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-        randomFeatureSource, "localdate", null, 10, progressCount::set);
+        null, randomFeatureSource, "localdate", null, 10, progressCount::set);
 
     assertFalse(statistics.getFilterApplied());
     assertNotNull(statistics.getMin());
@@ -160,7 +160,7 @@ class FeatureSourceStatisticsTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> FeatureSourceStatistics.getFeatureSourceStatistics(
-            randomFeatureSource, "location", null, 10, null));
+            null, randomFeatureSource, "location", null, 10, null));
   }
 
   @Test
@@ -168,7 +168,7 @@ class FeatureSourceStatisticsTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> FeatureSourceStatistics.getFeatureSourceStatistics(
-            randomFeatureSource, "does-not-exist", null, 10, null));
+            null, randomFeatureSource, "does-not-exist", null, 10, null));
   }
 
   @Test
@@ -176,6 +176,6 @@ class FeatureSourceStatisticsTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> FeatureSourceStatistics.getFeatureSourceStatistics(
-            randomFeatureSource, "randomNumber", "randomNumber == 'invalid", 10, null));
+            null, randomFeatureSource, "randomNumber", "randomNumber == 'invalid", 10, null));
   }
 }

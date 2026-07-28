@@ -64,7 +64,7 @@ public class UniqueValuesAdminController {
   public ResponseEntity<Serializable> getUniqueValues(
       @PathVariable Long featureTypeId,
       @PathVariable String attributeName,
-      @RequestParam(required = false) String filter)
+      @RequestParam(required = false, name = "filter") String nonSpatialFilter)
       throws ResponseStatusException {
     if (StringUtils.isBlank(attributeName)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute name is required");
@@ -84,7 +84,7 @@ public class UniqueValuesAdminController {
     }
 
     UniqueValuesResponse response = UniqueValuesHelper.getUniqueValues(
-        tmft, attributeName, filter, ff, featureSourceFactoryHelper, useGeotoolsUniqueFunction);
+        null, tmft, attributeName, nonSpatialFilter, ff, featureSourceFactoryHelper, useGeotoolsUniqueFunction);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 }
