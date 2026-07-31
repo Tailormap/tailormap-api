@@ -62,18 +62,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.geotools">org.tailormap.api.geotools</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.geotools.featuresources">org.tailormap.api.geotools.featuresources</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.repository.events">org.tailormap.api.repository.events</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.security">org.tailormap.api.security</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.repository.events">org.tailormap.api.repository.events</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.security">org.tailormap.api.security</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -285,17 +287,46 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static org.geotools.api.referencing.operation.MathTransform</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">TransformationUtil.</span><code><a href="../../geotools/TransformationUtil.html#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToApplication</a><wbr>(@NotNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- @NotNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
+<div class="col-first even-row-color"><code>static @Nullable org.geotools.api.referencing.operation.MathTransform</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TransformationUtil.</span><code><a href="../../geotools/TransformationUtil.html#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToApplication</a><wbr>(@NonNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Determine whether we need to transform geometries to the application CRS.</div>
 </div>
-<div class="col-first odd-row-color"><code>static org.geotools.api.referencing.operation.MathTransform</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">TransformationUtil.</span><code><a href="../../geotools/TransformationUtil.html#getTransformationToDataSource(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToDataSource</a><wbr>(@NotNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- @NotNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
+<div class="col-first odd-row-color"><code>static @Nullable org.geotools.api.referencing.operation.MathTransform</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">TransformationUtil.</span><code><a href="../../geotools/TransformationUtil.html#getTransformationToDataSource(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToDataSource</a><wbr>(@NonNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Determine whether we need to transform geometry to data source crs.</div>
+</div>
+<div class="col-first even-row-color"><code>static @NonNull org.geotools.api.filter.Filter</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FilterUtil.</span><code><a href="../../geotools/FilterUtil.html#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
+ @NonNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+needed/possible.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.geotools.featuresources">
+<h2>Uses of <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a> in <a href="../../geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a></h2>
+<div class="caption"><span>Methods in <a href="../../geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a> with parameters of type <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static @NonNull <a href="../../viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceStatistics.</span><code><a href="../../geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics</a><wbr>(@Nullable <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
+ int&nbsp;progressInterval,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/IntConsumer.html" title="class or interface in java.util.function" class="external-link">IntConsumer</a>&nbsp;progressCallback)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
 </div>
 </div>
 </section>
@@ -396,21 +427,30 @@ type.</div>
 <div class="col-last odd-row-color">
 <div class="block">As #getAppLayerFullContextMap(), but only for the given appLayerIds.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ViewerResponseHelper.</span><code><a href="../helper/ViewerResponseHelper.html#getViewerResponse(org.tailormap.api.persistence.Application)" class="member-name-link">getViewerResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-first even-row-color"><code>static <a href="../../viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">UniqueValuesHelper.</span><code><a href="../helper/UniqueValuesHelper.html#getUniqueValues(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" class="member-name-link">getUniqueValues</a><wbr>(@Nullable <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filter,
+ org.geotools.api.filter.FilterFactory&nbsp;ff,
+ <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useGeotoolsUniqueFunction)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">TMFeatureTypeHelper.</span><code><a href="../helper/TMFeatureTypeHelper.html#isEditable(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">isEditable</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-first odd-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ViewerResponseHelper.</span><code><a href="../helper/ViewerResponseHelper.html#getViewerResponse(org.tailormap.api.persistence.Application)" class="member-name-link">getViewerResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TMFeatureTypeHelper.</span><code><a href="../helper/TMFeatureTypeHelper.html#isEditable(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">isEditable</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#setCrsAndBounds(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.MapResponse)" class="member-name-link">setCrsAndBounds</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;a,
- <a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a>&nbsp;mapResponse)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#toMapResponse(org.tailormap.api.persistence.Application)" class="member-name-link">toMapResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app)</code></div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#setCrsAndBounds(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.MapResponse)" class="member-name-link">setCrsAndBounds</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;a,
+ <a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a>&nbsp;mapResponse)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#toMapResponse(org.tailormap.api.persistence.Application)" class="member-name-link">toMapResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

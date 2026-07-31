@@ -97,7 +97,7 @@
 <tr class="b">
 <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
 <td>Unnecessary qualifier 'ExtractOutputFormat': 'values' is already in scope</td>
-<td><a href="./xref/org/tailormap/api/controller/LayerExtractController.html#L297">297</a></td></tr></table></section><section><a id="org.2Ftailormap.2Fapi.2Fcontroller.2Fadmin.2FSolrAdminController.java"></a>
+<td><a href="./xref/org/tailormap/api/controller/LayerExtractController.html#L311">311</a></td></tr></table></section><section><a id="org.2Ftailormap.2Fapi.2Fcontroller.2Fadmin.2FSolrAdminController.java"></a>
 <h4>org/tailormap/api/controller/admin/SolrAdminController.java</h4>
 <table class="table table-striped">
 <tr class="a">
@@ -326,7 +326,7 @@
 <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
 <td>Unnecessary qualifier 'ExtractOutputFormat': 'values' is already in scope</td>
 <td>4</td>
-<td><a href="./xref/org/tailormap/api/controller/LayerExtractController.html#L297">297</a></td></tr></table></section><section><a id="org.2Ftailormap.2Fapi.2Fcontroller.2Fadmin.2FSolrAdminController.java"></a>
+<td><a href="./xref/org/tailormap/api/controller/LayerExtractController.html#L311">311</a></td></tr></table></section><section><a id="org.2Ftailormap.2Fapi.2Fcontroller.2Fadmin.2FSolrAdminController.java"></a>
 <h3>org/tailormap/api/controller/admin/SolrAdminController.java</h3>
 <table class="table table-striped">
 <tr class="a">
@@ -596,10 +596,25 @@
 <td>@suppresswarnings</td>
 <td></td></tr>
 <tr class="a">
+<td>org/tailormap/api/geotools/FilterUtil.java</td>
+<td>Use FilterUtil.parseFilter instead of ECQL.toFilter</td>
+<td>@suppresswarnings</td>
+<td></td></tr>
+<tr class="b">
+<td>org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.java</td>
+<td>Use FilterUtil.parseFilter instead of ECQL.toFilter</td>
+<td>//nopmd</td>
+<td>- admin usage does not have application context</td></tr>
+<tr class="a">
 <td>org/tailormap/api/persistence/Group.java</td>
 <td>Avoid unused private methods such as 'removeMembers()'.</td>
 <td>@suppresswarnings</td>
-<td></td></tr></table></section></section>        </main>
+<td></td></tr>
+<tr class="b">
+<td>org/tailormap/api/persistence/helper/UniqueValuesHelper.java</td>
+<td>Use FilterUtil.parseFilter instead of ECQL.toFilter</td>
+<td>//nopmd</td>
+<td>- admin usage does not have application context</td></tr></table></section></section>        </main>
       </div>
     </div>
     <hr/>

@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">void</strong> get_number_statistics() {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      AtomicInteger progressCount = <strong class="jxr_keyword">new</strong> AtomicInteger(0);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      assertFalse(statistics.getFilterApplied());
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      assertNotNull(statistics.getMin());
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">void</strong> get_number_statistics_with_filter() {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      AtomicInteger progressCount = <strong class="jxr_keyword">new</strong> AtomicInteger(0);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <span class="jxr_string">"randomNumber &lt; 500"</span>, 10, progressCount::set);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <span class="jxr_string">"randomNumber &lt; 500"</span>, 10, progressCount::set);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      assertTrue(statistics.getFilterApplied());
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      assertNotNull(statistics.getMin());
@@ -112,7 +112,7 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">void</strong> get_date_statistics() {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     AtomicInteger progressCount = <strong class="jxr_keyword">new</strong> AtomicInteger(0);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         randomFeatureSource, <span class="jxr_string">"date"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"date"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     assertFalse(statistics.getFilterApplied());
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     assertNotNull(statistics.getMin());
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         .toLocalDate()
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         .toEpochDay();
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         randomFeatureSource, <span class="jxr_string">"localdate"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"localdate"</span>, <strong class="jxr_keyword">null</strong>, 10, progressCount::set);
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     assertFalse(statistics.getFilterApplied());
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     assertNotNull(statistics.getMin());
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     assertThrows(
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         IllegalArgumentException.<strong class="jxr_keyword">class</strong>,
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         () -&gt; FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>             randomFeatureSource, <span class="jxr_string">"location"</span>, <strong class="jxr_keyword">null</strong>, 10, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>             <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"location"</span>, <strong class="jxr_keyword">null</strong>, 10, <strong class="jxr_keyword">null</strong>));
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   }
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>   @Test
@@ -176,7 +176,7 @@
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     assertThrows(
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         IllegalArgumentException.<strong class="jxr_keyword">class</strong>,
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         () -&gt; FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>             randomFeatureSource, <span class="jxr_string">"does-not-exist"</span>, <strong class="jxr_keyword">null</strong>, 10, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>             <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"does-not-exist"</span>, <strong class="jxr_keyword">null</strong>, 10, <strong class="jxr_keyword">null</strong>));
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>   }
 <a class="jxr_linenumber" name="L173" href="#L173">173</a> 
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>   @Test
@@ -184,7 +184,7 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>     assertThrows(
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         IllegalArgumentException.<strong class="jxr_keyword">class</strong>,
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         () -&gt; FeatureSourceStatistics.getFeatureSourceStatistics(
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>             randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <span class="jxr_string">"randomNumber == 'invalid"</span>, 10, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>             <strong class="jxr_keyword">null</strong>, randomFeatureSource, <span class="jxr_string">"randomNumber"</span>, <span class="jxr_string">"randomNumber == 'invalid"</span>, 10, <strong class="jxr_keyword">null</strong>));
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>   }
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> }
 </pre>

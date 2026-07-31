@@ -63,7 +63,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#getUniqueValues(org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" tabindex="0">getUniqueValues(TMFeatureType, String, String, FilterFactory, FeatureSourceFactoryHelper, Boolean)</a></li>
+<li><a href="#getUniqueValues(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" tabindex="0">getUniqueValues(Application, TMFeatureType, String, String, FilterFactory, FeatureSourceFactoryHelper, Boolean)</a></li>
 </ol>
 </li>
 </ol>
@@ -110,7 +110,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../../viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUniqueValues(org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" class="member-name-link">getUniqueValues</a><wbr>(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUniqueValues(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" class="member-name-link">getUniqueValues</a><wbr>(@Nullable <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filter,
  org.geotools.api.filter.FilterFactory&nbsp;ff,
@@ -151,10 +152,11 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="getUniqueValues(org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)">
+<section class="detail" id="getUniqueValues(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)">
 <h3>getUniqueValues</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../../viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></span>&nbsp;<span class="element-name">getUniqueValues</span><wbr><span class="parameters">(<a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../../viewer/model/UniqueValuesResponse.html" title="class in org.tailormap.api.viewer.model">UniqueValuesResponse</a></span>&nbsp;<span class="element-name">getUniqueValues</span><wbr><span class="parameters">(@Nullable <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filter,
  org.geotools.api.filter.FilterFactory&nbsp;ff,

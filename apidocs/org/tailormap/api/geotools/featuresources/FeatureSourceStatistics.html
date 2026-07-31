@@ -57,7 +57,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#getFeatureSourceStatistics(org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" tabindex="0">getFeatureSourceStatistics(SimpleFeatureSource, String, String, int, IntConsumer)</a></li>
+<li><a href="#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" tabindex="0">getFeatureSourceStatistics(Application, SimpleFeatureSource, String, String, int, IntConsumer)</a></li>
 </ol>
 </li>
 </ol>
@@ -92,7 +92,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NonNull <a href="../../viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFeatureSourceStatistics(org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics</a><wbr>(@NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics</a><wbr>(@Nullable <a href="../../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  int&nbsp;progressInterval,
@@ -118,10 +119,11 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="getFeatureSourceStatistics(org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)">
+<section class="detail" id="getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)">
 <h3>getFeatureSourceStatistics</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull <a href="../../viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></span>&nbsp;<span class="element-name">getFeatureSourceStatistics</span><wbr><span class="parameters">(@NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull <a href="../../viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></span>&nbsp;<span class="element-name">getFeatureSourceStatistics</span><wbr><span class="parameters">(@Nullable <a href="../../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  int&nbsp;progressInterval,

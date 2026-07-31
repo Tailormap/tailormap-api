@@ -2014,6 +2014,8 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html#filterTool(org.tailormap.api.viewer.model.FilterEditConfiguration.FilterToolEnum)" class="member-name-link">filterTool(FilterEditConfiguration.FilterToolEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html" title="class in org.tailormap.api.viewer.model">FilterEditConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/FilterUtil.html" class="type-name-link" title="class in org.tailormap.api.geotools">FilterUtil</a> - Class in <a href="org/tailormap/api/geotools/package-summary.html">org.tailormap.api.geotools</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/GroupRepository.html#findAdditionalPropertiesByGroups(java.util.Collection)" class="member-name-link">findAdditionalPropertiesByGroups(Collection)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/GroupRepository.html#findAliasesForGroups(java.util.Collection)" class="member-name-link">findAliasesForGroups(Collection)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a></dt>
@@ -3420,7 +3422,7 @@ configured settings, taking into account the configured attribute order and hidd
 </dd>
 <dt><a href="org/tailormap/api/persistence/projections/FormSummary.html#getFeatureSourceId()" class="member-name-link">getFeatureSourceId()</a> - Method in interface org.tailormap.api.persistence.projections.<a href="org/tailormap/api/persistence/projections/FormSummary.html" title="interface in org.tailormap.api.persistence.projections">FormSummary</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics(SimpleFeatureSource, String, String, int, IntConsumer)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceStatistics</a></dt>
+<dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics(Application, SimpleFeatureSource, String, String, int, IntConsumer)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceStatistics</a></dt>
 <dd>
 <div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
 </dd>
@@ -5413,7 +5415,7 @@ minimum: 1</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/UniqueValuesAdminController.html#getUniqueValues(java.lang.Long,java.lang.String,java.lang.String)" class="member-name-link">getUniqueValues(Long, String, String)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/UniqueValuesAdminController.html" title="class in org.tailormap.api.controller.admin">UniqueValuesAdminController</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/helper/UniqueValuesHelper.html#getUniqueValues(org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" class="member-name-link">getUniqueValues(TMFeatureType, String, String, FilterFactory, FeatureSourceFactoryHelper, Boolean)</a> - Static method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/UniqueValuesHelper.html" title="class in org.tailormap.api.persistence.helper">UniqueValuesHelper</a></dt>
+<dt><a href="org/tailormap/api/persistence/helper/UniqueValuesHelper.html#getUniqueValues(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.TMFeatureType,java.lang.String,java.lang.String,org.geotools.api.filter.FilterFactory,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,java.lang.Boolean)" class="member-name-link">getUniqueValues(Application, TMFeatureType, String, String, FilterFactory, FeatureSourceFactoryHelper, Boolean)</a> - Static method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/UniqueValuesHelper.html" title="class in org.tailormap.api.persistence.helper">UniqueValuesHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#getUniqueValuesAsOptions()" class="member-name-link">getUniqueValuesAsOptions()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
 <dd>
@@ -7136,6 +7138,11 @@ is not logged in.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FilterGroup.html#parentGroup(java.lang.String)" class="member-name-link">parentGroup(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FilterGroup.html" title="class in org.tailormap.api.viewer.model">FilterGroup</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/FilterUtil.html#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter(String, Application, SimpleFeatureSource)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/FilterUtil.html" title="class in org.tailormap.api.geotools">FilterUtil</a></dt>
+<dd>
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+needed/possible.</div>
+</dd>
 <dt><a href="org/tailormap/api/util/HttpProxyUtil.html#passthroughRequestHeaders(java.net.http.HttpRequest.Builder,jakarta.servlet.http.HttpServletRequest,java.util.Set)" class="member-name-link">passthroughRequestHeaders(HttpRequest.Builder, HttpServletRequest, Set)</a> - Static method in class org.tailormap.api.util.<a href="org/tailormap/api/util/HttpProxyUtil.html" title="class in org.tailormap.api.util">HttpProxyUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/HttpProxyUtil.html#passthroughResponseHeaders(java.net.http.HttpHeaders,java.util.Set)" class="member-name-link">passthroughResponseHeaders(HttpHeaders, Set)</a> - Static method in class org.tailormap.api.util.<a href="org/tailormap/api/util/HttpProxyUtil.html" title="class in org.tailormap.api.util">HttpProxyUtil</a></dt>
@@ -10244,6 +10251,10 @@ commonly produced by GeoServer.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/processing/GeometryProcessor.html#transformEnvelope(org.locationtech.jts.geom.Envelope,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformEnvelope(Envelope, MathTransform)</a> - Static method in class org.tailormap.api.geotools.processing.<a href="org/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in org.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/TransformationUtil.html#transformFilterGeometries(org.geotools.api.filter.Filter,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformFilterGeometries(Filter, MathTransform)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/TransformationUtil.html" title="class in org.tailormap.api.geotools">TransformationUtil</a></dt>
+<dd>
+<div class="block">Transforms the geometries in the given (intersects) spatial filter using the specified transformation.</div>
+</dd>
 <dt><a href="org/tailormap/api/geotools/processing/GeometryProcessor.html#transformGeometry(org.locationtech.jts.geom.Geometry,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformGeometry(Geometry, MathTransform)</a> - Static method in class org.tailormap.api.geotools.processing.<a href="org/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in org.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/DebugLoggingTriggerListener.html#triggerComplete(org.quartz.Trigger,org.quartz.JobExecutionContext,org.quartz.Trigger.CompletedExecutionInstruction)" class="member-name-link">triggerComplete(Trigger, JobExecutionContext, Trigger.CompletedExecutionInstruction)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/DebugLoggingTriggerListener.html" title="class in org.tailormap.api.scheduling">DebugLoggingTriggerListener</a></dt>
