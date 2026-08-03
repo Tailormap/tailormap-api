@@ -153,7 +153,7 @@ SPDX-License-Identifier: MIT
         <pmd.version>7.26.0</pmd.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
-        <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+        <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.5.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <errorProne.version>2.50.0</errorProne.version>
@@ -1598,7 +1598,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
-                <version>2.9.2</version>
+                <version>2.9.3</version>
                 <configuration>
                     <projectType>application</projectType>
                 </configuration>
