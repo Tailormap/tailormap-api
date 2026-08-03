@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          .andExpect(jsonPath(<span class="jxr_string">"$.isAuthenticated"</span>).value(false))
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .andExpect(jsonPath(<span class="jxr_string">"$.username"</span>).isEmpty())
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .andExpect(jsonPath(<span class="jxr_string">"$.username"</span>).doesNotHaveJsonPath())
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          .andExpect(jsonPath(<span class="jxr_string">"$.roles"</span>).isEmpty())
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(jsonPath(<span class="jxr_string">"$.properties"</span>).isEmpty())
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          .andExpect(jsonPath(<span class="jxr_string">"$.groupProperties"</span>).isEmpty());
@@ -128,7 +128,7 @@
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         .andExpect(jsonPath(<span class="jxr_string">"$.isAuthenticated"</span>).value(<strong class="jxr_keyword">true</strong>))
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         .andExpect(jsonPath(<span class="jxr_string">"$.username"</span>).value(<span class="jxr_string">"tm-admin"</span>))
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         .andExpect(jsonPath(<span class="jxr_string">"$.organisation"</span>).isEmpty())
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         .andExpect(jsonPath(<span class="jxr_string">"$.organisation"</span>).doesNotHaveJsonPath())
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         .andExpect(jsonPath(<span class="jxr_string">"$.roles.length()"</span>).value(3))
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         .andExpect(jsonPath(<span class="jxr_string">"$.roles"</span>).value(Matchers.containsInAnyOrder(Group.ADMIN, <span class="jxr_string">"test-bar"</span>, <span class="jxr_string">"test-baz"</span>)))
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         .andExpect(jsonPath(<span class="jxr_string">"$.properties.length()"</span>).value(1))
@@ -157,7 +157,7 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>         .andExpect(jsonPath(<span class="jxr_string">"$.ssoLinks[0].name"</span>).value(<span class="jxr_string">"Test Client"</span>))
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         .andExpect(jsonPath(<span class="jxr_string">"$.ssoLinks[0].url"</span>).value(<span class="jxr_string">"/api/oauth2/authorization/test-registration"</span>))
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         .andExpect(jsonPath(<span class="jxr_string">"$.ssoLinks[0].showForViewer"</span>).value(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         .andExpect(jsonPath(<span class="jxr_string">"$.ssoLinks[0].image"</span>).value(Matchers.nullValue()))
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         .andExpect(jsonPath(<span class="jxr_string">"$.ssoLinks[0].image"</span>).doesNotHaveJsonPath())
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         .andExpect(jsonPath(<span class="jxr_string">"$.enablePasswordReset"</span>).value(passwordResetEnabled));
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>   }
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> 
