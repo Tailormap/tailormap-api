@@ -61,7 +61,7 @@ class UserControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(false))
-        .andExpect(jsonPath("$.username").isEmpty())
+        .andExpect(jsonPath("$.username").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.roles").isEmpty())
         .andExpect(jsonPath("$.properties").isEmpty())
         .andExpect(jsonPath("$.groupProperties").isEmpty());
@@ -120,7 +120,7 @@ class UserControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(true))
         .andExpect(jsonPath("$.username").value("tm-admin"))
-        .andExpect(jsonPath("$.organisation").isEmpty())
+        .andExpect(jsonPath("$.organisation").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.roles.length()").value(3))
         .andExpect(jsonPath("$.roles").value(Matchers.containsInAnyOrder(Group.ADMIN, "test-bar", "test-baz")))
         .andExpect(jsonPath("$.properties.length()").value(1))
@@ -149,7 +149,7 @@ class UserControllerIntegrationTest {
         .andExpect(jsonPath("$.ssoLinks[0].name").value("Test Client"))
         .andExpect(jsonPath("$.ssoLinks[0].url").value("/api/oauth2/authorization/test-registration"))
         .andExpect(jsonPath("$.ssoLinks[0].showForViewer").value(true))
-        .andExpect(jsonPath("$.ssoLinks[0].image").value(Matchers.nullValue()))
+        .andExpect(jsonPath("$.ssoLinks[0].image").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.enablePasswordReset").value(passwordResetEnabled));
   }
 

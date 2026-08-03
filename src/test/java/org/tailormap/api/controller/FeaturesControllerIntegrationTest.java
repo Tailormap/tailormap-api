@@ -375,7 +375,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         // Features sorted by default by first configured attribute: naam
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
         .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
@@ -529,7 +529,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs() throws Exception {
+  void should_return_default_sorted_feature_collections_for_no_or_invalid_sorting_from_wfs() throws Exception {
     // page 1, sort by naam, no direction
     final String url = apiBasePath + provinciesWfs;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -546,13 +546,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
         .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[9].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
@@ -573,13 +573,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
         .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[9].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
@@ -608,13 +608,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
         .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[9].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
         .andExpectAll(provinciesWFSResultMatchers());
@@ -635,13 +635,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
         .andExpect(jsonPath("$.features[0].attributes.code").value("28"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[8].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[8].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[8].attributes.naam").value("Flevoland"))
         .andExpect(jsonPath("$.features[8].attributes.code").value("24"))
         .andExpectAll(provinciesWFSResultMatchers());
@@ -854,7 +854,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
         .andReturn();
@@ -883,7 +883,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
         .andReturn();
@@ -1085,7 +1085,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
         .andReturn();
@@ -1110,7 +1110,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
         .andReturn();

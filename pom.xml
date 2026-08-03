@@ -732,7 +732,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.23.0</version>
+                    <version>7.24.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.hibernate.orm</groupId>
@@ -1124,6 +1124,7 @@ SPDX-License-Identifier: MIT
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
+                                <useJspecify>true</useJspecify>
                                 <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
                                 <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
                                 <!-- Do not generate constructors with all args because this may set initialized fields (such as Collections) to null -->
@@ -1158,6 +1159,7 @@ SPDX-License-Identifier: MIT
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
+                                <useJspecify>true</useJspecify>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -1187,6 +1189,7 @@ SPDX-License-Identifier: MIT
                                 <useOptional>true</useOptional>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
+                                <useJspecify>true</useJspecify>
                             </configOptions>
                             <!-- All common models from common-schemas.yaml here, comma separated -->
                             <importMappings>TileLayerHiDpiMode=org.tailormap.api.persistence.json.TileLayerHiDpiMode,
@@ -1229,17 +1232,14 @@ SPDX-License-Identifier: MIT
                         <configuration>
                             <target name="fix-generated-sources">
                                 <!--
-                                replace deprecated:
-                                 - org.jspecify.annotationsNullable
-                                 not found: org.springframework.lang.NonNull
+                                replace deprecated: org.springframework.lang.NonNull and org.springframework.lang.Nullable
                                  with org.jspecify.annotations.* in generated sources
-
                                 -->
-                                <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
-                                    <include name="**/*.java" />
-                                    <replacetoken><![CDATA[import org.springframework.lang.Nullable;]]></replacetoken>
-                                    <replacevalue><![CDATA[import org.jspecify.annotations.Nullable;]]></replacevalue>
-                                </replace>
+                                <!--<replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">-->
+                                <!--  <include name="**/*.java" />-->
+                                <!--  <replacetoken><![CDATA[import org.springframework.lang.Nullable;]]></replacetoken>-->
+                                <!--  <replacevalue><![CDATA[import org.jspecify.annotations.Nullable;]]></replacevalue>-->
+                                <!-- </replace>-->
                             </target>
                         </configuration>
                     </execution>
