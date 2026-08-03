@@ -73,8 +73,7 @@ abstract class SseParsingUtils {
   int count_admin_keep_alive_messages(String stream) {
     int count = 0;
     int index = 0;
-    final String marker =
-        "\"details\":null,\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"";
+    final String marker = "{\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"}";
     while ((index = stream.indexOf(marker, index)) != -1) {
       count++;
       index += marker.length();
