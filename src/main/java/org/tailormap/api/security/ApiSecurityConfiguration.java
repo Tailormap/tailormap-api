@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
@@ -51,6 +52,9 @@ public class ApiSecurityConfiguration {
 
   @Value("${tailormap-api.security.disable-csrf:false}")
   private boolean disableCsrf;
+
+  @Value("#{'${tailormap-api.security.allowed-redirect-url-prefixes:}'.split(',')}")
+  private Set<String> allowedRedirectUrlPrefixes;
 
   public ApiSecurityConfiguration(TailormapOidcUserService oidcUserService) {
     this.oidcUserService = oidcUserService;
@@ -115,8 +119,12 @@ public class ApiSecurityConfiguration {
           HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull String url)
           throws IOException {
         String redirectUrl = request.getParameter("redirectUrl");
-        if (redirectUrl != null && redirectUrl.startsWith("/")) {
-          request.getSession().setAttribute("redirectUrl", redirectUrl);
+        if (redirectUrl != null) {
+          if (redirectUrl.startsWith("/")
+              || allowedRedirectUrlPrefixes.stream()
+                  .anyMatch(prefix -> !prefix.isEmpty() && redirectUrl.startsWith(prefix))) {
+            request.getSession().setAttribute("redirectUrl", redirectUrl);
+          }
         }
         super.sendRedirect(request, response, url);
       }
@@ -129,6 +137,7 @@ public class ApiSecurityConfiguration {
       if (session != null) {
         String redirectUrl = (String) session.getAttribute("redirectUrl");
         if (redirectUrl != null) {
+          session.removeAttribute("redirectUrl");
           response.sendRedirect(redirectUrl);
           return;
         }
