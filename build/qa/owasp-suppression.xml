@@ -50,4 +50,26 @@ SPDX-License-Identifier: MIT
         <packageUrl regex="true">^pkg:maven/org\.apache\.solr/solr-solrj@10.0.0$</packageUrl>
         <cve>CVE-2026-44825</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+    tomcat 11.0.24
+
+    Users are recommended to remove the examples web application or to upgrade to version 11.0.25, 10.1.58 or 9.0.121 (when released), which fix the issue.
+
+    examples web app is not part of our packaging
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat/tomcat-.*@11.0.24$</packageUrl>
+        <cve>CVE-2026-66299</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+    tomcat 11.0.24
+
+    Users are recommended to remove the examples web application or to upgrade to version 11.0.25, 10.1.58 or 9.0.121 (when released), which fix the issue.
+
+    examples web app is not part of our packaging
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat-.*@11.0.24$</packageUrl>
+        <cve>CVE-2026-66299</cve>
+    </suppress>
 </suppressions>
