@@ -114,9 +114,9 @@ SPDX-License-Identifier: MIT
         e.g. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
         and use
-            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates -l target/dependency-updates.log
         and
-            mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates -l target/plugin-updates.log
         to check
         -->
         <awaitility.version>4.3.0</awaitility.version>
