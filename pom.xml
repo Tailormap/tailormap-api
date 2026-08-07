@@ -1533,7 +1533,6 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
                                         <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>jakarta.persistence:jakarta.persistence-api</exclude>
-                                        <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                                         <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
