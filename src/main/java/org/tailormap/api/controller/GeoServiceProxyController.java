@@ -34,6 +34,7 @@ import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHea
 
 import io.micrometer.core.annotation.Timed;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
@@ -96,6 +97,7 @@ public class GeoServiceProxyController {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final AuthorisationService authorisationService;
   private final HttpClient httpClient;
+  private final EntityManager entityManager;
 
   public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
@@ -105,8 +107,9 @@ public class GeoServiceProxyController {
   @Value("${tailormap-api.proxy.passthrough.hostnames:}")
   private Set<String> proxyPassthroughHostNames = Set.of();
 
-  public GeoServiceProxyController(AuthorisationService authorisationService) {
+  public GeoServiceProxyController(AuthorisationService authorisationService, EntityManager entityManager) {
     this.authorisationService = authorisationService;
+    this.entityManager = entityManager;
 
     final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
     this.httpClient = builder.build();
@@ -123,6 +126,9 @@ public class GeoServiceProxyController {
 
     checkRequestValidity(application, service, layer, GeoServiceProtocol.TILES3D, request);
 
+    // after all validations we can close the JPA session
+    this.entityManager.close();
+
     return doProxy(build3DTilesUrl(service, request), service, request);
   }
 
@@ -138,6 +144,9 @@ public class GeoServiceProxyController {
       HttpServletRequest request) {
 
     checkRequestValidity(application, service, layer, protocol, request);
+
+    // after all validations we can close the JPA session
+    this.entityManager.close();
 
     return switch (protocol) {
       case WMS, WMTS -> doProxy(buildWMSUrl(service, request), service, request);
