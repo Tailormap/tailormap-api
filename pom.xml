@@ -122,7 +122,7 @@ SPDX-License-Identifier: MIT
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-codec.version>1.22.1</commons-codec.version>
-        <flyway.version>13.1.0</flyway.version>
+        <flyway.version>13.2.0</flyway.version>
         <hibernate.version>7.4.5.Final</hibernate.version>
         <!-- 2.21.x is a LTS branch: https://github.com/FasterXML/jackson/wiki/Jackson-Releases -->
         <jackson-2-bom.version>2.21.5</jackson-2-bom.version>
@@ -281,6 +281,12 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-database-cockroachdb</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- provides @SuppressModernizer that can be used on method to suppress the Modernizer plugin -->
