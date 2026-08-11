@@ -1513,6 +1513,13 @@ SPDX-License-Identifier: MIT
                                     <reason>Use Hibernate built-in types</reason>
                                     <bannedImport>io.hypersistence.utils.hibernate.**</bannedImport>
                                 </RestrictImports>
+                                <RestrictImports>
+                                    <reason>Use JSpecify API instead of jakarta.annotation</reason>
+                                    <bannedImports>
+                                        <bannedImport>jakarta.annotation.Nullable</bannedImport>
+                                        <bannedImport>jakarta.annotation.Nonnull</bannedImport>
+                                    </bannedImports>
+                                </RestrictImports>
                                 <banTransitiveDependencies>
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-rest</exclude>

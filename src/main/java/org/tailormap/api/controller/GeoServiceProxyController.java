@@ -33,7 +33,6 @@ import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
 import io.micrometer.core.annotation.Timed;
-import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
@@ -52,6 +51,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

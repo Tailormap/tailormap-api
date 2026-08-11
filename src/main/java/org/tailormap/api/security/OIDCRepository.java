@@ -8,7 +8,6 @@ package org.tailormap.api.security;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,8 +78,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   }
 
   @Override
-  @Nonnull
-  public Iterator<ClientRegistration> iterator() {
+  @NonNull public Iterator<ClientRegistration> iterator() {
     return registrations.values().iterator();
   }
 
