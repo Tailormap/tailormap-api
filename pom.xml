@@ -129,7 +129,7 @@ SPDX-License-Identifier: MIT
         <!-- 3.1.x is a LTS branch: https://github.com/FasterXML/jackson/wiki/Jackson-Releases -->
         <jackson-bom.version>3.1.5</jackson-bom.version>
         <json-path.version>3.0.0</json-path.version>
-        <junit-jupiter.version>6.1.2</junit-jupiter.version>
+        <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <!-- fix HTM-2204 / CVE-2026-49844, override can probably be removed after updating spring boot to 4.0.8 or 4.1.1-->
         <log4j2.version>2.25.5</log4j2.version>
         <micrometer.version>1.17.0</micrometer.version>
