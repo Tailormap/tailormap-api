@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationEventsLogger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.security</a> &gt; <span class="el_source">AuthenticationEventsLogger.java</span></div><h1>AuthenticationEventsLogger.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.security;
+
+import static org.springframework.core.NestedExceptionUtils.getRootCause;
+
+import io.micrometer.core.instrument.Metrics;
+import java.lang.invoke.MethodHandles;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.authentication.ProviderNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.stereotype.Component;
+import org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
+
+@Component
+<span class="nc" id="L30">public class AuthenticationEventsLogger {</span>
+<span class="nc" id="L31">  private static final Logger logger =</span>
+<span class="nc" id="L32">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private static @NonNull String getUserInfo(AbstractAuthenticationEvent event, boolean includePersonalInfo) {
+<span class="nc" id="L35">    String userInfo = &quot;&quot;;</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">    if (event.getAuthentication().getPrincipal() != null) {</span>
+      // prevent leaking personal data in logs unless trace logging is enabled or failures are logged
+<span class="nc" id="L38">      userInfo = &quot; for user &lt;username hidden&gt;&quot;;</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">      if (logger.isTraceEnabled() || includePersonalInfo) {</span>
+<span class="nc" id="L40">        String ipInfo = &quot;&quot;;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (event.getAuthentication().getDetails() instanceof WebAuthenticationDetails details) {</span>
+<span class="nc" id="L42">          ipInfo = &quot; (IP: %s)&quot;.formatted(details.getRemoteAddress());</span>
+        }
+<span class="nc" id="L44">        userInfo =</span>
+<span class="nc" id="L45">            &quot; for user \&quot;%s\&quot;%s&quot;.formatted(event.getAuthentication().getPrincipal(), ipInfo);</span>
+      }
+    }
+<span class="nc" id="L48">    return userInfo;</span>
+  }
+
+<span class="nc" id="L51">  private record LoginInfo(String authType, String authInfo, String clientId, String clientName) {}</span>
+
+  private static LoginInfo getLoginInfo(AbstractAuthenticationEvent event) {
+<span class="nc" id="L54">    String authType = &quot;&quot;;</span>
+<span class="nc" id="L55">    String clientId = &quot;&quot;;</span>
+<span class="nc" id="L56">    String clientName = &quot;&quot;;</span>
+<span class="nc" id="L57">    String authInfo = &quot;&quot;;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (event.getAuthentication() instanceof OAuth2LoginAuthenticationToken token) {</span>
+<span class="nc" id="L59">      authType = &quot;oauth2&quot;;</span>
+      // prevent leaking personal data in logs unless trace logging is enabled
+<span class="nc" id="L61">      String userClaims = &quot;&quot;;</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">      if (logger.isTraceEnabled() &amp;&amp; token.getPrincipal() instanceof DefaultOidcUser oidcUser) {</span>
+<span class="nc" id="L63">        userClaims = &quot;, user claims: &quot; + oidcUser.getUserInfo().getClaims();</span>
+      }
+<span class="nc" id="L65">      clientId = token.getClientRegistration().getClientId();</span>
+<span class="nc" id="L66">      clientName = token.getClientRegistration().getClientName();</span>
+<span class="nc" id="L67">      authInfo = &quot;via OIDC registration \&quot;%s\&quot; with client ID %s%s&quot;.formatted(clientName, clientId, userClaims);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    } else if (event.getAuthentication() instanceof UsernamePasswordAuthenticationToken) {</span>
+<span class="nc" id="L69">      authType = &quot;username_password&quot;;</span>
+<span class="nc" id="L70">      authInfo = &quot;using username/password&quot;;</span>
+    }
+<span class="nc" id="L72">    return new LoginInfo(authType, authInfo, clientId, clientName);</span>
+  }
+
+  private static void incrementMetricsCounter(String name, LoginInfo loginInfo) {
+<span class="nc" id="L76">    Metrics.counter(</span>
+            name,
+            &quot;type&quot;,
+<span class="nc" id="L79">            loginInfo.authType(),</span>
+            &quot;clientId&quot;,
+<span class="nc" id="L81">            loginInfo.clientId(),</span>
+            &quot;clientName&quot;,
+<span class="nc" id="L83">            loginInfo.clientName())</span>
+<span class="nc" id="L84">        .increment();</span>
+<span class="nc" id="L85">  }</span>
+
+  @EventListener
+  public void onSuccess(AuthenticationSuccessEvent success) {
+<span class="nc" id="L89">    LoginInfo loginInfo = getLoginInfo(success);</span>
+<span class="nc" id="L90">    logger.info(</span>
+        &quot;Authentication successful{}, granted authorities: {}, {}&quot;,
+<span class="nc" id="L92">        getUserInfo(success, false),</span>
+<span class="nc" id="L93">        success.getAuthentication().getAuthorities(),</span>
+<span class="nc" id="L94">        loginInfo.authInfo());</span>
+<span class="nc" id="L95">    incrementMetricsCounter(&quot;tailormap_authentication_success&quot;, loginInfo);</span>
+<span class="nc" id="L96">  }</span>
+
+  @EventListener
+  public void onFailure(AbstractAuthenticationFailureEvent failure) {
+<span class="nc" id="L100">    Throwable exception = failure.getException();</span>
+<span class="nc" id="L101">    Throwable rootCause = getRootCause(exception);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    if (exception instanceof ProviderNotFoundException</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        &amp;&amp; failure.getAuthentication() instanceof OAuth2LoginAuthenticationToken) {</span>
+      // Ignore, because after this generic exception another event will come with details about the actual OIDC
+      // authentication failure
+      // Prevents logging and incrementing the Micrometer counter for the authentication failure twice
+<span class="nc" id="L108">      logger.trace(&quot;Ignoring ProviderNotFoundException for OAuth2LoginAuthenticationToken&quot;, exception);</span>
+<span class="nc" id="L109">      return;</span>
+    }
+
+<span class="nc" id="L112">    String oauth2Message = &quot;&quot;;</span>
+<span class="nc bnc" id="L113" title="All 4 branches missed.">    if (exception instanceof OAuth2AuthenticationException oauth2Ex &amp;&amp; oauth2Ex.getError() != null) {</span>
+<span class="nc" id="L114">      oauth2Message = &quot;, error code %s: %s&quot;</span>
+<span class="nc" id="L115">          .formatted(</span>
+<span class="nc" id="L116">              oauth2Ex.getError().getErrorCode(),</span>
+<span class="nc" id="L117">              oauth2Ex.getError().getDescription());</span>
+    }
+
+<span class="nc" id="L120">    LoginInfo loginInfo = getLoginInfo(failure);</span>
+
+<span class="nc" id="L122">    logger.warn(</span>
+        &quot;Authentication failure{}, {}{}, exception {}: {}{}&quot;,
+        // in this case logging the &quot;login&quot; is useful/warranted for analysis
+<span class="nc" id="L125">        getUserInfo(failure, true),</span>
+<span class="nc" id="L126">        loginInfo.authInfo(),</span>
+        oauth2Message,
+<span class="nc" id="L128">        exception.getClass().getName(),</span>
+<span class="nc" id="L129">        exception.getMessage(),</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        rootCause != null</span>
+<span class="nc" id="L131">            ? &quot;, root cause %s: %s&quot;.formatted(rootCause.getClass().getName(), rootCause.getMessage())</span>
+<span class="nc" id="L132">            : &quot;&quot;);</span>
+
+<span class="nc" id="L134">    logger.debug(&quot;Authentication failure stacktrace&quot;, exception);</span>
+
+<span class="nc" id="L136">    incrementMetricsCounter(&quot;tailormap_authentication_failure&quot;, loginInfo);</span>
+<span class="nc" id="L137">  }</span>
+
+  @EventListener
+  public void onDefaultAuthenticationFailureEvent(DefaultAuthenticationFailureEvent event) {
+<span class="nc" id="L141">    logger.info(&quot;Default authentication failure&quot;, event.getException());</span>
+<span class="nc" id="L142">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

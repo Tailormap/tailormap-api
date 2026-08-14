@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller;
+
+import static org.tailormap.api.persistence.Configuration.THEME_SETTINGS;
+
+import java.io.Serializable;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.tailormap.api.persistence.Configuration;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.helper.UploadHelper;
+import org.tailormap.api.repository.ConfigurationRepository;
+import org.tailormap.api.security.OIDCRepository;
+import org.tailormap.api.security.TailormapAdditionalProperty;
+import org.tailormap.api.security.TailormapUserDetails;
+import org.tailormap.api.viewer.model.AdditionalProperty;
+import org.tailormap.api.viewer.model.LoginConfiguration;
+import org.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
+import org.tailormap.api.viewer.model.UserResponse;
+import tools.jackson.databind.JsonNode;
+
+/** Provides user and login information */
+@RestController
+public class UserController {
+  private final OIDCRepository oidcRepository;
+  private final ConfigurationRepository configurationRepository;
+  private final UploadHelper uploadHelper;
+
+  @Value(&quot;${tailormap-api.password-reset.enabled:false}&quot;)
+  private boolean passwordResetEnabled;
+
+  public UserController(
+<span class="nc" id="L48">      OIDCRepository oidcRepository, ConfigurationRepository configurationRepository, UploadHelper uploadHelper) {</span>
+<span class="nc" id="L49">    this.oidcRepository = oidcRepository;</span>
+<span class="nc" id="L50">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L51">    this.uploadHelper = uploadHelper;</span>
+<span class="nc" id="L52">  }</span>
+
+  /**
+   * Get user login information.
+   *
+   * @return isAuthenticated, username, roles
+   */
+  @GetMapping(path = &quot;${tailormap-api.base-path}/user&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity&lt;Serializable&gt; getUser() {
+<span class="nc" id="L61">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">    boolean isAuthenticated = authentication != null &amp;&amp; !(authentication instanceof AnonymousAuthenticationToken);</span>
+
+<span class="nc" id="L64">    UserResponse userResponse = new UserResponse().isAuthenticated(isAuthenticated);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (isAuthenticated) {</span>
+<span class="nc" id="L66">      userResponse.username(authentication.getName());</span>
+<span class="nc" id="L67">      userResponse.setRoles(authentication.getAuthorities().stream()</span>
+<span class="nc" id="L68">          .map(GrantedAuthority::getAuthority)</span>
+<span class="nc" id="L69">          .collect(Collectors.toSet()));</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {</span>
+<span class="nc" id="L72">        userResponse.setOrganisation(userProperties.getOrganisation());</span>
+
+        // Public user and group properties are meant for a (modified) frontend to implement custom
+        // logic depending on who's logged in. When used for authorization for something, the check
+        // should also be performed server-side, possibly in an extra microservice.
+
+        // Authentication may be external (OIDC), and a user may not exist in the Tailormap database.
+        // For users from the Tailormap database, we support additional user properties. Only return
+        // public ones to the frontend.
+
+        // Group properties are also supported for OIDC logins with roles that map to groups in the
+        // Tailormap database.
+
+<span class="nc" id="L85">        Function&lt;TailormapAdditionalProperty, AdditionalProperty&gt; mapToPublicProperty =</span>
+<span class="nc" id="L86">            ap -&gt; new AdditionalProperty().key(ap.key()).value(ap.value());</span>
+<span class="nc" id="L87">        userProperties.getAdditionalProperties().stream()</span>
+<span class="nc" id="L88">            .filter(TailormapAdditionalProperty::isPublic)</span>
+<span class="nc" id="L89">            .map(mapToPublicProperty)</span>
+<span class="nc" id="L90">            .forEach(userResponse::addPropertiesItem);</span>
+
+<span class="nc" id="L92">        userProperties.getAdditionalGroupProperties().stream()</span>
+<span class="nc" id="L93">            .filter(TailormapAdditionalProperty::isPublic)</span>
+<span class="nc" id="L94">            .map(mapToPublicProperty)</span>
+<span class="nc" id="L95">            .forEach(userResponse::addGroupPropertiesItem);</span>
+      }
+    }
+<span class="nc" id="L98">    return ResponseEntity.status(HttpStatus.OK).body(userResponse);</span>
+  }
+
+  @GetMapping(path = &quot;${tailormap-api.base-path}/login/configuration&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity&lt;LoginConfiguration&gt; getLoginConfiguration() {
+<span class="nc" id="L103">    LoginConfiguration result = new LoginConfiguration();</span>
+
+<span class="nc" id="L105">    boolean showSsoButtons = true;</span>
+<span class="nc" id="L106">    boolean showLoginForm = true;</span>
+
+<span class="nc" id="L108">    JsonNode themeSettings = configurationRepository</span>
+<span class="nc" id="L109">        .findByKey(THEME_SETTINGS)</span>
+<span class="nc" id="L110">        .map(Configuration::getJsonValue)</span>
+<span class="nc" id="L111">        .orElse(null);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (themeSettings != null) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">      showSsoButtons = themeSettings.get(&quot;showSsoButtons&quot;) == null</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">          || themeSettings.get(&quot;showSsoButtons&quot;).booleanValue();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">      showLoginForm = themeSettings.get(&quot;showLoginForm&quot;) == null</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">          || themeSettings.get(&quot;showLoginForm&quot;).booleanValue();</span>
+    }
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">    if (showSsoButtons) {</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">      for (ClientRegistration reg : oidcRepository) {</span>
+<span class="nc" id="L121">        OIDCRepository.OIDCRegistrationMetadata metadata =</span>
+<span class="nc" id="L122">            oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());</span>
+<span class="nc" id="L123">        result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()</span>
+<span class="nc" id="L124">            .name(reg.getClientName())</span>
+<span class="nc" id="L125">            .url(&quot;/api/oauth2/authorization/&quot; + reg.getRegistrationId())</span>
+<span class="nc" id="L126">            .showForViewer(metadata.getShowForViewer())</span>
+<span class="nc" id="L127">            .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));</span>
+<span class="nc" id="L128">      }</span>
+    }
+
+<span class="nc" id="L131">    result.enablePasswordReset(passwordResetEnabled);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    result.hideLoginForm(!showLoginForm);</span>
+
+<span class="nc" id="L134">    return ResponseEntity.status(HttpStatus.OK).body(result);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
