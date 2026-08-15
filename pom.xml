@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>4.0.7</version>
+        <version>4.1.0</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.outputTimestamp>2026-08-14T16:37:02Z</project.build.outputTimestamp>
-        <geotools.version>35.0</geotools.version>
+        <geotools.version>35.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.4.0</okhttp.version>
         <greenmail.version>2.1.12</greenmail.version>
@@ -682,6 +682,16 @@ SPDX-License-Identifier: MIT
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
+        <!--
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>osgeo-snapshots</id>
+            <name>OSGeo Snapshots</name>
+            <url>https://repo.osgeo.org/repository/snapshot/</url>
+        </repository>
+        -->
         <repository>
             <snapshots>
                 <enabled>true</enabled>
