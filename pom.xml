@@ -682,14 +682,16 @@ SPDX-License-Identifier: MIT
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
-        <!-- repository>
+        <!--
+        <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <id>osgeo-snapshots</id>
             <name>OSGeo Snapshots</name>
             <url>https://repo.osgeo.org/repository/snapshot/</url>
-        </repository -->
+        </repository>
+        -->
         <repository>
             <snapshots>
                 <enabled>true</enabled>
