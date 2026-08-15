@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.outputTimestamp>2026-07-17T08:14:27Z</project.build.outputTimestamp>
-        <geotools.version>35-SNAPSHOT</geotools.version>
+        <geotools.version>35.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.4.0</okhttp.version>
         <greenmail.version>2.1.12</greenmail.version>
@@ -682,14 +682,14 @@ SPDX-License-Identifier: MIT
             <name>Releases hosted by OSGeo</name>
             <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
-        <repository>
+        <!-- repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <id>osgeo-snapshots</id>
             <name>OSGeo Snapshots</name>
             <url>https://repo.osgeo.org/repository/snapshot/</url>
-        </repository>
+        </repository -->
         <repository>
             <snapshots>
                 <enabled>true</enabled>
