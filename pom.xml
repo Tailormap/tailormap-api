@@ -103,7 +103,7 @@ SPDX-License-Identifier: MIT
         <project.build.outputTimestamp>2026-08-14T16:37:02Z</project.build.outputTimestamp>
         <geotools.version>35.1</geotools.version>
         <jts.version>1.20.0</jts.version>
-        <okhttp.version>5.4.0</okhttp.version>
+        <okhttp.version>5.5.0</okhttp.version>
         <greenmail.version>2.1.12</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <solr.version>10.0.0</solr.version>
