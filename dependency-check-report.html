@@ -684,15 +684,15 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                 Scan Information (<a href="#" title="Click to toggle display" id="scanInformationToggle">show all</a>):<br/>
                     <ul class="indent">
                         <li><i>dependency-check version</i>: 13.0.0</li>
-                        <li><i>Report Generated On</i>: Sun, 16 Aug 2026 23:52:20 GMT</li>
+                        <li><i>Report Generated On</i>: Fri, 21 Aug 2026 20:02:54 GMT</li>
                         <li><i>Dependencies Scanned</i>:&nbsp;305 (192 unique)</li>
                         <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">5</span></li>
-                        <li><i>Vulnerabilities Found</i>:&nbsp;7</li>
+                        <li><i>Vulnerabilities Found</i>:&nbsp;8</li>
                         <li><i>Vulnerabilities Suppressed</i>:&nbsp;0
                         </li>
                         <li class="scaninfo">...</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-08-16T23:51:59Z</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-08-16T23:16:25Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-08-21T20:02:37Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-08-21T19:29:26Z</li>
                     </ul><br/>
 <h2>Summary</h2>
                 <p><span id="tablecaption-plain">Summary of Vulnerable Dependencies </span><a href="#" title="Click to toggle display" id="vulnerabilityDisplayToggle">(click to show all)</a></p>
@@ -1482,8 +1482,8 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="pkg:maven/org.apache.httpcomponents.client5/httpclient5@5.6.1">
                                 pkg:maven/org.apache.httpcomponents.client5/httpclient5@5.6.1
 </td>
-                                                                                <td data-sort-value="53.0">MEDIUM</td>
-                        <td>1</td>
+                                                                                <td data-sort-value="91.0">CRITICAL</td>
+                        <td>2</td>
                         <td data-sort-value="0">Highest</td>
                         <td>30</td>
                     </tr>
@@ -2924,12 +2924,12 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td>21</td>
                     </tr>
                     <tr class="notvulnerable">
-                        <td data-sort-value="SWAGGER-ANNOTATIONS-2.2.53.JAR"><a href="#l177_ee882a8681752a4c23d7df903c81b68685c247c3">swagger-annotations-2.2.53.jar</a></td>
-                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:2.2.53:*:*:*:*:*:*:*">
-                                cpe:2.3:a:http-swagger_project:http-swagger:2.2.53:*:*:*:*:*:*:*
+                        <td data-sort-value="SWAGGER-ANNOTATIONS-2.2.54.JAR"><a href="#l177_853b8722c4ae7d1d27fc1ffd267d9d895af0c561">swagger-annotations-2.2.54.jar</a></td>
+                        <td data-sort-value="cpe:2.3:a:http-swagger_project:http-swagger:2.2.54:*:*:*:*:*:*:*">
+                                cpe:2.3:a:http-swagger_project:http-swagger:2.2.54:*:*:*:*:*:*:*
                         </td>
-                        <td data-sort-value="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.53">
-                                pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.53
+                        <td data-sort-value="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.54">
+                                pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.54
 </td>
                         <td data-sort-value="-10">&nbsp;</td>
                         <td>0</td>
@@ -8286,6 +8286,26 @@ file comparators, endian transformation classes, and much more.
                         </div>
                     <h4 id="header132" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
                     <div id="content132" class="subsectioncontent standardsubsection">
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-71290">CVE-2026-71290</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="httpclient5-5.6.1.jar" data-sha1="b418ba210ace28adf920f1decf64d673953d07cf" data-pkgurl="pkg:maven/org.apache.httpcomponents.client5/httpclient5@5.6.1" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-71290">suppress</button></p>
+                            <p>                            <pre>Improper TLS hostname verification vulnerability in Apache HttpComponents Client 5.4 or newer.&nbsp;HostnameVerificationPolicy#BUILTIN setting has no effect when used with the async version of HttpClient. An attacker that can intercept and modify traffic between the client and the server can impersonate the server by presenting a valid certificate for a different domain.&nbsp;
+
+
+Please note the classic version of HttpClient is not affected by this vulnerability.&nbsp;
+
+Affected users are recommended to upgrade to at least version 5.6.4, which fixes the issue.</pre>
+
+                                CWE-295 Improper Certificate Validation<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: CRITICAL (9.1)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>af854a3a-2127-422b-91ae-364da2661108 - <a target="_blank" href="http://www.openwall.com/lists/oss-security/2026/08/13/6">MAILING_LIST,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/bhf7g2zwpom2ohvwjjjlonc93br2s8vq">MAILING_LIST,RELEASE_NOTES</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs3"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpclient%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpclient:*:*:*:*:*:*:*:* versions from (including) 5.4; versions up to (excluding) 5.6.4</a></li>
+                                    </ul></p>
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-64607">CVE-2026-64607</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="httpclient5-5.6.1.jar" data-sha1="b418ba210ace28adf920f1decf64d673953d07cf" data-pkgurl="pkg:maven/org.apache.httpcomponents.client5/httpclient5@5.6.1" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-64607">suppress</button></p>
                             <p>                            <pre>HttpClient based on the classic i/o model fails to correctly release the underlying connection back to the connection manager if it encounters an invalid or unsupported `Content-Encoding` header value in the response message.&nbsp;Please note this defect does not affect HttpClient based on the async i/o model.
 
@@ -8301,7 +8321,7 @@ This issue affects Apache HttpComponents Client: from 5.0-alpha1 through 5.6.2.<
                                 </ul>
                             </p>
                                     <p>Vulnerable Software &amp; Versions:<ul>
-                                        <li class="vs3"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpclient%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpclient:*:*:*:*:*:*:*:* versions from (including) 5.0.0; versions up to (excluding) 5.6.3</a></li>
+                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpclient%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpclient:*:*:*:*:*:*:*:* versions from (including) 5.0.0; versions up to (excluding) 5.6.3</a></li>
                                     </ul></p>
                     </div>
                 </div>
@@ -8392,12 +8412,12 @@ This issue affects Apache HttpComponents Client: from 5.0-alpha1 through 5.6.2.<
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/zmxh1pl2zohov5ntdh4lt85gfrlchgpy">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs4">show all</a>)<ul>
-                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
-                                        <li class="vs4">...</li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Aalpha1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:alpha1:*:*:*:*:*:*</a></li>
-                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Abeta1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:beta1:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs5">show all</a>)<ul>
+                                        <li class="vs5"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
+                                        <li class="vs5">...</li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Aalpha1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:alpha1:*:*:*:*:*:*</a></li>
+                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Abeta1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:beta1:*:*:*:*:*:*</a></li>
                                     </ul></p>
                                 <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-54428">CVE-2026-54428</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="httpcore5-5.4.2.jar" data-sha1="346d5f65ff819510666541ba94b3abf747454916" data-pkgurl="pkg:maven/org.apache.httpcomponents.core5/httpcore5@5.4.2" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-54428">suppress</button></p>
                             <p>                            <pre>Allocation of resources without limits or throttling in the HTTP/2 HPACK decoder in Apache HttpComponents Core (5.4.2 and earlier, 5.5-beta1 and earlier) allows an remote attacker to cause a denial of service through memory exhaustion by sending oversized compressed header blocks before the HTTP/2 SETTINGS acknowledgement causes the configured header list size limit to be applied.</pre>
@@ -8411,12 +8431,12 @@ This issue affects Apache HttpComponents Client: from 5.0-alpha1 through 5.6.2.<
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/5zjp8vczvxq19pw2rvhs21q446bhl0sd">MITIGATION,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs5">show all</a>)<ul>
-                                        <li class="vs5"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
-                                        <li class="vs5">...</li>
-                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
-                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Aalpha1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:alpha1:*:*:*:*:*:*</a></li>
-                                        <li class="vs5 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Abeta1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:beta1:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs6">show all</a>)<ul>
+                                        <li class="vs6"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
+                                        <li class="vs6">...</li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:*:*:*:*:*:*:*:* versions from (including) 5.0; versions up to (including) 5.4.2</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Aalpha1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:alpha1:*:*:*:*:*:*</a></li>
+                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Ahttpcomponents_core%3A5.5%3Abeta1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:httpcomponents_core:5.5:beta1:*:*:*:*:*:*</a></li>
                                     </ul></p>
                     </div>
                 </div>
@@ -14240,11 +14260,11 @@ Not affected:
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/5xg6xr99glocp3zsg9ht2zlbwlrst7ch">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs6">show all</a>)<ul>
-                                        <li class="vs6"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A10.0.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:10.0.0:*:*:*:*:*:*:*</a></li>
-                                        <li class="vs6">...</li>
-                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:*:*:*:*:*:*:*:* versions from (including) 9.4.0; versions up to (including) 9.10.1</a></li>
-                                        <li class="vs6 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A10.0.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:10.0.0:*:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs7">show all</a>)<ul>
+                                        <li class="vs7"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A10.0.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:10.0.0:*:*:*:*:*:*:*</a></li>
+                                        <li class="vs7">...</li>
+                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:*:*:*:*:*:*:*:* versions from (including) 9.4.0; versions up to (including) 9.10.1</a></li>
+                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Asolr%3A10.0.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:solr:10.0.0:*:*:*:*:*:*:*</a></li>
                                     </ul></p>
                     </div>
                 </div>
@@ -16166,17 +16186,17 @@ Not affected:
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l177_ee882a8681752a4c23d7df903c81b68685c247c3"></a>swagger-annotations-2.2.53.jar</h3>
+                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l177_853b8722c4ae7d1d27fc1ffd267d9d895af0c561"></a>swagger-annotations-2.2.54.jar</h3>
                     <div class="subsectioncontent notvulnerable">
                             <p><b>Description:</b><pre>swagger-annotations</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">&quot;Apache License 2.0&quot;;link=&quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;</pre>
-                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.53/swagger-annotations-2.2.53.jar<br/>
-                            <b>MD5:</b>&nbsp;f1010da4e840ff7f550f06a890112718<br/>
-                            <b>SHA1:</b>&nbsp;ee882a8681752a4c23d7df903c81b68685c247c3<br/>
-                            <b>SHA256:</b>6cfa0274705a65ae74d23e21119ee548eaa59aaad9a2926458a101d8a6f70809
+                            <b>File&nbsp;Path:</b>&nbsp;/home/runner/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.54/swagger-annotations-2.2.54.jar<br/>
+                            <b>MD5:</b>&nbsp;1e7e1e14db73d7331d34dce0913e221d<br/>
+                            <b>SHA1:</b>&nbsp;853b8722c4ae7d1d27fc1ffd267d9d895af0c561<br/>
+                            <b>SHA256:</b>cdcd96c80637942a2e31894d2c0da9faa28347f4d0bdb049a26f370c6190f487
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
-                                <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-2.2.53.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
+                                <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-2.2.54.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
                         <h4 id="header374" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
                         <div id="content374" class="subsectioncontent standardsubsection hidden">
@@ -16216,21 +16236,21 @@ Not affected:
                                     <tr><td>Product</td><td>pom</td><td>groupid</td><td>io.swagger.core.v3</td><td>Highest</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>name</td><td>swagger-annotations</td><td>High</td></tr>
                                     <tr><td>Product</td><td>pom</td><td>parent-artifactid</td><td>swagger-project</td><td>Medium</td></tr>
-                                    <tr><td>Version</td><td>file</td><td>version</td><td>2.2.53</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>2.2.53</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>Manifest</td><td>implementation-version</td><td>2.2.53</td><td>High</td></tr>
-                                    <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.53</td><td>Highest</td></tr>
+                                    <tr><td>Version</td><td>file</td><td>version</td><td>2.2.54</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>Bundle-Version</td><td>2.2.54</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>Manifest</td><td>implementation-version</td><td>2.2.54</td><td>High</td></tr>
+                                    <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.54</td><td>Highest</td></tr>
                             </table>
                         </div>
                         <h4 id="header375" class="subsectionheader white">Identifiers</h4>
                         <div id="content375" class="subsectioncontent standardsubsection">
                             <ul>
-                                    <li>pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.53
+                                    <li>pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.54
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
                                 </li>
-                                <li>cpe:2.3:a:http-swagger_project:http-swagger:2.2.53:*:*:*:*:*:*:*
+                                <li>cpe:2.3:a:http-swagger_project:http-swagger:2.2.54:*:*:*:*:*:*:*
                                     &nbsp;&nbsp;(<i>Confidence</i>:Low)
-                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-annotations-2.2.53.jar" data-sha1="ee882a8681752a4c23d7df903c81b68685c247c3" data-pkgurl="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.53" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
+                                &nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for the identified vulnerability identifier" data-display-name="swagger-annotations-2.2.54.jar" data-sha1="853b8722c4ae7d1d27fc1ffd267d9d895af0c561" data-pkgurl="pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.54" data-type-to-suppress="cpe" data-id-to-suppress="cpe:/a:http-swagger_project:http-swagger">suppress</button>
                             </li>
                             </ul>
                         </div>
@@ -16497,19 +16517,19 @@ Users are recommended to remove the examples web application or to upgrade to ve
                                     <li>security@apache.org - <a target="_blank" href="https://lists.apache.org/thread/8owczcc1o8qw1rxmg9gvfk4w2jnh4l5k">MAILING_LIST,VENDOR_ADVISORY</a></li>
                                 </ul>
                             </p>
-                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs7">show all</a>)<ul>
-                                        <li class="vs7"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.25</a></li>
-                                        <li class="vs7">...</li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.24; versions up to (excluding) 10.1.58</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.25</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.89; versions up to (excluding) 9.0.121</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone20:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone21%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone21:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone22%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone22:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone23%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone23:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone24%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone24:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone25%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone25:*:*:*:*:*:*</a></li>
-                                        <li class="vs7 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone26%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone26:*:*:*:*:*:*</a></li>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs8">show all</a>)<ul>
+                                        <li class="vs8"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.25</a></li>
+                                        <li class="vs8">...</li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 10.1.24; versions up to (excluding) 10.1.58</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 11.0.1; versions up to (excluding) 11.0.25</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:*:*:*:*:*:*:*:* versions from (including) 9.0.89; versions up to (excluding) 9.0.121</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone20%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone20:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone21%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone21:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone22%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone22:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone23%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone23:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone24%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone24:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone25%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone25:*:*:*:*:*:*</a></li>
+                                        <li class="vs8 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Aapache%3Atomcat%3A11.0.0%3Amilestone26%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:apache:tomcat:11.0.0:milestone26:*:*:*:*:*:*</a></li>
                                     </ul></p>
                     </div>
                 </div>
