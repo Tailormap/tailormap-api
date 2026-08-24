@@ -52,6 +52,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.util.TMStringUtils;
 import org.tailormap.api.viewer.model.Service;
+import org.tailormap.api.viewer.model.Service.ServerTypeEnum;
 
 @Audited
 @Entity
@@ -309,7 +310,7 @@ public class GeoService extends AuditMetadata {
   }
 
   /** Resolve the server type if set to AUTO. */
-  public org.tailormap.api.viewer.model.Service.ServerTypeEnum getResolvedServerType() {
+  public ServerTypeEnum getResolvedServerType() {
     if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {
       return GeoServiceHelper.guessServerTypeFromUrl(getUrl());
     } else {

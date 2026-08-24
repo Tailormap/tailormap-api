@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.geotools.api.data.DataStore;
 import org.geotools.api.data.DataStoreFinder;
 import org.geotools.api.data.ResourceInfo;
+import org.geotools.api.data.ServiceInfo;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeDescriptor;
@@ -89,7 +90,7 @@ public abstract class FeatureSourceHelper {
         tmfs.setTitle(ds.getInfo().getTitle());
       }
 
-      org.geotools.api.data.ServiceInfo si = ds.getInfo();
+      ServiceInfo si = ds.getInfo();
       tmfs.setServiceCapabilities(new TMServiceCaps()
           .serviceInfo(new TMServiceInfo()
               .title(si.getTitle())

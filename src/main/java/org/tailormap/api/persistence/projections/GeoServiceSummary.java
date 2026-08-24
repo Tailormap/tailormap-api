@@ -13,6 +13,7 @@ import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
+import org.tailormap.api.viewer.model.Service.ServerTypeEnum;
 
 @Projection(
     name = "summary",
@@ -30,5 +31,5 @@ public interface GeoServiceSummary {
 
   List<AuthorizationRule> getAuthorizationRules();
 
-  org.tailormap.api.viewer.model.Service.ServerTypeEnum getResolvedServerType();
+  ServerTypeEnum getResolvedServerType();
 }

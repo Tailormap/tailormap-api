@@ -6,6 +6,8 @@
 package org.tailormap.api.persistence.helper;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
 import org.geotools.api.feature.type.AttributeType;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.ows.wms.CRSEnvelope;
@@ -98,10 +100,10 @@ public class GeoToolsHelper {
     if (binding.equals(String.class)) {
       return TMAttributeType.STRING;
     }
-    if (binding.equals(java.sql.Timestamp.class)) {
+    if (binding.equals(Timestamp.class)) {
       return TMAttributeType.TIMESTAMP;
     }
-    if (binding.equals(java.sql.Date.class)) {
+    if (binding.equals(Date.class)) {
       return TMAttributeType.DATE;
     }
     return TMAttributeType.OBJECT;

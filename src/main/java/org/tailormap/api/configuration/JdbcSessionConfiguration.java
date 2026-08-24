@@ -20,6 +20,10 @@ import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.session.config.SessionRepositoryCustomizer;
 import org.springframework.session.jdbc.JdbcIndexedSessionRepository;
+import org.tailormap.api.security.TailormapOidcUser;
+import org.tailormap.api.security.TailormapOidcUserMixin;
+import org.tailormap.api.security.TailormapUserDetailsImpl;
+import org.tailormap.api.security.TailormapUserDetailsImplMixin;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.StreamReadFeature;
 import tools.jackson.databind.DefaultTyping;
@@ -63,7 +67,7 @@ AND ATTRIBUTE_NAME = ?
         .allowIfSubType("org.tailormap.api.security.")
         .allowIfSubType("org.springframework.security.")
         .allowIfSubType("java.util.")
-        .allowIfSubType(java.lang.Number.class)
+        .allowIfSubType(Number.class)
         .allowIfSubType("java.time.")
         .allowIfBaseType(Object.class);
 
@@ -75,12 +79,8 @@ AND ATTRIBUTE_NAME = ?
 
         // register mixins early so Jackson picks up the @JsonCreator constructor for TailormapUserDetails
         // implementations
-        .addMixIn(
-            org.tailormap.api.security.TailormapUserDetailsImpl.class,
-            org.tailormap.api.security.TailormapUserDetailsImplMixin.class)
-        .addMixIn(
-            org.tailormap.api.security.TailormapOidcUser.class,
-            org.tailormap.api.security.TailormapOidcUserMixin.class)
+        .addMixIn(TailormapUserDetailsImpl.class, TailormapUserDetailsImplMixin.class)
+        .addMixIn(TailormapOidcUser.class, TailormapOidcUserMixin.class)
         .addModules(SecurityJacksonModules.getModules(this.classLoader, builder))
         .activateDefaultTyping(builder.build(), DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
         .build();
