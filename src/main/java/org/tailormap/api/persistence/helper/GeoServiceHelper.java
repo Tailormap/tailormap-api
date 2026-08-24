@@ -54,6 +54,7 @@ import org.tailormap.api.persistence.json.TMServiceCaps;
 import org.tailormap.api.persistence.json.TMServiceCapsCapabilities;
 import org.tailormap.api.persistence.json.TMServiceInfo;
 import org.tailormap.api.persistence.json.WMSStyle;
+import org.tailormap.api.viewer.model.Service.ServerTypeEnum;
 
 @Service
 public class GeoServiceHelper {
@@ -67,7 +68,7 @@ public class GeoServiceHelper {
     this.tailormapConfig = tailormapConfig;
   }
 
-  public static org.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(String url) {
+  public static ServerTypeEnum guessServerTypeFromUrl(String url) {
 
     if (StringUtils.isBlank(url)) {
       return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;

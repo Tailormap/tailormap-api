@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,7 +113,7 @@ class UserControllerIntegrationTest {
     };
 
     SecurityContextHolder.getContext()
-        .setAuthentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+        .setAuthentication(new UsernamePasswordAuthenticationToken(
             principal, principal.getPassword(), principal.getAuthorities()));
 
     mockMvc.perform(get(apiBasePath + "/user"))

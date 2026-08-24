@@ -8,6 +8,7 @@ package org.tailormap.api.util;
 import jakarta.validation.constraints.NotNull;
 import java.util.Locale;
 import me.gosimple.nbvcxz.Nbvcxz;
+import me.gosimple.nbvcxz.resources.Configuration;
 import me.gosimple.nbvcxz.resources.ConfigurationBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -59,7 +60,7 @@ public class TMPasswordDeserializer extends ValueDeserializer<String> {
     if (password.length() < minLength) {
       return false;
     }
-    me.gosimple.nbvcxz.resources.Configuration configuration = new ConfigurationBuilder()
+    Configuration configuration = new ConfigurationBuilder()
         .setLocale(Locale.forLanguageTag(LocaleContextHolder.getLocale().toLanguageTag()))
         .setDistanceCalc(true)
         .createConfiguration();

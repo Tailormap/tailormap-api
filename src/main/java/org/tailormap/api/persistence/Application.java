@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
@@ -282,8 +283,8 @@ public class Application extends AuditMetadata {
    * @return CoordinateReferenceSystem
    */
   @JsonIgnore
-  public org.geotools.api.referencing.crs.CoordinateReferenceSystem getGeoToolsCoordinateReferenceSystem() {
-    org.geotools.api.referencing.crs.CoordinateReferenceSystem gtCrs = null;
+  public CoordinateReferenceSystem getGeoToolsCoordinateReferenceSystem() {
+    CoordinateReferenceSystem gtCrs = null;
     try {
       if (getCrs() != null) {
         gtCrs = CRS.decode(getCrs());

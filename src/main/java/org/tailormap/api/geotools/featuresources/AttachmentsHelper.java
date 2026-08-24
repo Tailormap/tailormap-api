@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -744,7 +745,7 @@ FROM {2}{0}_attachments WHERE {0}_pk IN ( {1} )
       a.setAttachmentSize(size);
     }
     a.setMimeType(rs.getString("mime_type"));
-    java.sql.Timestamp ts = rs.getTimestamp("created_at");
+    Timestamp ts = rs.getTimestamp("created_at");
     if (ts != null) {
       a.setCreatedAt(OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.of("UTC")));
     }

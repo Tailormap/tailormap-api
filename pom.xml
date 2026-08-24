@@ -1413,6 +1413,7 @@ SPDX-License-Identifier: MIT
                         </palantirJavaFormat>
                         <importOrder />
                         <removeUnusedImports />
+                        <shortenFullyQualifiedTypes />
                         <trimTrailingWhitespace />
                         <endWithNewline />
                         <formatAnnotations />

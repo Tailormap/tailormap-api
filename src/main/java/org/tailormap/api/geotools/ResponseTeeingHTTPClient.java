@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import org.apache.commons.io.input.TeeInputStream;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPResponse;
 
@@ -80,7 +81,7 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
       for (String header : responseHeadersToCache) {
         cachedResponseHeaders.put(header, wrapped.getResponseHeader(header));
       }
-      return new org.apache.commons.io.input.TeeInputStream(wrapped.getResponseStream(), copy);
+      return new TeeInputStream(wrapped.getResponseStream(), copy);
     }
 
     @Override
