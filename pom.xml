@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>4.1.0</version>
+        <version>4.1.1</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -104,7 +104,7 @@ SPDX-License-Identifier: MIT
         <geotools.version>35.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.5.0</okhttp.version>
-        <greenmail.version>2.1.12</greenmail.version>
+        <greenmail.version>2.1.13</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <solr.version>10.0.0</solr.version>
         <!--
@@ -130,8 +130,6 @@ SPDX-License-Identifier: MIT
         <jackson-bom.version>3.1.5</jackson-bom.version>
         <json-path.version>3.0.0</json-path.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
-        <!-- fix HTM-2204 / CVE-2026-49844, override can probably be removed after updating spring boot to 4.0.8 or 4.1.1-->
-        <log4j2.version>2.25.5</log4j2.version>
         <micrometer.version>1.17.1</micrometer.version>
         <mockito.version>5.23.0</mockito.version>
         <mssql-jdbc.version>13.4.0.jre11</mssql-jdbc.version>
