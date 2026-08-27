@@ -49,4 +49,9 @@ public interface UploadRepository extends JpaRepository<Upload, UUID>, RevisionR
 
   @PreAuthorize("permitAll()")
   List<Upload> findByFilename(String filename);
+
+  /** get all uploads with the given ids, including their content, e.g. for downloading as a zip. */
+  @PreAuthorize("permitAll()")
+  @NonNull @EntityGraph(attributePaths = {"content"})
+  List<Upload> findAllWithContentByIdIn(@NonNull List<UUID> ids);
 }

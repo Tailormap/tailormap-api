@@ -21,4 +21,5 @@ public final class IntegrationTestOrdering {
   public static final int APPLICATION_EVENT_HANDLER_INTEGRATION_TEST_ORDER = Integer.MAX_VALUE;
   // should be last test to prevent side effects - as some data may be deleted
   public static final int EDIT_FEATURES_CONTROLLER_INTEGRATION_TEST_ORDER = Integer.MAX_VALUE;
+  public static final int UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER = Integer.MAX_VALUE;
 }

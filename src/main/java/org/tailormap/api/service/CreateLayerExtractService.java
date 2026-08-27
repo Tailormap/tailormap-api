@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.api.data.FeatureEvent;
 import org.geotools.api.data.FileDataStore;
@@ -76,6 +74,7 @@ public class CreateLayerExtractService {
   private final SseEventBus eventBus;
   private final JsonMapper jsonMapper;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final ZipService zipService;
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
   private static final String EXTRACT_SUBDIRECTORY = "tm-extracts";
@@ -112,9 +111,11 @@ public class CreateLayerExtractService {
   public CreateLayerExtractService(
       @Qualifier("viewerSseEventBus") SseEventBus eventBus,
       JsonMapper jsonMapper,
-      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      ZipService zipService) {
     this.eventBus = eventBus;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.zipService = zipService;
     // force unindented/single line output for SSE messages, because we may have set
     // spring.jackson.serialization.indent_output=true for debugging/development/test
     if (jsonMapper.isEnabled(SerializationFeature.INDENT_OUTPUT)) {
@@ -573,7 +574,7 @@ public class CreateLayerExtractService {
           false,
           "Extract shapes dumped successfully");
 
-      zipDirectory(outputDirectory.toPath(), outputFile.toPath());
+      zipService.zipDirectory(outputDirectory.toPath(), outputFile.toPath());
       this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
     } catch (IOException | IllegalArgumentException e) {
       emitError(clientId, e.getMessage());
@@ -703,27 +704,6 @@ public class CreateLayerExtractService {
           });
     } catch (IOException e) {
       logger.error("Error while cleaning up expired extracts", e);
-    }
-  }
-
-  private void zipDirectory(Path sourceDir, Path zipFile) throws IOException {
-    try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipFile));
-        Stream<Path> pathStream = Files.walk(sourceDir)) {
-      pathStream.filter(Files::isRegularFile).forEach(path -> {
-        String entryName = sourceDir.relativize(path).toString().replace(File.separatorChar, '/');
-        try {
-          zos.putNextEntry(new ZipEntry(entryName));
-          Files.copy(path, zos);
-          zos.closeEntry();
-        } catch (IOException e) {
-          throw new RuntimeException("Failed to add file to zip: " + path, e);
-        }
-      });
-    } catch (RuntimeException e) {
-      if (e.getCause() instanceof IOException ioException) {
-        throw ioException;
-      }
-      throw e;
     }
   }
 
