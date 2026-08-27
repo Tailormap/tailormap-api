@@ -242,6 +242,10 @@ public class PopulateTestData {
         createPages();
       }
       logger.info("Test entities created");
+      if (categories.contains("uploads")) {
+        createUploads();
+        logger.info("Test uploads created");
+      }
       if (categories.contains("drawing")) {
         insertTestDrawing();
         logger.info("Test drawing created");
@@ -2012,6 +2016,18 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
             logger.error("Error creating scheduled solr index task", e);
           }
         }));
+  }
+
+  private void createUploads() throws IOException {
+    for (int i = 0; i < 4; i++) {
+      // hash b0c2a7e5059c831c289505750defcf53edac5461 will be deleted at the end of the testsuite
+      uploadRepository.save(new Upload()
+          .setCategory(Upload.CATEGORY_LEGEND)
+          .setFilename("upload" + i + ".png")
+          .setMimeType("image/png")
+          .setContent(new ClassPathResource("test/upload.png").getContentAsByteArray())
+          .setLastModified(OffsetDateTime.now(ZoneId.systemDefault())));
+    }
   }
 
   private void createPages() throws IOException {
