@@ -57,12 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    List&lt;Upload&gt; findByFilename(String filename);
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <em class="jxr_javadoccomment">/** get all uploads with the given ids, including their content, e.g. for downloading as a zip. */</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    @NonNull @EntityGraph(attributePaths = {<span class="jxr_string">"content"</span>})
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    List&lt;Upload&gt; findAllWithContentByIdIn(@NonNull List&lt;UUID&gt; ids);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
