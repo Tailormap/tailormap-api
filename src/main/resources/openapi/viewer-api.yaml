@@ -87,6 +87,11 @@ components:
           uniqueItems: true
           items:
             type: string
+        roleLabels:
+          description: 'Map of role identifiers to their display labels (if configured)'
+          type: object
+          additionalProperties:
+            type: string
         properties:
           type: array
           items:
