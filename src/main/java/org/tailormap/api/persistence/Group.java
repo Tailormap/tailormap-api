@@ -51,6 +51,8 @@ public class Group extends AuditMetadata {
   @Version
   private Long version;
 
+  private String label;
+
   private boolean systemGroup;
 
   private String description;
@@ -97,6 +99,15 @@ public class Group extends AuditMetadata {
 
   public Group setVersion(Long version) {
     this.version = version;
+    return this;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public Group setLabel(String label) {
+    this.label = label;
     return this;
   }
 

@@ -31,4 +31,6 @@ public interface GroupRepository extends JpaRepository<Group, String>, RevisionR
   @Query(
       "select g.aliasForGroup from Group g where g.name in :groups and g.aliasForGroup is not null and g.aliasForGroup <> ''")
   Set<String> findAliasesForGroups(@Param("groups") Collection<String> groups);
+
+  Collection<Group> findAllByNameIn(Set<String> roles);
 }

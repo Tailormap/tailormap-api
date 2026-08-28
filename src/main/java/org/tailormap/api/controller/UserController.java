@@ -22,9 +22,11 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Configuration;
+import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.repository.ConfigurationRepository;
+import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
@@ -40,15 +42,20 @@ public class UserController {
   private final OIDCRepository oidcRepository;
   private final ConfigurationRepository configurationRepository;
   private final UploadHelper uploadHelper;
+  private final GroupRepository groupRepository;
 
   @Value("${tailormap-api.password-reset.enabled:false}")
   private boolean passwordResetEnabled;
 
   public UserController(
-      OIDCRepository oidcRepository, ConfigurationRepository configurationRepository, UploadHelper uploadHelper) {
+      OIDCRepository oidcRepository,
+      ConfigurationRepository configurationRepository,
+      UploadHelper uploadHelper,
+      GroupRepository groupRepository) {
     this.oidcRepository = oidcRepository;
     this.configurationRepository = configurationRepository;
     this.uploadHelper = uploadHelper;
+    this.groupRepository = groupRepository;
   }
 
   /**
@@ -67,6 +74,10 @@ public class UserController {
       userResponse.setRoles(authentication.getAuthorities().stream()
           .map(GrantedAuthority::getAuthority)
           .collect(Collectors.toSet()));
+
+      userResponse.setRoleLabels(groupRepository.findAllByNameIn(userResponse.getRoles()).stream()
+          .filter(g -> g.getLabel() != null)
+          .collect(Collectors.toMap(Group::getName, Group::getLabel)));
 
       if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
         userResponse.setOrganisation(userProperties.getOrganisation());
