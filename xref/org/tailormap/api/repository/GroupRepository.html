@@ -39,7 +39,9 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    @Query(
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>        <span class="jxr_string">"select g.aliasForGroup from Group g where g.name in :groups and g.aliasForGroup is not null and g.aliasForGroup &lt;&gt; ''"</span>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    Set&lt;String&gt; findAliasesForGroups(@Param(<span class="jxr_string">"groups"</span>) Collection&lt;String&gt; groups);
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    Collection&lt;Group&gt; findAllByNameIn(Set&lt;String&gt; roles);
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
