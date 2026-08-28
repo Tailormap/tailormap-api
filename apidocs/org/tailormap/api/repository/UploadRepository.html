@@ -58,13 +58,14 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#findLastModifiedById(java.util.UUID)" tabindex="0">findLastModifiedById(UUID)</a></li>
-<li><a href="#findByIdAndCategory(java.util.UUID,java.lang.String)" tabindex="0">findByIdAndCategory(UUID, String)</a></li>
-<li><a href="#findWithContentByCategoryAndFilename(java.lang.String,java.lang.String)" tabindex="0">findWithContentByCategoryAndFilename(String, String)</a></li>
-<li><a href="#findWithContentByIdAndCategory(java.util.UUID,java.lang.String)" tabindex="0">findWithContentByIdAndCategory(UUID, String)</a></li>
-<li><a href="#findByCategory(java.lang.String)" tabindex="0">findByCategory(String)</a></li>
-<li><a href="#findFirstWithContentByCategoryOrderByLastModifiedDesc(java.lang.String)" tabindex="0">findFirstWithContentByCategoryOrderByLastModifiedDesc(String)</a></li>
-<li><a href="#findByHashIn(java.lang.String,java.util.List)" tabindex="0">findByHashIn(String, List)</a></li>
+<li><a href="#findByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" tabindex="0">findByIdAndCategory(UUID, UploadCategory)</a></li>
+<li><a href="#findWithContentByCategoryAndFilename(org.tailormap.api.persistence.UploadCategory,java.lang.String)" tabindex="0">findWithContentByCategoryAndFilename(UploadCategory, String)</a></li>
+<li><a href="#findWithContentByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" tabindex="0">findWithContentByIdAndCategory(UUID, UploadCategory)</a></li>
+<li><a href="#findByCategory(org.tailormap.api.persistence.UploadCategory)" tabindex="0">findByCategory(UploadCategory)</a></li>
+<li><a href="#findFirstWithContentByCategoryOrderByLastModifiedDesc(org.tailormap.api.persistence.UploadCategory)" tabindex="0">findFirstWithContentByCategoryOrderByLastModifiedDesc(UploadCategory)</a></li>
+<li><a href="#findByHashIn(org.tailormap.api.persistence.UploadCategory,java.util.List)" tabindex="0">findByHashIn(UploadCategory, List)</a></li>
 <li><a href="#findByFilename(java.lang.String)" tabindex="0">findByFilename(String)</a></li>
+<li><a href="#findAllWithContentByIdIn(java.util.List)" tabindex="0">findAllWithContentByIdIn(List)</a></li>
 </ol>
 </li>
 </ol>
@@ -98,34 +99,39 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByCategory(java.lang.String)" class="member-name-link">findByCategory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findAllWithContentByIdIn(java.util.List)" class="member-name-link">findAllWithContentByIdIn</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;ids)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">get all uploads with the given ids, including their content, e.g. for downloading as a zip.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByFilename(java.lang.String)" class="member-name-link">findByFilename</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByCategory(org.tailormap.api.persistence.UploadCategory)" class="member-name-link">findByCategory</a><wbr>(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="UploadMatch.html" title="class in org.tailormap.api.repository">UploadMatch</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByHashIn(java.lang.String,java.util.List)" class="member-name-link">findByHashIn</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByFilename(java.lang.String)" class="member-name-link">findByFilename</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="UploadMatch.html" title="class in org.tailormap.api.repository">UploadMatch</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByHashIn(org.tailormap.api.persistence.UploadCategory,java.util.List)" class="member-name-link">findByHashIn</a><wbr>(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;hashes)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">findByIdAndCategory</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
+ @NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByIdAndCategory(java.util.UUID,java.lang.String)" class="member-name-link">findByIdAndCategory</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
- @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findFirstWithContentByCategoryOrderByLastModifiedDesc(org.tailormap.api.persistence.UploadCategory)" class="member-name-link">findFirstWithContentByCategoryOrderByLastModifiedDesc</a><wbr>(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findFirstWithContentByCategoryOrderByLastModifiedDesc(java.lang.String)" class="member-name-link">findFirstWithContentByCategoryOrderByLastModifiedDesc</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/OffsetDateTime.html" title="class or interface in java.time" class="external-link">OffsetDateTime</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findLastModifiedById(java.util.UUID)" class="member-name-link">findLastModifiedById</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/OffsetDateTime.html" title="class or interface in java.time" class="external-link">OffsetDateTime</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findLastModifiedById(java.util.UUID)" class="member-name-link">findLastModifiedById</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findWithContentByCategoryAndFilename(java.lang.String,java.lang.String)" class="member-name-link">findWithContentByCategoryAndFilename</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findWithContentByCategoryAndFilename(org.tailormap.api.persistence.UploadCategory,java.lang.String)" class="member-name-link">findWithContentByCategoryAndFilename</a><wbr>(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findWithContentByIdAndCategory(java.util.UUID,java.lang.String)" class="member-name-link">findWithContentByIdAndCategory</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
- @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findWithContentByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">findWithContentByIdAndCategory</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
+ @NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -172,63 +178,63 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 </section>
 </li>
 <li>
-<section class="detail" id="findByIdAndCategory(java.util.UUID,java.lang.String)">
+<section class="detail" id="findByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)">
 <h3>findByIdAndCategory</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 </span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findByIdAndCategory</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
- @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</span></div>
+ @NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="findWithContentByCategoryAndFilename(java.lang.String,java.lang.String)">
+<section class="detail" id="findWithContentByCategoryAndFilename(org.tailormap.api.persistence.UploadCategory,java.lang.String)">
 <h3>findWithContentByCategoryAndFilename</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 @EntityGraph(attributePaths="content")
-</span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findWithContentByCategoryAndFilename</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
+</span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findWithContentByCategoryAndFilename</span><wbr><span class="parameters">(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="findWithContentByIdAndCategory(java.util.UUID,java.lang.String)">
+<section class="detail" id="findWithContentByIdAndCategory(java.util.UUID,org.tailormap.api.persistence.UploadCategory)">
 <h3>findWithContentByIdAndCategory</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 @EntityGraph(attributePaths="content")
 </span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findWithContentByIdAndCategory</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
- @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</span></div>
+ @NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="findByCategory(java.lang.String)">
+<section class="detail" id="findByCategory(org.tailormap.api.persistence.UploadCategory)">
 <h3>findByCategory</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findByCategory</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findByCategory</span><wbr><span class="parameters">(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="findFirstWithContentByCategoryOrderByLastModifiedDesc(java.lang.String)">
+<section class="detail" id="findFirstWithContentByCategoryOrderByLastModifiedDesc(org.tailormap.api.persistence.UploadCategory)">
 <h3>findFirstWithContentByCategoryOrderByLastModifiedDesc</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 @EntityGraph(attributePaths="content")
-</span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findFirstWithContentByCategoryOrderByLastModifiedDesc</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</span></div>
+</span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findFirstWithContentByCategoryOrderByLastModifiedDesc</span><wbr><span class="parameters">(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="findByHashIn(java.lang.String,java.util.List)">
+<section class="detail" id="findByHashIn(org.tailormap.api.persistence.UploadCategory,java.util.List)">
 <h3>findByHashIn</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 @Query("select new org.tailormap.api.repository.UploadMatch(u.id, u.hash) from Upload u where u.category = :category and u.hash in :hashes")
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="UploadMatch.html" title="class in org.tailormap.api.repository">UploadMatch</a>&gt;</span>&nbsp;<span class="element-name">findByHashIn</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="UploadMatch.html" title="class in org.tailormap.api.repository">UploadMatch</a>&gt;</span>&nbsp;<span class="element-name">findByHashIn</span><wbr><span class="parameters">(@NonNull <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;hashes)</span></div>
 </div>
 </section>
@@ -239,6 +245,17 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
 </span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findByFilename</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="findAllWithContentByIdIn(java.util.List)">
+<h3>findAllWithContentByIdIn</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@PreAuthorize("permitAll()")
+@EntityGraph(attributePaths="content")
+</span><span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&gt;</span>&nbsp;<span class="element-name">findAllWithContentByIdIn</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;ids)</span></div>
+<div class="block">get all uploads with the given ids, including their content, e.g. for downloading as a zip.</div>
 </div>
 </section>
 </li>
