@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadMatch;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.service.ZipService;
@@ -71,7 +72,8 @@ public class UploadsAdminController {
   @PostMapping(
       path = "${tailormap-api.admin.base-path}/uploads/find-by-hash/{category}",
       consumes = "application/json")
-  public List<UploadMatch> findUploadsByHash(@PathVariable String category, @RequestBody List<String> hashes) {
+  public List<UploadMatch> findUploadsByHash(
+      @PathVariable UploadCategory category, @RequestBody List<String> hashes) {
     return uploadRepository.findByHashIn(category, hashes);
   }
 

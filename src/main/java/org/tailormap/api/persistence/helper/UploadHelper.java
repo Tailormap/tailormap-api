@@ -11,6 +11,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.controller.UploadsController;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
 @Service
@@ -22,7 +23,7 @@ public class UploadHelper {
     this.uploadRepository = uploadRepository;
   }
 
-  public String getUrlForImage(String imageId, String category) {
+  public String getUrlForImage(String imageId, UploadCategory category) {
     if (imageId == null) {
       return null;
     }
@@ -35,7 +36,7 @@ public class UploadHelper {
     }
   }
 
-  public String getUrlForImage(UUID imageId, String category) {
+  public String getUrlForImage(UUID imageId, UploadCategory category) {
     if (imageId == null) {
       return null;
     }

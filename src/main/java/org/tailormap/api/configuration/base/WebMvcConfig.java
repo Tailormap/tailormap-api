@@ -20,10 +20,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.CachingResourceResolver;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolver;
-import org.tailormap.api.configuration.CaseInsensitiveEnumConverter;
 import org.tailormap.api.controller.LayerExtractController;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.scheduling.TaskType;
+import org.tailormap.api.util.CaseInsensitiveEnumConverter;
+import org.tailormap.api.util.CaseInsensitiveHyphenToUnderscoreEnumConverter;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -106,5 +108,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         String.class,
         LayerExtractController.ExtractOutputFormat.class,
         new CaseInsensitiveEnumConverter<>(LayerExtractController.ExtractOutputFormat.class));
+
+    registry.addConverter(
+        String.class,
+        UploadCategory.class,
+        new CaseInsensitiveHyphenToUnderscoreEnumConverter<>(UploadCategory.class));
   }
 }

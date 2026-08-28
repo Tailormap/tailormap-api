@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
-import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.helper.ApplicationHelper;
 import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.helper.ViewerResponseHelper;
@@ -83,7 +83,7 @@ public class ViewerController implements TagNames {
 
     AppStyling styling = viewerResponse.getStyling();
     if (styling != null) {
-      styling.setLogo(uploadHelper.getUrlForImage(styling.getLogo(), Upload.CATEGORY_APP_LOGO));
+      styling.setLogo(uploadHelper.getUrlForImage(styling.getLogo(), UploadCategory.APP_LOGO));
     }
 
     // count/increment the number of times this viewer has been requested
@@ -110,8 +110,8 @@ public class ViewerController implements TagNames {
     mapResponse.getAppLayers().stream()
         .filter(l ->
             l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
-        .forEach(l -> l.setLegendImageUrl(
-            uploadHelper.getUrlForImage(l.getLegendImageUrl(), Upload.CATEGORY_LEGEND)));
+        .forEach(l ->
+            l.setLegendImageUrl(uploadHelper.getUrlForImage(l.getLegendImageUrl(), UploadCategory.LEGEND)));
     return mapResponse;
   }
 }

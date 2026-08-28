@@ -23,6 +23,7 @@ import org.springframework.web.servlet.resource.CachingResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
 @Service
@@ -64,7 +65,7 @@ public class IconResolver implements ResourceResolver, InitializingBean {
 
     String icon = StringUtils.substringAfterLast(requestPath, "/");
     Upload upload = uploadRepository
-        .findWithContentByCategoryAndFilename(Upload.CATEGORY_THEME_FAVICON, icon)
+        .findWithContentByCategoryAndFilename(UploadCategory.THEME_FAVICON, icon)
         .orElse(null);
     if (upload != null) {
       return new ByteArrayResource(upload.getContent()) {

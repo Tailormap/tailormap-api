@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Group;
-import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.GroupRepository;
@@ -135,7 +135,7 @@ public class UserController {
             .name(reg.getClientName())
             .url("/api/oauth2/authorization/" + reg.getRegistrationId())
             .showForViewer(metadata.getShowForViewer())
-            .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
+            .image(uploadHelper.getUrlForImage(metadata.getImage(), UploadCategory.SSO_IMAGE)));
       }
     }
 

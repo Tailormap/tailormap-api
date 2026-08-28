@@ -62,6 +62,7 @@ import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.tailormap.api.persistence.json.AppContent;
@@ -352,7 +353,7 @@ public class PopulateTestData {
         new Bounds().minx(-285401.92).maxx(595401.92).miny(22598.08).maxy(903401.92);
 
     Upload legend = new Upload()
-        .setCategory(Upload.CATEGORY_LEGEND)
+        .setCategory(UploadCategory.LEGEND)
         .setFilename("gemeentegebied-legend.png")
         .setMimeType("image/png")
         .setContent(new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray())
@@ -1087,7 +1088,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
   public void createAppTestData() throws Exception {
     Upload logo = new Upload()
-        .setCategory(Upload.CATEGORY_APP_LOGO)
+        .setCategory(UploadCategory.APP_LOGO)
         .setFilename("gradient.svg")
         .setMimeType("image/svg+xml")
         .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
@@ -2022,7 +2023,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     for (int i = 0; i < 4; i++) {
       // hash b0c2a7e5059c831c289505750defcf53edac5461 will be deleted at the end of the testsuite
       uploadRepository.save(new Upload()
-          .setCategory(Upload.CATEGORY_LEGEND)
+          .setCategory(UploadCategory.LEGEND)
           .setFilename("upload" + i + ".png")
           .setMimeType("image/png")
           .setContent(new ClassPathResource("test/upload.png").getContentAsByteArray())
@@ -2032,7 +2033,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
   private void createPages() throws IOException {
     Upload logo = new Upload()
-        .setCategory(Upload.CATEGORY_PORTAL_IMAGE)
+        .setCategory(UploadCategory.PORTAL_IMAGE)
         .setFilename("gradient.svg")
         .setMimeType("image/svg+xml")
         .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
@@ -2187,7 +2188,7 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
 
   private void insertDrawingStyle() throws IOException {
     Upload upload = new Upload()
-        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setCategory(UploadCategory.DRAWING_STYLE_IMAGE)
         .setMimeType("image/svg+xml")
         .setFilename("ISO_7001_PI_PF_007.svg")
         .setContent(new ClassPathResource("test/ISO_7001_PI_PF_007.svg").getContentAsByteArray())
@@ -2196,7 +2197,7 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     UUID drinkwaterImageId = upload.getId();
 
     upload = new Upload()
-        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setCategory(UploadCategory.DRAWING_STYLE_IMAGE)
         .setMimeType("image/svg+xml")
         .setFilename("lichtpunt.svg")
         .setContent(new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray())
@@ -2205,7 +2206,7 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     UUID lichtpuntImageId = upload.getId();
 
     upload = new Upload()
-        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setCategory(UploadCategory.DRAWING_STYLE_IMAGE)
         .setMimeType("image/svg+xml")
         .setFilename("ISO_7010_E003_-_First_aid_sign.svg")
         .setContent(new ClassPathResource("test/ISO_7010_E003_-_First_aid_sign.svg").getContentAsByteArray())
@@ -2225,7 +2226,7 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
 
     // save the updated drawing style
     upload = new Upload()
-        .setCategory(Upload.CATEGORY_DRAWING_STYLE)
+        .setCategory(UploadCategory.DRAWING_STYLE)
         .setMimeType("application/json")
         .setFilename("object-drawing-style.json")
         .setContent(drawingStyles.getBytes(StandardCharsets.UTF_8))

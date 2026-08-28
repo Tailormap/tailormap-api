@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package org.tailormap.api.configuration;
+package org.tailormap.api.util;
 
 import java.util.Locale;
 import org.springframework.core.convert.converter.Converter;
