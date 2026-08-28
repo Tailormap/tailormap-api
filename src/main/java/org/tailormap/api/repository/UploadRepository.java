@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 
 public interface UploadRepository extends JpaRepository<Upload, UUID>, RevisionRepository<Upload, UUID, Long> {
   @PreAuthorize("permitAll()")
@@ -24,28 +25,28 @@ public interface UploadRepository extends JpaRepository<Upload, UUID>, RevisionR
   Optional<OffsetDateTime> findLastModifiedById(@NonNull UUID id);
 
   @PreAuthorize("permitAll()")
-  @NonNull Optional<Upload> findByIdAndCategory(@NonNull UUID id, @NonNull String category);
+  @NonNull Optional<Upload> findByIdAndCategory(@NonNull UUID id, @NonNull UploadCategory category);
 
   @PreAuthorize("permitAll()")
   @NonNull @EntityGraph(attributePaths = {"content"})
-  Optional<Upload> findWithContentByCategoryAndFilename(@NonNull String category, @NonNull String filename);
+  Optional<Upload> findWithContentByCategoryAndFilename(@NonNull UploadCategory category, @NonNull String filename);
 
   @PreAuthorize("permitAll()")
   @NonNull @EntityGraph(attributePaths = {"content"})
-  Optional<Upload> findWithContentByIdAndCategory(@NonNull UUID id, @NonNull String category);
+  Optional<Upload> findWithContentByIdAndCategory(@NonNull UUID id, @NonNull UploadCategory category);
 
   @PreAuthorize(value = "permitAll()")
-  List<Upload> findByCategory(String category);
+  List<Upload> findByCategory(@NonNull UploadCategory category);
 
   @PreAuthorize("permitAll()")
   @NonNull @EntityGraph(attributePaths = {"content"})
   // Find the most recent upload for a specific category with its content
-  Optional<Upload> findFirstWithContentByCategoryOrderByLastModifiedDesc(@NonNull String category);
+  Optional<Upload> findFirstWithContentByCategoryOrderByLastModifiedDesc(@NonNull UploadCategory category);
 
   @PreAuthorize("permitAll()")
   @Query(
       "select new org.tailormap.api.repository.UploadMatch(u.id, u.hash) from Upload u where u.category = :category and u.hash in :hashes")
-  List<UploadMatch> findByHashIn(@NonNull String category, @NonNull List<String> hashes);
+  List<UploadMatch> findByHashIn(@NonNull UploadCategory category, @NonNull List<String> hashes);
 
   @PreAuthorize("permitAll()")
   List<Upload> findByFilename(String filename);

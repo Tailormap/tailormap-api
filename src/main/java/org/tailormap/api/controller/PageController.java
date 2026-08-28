@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Page;
-import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.json.MenuItem;
 import org.tailormap.api.persistence.json.PageTile;
@@ -169,7 +169,7 @@ public class PageController {
       result.shouldBeFiltered = true;
     }
 
-    viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
+    viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), UploadCategory.PORTAL_IMAGE));
 
     return result;
   }

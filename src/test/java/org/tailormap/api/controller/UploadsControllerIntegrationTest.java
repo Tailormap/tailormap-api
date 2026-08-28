@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
 @PostgresIntegrationTest
@@ -49,12 +50,18 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_does_not_exist() throws Exception {
-    mockMvc.perform(get(apiBasePath + "/uploads/something/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"))
+    mockMvc.perform(get(apiBasePath + "/uploads/unrestricted/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"))
         .andExpect(status().isNotFound());
   }
 
   @Test
   void get_with_bad_uuid() throws Exception {
+    mockMvc.perform(get(apiBasePath + "/uploads/unrestricted/not-a-uuid/file.txt"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void get_with_bad_category() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
         .andExpect(status().isBadRequest());
   }
@@ -63,7 +70,7 @@ class UploadsControllerIntegrationTest {
   @Order(1)
   @Transactional
   void get_valid_logo() throws Exception {
-    Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).getFirst();
+    Upload logo = uploadRepository.findByCategory(UploadCategory.APP_LOGO).getFirst();
 
     logoUrl = apiBasePath + "/uploads/%s/%s/file.txt".formatted(logo.getCategory(), logo.getId());
     logoResult = mockMvc.perform(get(logoUrl))
@@ -93,7 +100,7 @@ class UploadsControllerIntegrationTest {
   @Transactional
   void get_drawing_style() throws Exception {
     final Upload theOnlyStyle =
-        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
+        uploadRepository.findByCategory(UploadCategory.DRAWING_STYLE).getFirst();
 
     MvcResult result = mockMvc.perform(get(apiBasePath
             + "/uploads/%s/%s/style.json".formatted(theOnlyStyle.getCategory(), theOnlyStyle.getId())))
@@ -116,7 +123,7 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_latest_upload() throws Exception {
-    mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
+    mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(UploadCategory.DRAWING_STYLE_IMAGE)))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(content()
@@ -126,7 +133,12 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_non_existent_latest_upload() throws Exception {
+    mockMvc.perform(get(apiBasePath + "/uploads/unrestricted/latest")).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void get_non_existent_category_latest_upload() throws Exception {
     mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted("non-existent-category")))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isBadRequest());
   }
 }

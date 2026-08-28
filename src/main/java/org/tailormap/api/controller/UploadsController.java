@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
 @RestController
@@ -36,7 +37,7 @@ public class UploadsController {
   @GetMapping(path = "/api/uploads/{category}/{id}/{filename}")
   public ResponseEntity<byte[]> getUpload(
       HttpServletRequest request,
-      @PathVariable String category,
+      @PathVariable UploadCategory category,
       @PathVariable(name = "id") String idString,
       @PathVariable(required = false) String filename) {
 
@@ -76,7 +77,7 @@ public class UploadsController {
    * {@code Upload.CATEGORY_DRAWING_STYLE} .
    */
   @GetMapping("/api/uploads/{category}/latest")
-  public ResponseEntity<byte[]> getLatestUpload(@PathVariable String category) {
+  public ResponseEntity<byte[]> getLatestUpload(@PathVariable UploadCategory category) {
     return uploadRepository
         .findFirstWithContentByCategoryOrderByLastModifiedDesc(category)
         .map(upload -> ResponseEntity.ok()

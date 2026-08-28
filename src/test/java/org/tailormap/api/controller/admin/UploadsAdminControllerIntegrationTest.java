@@ -49,6 +49,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadMatch;
 import org.tailormap.api.repository.UploadRepository;
 
@@ -118,7 +119,7 @@ class UploadsAdminControllerIntegrationTest {
   @Order(1)
   void download_zipfile_of_uploads() throws Exception {
     List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(
-        Upload.CATEGORY_LEGEND, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
+        UploadCategory.LEGEND, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
 
     List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
 
@@ -179,7 +180,7 @@ class UploadsAdminControllerIntegrationTest {
   @Order(UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER)
   void delete_uploads() throws Exception {
     List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(
-        Upload.CATEGORY_LEGEND, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
+        UploadCategory.LEGEND, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
     List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
     mockMvc.perform(delete(adminBasePath + "/uploads/" + String.join(",", ids)))
         .andExpect(status().is2xxSuccessful());

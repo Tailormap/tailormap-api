@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 
 @PostgresIntegrationTest
 class UploadRepositoryIntegrationTest {
@@ -27,7 +28,7 @@ class UploadRepositoryIntegrationTest {
   @Transactional(label = "inserts and removes an upload")
   void should_find_latest_upload_by_category() {
     Upload testUpload =
-        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
+        uploadRepository.findByCategory(UploadCategory.DRAWING_STYLE).getFirst();
     // create a copy of the upload with a different filename and younger last-modified time
     Upload copiedUpload = new Upload()
         .setCategory(testUpload.getCategory())
@@ -39,15 +40,15 @@ class UploadRepositoryIntegrationTest {
     uploadRepository.save(copiedUpload);
 
     Optional<Upload> upload =
-        uploadRepository.findFirstWithContentByCategoryOrderByLastModifiedDesc(Upload.CATEGORY_DRAWING_STYLE);
+        uploadRepository.findFirstWithContentByCategoryOrderByLastModifiedDesc(UploadCategory.DRAWING_STYLE);
     assertTrue(upload.isPresent(), "A latest upload should be present for the drawing style category");
     assertEquals(
         2,
-        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).size(),
+        uploadRepository.findByCategory(UploadCategory.DRAWING_STYLE).size(),
         "There should be two uploads for the drawing style category after adding the latest upload");
 
     final Upload actual = upload.orElseThrow();
-    assertEquals(Upload.CATEGORY_DRAWING_STYLE, actual.getCategory());
+    assertEquals(UploadCategory.DRAWING_STYLE, actual.getCategory());
     assertEquals(
         "application/json",
         actual.getMimeType(),

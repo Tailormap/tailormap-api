@@ -9,6 +9,8 @@ package org.tailormap.api.persistence;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,19 +30,13 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Entity
 @EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
 public class Upload extends AuditMetadata {
-  public static final String CATEGORY_APP_LOGO = "app-logo";
-  public static final String CATEGORY_LEGEND = "legend";
-  public static final String CATEGORY_PORTAL_IMAGE = "portal-image";
-  public static final String CATEGORY_DRAWING_STYLE = "drawing-style";
-  public static final String CATEGORY_DRAWING_STYLE_IMAGE = "drawing-style-image";
-  public static final String CATEGORY_SSO_IMAGE = "sso-image";
-  public static final String CATEGORY_THEME_FAVICON = "theme-favicon";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  private String category;
+  @NotNull @Enumerated(EnumType.STRING)
+  private UploadCategory category;
 
   private String filename;
 
@@ -75,11 +71,11 @@ public class Upload extends AuditMetadata {
     return this;
   }
 
-  public String getCategory() {
+  public UploadCategory getCategory() {
     return category;
   }
 
-  public Upload setCategory(String category) {
+  public Upload setCategory(UploadCategory category) {
     this.category = category;
     return this;
   }
