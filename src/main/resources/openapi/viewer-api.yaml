@@ -2181,3 +2181,71 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}:
+    description: 'Get an upload attached to a specific layer.'
+    get:
+      operationId: 'getLayerAttachedUpload'
+      description: 'Get an upload attached to a specific layer. 
+        The category must be one of the restricted upload categories. Optionally `/{filename}` may be appended to the URL.'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: viewerKind
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - name: viewerName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appLayerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 'The category of the upload. should be one of the restricted upload categories.'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: uuid
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '304':
+          description: 'Not Modified'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
