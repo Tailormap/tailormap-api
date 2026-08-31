@@ -46,6 +46,7 @@ public class OIDCAuthenticationEventsHandler {
               .findById(Long.parseLong(registrationId))
               .orElse(null);
         } catch (NumberFormatException ignored) {
+          oidcConfiguration = null;
         }
       }
       boolean createNewGroup = oidcConfiguration == null || !oidcConfiguration.isDisableAutomaticGroupCreation();
