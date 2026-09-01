@@ -14,6 +14,8 @@ import org.tailormap.api.repository.UploadRepository;
 public class UploadsService {
   private final UploadRepository uploadRepository;
   public static final String DESCRIPTION_HEADER_NAME = "TM-Description";
+  /** The scheme used in Markdown files to reference an upload. For example, {@code upload://<upload-id>}. */
+  public static final String UPLOAD_MARKDOWN_SCHEME = "upload://";
 
   public UploadsService(UploadRepository uploadRepository) {
     this.uploadRepository = uploadRepository;
