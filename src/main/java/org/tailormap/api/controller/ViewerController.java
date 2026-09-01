@@ -12,6 +12,7 @@ import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Metrics;
 import java.util.Locale;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -110,8 +111,8 @@ public class ViewerController implements TagNames {
     mapResponse.getAppLayers().stream()
         .filter(l ->
             l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
-        .forEach(l ->
-            l.setLegendImageUrl(uploadHelper.getUrlForImage(l.getLegendImageUrl(), UploadCategory.LEGEND)));
+        .forEach(l -> l.setLegendImageUrl(uploadHelper.getUrlForLayerAttachedImage(
+            UUID.fromString(l.getLegendImageUrl()), UploadCategory.LEGEND, app, l.getId())));
     return mapResponse;
   }
 }
