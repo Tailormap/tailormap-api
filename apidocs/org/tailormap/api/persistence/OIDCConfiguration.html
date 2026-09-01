@@ -87,6 +87,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#setDefaultAuthorities(java.util.List)" tabindex="0">setDefaultAuthorities(List)</a></li>
 <li><a href="#getRolesClaimFilterRegex()" tabindex="0">getRolesClaimFilterRegex()</a></li>
 <li><a href="#setRolesClaimFilterRegex(java.lang.String)" tabindex="0">setRolesClaimFilterRegex(String)</a></li>
+<li><a href="#isDisableAutomaticGroupCreation()" tabindex="0">isDisableAutomaticGroupCreation()</a></li>
+<li><a href="#setDisableAutomaticGroupCreation(boolean)" tabindex="0">setDisableAutomaticGroupCreation(boolean)</a></li>
 </ol>
 </li>
 </ol>
@@ -171,17 +173,23 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getVersion()" class="member-name-link">getVersion</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientId(java.lang.String)" class="member-name-link">setClientId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isDisableAutomaticGroupCreation()" class="member-name-link">isDisableAutomaticGroupCreation</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientSecret(java.lang.String)" class="member-name-link">setClientSecret</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientSecret)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientId(java.lang.String)" class="member-name-link">setClientId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientSecretExpiry(java.time.LocalDate)" class="member-name-link">setClientSecretExpiry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/LocalDate.html" title="class or interface in java.time" class="external-link">LocalDate</a>&nbsp;clientSecretExpiry)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientSecret(java.lang.String)" class="member-name-link">setClientSecret</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientSecret)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDefaultAuthorities(java.util.List)" class="member-name-link">setDefaultAuthorities</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;defaultAuthorities)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClientSecretExpiry(java.time.LocalDate)" class="member-name-link">setClientSecretExpiry</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/LocalDate.html" title="class or interface in java.time" class="external-link">LocalDate</a>&nbsp;clientSecretExpiry)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDefaultAuthorities(java.util.List)" class="member-name-link">setDefaultAuthorities</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;defaultAuthorities)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDisableAutomaticGroupCreation(boolean)" class="member-name-link">setDisableAutomaticGroupCreation</a><wbr>(boolean&nbsp;disableAutomaticGroupCreation)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setId(java.lang.Long)" class="member-name-link">setId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id)</code></div>
@@ -432,6 +440,22 @@ loadScripts(document, 'script');</script>
 <h3>setRolesClaimFilterRegex</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></span>&nbsp;<span class="element-name">setRolesClaimFilterRegex</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;rolesClaimFilter)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isDisableAutomaticGroupCreation()">
+<h3>isDisableAutomaticGroupCreation</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isDisableAutomaticGroupCreation</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="setDisableAutomaticGroupCreation(boolean)">
+<h3>setDisableAutomaticGroupCreation</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></span>&nbsp;<span class="element-name">setDisableAutomaticGroupCreation</span><wbr><span class="parameters">(boolean&nbsp;disableAutomaticGroupCreation)</span></div>
 </div>
 </section>
 </li>
