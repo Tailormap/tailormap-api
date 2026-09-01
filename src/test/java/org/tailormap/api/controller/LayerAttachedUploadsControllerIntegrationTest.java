@@ -202,4 +202,46 @@ class LayerAttachedUploadsControllerIntegrationTest {
             .header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void get_gemeentegebied_legend_image() throws Exception {
+    Upload uploadedLegend = uploadRepository
+        .findWithContentByCategoryAndFilename(UploadCategory.LEGEND, "gemeentegebied-legend.png")
+        .orElseThrow(() -> new RuntimeException("Upload 'gemeentegebied-legend.png' not found"));
+
+    final String path = apiBasePath
+        + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/uploads/"
+        + UploadCategory.LEGEND + "/" + uploadedLegend.getId() + "/gemeentegebied-legend.png";
+
+    mockMvc.perform(MockMvcRequestBuilders.get(path)
+            .accept(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG)
+            .with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.IMAGE_PNG))
+        .andExpect(header().exists("Last-Modified"))
+        .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+        .andExpect(content()
+            .bytes(new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray()));
+  }
+
+  @Test
+  void get_gemeentegebied_legend_in_description() throws Exception {
+    Upload uploadedLegend = uploadRepository
+        .findWithContentByCategoryAndFilename(UploadCategory.LEGEND, "gemeentegebied-legend.png")
+        .orElseThrow(() -> new RuntimeException("Upload 'gemeentegebied-legend.png' not found"));
+
+    final String path = apiBasePath
+        + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/uploads/"
+        + UploadCategory.LEGEND + "/" + uploadedLegend.getId() + "/gemeentegebied-legend.png";
+
+    mockMvc.perform(MockMvcRequestBuilders.get(path)
+            .accept(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG)
+            .with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.IMAGE_PNG))
+        .andExpect(header().exists("Last-Modified"))
+        .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+        .andExpect(content()
+            .bytes(new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray()));
+  }
 }
