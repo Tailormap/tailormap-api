@@ -17,6 +17,7 @@ public enum UploadCategory {
   DRAWING_STYLE("drawing-style"),
   DRAWING_STYLE_IMAGE("drawing-style-image"),
   SSO_IMAGE("sso-image"),
+  THEME_THEME_LOGO("theme-theme-logo"),
   THEME_FAVICON("theme-favicon"),
   UNRESTRICTED("unrestricted");
 
@@ -52,6 +53,7 @@ public enum UploadCategory {
         DRAWING_STYLE,
         DRAWING_STYLE_IMAGE,
         SSO_IMAGE,
+        THEME_THEME_LOGO,
         THEME_FAVICON,
         UNRESTRICTED);
   }
