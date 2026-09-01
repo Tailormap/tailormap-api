@@ -6,6 +6,8 @@
 
 package org.tailormap.api.controller.admin;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
@@ -16,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +30,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadMatch;
 import org.tailormap.api.repository.UploadRepository;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.service.ZipService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
@@ -111,6 +116,29 @@ public class UploadsAdminController {
         });
       }
     }
+  }
+
+  @GetMapping(
+      path = {
+        "${tailormap-api.admin.base-path}/uploads/{category}/{id}",
+        "${tailormap-api.admin.base-path}/uploads/{category}/{id}/{filename}"
+      })
+  public ResponseEntity<byte[]> getUpload(
+      @PathVariable UploadCategory category,
+      @PathVariable(name = "id") UUID id,
+      @PathVariable(required = false) String filename) {
+
+    Upload upload = uploadRepository
+        .findWithContentByIdAndCategory(id, category)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
+    return ResponseEntity.ok()
+        .header("Content-Type", upload.getMimeType())
+        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
+        .lastModified(upload.getLastModified().toInstant())
+        .contentLength(upload.getContentLength())
+        .cacheControl(CacheControl.noCache().cachePublic())
+        .body(upload.getContent());
   }
 
   @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/{uuids}")

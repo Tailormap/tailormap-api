@@ -6,9 +6,9 @@
 
 package org.tailormap.api.controller;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_MODIFIED;
-import static org.tailormap.api.util.Constants.UUID_REGEX;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
@@ -33,19 +33,24 @@ public class UploadsController {
     this.uploadsService = uploadsService;
   }
 
-  // Can't use ${tailormap-api.base-path} because linkTo() won't work
-  @GetMapping(path = "/api/uploads/{category}/{id}/{filename}")
+  @GetMapping(
+      path = {
+        // Can't use ${tailormap-api.base-path} because linkTo() used in UploadHelper#getUrlForImage() won't
+        // work
+        "/api/uploads/{category}/{id}",
+        "/api/uploads/{category}/{id}/{filename}"
+      })
   public ResponseEntity<byte[]> getUpload(
       HttpServletRequest request,
       @PathVariable UploadCategory category,
-      @PathVariable(name = "id") String idString,
+      @PathVariable(name = "id") UUID id,
       @PathVariable(required = false) String filename) {
 
-    if (!idString.matches(UUID_REGEX)) {
-      return ResponseEntity.badRequest().build();
+    if (UploadCategory.getRestrictedCategories().contains(category)) {
+      throw new ResponseStatusException(
+          BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
     }
 
-    UUID id = UUID.fromString(idString);
     long ifModifiedSince = request.getDateHeader("If-Modified-Since");
 
     if (!uploadsService.checkIfModifiedSince(id, ifModifiedSince)) {
@@ -71,6 +76,10 @@ public class UploadsController {
    */
   @GetMapping("/api/uploads/{category}/latest")
   public ResponseEntity<byte[]> getLatestUpload(@PathVariable UploadCategory category) {
+    if (UploadCategory.getRestrictedCategories().contains(category)) {
+      throw new ResponseStatusException(
+          BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
+    }
     return uploadRepository
         .findFirstWithContentByCategoryOrderByLastModifiedDesc(category)
         .map(upload -> ResponseEntity.ok()

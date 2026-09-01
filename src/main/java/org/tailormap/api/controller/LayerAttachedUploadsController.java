@@ -52,8 +52,9 @@ public class LayerAttachedUploadsController {
 
   @GetMapping(
       path = {
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}",
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}/{filename}"
+        /* Can't use ${tailormap-api.base-path} because linkTo() used in UploadHelper#getUrlForLayerAttachedImage() may not work */
+        "/api/app/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}",
+        "/api/app/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}/{filename}"
       })
   public ResponseEntity<byte[]> getLayerAttachedUpload(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
@@ -69,11 +70,58 @@ public class LayerAttachedUploadsController {
       // return from the normal '/uploads' endpoint if the category is not restricted while removing the
       // application and layer from the path. This could happen for "unrestricted" categories like APP_LOGO,
       // UNRESTRICTED, etc. that have been attached to a layer.
-      return uploadsController.getUpload(request, category, id.toString(), filename);
+      return uploadsController.getUpload(request, category, id, filename);
     }
 
-    // check that the upload is actually attached to the layer by checking the text of any of the descriptions of
-    // the layer
+    switch (category) {
+      case LAYER_ATTACHED_FILE ->
+        validateUploadIsInDescription(id, service, layer, application, appTreeLayerNode);
+      case LEGEND -> {
+        validateLegendIsAttached(id, service, layer, application, appTreeLayerNode);
+      }
+      default ->
+        throw new ResponseStatusException(
+            BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
+    }
+
+    if (!uploadsService.checkIfModifiedSince(id, request.getDateHeader("If-Modified-Since"))) {
+      return ResponseEntity.status(NOT_MODIFIED).build();
+    }
+    // TODO this would fail when we have added a LEGEND upload to a layer description, because the category would be
+    //  wrong, since the frontend generating the url does not know the category of the upload, so it is likely to
+    //  always use LAYER_ATTACHED_FILE.
+    Upload upload = uploadRepository
+        .findWithContentByIdAndCategory(id, category)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
+    return ResponseEntity.ok()
+        .header("Content-Type", upload.getMimeType())
+        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
+        .lastModified(upload.getLastModified().toInstant())
+        .contentLength(upload.getContentLength())
+        .cacheControl(CacheControl.noCache().cachePublic())
+        .body(upload.getContent());
+  }
+
+  /**
+   * check that the upload is actually attached to the layer by checking the text of any of the descriptions of the
+   * layer
+   *
+   * @param id the upload id
+   * @param service the GeoService the layer belongs to
+   * @param layer the layer the upload is attached to
+   * @param application the application the layer belongs to
+   * @param appTreeLayerNode the application tree node for the layer
+   * @throws ResponseStatusException if the upload is not attached to the layer
+   */
+  private void validateUploadIsInDescription(
+      UUID id,
+      GeoService service,
+      GeoServiceLayer layer,
+      Application application,
+      AppTreeLayerNode appTreeLayerNode)
+      throws ResponseStatusException {
+
     Pattern pattern =
         Pattern.compile(Pattern.quote(UploadsService.UPLOAD_MARKDOWN_SCHEME) + Pattern.quote(id.toString()));
 
@@ -98,20 +146,52 @@ public class LayerAttachedUploadsController {
       throw new ResponseStatusException(
           BAD_REQUEST, "Upload with id '" + id + "' is not attached to layer '" + layer.getName() + "'");
     }
+  }
+  /**
+   * check that the legend is actually attached to the layer by checking the legend fields and the text of any of the
+   * descriptions of the layer.
+   *
+   * @param id the upload id
+   * @param service the GeoService the layer belongs to
+   * @param layer the layer the upload is attached to
+   * @param application the application the layer belongs to
+   * @param appTreeLayerNode the application tree node for the layer
+   * @throws ResponseStatusException if the legend is not attached to the layer
+   */
+  private void validateLegendIsAttached(
+      UUID id,
+      GeoService service,
+      GeoServiceLayer layer,
+      Application application,
+      AppTreeLayerNode appTreeLayerNode)
+      throws ResponseStatusException {
 
-    if (!uploadsService.checkIfModifiedSince(id, request.getDateHeader("If-Modified-Since"))) {
-      return ResponseEntity.status(NOT_MODIFIED).build();
+    GeoServiceDefaultLayerSettings defaultLayerSettings = Optional.ofNullable(
+            service.getSettings().getDefaultLayerSettings())
+        .orElseGet(GeoServiceDefaultLayerSettings::new);
+
+    GeoServiceLayerSettings serviceLayerSettings = Optional.ofNullable(
+            service.getSettings().getLayerSettings().get(layer.getName()))
+        .orElseGet(GeoServiceLayerSettings::new);
+
+    @SuppressModernizer
+    // not using Objects.requireNonNullElse(arg1, arg2) because we never want to throw an NPE here, we just want to
+    // check if the legendImageId is set in either the service layer settings or the default layer settings
+    String legendImageId = ObjectUtils.firstNonNull(
+        serviceLayerSettings.getLegendImageId(), defaultLayerSettings.getLegendImageId());
+
+    UUID legendUuid = null;
+    if (legendImageId != null && !legendImageId.isBlank()) {
+      try {
+        legendUuid = UUID.fromString(legendImageId);
+      } catch (IllegalArgumentException ignored) {
+        // Invalid UUID configured; treat as "not attached" and fall back to the description check below.
+      }
     }
-    Upload upload = uploadRepository
-        .findWithContentByIdAndCategory(id, category)
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
-    return ResponseEntity.ok()
-        .header("Content-Type", upload.getMimeType())
-        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
-        .lastModified(upload.getLastModified().toInstant())
-        .contentLength(upload.getContentLength())
-        .cacheControl(CacheControl.noCache().cachePublic())
-        .body(upload.getContent());
+    if (!id.equals(legendUuid)) {
+      // could be a bad request, but a legend could also be in the description, so check that as well
+      validateUploadIsInDescription(id, service, layer, application, appTreeLayerNode);
+    }
   }
 }
