@@ -133,7 +133,8 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_non_existent_latest_upload() throws Exception {
-    mockMvc.perform(get(apiBasePath + "/uploads/unrestricted/latest")).andExpect(status().isNotFound());
+    mockMvc.perform(get(apiBasePath + "/uploads/" + UploadCategory.THEME_FAVICON + "/latest"))
+        .andExpect(status().isNotFound());
   }
 
   @Test

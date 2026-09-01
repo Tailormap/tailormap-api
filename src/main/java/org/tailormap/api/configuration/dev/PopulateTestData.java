@@ -110,6 +110,7 @@ import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.security.InternalAdminAuthentication;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.AppStyling;
@@ -360,6 +361,14 @@ public class PopulateTestData {
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(legend);
 
+    Upload pdokLogo = uploadRepository.save(new Upload()
+        .setCategory(UploadCategory.LAYER_ATTACHED_FILE)
+        .setFilename("pdok_logo.png")
+        .setMimeType("image/png")
+        .setDescription("PDOK logo for testing layer attached uploads")
+        .setContent(new ClassPathResource("test/pdok_logo.png").getContentAsByteArray())
+        .setLastModified(OffsetDateTime.now(ZoneId.systemDefault())));
+
     Collection<GeoService> services = List.of(
         new GeoService()
             .setId("demo")
@@ -540,7 +549,8 @@ public class PopulateTestData {
             .setAuthorizationRules(ruleAnonymousRead)
             .setSettings(new GeoServiceSettings()
                 .defaultLayerSettings(new GeoServiceDefaultLayerSettings()
-                    .description("This layer shows an administrative boundary."))
+                    .description("This layer shows an administrative boundary.\n\n[logo]("
+                        + UploadsService.UPLOAD_MARKDOWN_SCHEME + pdokLogo.getId() + ")"))
                 // No attribution required: service is CC0
                 .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
                 .useProxy(true)
@@ -2023,7 +2033,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     for (int i = 0; i < 4; i++) {
       // hash b0c2a7e5059c831c289505750defcf53edac5461 will be deleted at the end of the testsuite
       uploadRepository.save(new Upload()
-          .setCategory(UploadCategory.LEGEND)
+          .setCategory(UploadCategory.UNRESTRICTED)
           .setFilename("upload" + i + ".png")
           .setMimeType("image/png")
           .setContent(new ClassPathResource("test/upload.png").getContentAsByteArray())
