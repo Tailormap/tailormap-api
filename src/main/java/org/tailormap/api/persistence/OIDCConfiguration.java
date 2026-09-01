@@ -55,6 +55,8 @@ public class OIDCConfiguration extends AuditMetadata {
 
   private String rolesClaimFilterRegex;
 
+  private boolean disableAutomaticGroupCreation;
+
   public Long getId() {
     return id;
   }
@@ -160,6 +162,15 @@ public class OIDCConfiguration extends AuditMetadata {
 
   public OIDCConfiguration setRolesClaimFilterRegex(String rolesClaimFilter) {
     this.rolesClaimFilterRegex = rolesClaimFilter;
+    return this;
+  }
+
+  public boolean isDisableAutomaticGroupCreation() {
+    return disableAutomaticGroupCreation;
+  }
+
+  public OIDCConfiguration setDisableAutomaticGroupCreation(boolean disableAutomaticGroupCreation) {
+    this.disableAutomaticGroupCreation = disableAutomaticGroupCreation;
     return this;
   }
 }

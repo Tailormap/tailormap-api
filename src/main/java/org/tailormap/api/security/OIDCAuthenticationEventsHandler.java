@@ -16,14 +16,19 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.OIDCConfiguration;
 import org.tailormap.api.repository.GroupRepository;
+import org.tailormap.api.repository.OIDCConfigurationRepository;
 
 @Component
 public class OIDCAuthenticationEventsHandler {
   private final GroupRepository groupRepository;
+  private final OIDCConfigurationRepository oidcConfigurationRepository;
 
-  public OIDCAuthenticationEventsHandler(GroupRepository groupRepository) {
+  public OIDCAuthenticationEventsHandler(
+      GroupRepository groupRepository, OIDCConfigurationRepository oidcConfigurationRepository) {
     this.groupRepository = groupRepository;
+    this.oidcConfigurationRepository = oidcConfigurationRepository;
   }
 
   @EventListener
@@ -31,15 +36,32 @@ public class OIDCAuthenticationEventsHandler {
   public void onSuccess(AuthenticationSuccessEvent success) {
     if (success.getSource() instanceof OAuth2LoginAuthenticationToken token
         && token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
+      String registrationId = token.getClientRegistration().getRegistrationId();
       String clientId = token.getClientRegistration().getClientId();
+
+      OIDCConfiguration oidcConfiguration = null;
+      if (!"static".equals(registrationId)) {
+        try {
+          oidcConfiguration = oidcConfigurationRepository
+              .findById(Long.parseLong(registrationId))
+              .orElse(null);
+        } catch (NumberFormatException ignored) {
+          oidcConfiguration = null;
+        }
+      }
+      boolean createNewGroup = oidcConfiguration == null || !oidcConfiguration.isDisableAutomaticGroupCreation();
 
       List<String> roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList("roles"))
           .orElseGet(Collections::emptyList);
 
       for (String role : roles) {
-        Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
-        group.oidcClientIdSeen(clientId);
-        groupRepository.save(group);
+        Group group = groupRepository
+            .findById(role)
+            .orElseGet(() -> createNewGroup ? new Group().setName(role) : null);
+        if (group != null) {
+          group.oidcClientIdSeen(clientId);
+          groupRepository.save(group);
+        }
       }
     }
   }
