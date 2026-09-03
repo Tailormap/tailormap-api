@@ -5,7 +5,6 @@
 set -euo pipefail
 
 export SOLR_OPTS=""
-export COMPOSE_PARALLEL_LIMIT=-1
 
 docker compose -f ./build/ci/docker-compose.yml up --pull=always --quiet-pull -d
 
