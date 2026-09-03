@@ -684,15 +684,15 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                 Scan Information (<a href="#" title="Click to toggle display" id="scanInformationToggle">show all</a>):<br/>
                     <ul class="indent">
                         <li><i>dependency-check version</i>: 13.0.0</li>
-                        <li><i>Report Generated On</i>: Tue, 1 Sep 2026 15:02:51 GMT</li>
+                        <li><i>Report Generated On</i>: Thu, 3 Sep 2026 08:03:05 GMT</li>
                         <li><i>Dependencies Scanned</i>:&nbsp;305 (192 unique)</li>
-                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">2</span></li>
-                        <li><i>Vulnerabilities Found</i>:&nbsp;3</li>
+                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">3</span></li>
+                        <li><i>Vulnerabilities Found</i>:&nbsp;4</li>
                         <li><i>Vulnerabilities Suppressed</i>:&nbsp;0
                         </li>
                         <li class="scaninfo">...</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-09-01T15:02:18Z</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-09-01T14:58:27Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-09-03T07:09:33Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-09-03T05:16:47Z</li>
                     </ul><br/>
 <h2>Summary</h2>
                 <p><span id="tablecaption-plain">Summary of Vulnerable Dependencies </span><a href="#" title="Click to toggle display" id="vulnerabilityDisplayToggle">(click to show all)</a></p>
@@ -2628,7 +2628,7 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="0">Highest</td>
                         <td>27</td>
                     </tr>
-                    <tr class="notvulnerable">
+                    <tr class=" vulnerable">
                         <td data-sort-value="SPRING-BOOT-DATA-REST-4.1.1.JAR"><a href="#l155_662ff99974ba86c3ef31ebda2ee3eb6ce33e8392">spring-boot-data-rest-4.1.1.jar</a></td>
                         <td data-sort-value="cpe:2.3:a:pivotal_software:spring_data_rest:4.1.1:*:*:*:*:*:*:*cpe:2.3:a:vmware:spring_boot:4.1.1:*:*:*:*:*:*:*cpe:2.3:a:vmware:spring_data_rest:4.1.1:*:*:*:*:*:*:*">
                                 <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Apivotal_software%3Aspring_data_rest%3A4.1.1%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:pivotal_software:spring_data_rest:4.1.1:*:*:*:*:*:*:*</a>
@@ -2640,8 +2640,8 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="pkg:maven/org.springframework.boot/spring-boot-data-rest@4.1.1">
                                 pkg:maven/org.springframework.boot/spring-boot-data-rest@4.1.1
 </td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
+                                                                                <td data-sort-value="71.0">HIGH</td>
+                        <td>1</td>
                         <td data-sort-value="0">Highest</td>
                         <td>42</td>
                     </tr>
@@ -14204,8 +14204,8 @@ Not affected:
                                     </ul></p>
                     </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l155_662ff99974ba86c3ef31ebda2ee3eb6ce33e8392"></a>spring-boot-data-rest-4.1.1.jar</h3>
-                    <div class="subsectioncontent notvulnerable">
+                    <h3 class="subsectionheader standardsubsection"><a name="l155_662ff99974ba86c3ef31ebda2ee3eb6ce33e8392"></a>spring-boot-data-rest-4.1.1.jar</h3>
+                    <div class="subsectioncontent">
                             <p><b>Description:</b><pre>Spring Boot Data REST</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0</pre>
@@ -14284,6 +14284,34 @@ Not affected:
                             </li>
                             </ul>
                         </div>
+                    <h4 id="header323" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content323" class="subsectioncontent standardsubsection">
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-47849">CVE-2026-47849</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="spring-boot-data-rest-4.1.1.jar" data-sha1="662ff99974ba86c3ef31ebda2ee3eb6ce33e8392" data-pkgurl="pkg:maven/org.springframework.boot/spring-boot-data-rest@4.1.1" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-47849">suppress</button></p>
+                            <p>                            <pre>Spring Data REST does not guard identifier (@Id) and version (@Version) properties against mutation via RFC 6902 JSON Patch (application/json-patch+json) requests.
+Spring Data REST 5.1.0
+Spring Data REST 5.0.0 - 5.0.6
+Spring Data REST 4.5.0 - 4.5.12
+Spring Data REST 4.0.0 - 4.4.15
+Spring Data REST 3.7.20 and earlier</pre>
+
+                                CWE-915 Improperly Controlled Modification of Dynamically-Determined Object Attributes<br/><br/>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.1)</li>
+                                <li>Vector: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>security@vmware.com - <a target="_blank" href="https://spring.io/security/cve-2026-47849">VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:&nbsp;(<a href="#" class="versionToggle" data-toggle=".vs4">show all</a>)<ul>
+                                        <li class="vs4"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions from (including) 4.0.0; versions up to (excluding) 4.4.16</a></li>
+                                        <li class="vs4">...</li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions up to (excluding) 3.7.21</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions from (including) 4.0.0; versions up to (excluding) 4.4.16</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions from (including) 4.5.0; versions up to (excluding) 4.5.13</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions from (including) 5.0.0; versions up to (excluding) 5.0.6.1</a></li>
+                                        <li class="vs4 hidden"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Avmware%3Aspring_data_rest%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:vmware:spring_data_rest:*:*:*:*:*:*:*:* versions from (including) 5.1.0; versions up to (excluding) 5.1.0.1</a></li>
+                                    </ul></p>
+                    </div>
                 </div>
                     <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l156_37e49905413e22e4a4ba670b86e644442e55732d"></a>spring-boot-security-oauth2-client-4.1.1.jar</h3>
                     <div class="subsectioncontent notvulnerable">
@@ -14297,8 +14325,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-boot-security-oauth2-client-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-client@4.1.1
                         </p>
-                        <h4 id="header323" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content323" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header324" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content324" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-boot-security-oauth2-client</td><td>High</td></tr>
@@ -14345,8 +14373,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header324" class="subsectionheader white">Identifiers</h4>
-                        <div id="content324" class="subsectioncontent standardsubsection">
+                        <h4 id="header325" class="subsectionheader white">Identifiers</h4>
+                        <div id="content325" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.boot/spring-boot-security-oauth2-client@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14374,8 +14402,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-boot-sql-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-data-jpa@4.1.1
                         </p>
-                        <h4 id="header325" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content325" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header326" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content326" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-boot-sql</td><td>High</td></tr>
@@ -14420,8 +14448,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header326" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content326" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header327" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content327" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-boot-session-4.1.1.jar
                                     <ul>
@@ -14452,8 +14480,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header327" class="subsectionheader white">Identifiers</h4>
-                        <div id="content327" class="subsectioncontent standardsubsection">
+                        <h4 id="header328" class="subsectionheader white">Identifiers</h4>
+                        <div id="content328" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.boot/spring-boot-sql@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14481,8 +14509,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-boot-web-server-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-webmvc-test@4.1.1
                         </p>
-                        <h4 id="header328" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content328" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header329" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content329" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-boot-web-server</td><td>High</td></tr>
@@ -14529,8 +14557,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header329" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content329" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header330" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content330" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-boot-4.1.1.jar
                                     <ul>
@@ -14921,8 +14949,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header330" class="subsectionheader white">Identifiers</h4>
-                        <div id="content330" class="subsectioncontent standardsubsection">
+                        <h4 id="header331" class="subsectionheader white">Identifiers</h4>
+                        <div id="content331" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.boot/spring-boot-web-server@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -14946,8 +14974,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-core-7.0.9.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.hateoas/spring-hateoas@3.1.2
                         </p>
-                        <h4 id="header331" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content331" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header332" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content332" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-core</td><td>High</td></tr>
@@ -14993,8 +15021,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>7.0.9</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header332" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content332" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header333" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content333" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-aop-7.0.9.jar
                                     <ul>
@@ -15097,8 +15125,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header333" class="subsectionheader white">Identifiers</h4>
-                        <div id="content333" class="subsectioncontent standardsubsection">
+                        <h4 id="header334" class="subsectionheader white">Identifiers</h4>
+                        <div id="content334" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework/spring-core@7.0.9
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15129,8 +15157,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-data-commons-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.data/spring-data-rest-webmvc@5.1.1
                         </p>
-                        <h4 id="header334" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content334" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header335" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content335" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-data-commons</td><td>High</td></tr>
@@ -15167,8 +15195,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header335" class="subsectionheader white">Identifiers</h4>
-                        <div id="content335" class="subsectioncontent standardsubsection">
+                        <h4 id="header336" class="subsectionheader white">Identifiers</h4>
+                        <div id="content336" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.data/spring-data-commons@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15187,8 +15215,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-data-envers-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
-                        <h4 id="header336" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content336" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header337" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content337" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-data-envers</td><td>High</td></tr>
@@ -15249,8 +15277,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header337" class="subsectionheader white">Identifiers</h4>
-                        <div id="content337" class="subsectioncontent standardsubsection">
+                        <h4 id="header338" class="subsectionheader white">Identifiers</h4>
+                        <div id="content338" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.data/spring-data-envers@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15273,8 +15301,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-data-jpa-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.data/spring-data-envers@4.1.1
                         </p>
-                        <h4 id="header338" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content338" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header339" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content339" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-data-jpa</td><td>High</td></tr>
@@ -15309,8 +15337,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header339" class="subsectionheader white">Identifiers</h4>
-                        <div id="content339" class="subsectioncontent standardsubsection">
+                        <h4 id="header340" class="subsectionheader white">Identifiers</h4>
+                        <div id="content340" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.data/spring-data-jpa@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15333,8 +15361,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-data-rest-core-5.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.data/spring-data-rest-webmvc@5.1.1
                         </p>
-                        <h4 id="header340" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content340" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header341" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content341" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-data-rest-core</td><td>High</td></tr>
@@ -15369,8 +15397,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>5.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header341" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content341" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header342" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content342" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-data-rest-webmvc-5.1.1.jar
                                     <ul>
@@ -15383,8 +15411,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header342" class="subsectionheader white">Identifiers</h4>
-                        <div id="content342" class="subsectioncontent standardsubsection">
+                        <h4 id="header343" class="subsectionheader white">Identifiers</h4>
+                        <div id="content343" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.data/spring-data-rest-core@5.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15413,8 +15441,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-hateoas-3.1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
-                        <h4 id="header343" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content343" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header344" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content344" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-hateoas</td><td>High</td></tr>
@@ -15465,8 +15493,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>3.1.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header344" class="subsectionheader white">Identifiers</h4>
-                        <div id="content344" class="subsectioncontent standardsubsection">
+                        <h4 id="header345" class="subsectionheader white">Identifiers</h4>
+                        <div id="content345" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.hateoas/spring-hateoas@3.1.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15490,8 +15518,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-plugin-core-4.1.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.hateoas/spring-hateoas@3.1.2
                         </p>
-                        <h4 id="header345" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content345" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header346" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content346" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-plugin-core</td><td>High</td></tr>
@@ -15538,8 +15566,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header346" class="subsectionheader white">Identifiers</h4>
-                        <div id="content346" class="subsectioncontent standardsubsection">
+                        <h4 id="header347" class="subsectionheader white">Identifiers</h4>
+                        <div id="content347" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.plugin/spring-plugin-core@4.1.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15559,8 +15587,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-security-core-7.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.security/spring-security-test@7.1.1
                         </p>
-                        <h4 id="header347" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content347" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header348" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content348" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-security-core</td><td>High</td></tr>
@@ -15603,8 +15631,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>7.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header348" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content348" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header349" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content349" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-security-config-7.1.1.jar
                                     <ul>
@@ -15635,8 +15663,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header349" class="subsectionheader white">Identifiers</h4>
-                        <div id="content349" class="subsectioncontent standardsubsection">
+                        <h4 id="header350" class="subsectionheader white">Identifiers</h4>
+                        <div id="content350" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.security/spring-security-core@7.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15664,8 +15692,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-security-oauth2-core-7.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-client@4.1.1
                         </p>
-                        <h4 id="header350" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content350" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header351" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content351" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-security-oauth2-core</td><td>High</td></tr>
@@ -15710,8 +15738,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>7.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header351" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content351" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header352" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content352" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-security-oauth2-client-7.1.1.jar
                                     <ul>
@@ -15733,8 +15761,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header352" class="subsectionheader white">Identifiers</h4>
-                        <div id="content352" class="subsectioncontent standardsubsection">
+                        <h4 id="header353" class="subsectionheader white">Identifiers</h4>
+                        <div id="content353" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.security/spring-security-oauth2-core@7.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15767,14 +15795,14 @@ Not affected:
                             <b>SHA256:</b>044a2b8d7e995bff815565678631a2d3a5cc0aa96ef8ac35cfacb579307f77a9
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header353" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content353" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header354" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content354" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                             </table>
                         </div>
-                        <h4 id="header354" class="subsectionheader white">Identifiers</h4>
-                        <div id="content354" class="subsectioncontent standardsubsection">
+                        <h4 id="header355" class="subsectionheader white">Identifiers</h4>
+                        <div id="content355" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -15790,8 +15818,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">spring-session-core-4.1.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.session/spring-session-jdbc@4.1.1
                         </p>
-                        <h4 id="header355" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content355" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header356" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content356" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>spring-session-core</td><td>High</td></tr>
@@ -15832,8 +15860,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.1.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header356" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content356" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header357" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content357" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>spring-session-jdbc-4.1.1.jar
                                     <ul>
@@ -15846,8 +15874,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header357" class="subsectionheader white">Identifiers</h4>
-                        <div id="content357" class="subsectioncontent standardsubsection">
+                        <h4 id="header358" class="subsectionheader white">Identifiers</h4>
+                        <div id="content358" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.springframework.session/spring-session-core@4.1.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15871,8 +15899,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">sqlite-jdbc-3.53.2.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header358" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content358" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header359" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content359" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlite-jdbc</td><td>High</td></tr>
@@ -15915,8 +15943,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>3.53.2.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header359" class="subsectionheader white">Identifiers</h4>
-                        <div id="content359" class="subsectioncontent standardsubsection">
+                        <h4 id="header360" class="subsectionheader white">Identifiers</h4>
+                        <div id="content360" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -15941,16 +15969,16 @@ Not affected:
                             <b>SHA256:</b>a787685333653fee2b50000333dacbf90b6a35402ed13b8d904f52e0f9658b58
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header360" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content360" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header361" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content361" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header361" class="subsectionheader white">Identifiers</h4>
-                        <div id="content361" class="subsectioncontent standardsubsection">
+                        <h4 id="header362" class="subsectionheader white">Identifiers</h4>
+                        <div id="content362" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -15963,16 +15991,16 @@ Not affected:
                             <b>SHA256:</b>05ec98383fb2cebf1d32c1bc609d56960c448122585bc0d8feae607cc31eef03
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header362" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content362" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header363" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content363" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header363" class="subsectionheader white">Identifiers</h4>
-                        <div id="content363" class="subsectioncontent standardsubsection">
+                        <h4 id="header364" class="subsectionheader white">Identifiers</h4>
+                        <div id="content364" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -15985,16 +16013,16 @@ Not affected:
                             <b>SHA256:</b>8bc91b5fdd561fa0a115cf236508a114cba9962ce2baacb226a978f7025ca3f8
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header364" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content364" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header365" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content365" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header365" class="subsectionheader white">Identifiers</h4>
-                        <div id="content365" class="subsectioncontent standardsubsection">
+                        <h4 id="header366" class="subsectionheader white">Identifiers</h4>
+                        <div id="content366" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16007,16 +16035,16 @@ Not affected:
                             <b>SHA256:</b>7d3281c7adbf3d2fe6b07462dee9cb310194c302154175f172ced3aac05c91c3
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header366" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content366" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header367" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content367" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header367" class="subsectionheader white">Identifiers</h4>
-                        <div id="content367" class="subsectioncontent standardsubsection">
+                        <h4 id="header368" class="subsectionheader white">Identifiers</h4>
+                        <div id="content368" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16032,8 +16060,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">sse-eventbus-3.2.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
-                        <h4 id="header368" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content368" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header369" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content369" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sse-eventbus</td><td>High</td></tr>
@@ -16067,8 +16095,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>3.2.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header369" class="subsectionheader white">Identifiers</h4>
-                        <div id="content369" class="subsectioncontent standardsubsection">
+                        <h4 id="header370" class="subsectionheader white">Identifiers</h4>
+                        <div id="content370" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/ch.rasc/sse-eventbus@3.2.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16086,8 +16114,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">stats-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header370" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content370" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header371" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content371" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>stats</td><td>High</td></tr>
@@ -16113,8 +16141,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header371" class="subsectionheader white">Identifiers</h4>
-                        <div id="content371" class="subsectioncontent standardsubsection">
+                        <h4 id="header372" class="subsectionheader white">Identifiers</h4>
+                        <div id="content372" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/stats@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16134,8 +16162,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-2.2.54.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
-                        <h4 id="header372" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content372" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header373" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content373" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>swagger-annotations</td><td>High</td></tr>
@@ -16178,8 +16206,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.54</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header373" class="subsectionheader white">Identifiers</h4>
-                        <div id="content373" class="subsectioncontent standardsubsection">
+                        <h4 id="header374" class="subsectionheader white">Identifiers</h4>
+                        <div id="content374" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/io.swagger.core.v3/swagger-annotations@2.2.54
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16203,8 +16231,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-jakarta-2.2.22.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.apache.solr/solr-solrj@10.0.0
                         </p>
-                        <h4 id="header374" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content374" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header375" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content375" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>swagger-annotations-jakarta</td><td>High</td></tr>
@@ -16247,8 +16275,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.22</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header375" class="subsectionheader white">Identifiers</h4>
-                        <div id="content375" class="subsectioncontent standardsubsection">
+                        <h4 id="header376" class="subsectionheader white">Identifiers</h4>
+                        <div id="content376" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/io.swagger.core.v3/swagger-annotations-jakarta@2.2.22
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16272,8 +16300,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">systems-common-2.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.1
                         </p>
-                        <h4 id="header376" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content376" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header377" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content377" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>systems-common</td><td>High</td></tr>
@@ -16315,8 +16343,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header377" class="subsectionheader white">Identifiers</h4>
-                        <div id="content377" class="subsectioncontent standardsubsection">
+                        <h4 id="header378" class="subsectionheader white">Identifiers</h4>
+                        <div id="content378" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/systems.uom/systems-common@2.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16336,8 +16364,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-core-11.0.25.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1
                         </p>
-                        <h4 id="header378" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content378" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header379" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content379" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-core</td><td>High</td></tr>
@@ -16405,8 +16433,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.25</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header379" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content379" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header380" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content380" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>tomcat-embed-websocket-11.0.25.jar
                                     <ul>
@@ -16419,8 +16447,8 @@ Not affected:
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header380" class="subsectionheader white">Identifiers</h4>
-                        <div id="content380" class="subsectioncontent standardsubsection">
+                        <h4 id="header381" class="subsectionheader white">Identifiers</h4>
+                        <div id="content381" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16448,8 +16476,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-el-11.0.25.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-validation@4.1.1
                         </p>
-                        <h4 id="header381" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content381" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header382" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content382" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-el</td><td>High</td></tr>
@@ -16487,8 +16515,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.25</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header382" class="subsectionheader white">Identifiers</h4>
-                        <div id="content382" class="subsectioncontent standardsubsection">
+                        <h4 id="header383" class="subsectionheader white">Identifiers</h4>
+                        <div id="content383" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16506,8 +16534,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">translate-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header383" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content383" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header384" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content384" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>translate</td><td>High</td></tr>
@@ -16533,8 +16561,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header384" class="subsectionheader white">Identifiers</h4>
-                        <div id="content384" class="subsectioncontent standardsubsection">
+                        <h4 id="header385" class="subsectionheader white">Identifiers</h4>
+                        <div id="content385" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/translate@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16555,8 +16583,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
                                 <br/><span class="tooltip"><span class="tooltiptext">txw2-4.0.9.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.4.6.Final
                         </p>
-                        <h4 id="header385" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content385" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header386" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content386" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>txw2</td><td>High</td></tr>
@@ -16590,8 +16618,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.0.9</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header386" class="subsectionheader white">Identifiers</h4>
-                        <div id="content386" class="subsectioncontent standardsubsection">
+                        <h4 id="header387" class="subsectionheader white">Identifiers</h4>
+                        <div id="content387" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.glassfish.jaxb/txw2@4.0.9
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16613,8 +16641,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">unit-api-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.1
                         </p>
-                        <h4 id="header387" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content387" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header388" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content388" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>unit-api</td><td>High</td></tr>
@@ -16728,8 +16756,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header388" class="subsectionheader white">Identifiers</h4>
-                        <div id="content388" class="subsectioncontent standardsubsection">
+                        <h4 id="header389" class="subsectionheader white">Identifiers</h4>
+                        <div id="content389" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/javax.measure/unit-api@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16749,8 +16777,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">uom-lib-common-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.1
                         </p>
-                        <h4 id="header389" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content389" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header390" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content390" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>uom-lib-common</td><td>High</td></tr>
@@ -16798,8 +16826,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header390" class="subsectionheader white">Identifiers</h4>
-                        <div id="content390" class="subsectioncontent standardsubsection">
+                        <h4 id="header391" class="subsectionheader white">Identifiers</h4>
+                        <div id="content391" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/tech.uom.lib/uom-lib-common@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16817,8 +16845,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">utilities-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-main@35.1
                         </p>
-                        <h4 id="header391" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content391" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header392" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content392" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>utilities</td><td>High</td></tr>
@@ -16847,8 +16875,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header392" class="subsectionheader white">Identifiers</h4>
-                        <div id="content392" class="subsectioncontent standardsubsection">
+                        <h4 id="header393" class="subsectionheader white">Identifiers</h4>
+                        <div id="content393" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/utilities@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16868,8 +16896,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">value-2.12.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.8.4-SNAPSHOT
                         </p>
-                        <h4 id="header393" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content393" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header394" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content394" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>value</td><td>High</td></tr>
@@ -16899,8 +16927,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.12.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header394" class="subsectionheader white">Identifiers</h4>
-                        <div id="content394" class="subsectioncontent standardsubsection">
+                        <h4 id="header395" class="subsectionheader white">Identifiers</h4>
+                        <div id="content395" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.immutables/value@2.12.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16918,8 +16946,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">vectorbin-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header395" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content395" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header396" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content396" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>vectorbin</td><td>High</td></tr>
@@ -16945,8 +16973,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header396" class="subsectionheader white">Identifiers</h4>
-                        <div id="content396" class="subsectioncontent standardsubsection">
+                        <h4 id="header397" class="subsectionheader white">Identifiers</h4>
+                        <div id="content397" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/vectorbin@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16964,8 +16992,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">warp-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header397" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content397" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header398" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content398" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>warp</td><td>High</td></tr>
@@ -16991,8 +17019,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header398" class="subsectionheader white">Identifiers</h4>
-                        <div id="content398" class="subsectioncontent standardsubsection">
+                        <h4 id="header399" class="subsectionheader white">Identifiers</h4>
+                        <div id="content399" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/warp@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17010,8 +17038,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xml-commons-resolver-1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-xml@35.1
                         </p>
-                        <h4 id="header399" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content399" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header400" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content400" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xml-commons-resolver</td><td>High</td></tr>
@@ -17035,8 +17063,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>1.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header400" class="subsectionheader white">Identifiers</h4>
-                        <div id="content400" class="subsectioncontent standardsubsection">
+                        <h4 id="header401" class="subsectionheader white">Identifiers</h4>
+                        <div id="content401" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xml/xml-commons-resolver@1.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17056,8 +17084,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xmlbeans-5.3.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-excel-writer@35.1
                         </p>
-                        <h4 id="header401" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content401" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header402" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content402" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xmlbeans</td><td>High</td></tr>
@@ -17099,8 +17127,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>5.3.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header402" class="subsectionheader white">Identifiers</h4>
-                        <div id="content402" class="subsectioncontent standardsubsection">
+                        <h4 id="header403" class="subsectionheader white">Identifiers</h4>
+                        <div id="content403" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xmlbeans/xmlbeans@5.3.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17122,8 +17150,8 @@ Not affected:
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">zonal-0.9.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-geopkg@35.1
                         </p>
-                        <h4 id="header403" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content403" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header404" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content404" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>zonal</td><td>High</td></tr>
@@ -17149,8 +17177,8 @@ Not affected:
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>0.9.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header404" class="subsectionheader white">Identifiers</h4>
-                        <div id="content404" class="subsectioncontent standardsubsection">
+                        <h4 id="header405" class="subsectionheader white">Identifiers</h4>
+                        <div id="content405" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.eclipse.imagen/zonal@0.9.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)

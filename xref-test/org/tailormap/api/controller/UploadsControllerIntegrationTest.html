@@ -141,15 +141,16 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Test
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>   <strong class="jxr_keyword">void</strong> get_non_existent_latest_upload() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/unrestricted/latest"</span>)).andExpect(status().isNotFound());
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>   }
-<a class="jxr_linenumber" name="L138" href="#L138">138</a> 
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>   @Test
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">void</strong> get_non_existent_category_latest_upload() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/%s/latest"</span>.formatted(<span class="jxr_string">"non-existent-category"</span>)))
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         .andExpect(status().isBadRequest());
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>   }
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> }
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/"</span> + UploadCategory.THEME_FAVICON + <span class="jxr_string">"/latest"</span>))
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         .andExpect(status().isNotFound());
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   @Test
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>   <strong class="jxr_keyword">void</strong> get_non_existent_category_latest_upload() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     mockMvc.perform(get(apiBasePath + <span class="jxr_string">"/uploads/%s/latest"</span>.formatted(<span class="jxr_string">"non-existent-category"</span>)))
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         .andExpect(status().isBadRequest());
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>   }
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

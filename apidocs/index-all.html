@@ -857,6 +857,10 @@ RepositoryConstraintViolationException gets converted to JSON.</div>
 <dd>
 <div class="block">Check if the current user is authenticated, throws exception if not.</div>
 </dd>
+<dt><a href="org/tailormap/api/service/UploadsService.html#checkIfModifiedSince(java.util.UUID,long)" class="member-name-link">checkIfModifiedSince(UUID, long)</a> - Method in class org.tailormap.api.service.<a href="org/tailormap/api/service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a></dt>
+<dd>
+<div class="block">Checks if the upload with the given ID has been modified since the provided timestamp.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/CatalogNode.html#children(java.util.List)" class="member-name-link">children(List)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/CatalogNode.html" title="class in org.tailormap.api.persistence.json">CatalogNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#children(java.util.List)" class="member-name-link">children(List)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
@@ -1246,6 +1250,8 @@ instead of overwritten, which we don't want.</div>
 <dt><a href="org/tailormap/api/viewer/model/DrawingResponse.html#description(java.lang.String)" class="member-name-link">description(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/DrawingResponse.html" title="class in org.tailormap.api.viewer.model">DrawingResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerTreeNode.html#description(java.lang.String)" class="member-name-link">description(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/UploadsService.html#DESCRIPTION_HEADER_NAME" class="member-name-link">DESCRIPTION_HEADER_NAME</a> - Static variable in class org.tailormap.api.service.<a href="org/tailormap/api/service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/Task.html#DESCRIPTION_KEY" class="member-name-link">DESCRIPTION_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
 <dd>&nbsp;</dd>
@@ -4197,6 +4203,8 @@ it, which will be logged (only with stacktrace if loglevel is DEBUG).</div>
 <dd>
 <div class="block">Get latLonBoundingBox</div>
 </dd>
+<dt><a href="org/tailormap/api/controller/LayerAttachedUploadsController.html#getLayerAttachedUpload(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" class="member-name-link">getLayerAttachedUpload(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, HttpServletRequest, UploadCategory, UUID, String)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/LayerAttachedUploadsController.html" title="class in org.tailormap.api.controller">LayerAttachedUploadsController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterGroup.html#getLayerIds()" class="member-name-link">getLayerIds()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterGroup.html" title="class in org.tailormap.api.persistence.json">FilterGroup</a></dt>
 <dd>
 <div class="block">list of layer ids</div>
@@ -6588,6 +6596,10 @@ work).</div>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#latLonBoundingBox(org.tailormap.api.persistence.json.Bounds)" class="member-name-link">latLonBoundingBox(Bounds)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/UploadCategory.html#LAYER_ATTACHED_FILE" class="member-name-link">LAYER_ATTACHED_FILE</a> - Enum constant in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/LayerAttachedUploadsController.html" class="type-name-link" title="class in org.tailormap.api.controller">LayerAttachedUploadsController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/LayerAttachedUploadsController.html#%3Cinit%3E(org.tailormap.api.service.UploadsService,org.tailormap.api.repository.UploadRepository,org.tailormap.api.controller.UploadsController)" class="member-name-link">LayerAttachedUploadsController(UploadsService, UploadRepository, UploadsController)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/LayerAttachedUploadsController.html" title="class in org.tailormap.api.controller">LayerAttachedUploadsController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/LayerBoundsController.html" class="type-name-link" title="class in org.tailormap.api.controller">LayerBoundsController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
@@ -10436,6 +10448,10 @@ commonly produced by GeoServer.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#%3Cinit%3E()" class="member-name-link">Upload()</a> - Constructor for class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/UploadsService.html#UPLOAD_MARKDOWN_SCHEME" class="member-name-link">UPLOAD_MARKDOWN_SCHEME</a> - Static variable in class org.tailormap.api.service.<a href="org/tailormap/api/service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a></dt>
+<dd>
+<div class="block">The scheme used in Markdown files to reference an upload.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/UploadCategory.html" class="type-name-link" title="enum class in org.tailormap.api.persistence">UploadCategory</a> - Enum Class in <a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/events/UploadEventHandler.html" class="type-name-link" title="class in org.tailormap.api.repository.events">UploadEventHandler</a> - Class in <a href="org/tailormap/api/repository/events/package-summary.html">org.tailormap.api.repository.events</a></dt>
@@ -10460,7 +10476,11 @@ commonly produced by GeoServer.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/UploadsController.html" class="type-name-link" title="class in org.tailormap.api.controller">UploadsController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/UploadsController.html#%3Cinit%3E(org.tailormap.api.repository.UploadRepository)" class="member-name-link">UploadsController(UploadRepository)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/UploadsController.html" title="class in org.tailormap.api.controller">UploadsController</a></dt>
+<dt><a href="org/tailormap/api/controller/UploadsController.html#%3Cinit%3E(org.tailormap.api.repository.UploadRepository,org.tailormap.api.service.UploadsService)" class="member-name-link">UploadsController(UploadRepository, UploadsService)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/UploadsController.html" title="class in org.tailormap.api.controller">UploadsController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/UploadsService.html" class="type-name-link" title="class in org.tailormap.api.service">UploadsService</a> - Class in <a href="org/tailormap/api/service/package-summary.html">org.tailormap.api.service</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/service/UploadsService.html#%3Cinit%3E(org.tailormap.api.repository.UploadRepository)" class="member-name-link">UploadsService(UploadRepository)</a> - Constructor for class org.tailormap.api.service.<a href="org/tailormap/api/service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/projections/UploadSummary.html" class="type-name-link" title="interface in org.tailormap.api.persistence.projections">UploadSummary</a> - Interface in <a href="org/tailormap/api/persistence/projections/package-summary.html">org.tailormap.api.persistence.projections</a></dt>
 <dd>&nbsp;</dd>
