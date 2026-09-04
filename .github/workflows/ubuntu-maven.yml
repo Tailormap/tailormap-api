@@ -98,7 +98,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    if: github.actor != 'dependabot[bot]'
+    # if: github.actor != 'dependabot[bot]'
     needs: seed-cache
     steps:
       - uses: actions/checkout@v7
