@@ -46,9 +46,6 @@ public enum UploadCategory {
   public static List<UploadCategory> getUnrestrictedCategories() {
     return List.of(
         APP_LOGO,
-        // TODO move LEGEND to restricted categories when we have a new controller providing access to
-        //   restricted uploads
-        LEGEND,
         PORTAL_IMAGE,
         DRAWING_STYLE,
         DRAWING_STYLE_IMAGE,
@@ -59,11 +56,6 @@ public enum UploadCategory {
   }
 
   public static List<UploadCategory> getRestrictedCategories() {
-    return List.of(
-        LAYER_ATTACHED_FILE
-        // TODO add LEGEND to restricted categories when we have a new controller providing access to
-        //   restricted uploads
-        // , LEGEND
-        );
+    return List.of(LAYER_ATTACHED_FILE, LEGEND);
   }
 }
