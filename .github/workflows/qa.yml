@@ -33,6 +33,7 @@ jobs:
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v6
+        if: always()
         with:
           java-version: 25
           distribution: 'temurin'
@@ -40,10 +41,12 @@ jobs:
 
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5.1
+        if: always()
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: 'QA build with Maven'
+        if: always()
         run: mvn -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
       - uses: lcollins/pmd-github-action@v4.0.0
