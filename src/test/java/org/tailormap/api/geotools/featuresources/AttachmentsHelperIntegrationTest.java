@@ -222,7 +222,7 @@ class AttachmentsHelperIntegrationTest {
           fail("Attachments table '%s_attachments' does not exist.".formatted(featureTypeName));
         }
       }
-    } catch (SQLException | IOException e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
   }
@@ -240,7 +240,7 @@ class AttachmentsHelperIntegrationTest {
       assertEquals(attachmentMetadata.getFileName(), listed.getFileName());
       assertEquals(attachmentMetadata.getMimeType(), listed.getMimeType());
       assertEquals(attachmentMetadata.getAttachmentSize(), listed.getAttachmentSize());
-    } catch (SQLException | RuntimeException | IOException e) {
+    } catch (SQLException | IOException e) {
       fail(e.getMessage());
     }
   }
