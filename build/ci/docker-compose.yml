@@ -43,7 +43,7 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 45s
+      start_period: 30s
     restart: unless-stopped
 
   postgis:
@@ -60,10 +60,10 @@ services:
     networks:
       - tailormap-ci
     healthcheck:
-      interval: 1m
+      interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 1m
+      start_period: 30s
       test: pg_isready -U geodata
     restart: unless-stopped
 
@@ -82,10 +82,10 @@ services:
     networks:
       - tailormap-ci
     healthcheck:
-      interval: 1m
+      interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 1m
+      start_period: 30s
       test: /opt/mssql-tools18/bin/sqlcmd -No -U sa -P $$SA_PASSWORD -Q "select 1" -b -o /dev/null
     restart: unless-stopped
 
@@ -109,10 +109,10 @@ services:
     labels:
       traefik.enable: false
     healthcheck:
-      interval: 1m
+      interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 1m
+      start_period: 30s
       test: healthcheck.sh
     restart: unless-stopped
 
@@ -140,7 +140,7 @@ services:
       - tailormap
     healthcheck:
       test: 'curl -s http://localhost:8983/solr/tailormap/admin/ping | grep -q "OK" || exit 1'
-      start_period: 60s
+      start_period: 30s
       interval: 15s
       timeout: 5s
       retries: 3
@@ -178,8 +178,6 @@ services:
             --log.level=debug
             --enable-feature=exemplar-storage
     entrypoint: /bin/sh -c 'echo "$$PROM_CONFIG" > /etc/prometheus/prometheus.yml && /bin/prometheus $$CMD'
-    depends_on:
-      - solr
     volumes:
       - prometheus-data:/prometheus
     ports:
@@ -191,7 +189,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: 'wget --server-response --spider http://localhost:9090/query?query=up || exit 1'
-      start_period: 60s
+      start_period: 30s
       interval: 15s
       timeout: 5s
-      retries: 3
+      retries: 5

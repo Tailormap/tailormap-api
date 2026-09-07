@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.annotation;
 
+import digital.pragmatech.testing.SpringTestProfilerListener;
+import digital.pragmatech.testing.diagnostic.ContextDiagnosticApplicationInitializer;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,6 +17,8 @@ import org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.tailormap.api.configuration.JPAConfiguration;
 import org.tailormap.api.security.ActuatorSecurityConfiguration;
@@ -34,4 +38,8 @@ import org.tailormap.api.security.ApiSecurityConfiguration;
 @ComponentScan(basePackages = {"org.tailormap.api"})
 @EnableWebMvc
 @ActiveProfiles("postgresql")
+@TestExecutionListeners(
+    value = {SpringTestProfilerListener.class},
+    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@ContextConfiguration(initializers = ContextDiagnosticApplicationInitializer.class)
 public @interface PostgresIntegrationTest {}

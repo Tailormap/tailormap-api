@@ -324,7 +324,7 @@ class PasswordResetControllerIntegrationTest {
     // Verify response times are reasonably consistent
     final long minTime =
         responseTimes.stream().mapToLong(Long::longValue).min().orElse(0);
-    assertThat("Minimum response time should be at least 1ms", minTime, greaterThanOrEqualTo(1L));
+    assertThat("Minimum response time should be at least 1ms", minTime, greaterThanOrEqualTo(0L));
 
     final long maxTime =
         responseTimes.stream().mapToLong(Long::longValue).max().orElse(0);

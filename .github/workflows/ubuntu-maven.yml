@@ -44,7 +44,7 @@ jobs:
           maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: 'Download Maven dependencies' 
-        run: mvn -V dependency:go-offline dependency:resolve-plugins
+        run: mvn dependency:go-offline dependency:resolve-plugins
 
 
   build:
@@ -135,6 +135,15 @@ jobs:
           name: Test Results
           path: |
             target/failsafe-reports/TEST-*.xml       
+
+      - name: 'TestContext report'
+        id: html_preview
+        uses: pavi2410/html-preview-action@v5
+        with:
+          html_file: latest.html
+          site_root: target/spring-test-profiler
+          upload: auto
+          job_summary: true
 
       - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v7

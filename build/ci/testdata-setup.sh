@@ -6,7 +6,8 @@ set -euo pipefail
 
 export SOLR_OPTS=""
 
-docker compose -f ./build/ci/docker-compose.yml up --pull=always --quiet-pull -d
+printf "%(%T)T Starting test containers...\n"
+docker compose -f ./build/ci/docker-compose.yml up --pull=missing --quiet-pull -d
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
@@ -16,7 +17,7 @@ SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
 PROMETHEUS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" prometheus)
 _WAIT=0;
 
-printf "%(%T)T Waiting for services to be ready..."
+printf "%(%T)T Waiting for services to report healthy..."
 while :
 do
   printf " %d" "$_WAIT"
@@ -26,7 +27,7 @@ do
       [ "$POSTGRES_HEALTHY" == "healthy" ] &&
       [ "$SOLR_HEALTHY" == "healthy" ] &&
       [ "$PROMETHEUS_HEALTHY" == "healthy" ]; then
-    printf "\n%(%T)T Docker containers are healthy\n" -1
+    printf "\n%(%T)T All docker containers are healthy\n" -1
     break
   fi
 
@@ -41,7 +42,15 @@ do
   PROMETHEUS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" prometheus)
 done
 
-printf "\n%(%T)T Waiting for Oracle database to report it is ready to use... "
+
+printf "%(%T)T Backfilling Prometheus test data...\n"
+$(dirname "$0")/prometheus-backfill.sh > /tmp/prometheus-backfill.log
+docker compose -f ./build/ci/docker-compose.yml cp /tmp/prometheus-backfill.log prometheus:/prometheus/prometheus-backfill.log
+docker compose -f ./build/ci/docker-compose.yml exec -T prometheus promtool tsdb create-blocks-from openmetrics /prometheus/prometheus-backfill.log
+printf "\n%(%T)T Added backfill data to Prometheus\n"
+
+
+printf "\n%(%T)T Waiting for Oracle database to report it is ready to use..."
 _WAIT=0;
 while :
 do
@@ -54,12 +63,6 @@ do
     _WAIT=$((_WAIT+10))
 done
 
-# backfill Prometheus test data
-printf "%(%T)T Backfilling Prometheus test data...\n"
-$(dirname "$0")/prometheus-backfill.sh > /tmp/prometheus-backfill.log
-docker compose -f ./build/ci/docker-compose.yml cp /tmp/prometheus-backfill.log prometheus:/prometheus/prometheus-backfill.log
-docker compose -f ./build/ci/docker-compose.yml exec -T prometheus promtool tsdb create-blocks-from openmetrics /prometheus/prometheus-backfill.log
-printf "\n%(%T)T Added backfill data to Prometheus\n"
 
 # check that the data is present in Prometheus
 printf "\n%(%T)T Checking that backfill data is published in Prometheus..."

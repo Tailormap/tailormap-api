@@ -62,7 +62,7 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_with_bad_category() throws Exception {
-    mockMvc.perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
+    mockMvc.perform(get(apiBasePath + "/uploads/bad-category/not-a-uuid/file.txt"))
         .andExpect(status().isBadRequest());
   }
 

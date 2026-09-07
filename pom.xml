@@ -588,6 +588,12 @@ SPDX-License-Identifier: MIT
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>digital.pragmatech.testing</groupId>
+            <artifactId>spring-test-profiler</artifactId>
+            <version>0.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
@@ -1928,7 +1934,7 @@ SPDX-License-Identifier: MIT
                                         <profile>populate-testdata</profile>
                                     </profiles>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <jvmArguments>${failsafeArgLine} -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
+                                    <jvmArguments>${failsafeArgLine} -DskipTests -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
                                 </configuration>
                             </execution>
                         </executions>
