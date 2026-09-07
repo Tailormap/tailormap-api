@@ -10,22 +10,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.tailormap.api.persistence.Configuration.DEFAULT_APP;
 
+import ch.rasc.sse.eventbus.SseEventBus;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
-import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.security.InternalAdminAuthentication;
 
-@PostgresIntegrationTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("postgresql")
 @TestMethodOrder(OrderAnnotation.class)
 class ConfigurationRepositoryIntegrationTest {
 
   @Autowired
   private ConfigurationRepository configurationRepository;
+
+  @MockitoBean
+  private SseEventBus sseEventBus;
 
   @Test
   @Order(1)

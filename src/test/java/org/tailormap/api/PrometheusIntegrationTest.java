@@ -22,18 +22,16 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junitpioneer.jupiter.RetryingTest;
-import org.junitpioneer.jupiter.displaynamegenerator.ReplaceCamelCaseAndUnderscoreAndNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.prometheus.PrometheusResultProcessor;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
@@ -44,9 +42,15 @@ import tools.jackson.databind.node.ArrayNode;
  * Integration tests for the Prometheus service. These tests assume that the Prometheus server is running on
  * localhost:9090 and that the tailormap_app_request_total metric is available.
  */
-@PostgresIntegrationTest
+@RestClientTest(
+    properties = {
+      "tailormap-api.prometheus-api-url=http://localhost:9090/api/v1",
+      // get the total count over the last #NUMBER_OF_DAYS# days
+      "tailormap-api.prometheus-api-appmetrics-totals=floor(increase(tailormap_app_request_total[#NUMBER_OF_DAYS#d]))",
+      // get the last update within the last #NUMBER_OF_DAYS# days
+      "tailormap-api.prometheus-api-appmetrics-updated=time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[#NUMBER_OF_DAYS#d:1m])"
+    })
 @Order(PROMETHEUS_INTEGRATION_TEST_ORDER)
-@DisplayNameGeneration(ReplaceCamelCaseAndUnderscoreAndNumber.class)
 public class PrometheusIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
