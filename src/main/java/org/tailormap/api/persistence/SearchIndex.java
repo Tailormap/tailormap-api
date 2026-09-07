@@ -46,13 +46,13 @@ public class SearchIndex extends AuditMetadata implements Serializable {
   @JsonProperty("searchFieldsUsed")
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
-  @Valid private List<String> searchFieldsUsed = new ArrayList<>();
+  private List<@Valid String> searchFieldsUsed = new ArrayList<>();
 
   /** List of attribute names for display that were used when building the search index. */
   @JsonProperty("searchDisplayFieldsUsed")
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
-  @Valid private List<String> searchDisplayFieldsUsed = new ArrayList<>();
+  private List<@Valid String> searchDisplayFieldsUsed = new ArrayList<>();
 
   @JsonProperty("summary")
   @JdbcTypeCode(SqlTypes.JSON)
