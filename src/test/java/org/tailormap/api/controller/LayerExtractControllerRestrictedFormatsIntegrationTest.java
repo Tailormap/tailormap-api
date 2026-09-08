@@ -31,7 +31,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 /** These testcase run with a subset of the available formats. */
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
-@TestPropertySource(properties = {"tailormap-api.extract.allowed-outputformats=csv,shape"})
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class LayerExtractControllerRestrictedFormatsIntegrationTest {
   private static final String formatsPath = "/extract/formats";
   private static final String extractPath = "/extract/";

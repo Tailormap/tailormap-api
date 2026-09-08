@@ -44,7 +44,7 @@ jobs:
           maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: 'Download Maven dependencies' 
-        run: mvn -V dependency:go-offline dependency:resolve-plugins
+        run: mvn dependency:go-offline dependency:resolve-plugins
 
 
   build:

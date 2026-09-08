@@ -101,7 +101,7 @@ public abstract class FeatureSourceHelper {
               .source(si.getSource())));
 
       List<String> typeNames = Arrays.asList(ds.getTypeNames());
-      logger.info(
+      logger.debug(
           "Type names for {} {}: {}",
           tmfs.getProtocol().getValue(),
           tmfs.getProtocol() == TMFeatureSource.Protocol.WFS ? tmfs.getUrl() : tmfs.getJdbcConnection(),
@@ -109,7 +109,7 @@ public abstract class FeatureSourceHelper {
 
       tmfs.getFeatureTypes().removeIf(tmft -> {
         if (!typeNames.contains(tmft.getName())) {
-          logger.info("Feature type removed: {}", tmft.getName());
+          logger.debug("Feature type removed: {}", tmft.getName());
           return true;
         } else {
           return false;
@@ -148,7 +148,7 @@ public abstract class FeatureSourceHelper {
                   primaryKeyName = gtAttr.getLocalName();
                 } else {
                   logger.warn(
-                      "Multiple primary key attributes found for type \"{}\": \"{}\" and \"{}\". Composite primary keys are not supported for writing at the moment, setting as read-only.",
+                      "Multiple primary key attributes found for type \"{}\": \"{}\" and \"{}\". Composite primary keys are not supported for writing, setting as read-only.",
                       typeName,
                       primaryKeyName,
                       gtAttr.getLocalName());

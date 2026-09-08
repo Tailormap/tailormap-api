@@ -8,21 +8,30 @@ package org.tailormap.api.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.rasc.sse.eventbus.SseEventBus;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
-import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 
-@PostgresIntegrationTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("postgresql")
 class UploadRepositoryIntegrationTest {
 
   @Autowired
   private UploadRepository uploadRepository;
+
+  @MockitoBean
+  private SseEventBus sseEventBus;
 
   @Test
   @Transactional(label = "inserts and removes an upload")

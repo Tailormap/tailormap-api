@@ -48,7 +48,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
-@TestPropertySource(properties = {"tailormap-api.unique.use_geotools_unique_function=false"})
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 @Order(SECOND_INTEGRATION_TEST_ORDER)
 class UniqueValuesControllerReConfiguredIntegrationTest {
   private static final String provinciesWFSUrl =

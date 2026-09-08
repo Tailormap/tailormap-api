@@ -13,14 +13,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.FeatureTypeRepository;
 
-@PostgresIntegrationTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("postgresql")
 class SearchIndexValidatorIntegrationTest {
   private SearchIndexValidator searchIndexValidator;
 

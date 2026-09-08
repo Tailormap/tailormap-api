@@ -466,6 +466,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
@@ -914,6 +918,8 @@ SPDX-License-Identifier: MIT
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                     <trimStackTrace>false</trimStackTrace>
+                    <parallel>all</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
                 </configuration>
             </plugin>
             <plugin>
@@ -1532,6 +1538,7 @@ SPDX-License-Identifier: MIT
                                 <banTransitiveDependencies>
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-rest</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-restclient-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-webmvc</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-json</exclude>
@@ -1928,7 +1935,7 @@ SPDX-License-Identifier: MIT
                                         <profile>populate-testdata</profile>
                                     </profiles>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <jvmArguments>${failsafeArgLine} -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
+                                    <jvmArguments>${failsafeArgLine} -DskipTests -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1945,6 +1952,8 @@ SPDX-License-Identifier: MIT
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skipITs>${skipTests}</skipITs>
+                            <parallel>all</parallel>
+                            <useUnlimitedThreads>true</useUnlimitedThreads>
                         </configuration>
                         <executions>
                             <execution>

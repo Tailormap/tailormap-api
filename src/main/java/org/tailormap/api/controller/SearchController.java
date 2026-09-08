@@ -101,7 +101,7 @@ public class SearchController {
       logger.error("Error while contacting Solr", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error while searching", e);
     } catch (SolrException e) {
-      logger.error("Error while searching", e);
+      logger.error("Error while searching with given query", e);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while searching with given query", e);
     }
   }

@@ -487,7 +487,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       query.add("d", solrDistance.toString());
     }
     query.set("q.op", "AND");
-    logger.info("Solr query: {}", query);
+    logger.debug("Solr query: {}", query);
 
     final QueryResponse response = solrClient.query(query);
     logger.trace("response: {}", response);

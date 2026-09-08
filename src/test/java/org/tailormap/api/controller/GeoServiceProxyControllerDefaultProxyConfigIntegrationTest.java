@@ -30,13 +30,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(
-    properties = {
-      // Use the default proxy configuration, which denies layer patterns,
-      // to test the default configuration of the GeoServiceProxyController
-      "tailormap-api.proxy.passthrough.hostnames=",
-      "tailormap-api.proxy.passthrough.layerpatterns="
-    })
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class GeoServiceProxyControllerDefaultProxyConfigIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";

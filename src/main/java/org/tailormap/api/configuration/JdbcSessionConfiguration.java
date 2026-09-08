@@ -89,7 +89,7 @@ AND ATTRIBUTE_NAME = ?
     // Object -> byte[] (serialize to JSON bytes)
     converter.addConverter(Object.class, byte[].class, source -> {
       try {
-        logger.debug("Serializing Spring Session: {}", source);
+        logger.trace("Serializing Spring Session: {}", source);
         return mapper.writerFor(Object.class).writeValueAsBytes(source);
       } catch (JacksonException e) {
         logger.error("Error serializing Spring Session object: {}", source, e);
@@ -99,7 +99,7 @@ AND ATTRIBUTE_NAME = ?
     // byte[] -> Object (deserialize from JSON bytes)
     converter.addConverter(byte[].class, Object.class, source -> {
       try {
-        logger.debug(
+        logger.trace(
             "Deserializing Spring Session from bytes, length: {} ({})",
             source.length,
             new String(source, StandardCharsets.UTF_8));
