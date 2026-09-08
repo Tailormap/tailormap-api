@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  @AutoConfigureMockMvc
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  @Execution(ExecutionMode.CONCURRENT)
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  @Stopwatch
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @TestPropertySource(properties = {<span class="jxr_string">"tailormap-api.unique.use_geotools_unique_function=false"</span>})
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @TestPropertySource(locations = {<span class="jxr_string">"classpath:application-postgresql-overrides.properties"</span>})
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  @Order(SECOND_INTEGRATION_TEST_ORDER)
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">class</strong> UniqueValuesControllerReConfiguredIntegrationTest {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String provinciesWFSUrl =

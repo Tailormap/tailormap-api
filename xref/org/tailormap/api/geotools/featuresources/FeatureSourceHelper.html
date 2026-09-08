@@ -109,7 +109,7 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>               .source(si.getSource())));
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>       List&lt;String&gt; typeNames = Arrays.asList(ds.getTypeNames());
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>       logger.info(
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>       logger.debug(
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>           <span class="jxr_string">"Type names for {} {}: {}"</span>,
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>           tmfs.getProtocol().getValue(),
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>           tmfs.getProtocol() == TMFeatureSource.Protocol.WFS ? tmfs.getUrl() : tmfs.getJdbcConnection(),
@@ -117,7 +117,7 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>       tmfs.getFeatureTypes().removeIf(tmft -&gt; {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">if</strong> (!typeNames.contains(tmft.getName())) {
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>           logger.info(<span class="jxr_string">"Feature type removed: {}"</span>, tmft.getName());
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>           logger.debug(<span class="jxr_string">"Feature type removed: {}"</span>, tmft.getName());
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>           <strong class="jxr_keyword">return</strong> false;
@@ -156,7 +156,7 @@
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>                   primaryKeyName = gtAttr.getLocalName();
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>                 } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                   logger.warn(
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>                       <span class="jxr_string">"Multiple primary key attributes found for type \&quot;{}\&quot;: \&quot;{}\&quot; and \&quot;{}\&quot;. Composite primary keys are not supported for writing at the moment, setting as read-only."</span>,
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>                       <span class="jxr_string">"Multiple primary key attributes found for type \&quot;{}\&quot;: \&quot;{}\&quot; and \&quot;{}\&quot;. Composite primary keys are not supported for writing, setting as read-only."</span>,
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>                       typeName,
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>                       primaryKeyName,
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>                       gtAttr.getLocalName());
