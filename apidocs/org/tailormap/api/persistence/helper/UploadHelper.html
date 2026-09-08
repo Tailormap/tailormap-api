@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#getUrlForImage(java.lang.String,org.tailormap.api.persistence.UploadCategory)" tabindex="0">getUrlForImage(String, UploadCategory)</a></li>
 <li><a href="#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" tabindex="0">getUrlForImage(UUID, UploadCategory)</a></li>
+<li><a href="#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" tabindex="0">getUrlForLayerAttachedImage(UUID, UploadCategory, Application, String)</a></li>
 </ol>
 </li>
 </ol>
@@ -119,6 +120,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
  <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">getUrlForLayerAttachedImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
+ <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
+ <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;layerId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.</div>
+</div>
 </div>
 </div>
 </div>
@@ -167,6 +176,27 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getUrlForImage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
  <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)">
+<h3>getUrlForLayerAttachedImage</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getUrlForLayerAttachedImage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
+ <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
+ <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;layerId)</span></div>
+<div class="block">Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>imageId</code> - the id of the image</dd>
+<dd><code>category</code> - the category of the image, e.g. LEGEND</dd>
+<dd><code>application</code> - the application the image is attached to</dd>
+<dd><code>layerId</code> - the id of the layer the image is attached to</dd>
+<dt>Returns:</dt>
+<dd>the URL for the layer-attached image or null</dd>
+</dl>
 </div>
 </section>
 </li>

@@ -210,7 +210,49 @@
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>             .header(<span class="jxr_string">"If-Modified-Since"</span>, <span class="jxr_string">"Wed, 12 Jun 2001 09:48:38 GMT"</span>))
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         .andExpect(status().isBadRequest());
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>   }
-<a class="jxr_linenumber" name="L205" href="#L205">205</a> }
+<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>   @Test
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>   <strong class="jxr_keyword">void</strong> get_gemeentegebied_legend_image() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>     Upload uploadedLegend = uploadRepository
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         .findWithContentByCategoryAndFilename(UploadCategory.LEGEND, <span class="jxr_string">"gemeentegebied-legend.png"</span>)
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Upload 'gemeentegebied-legend.png' not found"</span>));
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> 
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>         + <span class="jxr_string">"/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/uploads/"</span>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>         + UploadCategory.LEGEND + <span class="jxr_string">"/"</span> + uploadedLegend.getId() + <span class="jxr_string">"/gemeentegebied-legend.png"</span>;
+<a class="jxr_linenumber" name="L215" href="#L215">215</a> 
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     mockMvc.perform(MockMvcRequestBuilders.get(path)
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>             .accept(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG)
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>             .with(setServletPath(path)))
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         .andExpect(content().contentType(MediaType.IMAGE_PNG))
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         .andExpect(header().exists(<span class="jxr_string">"Last-Modified"</span>))
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         .andExpect(content()
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>             .bytes(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/gemeentegebied-legend.png"</span>).getContentAsByteArray()));
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>   }
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> 
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>   @Test
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>   <strong class="jxr_keyword">void</strong> get_gemeentegebied_legend_in_description() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>     Upload uploadedLegend = uploadRepository
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>         .findWithContentByCategoryAndFilename(UploadCategory.LEGEND, <span class="jxr_string">"gemeentegebied-legend.png"</span>)
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> RuntimeException(<span class="jxr_string">"Upload 'gemeentegebied-legend.png' not found"</span>));
+<a class="jxr_linenumber" name="L232" href="#L232">232</a> 
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         + <span class="jxr_string">"/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/uploads/"</span>
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         + UploadCategory.LEGEND + <span class="jxr_string">"/"</span> + uploadedLegend.getId() + <span class="jxr_string">"/gemeentegebied-legend.png"</span>;
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>     mockMvc.perform(MockMvcRequestBuilders.get(path)
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>             .accept(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG)
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>             .with(setServletPath(path)))
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         .andExpect(content().contentType(MediaType.IMAGE_PNG))
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>         .andExpect(header().exists(<span class="jxr_string">"Last-Modified"</span>))
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         .andExpect(content()
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>             .bytes(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/gemeentegebied-legend.png"</span>).getContentAsByteArray()));
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>   }
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

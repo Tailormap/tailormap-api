@@ -95,9 +95,9 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;byte[]&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">UploadsController.</span><code><a href="../../controller/UploadsController.html#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.lang.String,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
+<div class="col-second even-row-color"><span class="type-name-label">UploadsController.</span><code><a href="../../controller/UploadsController.html#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;idString,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -115,6 +115,11 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">UploadsAdminController.</span><code><a href="../../controller/admin/UploadsAdminController.html#findUploadsByHash(org.tailormap.api.persistence.UploadCategory,java.util.List)" class="member-name-link">findUploadsByHash</a><wbr>(<a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;hashes)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;byte[]&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UploadsAdminController.</span><code><a href="../../controller/admin/UploadsAdminController.html#getUpload(org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" class="member-name-link">getUpload</a><wbr>(<a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -189,6 +194,14 @@ the order they are declared.</div>
 <div class="col-second odd-row-color"><span class="type-name-label">UploadHelper.</span><code><a href="../helper/UploadHelper.html#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
  <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">UploadHelper.</span><code><a href="../helper/UploadHelper.html#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">getUrlForLayerAttachedImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
+ <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
+ <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;layerId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.</div>
+</div>
 </div>
 </section>
 </li>

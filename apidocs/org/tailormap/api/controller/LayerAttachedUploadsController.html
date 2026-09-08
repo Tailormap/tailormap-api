@@ -161,7 +161,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getLayerAttachedUpload(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)">
 <h3>getLayerAttachedUpload</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@GetMapping(path={"${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}","${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}/{filename}"})
+<div class="member-signature"><span class="annotations">@GetMapping(path={"/api/app/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}","/api/app/{viewerName}/layer/{appLayerId}/uploads/{category}/{id}/{filename}"})
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getLayerAttachedUpload</span><wbr><span class="parameters">(@ModelAttribute
  <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  @ModelAttribute

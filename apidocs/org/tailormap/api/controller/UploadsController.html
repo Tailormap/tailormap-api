@@ -63,7 +63,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.lang.String,java.lang.String)" tabindex="0">getUpload(HttpServletRequest, UploadCategory, String, String)</a></li>
+<li><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" tabindex="0">getUpload(HttpServletRequest, UploadCategory, UUID, String)</a></li>
 <li><a href="#getLatestUpload(org.tailormap.api.persistence.UploadCategory)" tabindex="0">getLatestUpload(UploadCategory)</a></li>
 </ol>
 </li>
@@ -118,9 +118,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the latest upload for a specific category, if any.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;byte[]&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.lang.String,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;idString,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
@@ -158,15 +158,15 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.lang.String,java.lang.String)">
+<section class="detail" id="getUpload(jakarta.servlet.http.HttpServletRequest,org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)">
 <h3>getUpload</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@GetMapping(path="/api/uploads/{category}/{id}/{filename}")
+<div class="member-signature"><span class="annotations">@GetMapping(path={"/api/uploads/{category}/{id}","/api/uploads/{category}/{id}/{filename}"})
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getUpload</span><wbr><span class="parameters">(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  @PathVariable
  <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @PathVariable(name="id")
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;idString,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;id,
  @PathVariable(required=false)
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</span></div>
 </div>

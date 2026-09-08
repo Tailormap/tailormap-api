@@ -446,21 +446,29 @@ type.</div>
  <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useGeotoolsUniqueFunction)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ViewerResponseHelper.</span><code><a href="../helper/ViewerResponseHelper.html#getViewerResponse(org.tailormap.api.persistence.Application)" class="member-name-link">getViewerResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>static boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">TMFeatureTypeHelper.</span><code><a href="../helper/TMFeatureTypeHelper.html#isEditable(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">isEditable</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UploadHelper.</span><code><a href="../helper/UploadHelper.html#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">getUrlForLayerAttachedImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
+ <a href="../UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
+ <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;layerId)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ViewerResponseHelper.</span><code><a href="../helper/ViewerResponseHelper.html#getViewerResponse(org.tailormap.api.persistence.Application)" class="member-name-link">getViewerResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">TMFeatureTypeHelper.</span><code><a href="../helper/TMFeatureTypeHelper.html#isEditable(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.TMFeatureType)" class="member-name-link">isEditable</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  <a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#setCrsAndBounds(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.MapResponse)" class="member-name-link">setCrsAndBounds</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;a,
- <a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a>&nbsp;mapResponse)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#toMapResponse(org.tailormap.api.persistence.Application)" class="member-name-link">toMapResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app)</code></div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#setCrsAndBounds(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.MapResponse)" class="member-name-link">setCrsAndBounds</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;a,
+ <a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a>&nbsp;mapResponse)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ApplicationHelper.</span><code><a href="../helper/ApplicationHelper.html#toMapResponse(org.tailormap.api.persistence.Application)" class="member-name-link">toMapResponse</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
