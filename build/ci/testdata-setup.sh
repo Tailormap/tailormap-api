@@ -17,7 +17,7 @@ SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
 PROMETHEUS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" prometheus)
 _WAIT=0;
 
-printf "%(%T)T Waiting for services to report healthy..."
+printf "%(%T)T Waiting for test containers to report healthy..."
 while :
 do
   printf " %d" "$_WAIT"
@@ -27,7 +27,7 @@ do
       [ "$POSTGRES_HEALTHY" == "healthy" ] &&
       [ "$SOLR_HEALTHY" == "healthy" ] &&
       [ "$PROMETHEUS_HEALTHY" == "healthy" ]; then
-    printf "\n%(%T)T All docker containers are healthy\n" -1
+    printf "\n%(%T)T All docker containers reported healthy\n\n" -1
     break
   fi
 

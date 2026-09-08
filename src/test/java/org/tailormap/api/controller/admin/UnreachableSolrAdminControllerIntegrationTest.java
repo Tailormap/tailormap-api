@@ -39,7 +39,7 @@ import org.tailormap.api.persistence.Group;
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestPropertySource(properties = {"tailormap-api.solr-url=http://localhost:9999/solr"})
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class UnreachableSolrAdminControllerIntegrationTest {
 
   @Autowired

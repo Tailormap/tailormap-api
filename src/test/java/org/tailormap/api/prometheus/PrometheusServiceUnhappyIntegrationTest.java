@@ -20,10 +20,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
 @Order(PROMETHEUS_UNHAPPY_INTEGRATION_TEST_ORDER)
-@TestPropertySource(
-    properties = {
-      "tailormap-api.prometheus-api-url=http://localhost:9091/unhappy-path/",
-    })
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class PrometheusServiceUnhappyIntegrationTest {
   @Autowired
   private PrometheusService prometheusService;

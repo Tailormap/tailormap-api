@@ -25,13 +25,7 @@ import org.tailormap.api.persistence.Group;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
-@TestPropertySource(
-    properties = {
-      "management.endpoints.web.exposure.include=prometheus",
-      "management.endpoint.prometheus.access=read_only",
-      "management.prometheus.metrics.export.enabled=true",
-      "management.prometheus.metrics.export.descriptions=true",
-    })
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class ViewerControllerWithActuatorIntegrationTest {
   @Autowired
   private MockMvc mockMvc;

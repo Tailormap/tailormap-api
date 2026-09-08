@@ -30,16 +30,7 @@ import org.tailormap.api.persistence.Group;
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @AutoConfigureMetrics
-@TestPropertySource(
-    properties = {
-      "management.endpoints.web.exposure.include=health,prometheus",
-      "management.endpoint.health.access=read_only",
-      "management.endpoint.prometheus.access=read_only",
-      "management.prometheus.metrics.export.enabled=true",
-      "management.prometheus.metrics.export.descriptions=true",
-      // disable, because we don't have an SMTP service in this test
-      "management.health.mail.enabled=false"
-    })
+@TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 class ActuatorSecurityConfigurationIntegrationTest {
   @Autowired
   private MockMvc mockMvc;

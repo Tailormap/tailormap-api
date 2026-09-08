@@ -592,12 +592,6 @@ SPDX-License-Identifier: MIT
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>digital.pragmatech.testing</groupId>
-            <artifactId>spring-test-profiler</artifactId>
-            <version>0.3.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
@@ -924,6 +918,8 @@ SPDX-License-Identifier: MIT
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                     <trimStackTrace>false</trimStackTrace>
+                    <parallel>all</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
                 </configuration>
             </plugin>
             <plugin>
@@ -1956,6 +1952,8 @@ SPDX-License-Identifier: MIT
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skipITs>${skipTests}</skipITs>
+                            <parallel>all</parallel>
+                            <useUnlimitedThreads>true</useUnlimitedThreads>
                         </configuration>
                         <executions>
                             <execution>
