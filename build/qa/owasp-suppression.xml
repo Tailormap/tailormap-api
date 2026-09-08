@@ -52,11 +52,12 @@ SPDX-License-Identifier: MIT
     </suppress>
     <suppress>
         <notes><![CDATA[
-    file name: spring-boot-data-rest-4.1.1.jar is not vulnerable to CVE-2026-47849, the CVE is for spring-data-rest and not spring-boot-data-rest
+    file name: spring-boot-data-rest-4.1.1.jar is not vulnerable to CVE-2026-47849 or CVE-2026-47850, the CVE is for spring-data-rest and not spring-BOOT-data-rest
 
     we already have a fixed version of spring-data-rest (5.1.1) in our dependency tree, so this CVE is not relevant for us
     ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot-data-rest@.*$</packageUrl>
         <cve>CVE-2026-47849</cve>
+        <cve>CVE-2026-47850</cve>
     </suppress>
 </suppressions>
