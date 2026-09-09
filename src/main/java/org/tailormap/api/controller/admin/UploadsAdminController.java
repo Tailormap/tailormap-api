@@ -8,8 +8,8 @@ package org.tailormap.api.controller.admin;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,8 +19,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadMatch;
@@ -90,7 +89,7 @@ public class UploadsAdminController {
 
   @Transactional(readOnly = true)
   @PostMapping(path = "${tailormap-api.admin.base-path}/uploads/multi", produces = "application/zip")
-  public ResponseEntity<Resource> downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
+  public ResponseEntity<StreamingResponseBody> downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
     // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
@@ -112,13 +111,20 @@ public class UploadsAdminController {
 
       zipService.zipDirectory(tempDir, zipFile);
 
-      InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile.toFile()));
+      StreamingResponseBody response = outputStream -> {
+        try (InputStream inputStream = Files.newInputStream(zipFile)) {
+          inputStream.transferTo(outputStream);
+        } finally {
+          Files.deleteIfExists(zipFile);
+          logger.debug("Deleted zip file {}", zipFile.toAbsolutePath());
+        }
+      };
 
       return ResponseEntity.ok()
           .contentType(MediaType.APPLICATION_OCTET_STREAM)
           .header("Content-Disposition", "attachment; filename=\"uploads.zip\"")
           .contentLength(Files.size(zipFile))
-          .body(resource);
+          .body(response);
     } finally {
       try (Stream<Path> pathStream = Files.walk(tempDir)) {
         pathStream.sorted(Comparator.reverseOrder()).forEach(path -> {
