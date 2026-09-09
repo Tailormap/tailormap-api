@@ -121,7 +121,7 @@ public class UploadsAdminController {
       };
 
       return ResponseEntity.ok()
-          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .contentType(MediaType.parseMediaType("application/zip"))
           .header("Content-Disposition", "attachment; filename=\"uploads.zip\"")
           .contentLength(Files.size(zipFile))
           .body(response);
