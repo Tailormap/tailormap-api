@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.junit.jupiter.api.BeforeAll;
@@ -123,21 +124,15 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void download_zipfile_of_uploads() throws Exception {
-    List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(
-        UploadCategory.UNRESTRICTED, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
-
-    List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
-
-    List<String> uploadFileNames =
-        uploadRepository
-            .findAllById(uploadMatches.stream().map(UploadMatch::id).toList())
-            .stream()
-            .map(Upload::getFilename)
-            .toList();
+    Map<UUID, String> idsAndFilenames = uploadRepository.findAll().stream()
+        .filter(upload -> upload.getFilename().endsWith(".svg"))
+        .collect(Collectors.toMap(Upload::getId, Upload::getFilename));
 
     MvcResult download = mockMvc.perform(post(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(ids.toArray(new String[0]))))
+            .content(jsonStringArray(idsAndFilenames.keySet().stream()
+                .map(UUID::toString)
+                .toArray(String[]::new))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string("Content-Type", "application/zip"))
         .andReturn();
@@ -152,18 +147,18 @@ class UploadsAdminControllerIntegrationTest {
           continue;
         }
         String entryName = entry.getName();
-        assertThat(entryName, endsWith(".png"));
+        assertThat(entryName, endsWith(".svg"));
         fileNamesFromZip.add(entryName);
       }
 
       assertEquals(
-          uploadFileNames.size(),
+          idsAndFilenames.size(),
           fileNamesFromZip.size(),
           "Expected number of files in the download zip does not match the uploaded files");
       assertThat(
           "Expected files in the download zip do not match the uploaded files",
           fileNamesFromZip,
-          containsInAnyOrder(uploadFileNames.toArray()));
+          containsInAnyOrder(idsAndFilenames.values().toArray()));
     }
   }
 

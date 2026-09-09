@@ -2044,7 +2044,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
   private void createPages() throws IOException {
     Upload logo = new Upload()
         .setCategory(UploadCategory.PORTAL_IMAGE)
-        .setFilename("gradient.svg")
+        .setFilename("gradient-portal.svg")
         .setMimeType("image/svg+xml")
         .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
