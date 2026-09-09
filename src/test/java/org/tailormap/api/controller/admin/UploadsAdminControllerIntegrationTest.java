@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -20,11 +19,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.IntegrationTestOrdering.UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -71,10 +73,23 @@ class UploadsAdminControllerIntegrationTest {
 
   private MockMvc mockMvc;
 
+  private static final ObjectMapper objectMapper = new ObjectMapper();
+
+  private static final String UUID_PARSE_ERROR_MESSAGE =
+      "JSON parse error: Cannot deserialize value of type `java.util.UUID` from String \"fail\": UUID has to be represented by standard 36-char representation";
+
   @BeforeAll
   void initialize() {
     // Required for Spring Data Rest APIs
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+  }
+
+  private static String jsonStringArray(String[] array) {
+    try {
+      return objectMapper.writeValueAsString(array);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
@@ -83,30 +98,20 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void validate_upload_matches() throws Exception {
-    String body = """
-[
-"cfb1b538761a21f8d39c0555ba9802b8af4d09a6",
-"71f8e7976e4cbc4561c9d62fb283e7f788202acb"
-]
-""";
-
     Upload water = uploadRepository.findByFilename("ISO_7001_PI_PF_007.svg").stream()
         .findAny()
         .orElseThrow(() -> new IllegalStateException(
             "Expected upload with filename 'ISO_7001_PI_PF_007.svg' not found in the database"));
 
-    String expected = """
-[
-{
-"id": "%s",
-"hash": "cfb1b538761a21f8d39c0555ba9802b8af4d09a6"
-}
-]\
-""".formatted(water.getId().toString());
+    String expected = objectMapper.writeValueAsString(
+        new Object[] {Map.of("id", water.getId().toString(), "hash", "cfb1b538761a21f8d39c0555ba9802b8af4d09a6")
+        });
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(body))
+            .content(jsonStringArray(new String[] {
+              "cfb1b538761a21f8d39c0555ba9802b8af4d09a6", "71f8e7976e4cbc4561c9d62fb283e7f788202acb"
+            })))
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().json(expected));
@@ -130,7 +135,9 @@ class UploadsAdminControllerIntegrationTest {
             .map(Upload::getFilename)
             .toList();
 
-    MvcResult download = mockMvc.perform(get(adminBasePath + "/uploads/download/" + String.join(",", ids)))
+    MvcResult download = mockMvc.perform(post(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(ids.toArray(new String[0]))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string("Content-Type", "application/zip"))
         .andReturn();
@@ -166,11 +173,12 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void fail_download_zipfile_of_uploads() throws Exception {
-    mockMvc.perform(get(adminBasePath + "/uploads/download/fail"))
+    mockMvc.perform(post(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(new String[] {"fail"})))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(400))
-        .andExpect(jsonPath("$.message").value("Invalid UUID string: fail"));
+        .andExpect(jsonPath("$.message").value(UUID_PARSE_ERROR_MESSAGE));
   }
 
   @Test
@@ -182,7 +190,9 @@ class UploadsAdminControllerIntegrationTest {
     List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(
         UploadCategory.UNRESTRICTED, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
     List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
-    mockMvc.perform(delete(adminBasePath + "/uploads/multi/" + String.join(",", ids)))
+    mockMvc.perform(delete(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(ids.toArray(new String[0]))))
         .andExpect(status().is2xxSuccessful());
 
     for (String id : ids) {
@@ -196,10 +206,12 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void fail_delete_invalid_id() throws Exception {
-    mockMvc.perform(delete(adminBasePath + "/uploads/multi/fail"))
+    mockMvc.perform(delete(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(new String[] {"fail"})))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Invalid UUID string: fail"));
+        .andExpect(jsonPath("$.message").value(UUID_PARSE_ERROR_MESSAGE));
   }
 
   @Test
@@ -207,9 +219,12 @@ class UploadsAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void delete_failure_for_non_existing_upload_ids() throws Exception {
-    mockMvc.perform(delete(adminBasePath
-            + "/uploads/multi/1ff99dcb-a808-499c-9af4-d46b84c14fa9,bef56ad0-b127-4180-aff0-c34793ec0655"))
+  void delete_non_existing_upload_ids_ignored() throws Exception {
+    mockMvc.perform(delete(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(new String[] {
+              "1ff99dcb-a808-499c-9af4-d46b84c14fa9", "bef56ad0-b127-4180-aff0-c34793ec0655"
+            })))
         .andExpect(status().isOk());
   }
 }

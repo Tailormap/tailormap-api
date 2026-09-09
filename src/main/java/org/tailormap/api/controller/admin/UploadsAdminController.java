@@ -86,13 +86,13 @@ public class UploadsAdminController {
   }
 
   @Transactional(readOnly = true)
-  @GetMapping(path = "${tailormap-api.admin.base-path}/uploads/multi/{uuids}", produces = "application/zip")
-  public byte[] downloadUploads(@PathVariable("uuids") List<UUID> uuids) throws IOException {
+  @PostMapping(path = "${tailormap-api.admin.base-path}/uploads/multi", produces = "application/zip")
+  public byte[] downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
     // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
       for (Upload upload : uploadRepository.findAllWithContentByIdIn(uuids)) {
-        // validate/sanitise filename: no directories allowed, only the filename itself
+        // validate/sanitize filename: no directories allowed, only the filename itself
         String safeFilename =
             Path.of(upload.getFilename()).getFileName().toString();
         Path filePath = tempDir.resolve(safeFilename);
@@ -144,8 +144,8 @@ public class UploadsAdminController {
         .body(upload.getContent());
   }
 
-  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/multi/{uuids}")
-  public void deleteUploads(@PathVariable("uuids") List<UUID> uuids) throws IllegalArgumentException {
+  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/multi")
+  public void deleteUploads(@RequestBody List<UUID> uuids) throws IllegalArgumentException {
     uploadRepository.deleteAllById(uuids);
   }
 }
