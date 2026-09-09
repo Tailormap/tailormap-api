@@ -185,6 +185,18 @@ class UploadsAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
+  @Order(1)
+  void download_non_existing_upload_id_throws_404() throws Exception {
+    mockMvc.perform(post(adminBasePath + "/uploads/multi")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonStringArray(new String[] {"deadbeef-1111-2222-3333-beefdeadbeef"})))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
   @Order(UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER)
   void delete_uploads() throws Exception {
     List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(

@@ -94,7 +94,12 @@ public class UploadsAdminController {
     // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
-      for (Upload upload : uploadRepository.findAllWithContentByIdIn(uuids)) {
+      List<Upload> uploads = uploadRepository.findAllWithContentByIdIn(uuids);
+      if (uploads.isEmpty()) {
+        // Do not return an empty zip file
+        throw new ResponseStatusException(NOT_FOUND);
+      }
+      for (Upload upload : uploads) {
         // validate/sanitize filename: no directories allowed, only the filename itself
         String safeFilename =
             Path.of(upload.getFilename()).getFileName().toString();
