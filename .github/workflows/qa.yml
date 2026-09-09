@@ -60,3 +60,18 @@ jobs:
         if: always()
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
+
+
+  sentinel:
+    name: 'Spring Sentinel'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pagano-antonio/springsentinel-action@v1.0.1
