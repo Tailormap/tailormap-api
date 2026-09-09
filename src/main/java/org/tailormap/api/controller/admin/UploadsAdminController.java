@@ -8,6 +8,7 @@ package org.tailormap.api.controller.admin;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
@@ -18,6 +19,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -87,7 +90,7 @@ public class UploadsAdminController {
 
   @Transactional(readOnly = true)
   @PostMapping(path = "${tailormap-api.admin.base-path}/uploads/multi", produces = "application/zip")
-  public byte[] downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
+  public ResponseEntity<Resource> downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
     // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
@@ -102,12 +105,15 @@ public class UploadsAdminController {
       Path zipFile = Files.createTempFile("admin-uploads-", ".zip");
       logger.info("Created zip file {}", zipFile.toAbsolutePath());
 
-      try {
-        zipService.zipDirectory(tempDir, zipFile);
-        return Files.readAllBytes(zipFile);
-      } finally {
-        Files.deleteIfExists(zipFile);
-      }
+      zipService.zipDirectory(tempDir, zipFile);
+
+      InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile.toFile()));
+
+      return ResponseEntity.ok()
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .header("Content-Disposition", "attachment; filename=\"uploads.zip\"")
+          .contentLength(Files.size(zipFile))
+          .body(resource);
     } finally {
       try (Stream<Path> pathStream = Files.walk(tempDir)) {
         pathStream.sorted(Comparator.reverseOrder()).forEach(path -> {
