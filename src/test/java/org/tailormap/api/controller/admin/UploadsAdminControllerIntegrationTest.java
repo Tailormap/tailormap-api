@@ -11,11 +11,13 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.IntegrationTestOrdering.UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER;
 
@@ -128,11 +130,15 @@ class UploadsAdminControllerIntegrationTest {
         .filter(upload -> upload.getFilename().endsWith(".svg"))
         .collect(Collectors.toMap(Upload::getId, Upload::getFilename));
 
-    MvcResult download = mockMvc.perform(post(adminBasePath + "/uploads/multi")
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonStringArray(idsAndFilenames.keySet().stream()
                 .map(UUID::toString)
                 .toArray(String[]::new))))
+        .andExpect(request().asyncStarted())
+        .andReturn();
+
+    MvcResult download = mockMvc.perform(asyncDispatch(result))
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string("Content-Type", "application/zip"))
         .andReturn();
