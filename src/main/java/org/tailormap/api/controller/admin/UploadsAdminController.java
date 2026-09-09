@@ -39,6 +39,9 @@ import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.service.ZipService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
+// Note on paths: make sure they do not clash with Spring Data REST paths:  /uploads/{variable} also matches
+// /uploads/search/ which is used by Spring Data REST.
+
 @RestController
 public class UploadsAdminController {
   private static final Logger logger =
@@ -83,9 +86,9 @@ public class UploadsAdminController {
   }
 
   @Transactional(readOnly = true)
-  @GetMapping(path = "${tailormap-api.admin.base-path}/uploads/{uuids}", produces = "application/zip")
-  public byte[] downloadUploadsByCategory(@PathVariable("uuids") List<UUID> uuids) throws IOException {
-    // Authorisation check isn't needed: only admins are allowed on the admin base path
+  @GetMapping(path = "${tailormap-api.admin.base-path}/uploads/multi/{uuids}", produces = "application/zip")
+  public byte[] downloadUploads(@PathVariable("uuids") List<UUID> uuids) throws IOException {
+    // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
       for (Upload upload : uploadRepository.findAllWithContentByIdIn(uuids)) {
@@ -120,8 +123,8 @@ public class UploadsAdminController {
 
   @GetMapping(
       path = {
-        "${tailormap-api.admin.base-path}/uploads/{category}/{id}",
-        "${tailormap-api.admin.base-path}/uploads/{category}/{id}/{filename}"
+        "${tailormap-api.admin.base-path}/uploads/download/{category}/{id}",
+        "${tailormap-api.admin.base-path}/uploads/download/{category}/{id}/{filename}"
       })
   public ResponseEntity<byte[]> getUpload(
       @PathVariable UploadCategory category,
@@ -141,8 +144,8 @@ public class UploadsAdminController {
         .body(upload.getContent());
   }
 
-  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/{uuids}")
-  public void deleteUploadsByCategory(@PathVariable("uuids") List<UUID> uuids) throws IllegalArgumentException {
+  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/multi/{uuids}")
+  public void deleteUploads(@PathVariable("uuids") List<UUID> uuids) throws IllegalArgumentException {
     uploadRepository.deleteAllById(uuids);
   }
 }

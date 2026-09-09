@@ -130,7 +130,7 @@ class UploadsAdminControllerIntegrationTest {
             .map(Upload::getFilename)
             .toList();
 
-    MvcResult download = mockMvc.perform(get(adminBasePath + "/uploads/" + String.join(",", ids)))
+    MvcResult download = mockMvc.perform(get(adminBasePath + "/uploads/download/" + String.join(",", ids)))
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string("Content-Type", "application/zip"))
         .andReturn();
@@ -166,7 +166,7 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void fail_download_zipfile_of_uploads() throws Exception {
-    mockMvc.perform(get(adminBasePath + "/uploads/fail"))
+    mockMvc.perform(get(adminBasePath + "/uploads/download/fail"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -182,7 +182,7 @@ class UploadsAdminControllerIntegrationTest {
     List<UploadMatch> uploadMatches = uploadRepository.findByHashIn(
         UploadCategory.UNRESTRICTED, List.of("b0c2a7e5059c831c289505750defcf53edac5461"));
     List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
-    mockMvc.perform(delete(adminBasePath + "/uploads/" + String.join(",", ids)))
+    mockMvc.perform(delete(adminBasePath + "/uploads/multi/" + String.join(",", ids)))
         .andExpect(status().is2xxSuccessful());
 
     for (String id : ids) {
@@ -196,7 +196,7 @@ class UploadsAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void fail_delete_invalid_id() throws Exception {
-    mockMvc.perform(delete(adminBasePath + "/uploads/fail"))
+    mockMvc.perform(delete(adminBasePath + "/uploads/multi/fail"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Invalid UUID string: fail"));
@@ -209,7 +209,7 @@ class UploadsAdminControllerIntegrationTest {
   @Order(1)
   void delete_failure_for_non_existing_upload_ids() throws Exception {
     mockMvc.perform(delete(adminBasePath
-            + "/uploads/1ff99dcb-a808-499c-9af4-d46b84c14fa9,bef56ad0-b127-4180-aff0-c34793ec0655"))
+            + "/uploads/multi/1ff99dcb-a808-499c-9af4-d46b84c14fa9,bef56ad0-b127-4180-aff0-c34793ec0655"))
         .andExpect(status().isOk());
   }
 }

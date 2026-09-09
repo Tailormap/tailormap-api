@@ -9,6 +9,7 @@ package org.tailormap.api.persistence.projections;
 import java.time.OffsetDateTime;
 import org.springframework.data.rest.core.config.Projection;
 import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
 
 @Projection(
     name = "summary",
@@ -16,7 +17,7 @@ import org.tailormap.api.persistence.Upload;
 public interface UploadSummary {
   String getId();
 
-  String getCategory();
+  UploadCategory getCategory();
 
   String getFilename();
 
