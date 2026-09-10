@@ -42,7 +42,7 @@ public class UploadHelper {
     if (imageId == null) {
       return null;
     }
-    if (UploadCategory.getRestrictedCategories().contains(category)) {
+    if (category.isRestricted()) {
       throw new IllegalArgumentException(
           "Access to restricted category is not allowed without application and layer context");
     }
@@ -72,7 +72,7 @@ public class UploadHelper {
     if (imageId == null) {
       return null;
     }
-    if (UploadCategory.getRestrictedCategories().contains(category)) {
+    if (category.isRestricted()) {
       return uploadRepository
           .findByIdAndCategory(imageId, category)
           .map(upload -> linkTo(LayerAttachedUploadsController.class)

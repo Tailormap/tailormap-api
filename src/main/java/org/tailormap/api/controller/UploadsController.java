@@ -46,7 +46,7 @@ public class UploadsController {
       @PathVariable(name = "id") UUID id,
       @PathVariable(required = false) String filename) {
 
-    if (UploadCategory.getRestrictedCategories().contains(category)) {
+    if (category.isRestricted()) {
       throw new ResponseStatusException(
           BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
     }
@@ -76,7 +76,7 @@ public class UploadsController {
    */
   @GetMapping("/api/uploads/{category}/latest")
   public ResponseEntity<byte[]> getLatestUpload(@PathVariable UploadCategory category) {
-    if (UploadCategory.getRestrictedCategories().contains(category)) {
+    if (category.isRestricted()) {
       throw new ResponseStatusException(
           BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
     }
