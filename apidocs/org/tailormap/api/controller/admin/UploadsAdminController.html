@@ -66,9 +66,9 @@ loadScripts(document, 'script');</script>
 <li><a href="#handleException(java.lang.Exception)" tabindex="0">handleException(Exception)</a></li>
 <li><a href="#handleIllegalArgumentException(java.lang.IllegalArgumentException)" tabindex="0">handleIllegalArgumentException(IllegalArgumentException)</a></li>
 <li><a href="#findUploadsByHash(org.tailormap.api.persistence.UploadCategory,java.util.List)" tabindex="0">findUploadsByHash(UploadCategory, List)</a></li>
-<li><a href="#downloadUploadsByCategory(java.util.List)" tabindex="0">downloadUploadsByCategory(List)</a></li>
+<li><a href="#downloadUploads(java.util.List)" tabindex="0">downloadUploads(List)</a></li>
 <li><a href="#getUpload(org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)" tabindex="0">getUpload(UploadCategory, UUID, String)</a></li>
-<li><a href="#deleteUploadsByCategory(java.util.List)" tabindex="0">deleteUploadsByCategory(List)</a></li>
+<li><a href="#deleteUploads(java.util.List)" tabindex="0">deleteUploads(List)</a></li>
 </ol>
 </li>
 </ol>
@@ -117,10 +117,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteUploadsByCategory(java.util.List)" class="member-name-link">deleteUploadsByCategory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteUploads(java.util.List)" class="member-name-link">deleteUploads</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>byte[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#downloadUploadsByCategory(java.util.List)" class="member-name-link">downloadUploadsByCategory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#downloadUploads(java.util.List)" class="member-name-link">downloadUploads</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../../repository/UploadMatch.html" title="class in org.tailormap.api.repository">UploadMatch</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findUploadsByHash(org.tailormap.api.persistence.UploadCategory,java.util.List)" class="member-name-link">findUploadsByHash</a><wbr>(<a href="../../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
@@ -203,15 +203,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="downloadUploadsByCategory(java.util.List)">
-<h3>downloadUploadsByCategory</h3>
+<section class="detail" id="downloadUploads(java.util.List)">
+<h3>downloadUploads</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Transactional(readOnly=true)
-@GetMapping(path="${tailormap-api.admin.base-path}/uploads/{uuids}",
-            produces="application/zip")
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">downloadUploadsByCategory</span><wbr><span class="parameters">(@PathVariable("uuids")
+@PostMapping(path="${tailormap-api.admin.base-path}/uploads/multi",
+             produces="application/zip")
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody&gt;</span>&nbsp;<span class="element-name">downloadUploads</span><wbr><span class="parameters">(@RequestBody
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</span>
-                                 throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+                                                                                                                                     throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
@@ -223,7 +223,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getUpload(org.tailormap.api.persistence.UploadCategory,java.util.UUID,java.lang.String)">
 <h3>getUpload</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@GetMapping(path={"${tailormap-api.admin.base-path}/uploads/{category}/{id}","${tailormap-api.admin.base-path}/uploads/{category}/{id}/{filename}"})
+<div class="member-signature"><span class="annotations">@GetMapping(path={"${tailormap-api.admin.base-path}/uploads/download/{category}/{id}","${tailormap-api.admin.base-path}/uploads/download/{category}/{id}/{filename}"})
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getUpload</span><wbr><span class="parameters">(@PathVariable
  <a href="../../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  @PathVariable(name="id")
@@ -234,13 +234,13 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="deleteUploadsByCategory(java.util.List)">
-<h3>deleteUploadsByCategory</h3>
+<section class="detail" id="deleteUploads(java.util.List)">
+<h3>deleteUploads</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@DeleteMapping(path="${tailormap-api.admin.base-path}/uploads/{uuids}")
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteUploadsByCategory</span><wbr><span class="parameters">(@PathVariable("uuids")
+<div class="member-signature"><span class="annotations">@DeleteMapping(path="${tailormap-api.admin.base-path}/uploads/multi")
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteUploads</span><wbr><span class="parameters">(@RequestBody
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&gt;&nbsp;uuids)</span>
-                             throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
