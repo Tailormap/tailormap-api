@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
@@ -163,7 +164,7 @@ public class User extends AuditMetadata {
   }
 
   public Set<String> getGroupNames() {
-    return groups.stream().map(Group::getName).collect(java.util.stream.Collectors.toSet());
+    return groups.stream().map(Group::getName).collect(Collectors.toSet());
   }
 
   public ZonedDateTime getValidUntil() {

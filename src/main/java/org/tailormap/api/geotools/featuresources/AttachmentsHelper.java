@@ -431,8 +431,7 @@ mime_type, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         stmt.setBytes(6, fileData);
         stmt.setLong(7, fileData.length);
         stmt.setString(8, attachment.getMimeType());
-        stmt.setTimestamp(
-            9, java.sql.Timestamp.from(attachment.getCreatedAt().toInstant()));
+        stmt.setTimestamp(9, Timestamp.from(attachment.getCreatedAt().toInstant()));
         stmt.setString(10, attachment.getCreatedBy());
 
         stmt.executeUpdate();

@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import java.util.Arrays;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
@@ -18,7 +19,7 @@ abstract class SseParsingUtils {
    * } as JSON and extract the file from the details.
    */
   String getLastCompletedEventJson(String sseMessages) {
-    return java.util.Arrays.stream(sseMessages.split("\\R"))
+    return Arrays.stream(sseMessages.split("\\R"))
         .map(String::trim)
         .filter(line -> !line.isEmpty())
         .filter(line -> line.startsWith("data:"))

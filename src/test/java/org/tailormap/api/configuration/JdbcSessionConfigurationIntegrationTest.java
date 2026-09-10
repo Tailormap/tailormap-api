@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -256,6 +257,6 @@ AND column_name = 'attribute_bytes'
 
     String dataType = jdbcTemplate.queryForObject(dataTypeSql, String.class);
     assertNotNull(dataType, "Data type should not be null");
-    assertEquals("jsonb", dataType.toLowerCase(java.util.Locale.ROOT), "ATTRIBUTE_BYTES should be JSONB type");
+    assertEquals("jsonb", dataType.toLowerCase(Locale.ROOT), "ATTRIBUTE_BYTES should be JSONB type");
   }
 }
