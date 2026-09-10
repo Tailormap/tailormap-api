@@ -44,12 +44,10 @@ class FeatureSourceStatisticsTest {
 
   @BeforeEach
   void createRandomFeatures() throws IOException, SchemaException {
-    minEpochMillis = LocalDateTime.of(2000, 1, 1, 0, 0)
-        .toInstant(java.time.ZoneOffset.UTC)
-        .toEpochMilli();
-    maxEpochMillis = LocalDateTime.of(2025, 12, 31, 23, 59)
-        .toInstant(java.time.ZoneOffset.UTC)
-        .toEpochMilli();
+    minEpochMillis =
+        LocalDateTime.of(2000, 1, 1, 0, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
+    maxEpochMillis =
+        LocalDateTime.of(2025, 12, 31, 23, 59).toInstant(ZoneOffset.UTC).toEpochMilli();
     randomFeatureSource = StaticTestData.createRandomFeatureSource(
         randomFeatureCount, 155000, 463000, minEpochMillis, maxEpochMillis);
     assumeTrue(randomFeatureSource != null, "Failed to create random feature source");

@@ -11,15 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 import org.tailormap.api.persistence.TMFeatureType;
 
 class AttachmentsHelperTest {
   static final String ftName = "testFeatureType";
-  static final TMFeatureType featureType = org.mockito.Mockito.mock(TMFeatureType.class, invocation -> {
+  static final TMFeatureType featureType = Mockito.mock(TMFeatureType.class, invocation -> {
     if ("getName".equals(invocation.getMethod().getName())) {
       return ftName;
     }
-    return org.mockito.Answers.RETURNS_DEFAULTS.answer(invocation);
+    return Answers.RETURNS_DEFAULTS.answer(invocation);
   });
 
   @Test

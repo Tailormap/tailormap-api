@@ -20,9 +20,8 @@ import org.xml.sax.SAXException;
 public class TMPreventLocalEntityResolver extends PreventLocalEntityResolver {
   public static final TMPreventLocalEntityResolver INSTANCE = new TMPreventLocalEntityResolver();
 
-  private static final Pattern DESCRIBE_FEATURE_TYPE_URL = java.util.regex.Pattern.compile(
-      "^https?://[^?#;]*\\?(?:[^#;]*[&;])?request=DescribeFeatureType(?:[&;]|$).*",
-      java.util.regex.Pattern.CASE_INSENSITIVE);
+  private static final Pattern DESCRIBE_FEATURE_TYPE_URL = Pattern.compile(
+      "^https?://[^?#;]*\\?(?:[^#;]*[&;])?request=DescribeFeatureType(?:[&;]|$).*", Pattern.CASE_INSENSITIVE);
 
   /**
    * Next to what the base class allows, explicitly allow (dynamic) {@code DescribeFeatureType} requests such as
