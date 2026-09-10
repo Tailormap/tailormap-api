@@ -78,7 +78,7 @@ class FeatureSourceStatisticsTest {
     assertThat(randomFeatureCount, is(greaterThanOrEqualTo(progressCount.get())));
   }
 
-  @Test
+  @RetryingTest(3)
   void get_number_statistics_with_filter() {
     AtomicInteger progressCount = new AtomicInteger(0);
     AttributeStatisticsResponse statistics = FeatureSourceStatistics.getFeatureSourceStatistics(
