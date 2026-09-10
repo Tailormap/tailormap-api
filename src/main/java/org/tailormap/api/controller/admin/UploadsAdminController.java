@@ -9,6 +9,7 @@ package org.tailormap.api.controller.admin;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadMatch;
@@ -38,6 +40,9 @@ import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.service.ZipService;
 import org.tailormap.api.viewer.model.ErrorResponse;
+
+// Note on paths: make sure they do not clash with Spring Data REST paths:  /uploads/{variable} also matches
+// /uploads/search/ which is used by Spring Data REST.
 
 @RestController
 public class UploadsAdminController {
@@ -83,13 +88,18 @@ public class UploadsAdminController {
   }
 
   @Transactional(readOnly = true)
-  @GetMapping(path = "${tailormap-api.admin.base-path}/uploads/{uuids}", produces = "application/zip")
-  public byte[] downloadUploadsByCategory(@PathVariable("uuids") List<UUID> uuids) throws IOException {
-    // Authorisation check isn't needed: only admins are allowed on the admin base path
+  @PostMapping(path = "${tailormap-api.admin.base-path}/uploads/multi", produces = "application/zip")
+  public ResponseEntity<StreamingResponseBody> downloadUploads(@RequestBody List<UUID> uuids) throws IOException {
+    // Authorization check isn't needed: only admins are allowed on the admin base path
     Path tempDir = Files.createTempDirectory("admin-uploads-");
     try {
-      for (Upload upload : uploadRepository.findAllWithContentByIdIn(uuids)) {
-        // validate/sanitise filename: no directories allowed, only the filename itself
+      List<Upload> uploads = uploadRepository.findAllWithContentByIdIn(uuids);
+      if (uploads.isEmpty()) {
+        // Do not return an empty zip file
+        throw new ResponseStatusException(NOT_FOUND);
+      }
+      for (Upload upload : uploads) {
+        // validate/sanitize filename: no directories allowed, only the filename itself
         String safeFilename =
             Path.of(upload.getFilename()).getFileName().toString();
         Path filePath = tempDir.resolve(safeFilename);
@@ -99,12 +109,22 @@ public class UploadsAdminController {
       Path zipFile = Files.createTempFile("admin-uploads-", ".zip");
       logger.info("Created zip file {}", zipFile.toAbsolutePath());
 
-      try {
-        zipService.zipDirectory(tempDir, zipFile);
-        return Files.readAllBytes(zipFile);
-      } finally {
-        Files.deleteIfExists(zipFile);
-      }
+      zipService.zipDirectory(tempDir, zipFile);
+
+      StreamingResponseBody response = outputStream -> {
+        try (InputStream inputStream = Files.newInputStream(zipFile)) {
+          inputStream.transferTo(outputStream);
+        } finally {
+          Files.deleteIfExists(zipFile);
+          logger.debug("Deleted zip file {}", zipFile.toAbsolutePath());
+        }
+      };
+
+      return ResponseEntity.ok()
+          .contentType(MediaType.parseMediaType("application/zip"))
+          .header("Content-Disposition", "attachment; filename=\"uploads.zip\"")
+          .contentLength(Files.size(zipFile))
+          .body(response);
     } finally {
       try (Stream<Path> pathStream = Files.walk(tempDir)) {
         pathStream.sorted(Comparator.reverseOrder()).forEach(path -> {
@@ -120,8 +140,8 @@ public class UploadsAdminController {
 
   @GetMapping(
       path = {
-        "${tailormap-api.admin.base-path}/uploads/{category}/{id}",
-        "${tailormap-api.admin.base-path}/uploads/{category}/{id}/{filename}"
+        "${tailormap-api.admin.base-path}/uploads/download/{category}/{id}",
+        "${tailormap-api.admin.base-path}/uploads/download/{category}/{id}/{filename}"
       })
   public ResponseEntity<byte[]> getUpload(
       @PathVariable UploadCategory category,
@@ -141,8 +161,8 @@ public class UploadsAdminController {
         .body(upload.getContent());
   }
 
-  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/{uuids}")
-  public void deleteUploadsByCategory(@PathVariable("uuids") List<UUID> uuids) throws IllegalArgumentException {
+  @DeleteMapping(path = "${tailormap-api.admin.base-path}/uploads/multi")
+  public void deleteUploads(@RequestBody List<UUID> uuids) throws IllegalArgumentException {
     uploadRepository.deleteAllById(uuids);
   }
 }
