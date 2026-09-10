@@ -204,7 +204,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>ch.rasc</groupId>
             <artifactId>sse-eventbus</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
