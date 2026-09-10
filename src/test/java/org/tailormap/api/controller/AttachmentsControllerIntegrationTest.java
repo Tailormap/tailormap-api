@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -51,6 +53,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Stopwatch
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 class AttachmentsControllerIntegrationTest {
 
   @Value("${tailormap-api.base-path}")

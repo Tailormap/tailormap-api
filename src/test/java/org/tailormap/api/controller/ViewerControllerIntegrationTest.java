@@ -25,6 +25,8 @@ import java.util.Set;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,7 @@ import org.tailormap.api.viewer.model.Service;
 @AutoConfigureMockMvc
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 class ViewerControllerIntegrationTest {
   @Autowired
   private MockMvc mockMvc;

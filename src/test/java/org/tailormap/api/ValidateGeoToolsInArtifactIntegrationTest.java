@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Execution(ExecutionMode.CONCURRENT)
 class ValidateGeoToolsInArtifactIntegrationTest {
 
   private static final Logger logger =

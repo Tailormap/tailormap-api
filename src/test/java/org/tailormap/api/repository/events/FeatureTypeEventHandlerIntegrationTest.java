@@ -14,6 +14,8 @@ import java.sql.Statement;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.geotools.jdbc.JDBCDataStore;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,6 +28,7 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.FeatureTypeRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class FeatureTypeEventHandlerIntegrationTest {
   @Autowired
   private FeatureSourceRepository featureSourceRepository;

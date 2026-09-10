@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.PageRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class AuthorisationServiceIntegrationTest {
   @Autowired
   private ApplicationRepository applicationRepository;

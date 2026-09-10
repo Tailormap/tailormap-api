@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class SolrHelperIntegrationTest {
   @Autowired
   private SearchIndexRepository searchIndexRepository;

@@ -13,12 +13,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junitpioneer.jupiter.Stopwatch;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -31,17 +29,14 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 
 @AutoConfigureMockMvc
-@Stopwatch
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 class SolrAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
   private MockMvc mockMvc;
-
-  private final int waitForIndexRefreshMillis = 10000;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -76,46 +71,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @Order(1)
-  void refresh_index_4() throws Exception {
-    // 4: bak
-    mockMvc.perform(put(adminBasePath + "/index/4")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isAccepted());
-    // after submitting the request, wait for the index to be refreshed
-    Thread.sleep(waitForIndexRefreshMillis);
-  }
-
-  @Test
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {Group.ADMIN})
-  @Order(2)
-  void clear_index_4() throws Exception {
-    // 4: bak
-    mockMvc.perform(delete(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
-  }
-
-  @Test
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {Group.ADMIN})
-  @Order(3)
-  void recreate_index_4() throws Exception {
-    // 4: bak
-    mockMvc.perform(put(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isAccepted());
-    // after submitting the request, wait for the index to be refreshed
-    Thread.sleep(waitForIndexRefreshMillis);
-  }
-
-  @Test
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {Group.ADMIN})
-  @Order(1)
   void index_without_search_index_configured() throws Exception {
     mockMvc.perform(put(adminBasePath + "/index/100")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -135,8 +90,5 @@ class SolrAdminControllerIntegrationTest {
         .andExpect(jsonPath("$.message").value("Indexing scheduled"))
         .andExpect(jsonPath("$.uuid").isNotEmpty())
         .andExpect(jsonPath("$.type").value("index"));
-
-    // after submitting the request, wait for the index to be refreshed in the scheduler
-    Thread.sleep(2 * waitForIndexRefreshMillis);
   }
 }

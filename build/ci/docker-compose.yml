@@ -153,7 +153,7 @@ services:
       # Prometheus scrape/configuration file is created on startup from this environment variable
       PROM_CONFIG: |-
         global:
-          scrape_interval: '5s'
+          scrape_interval: '30s'
         scrape_configs:
           - job_name: 'tailormap-api-snapshot'
             scheme: 'http'
@@ -176,7 +176,6 @@ services:
             --storage.tsdb.retention.time=91d
             --storage.tsdb.retention.size=100MB
             --log.level=debug
-            --enable-feature=exemplar-storage
     entrypoint: /bin/sh -c 'echo "$$PROM_CONFIG" > /etc/prometheus/prometheus.yml && /bin/prometheus $$CMD'
     volumes:
       - prometheus-data:/prometheus

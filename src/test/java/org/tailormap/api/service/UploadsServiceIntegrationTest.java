@@ -13,6 +13,8 @@ import java.time.ZoneId;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Upload;
@@ -20,6 +22,7 @@ import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class UploadsServiceIntegrationTest {
   private static OffsetDateTime now;
 

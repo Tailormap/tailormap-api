@@ -20,6 +20,8 @@ import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublic
 
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -32,6 +34,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
+@Execution(ExecutionMode.CONCURRENT)
 class LayerExtractControllerRestrictedFormatsIntegrationTest {
   private static final String formatsPath = "/extract/formats";
   private static final String extractPath = "/extract/";

@@ -31,7 +31,7 @@ import org.tailormap.api.persistence.Group;
 @PostgresIntegrationTest
 @TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscoreAndNumber.class)
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(value = ExecutionMode.SAME_THREAD)
 class IngestMetricsControllerIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;

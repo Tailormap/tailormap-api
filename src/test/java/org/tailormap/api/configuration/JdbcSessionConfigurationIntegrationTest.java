@@ -118,6 +118,7 @@ and session_primary_id = (select primary_id from spring_session where session_id
 
     TailormapUserDetailsImpl retrievedUserDetails =
         (TailormapUserDetailsImpl) retrievedCtx.getAuthentication().getPrincipal();
+    assertNotNull(retrievedUserDetails, "User details should be present");
     assertEquals("test-user", retrievedUserDetails.getUsername(), "Username should match");
     assertEquals(1, retrievedUserDetails.getAdditionalProperties().size(), "Should have one additional property");
     assertEquals(2, retrievedUserDetails.getAdditionalGroupProperties().size(), "Should have two group properties");

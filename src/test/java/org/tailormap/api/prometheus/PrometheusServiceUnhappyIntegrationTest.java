@@ -9,18 +9,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.tailormap.api.IntegrationTestOrdering.PROMETHEUS_UNHAPPY_INTEGRATION_TEST_ORDER;
 
 import java.io.IOException;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
-@Order(PROMETHEUS_UNHAPPY_INTEGRATION_TEST_ORDER)
 @TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
+@Execution(ExecutionMode.CONCURRENT)
 class PrometheusServiceUnhappyIntegrationTest {
   @Autowired
   private PrometheusService prometheusService;
