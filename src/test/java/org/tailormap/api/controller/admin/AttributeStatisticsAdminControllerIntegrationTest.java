@@ -34,7 +34,7 @@ import org.tailormap.api.repository.FeatureTypeRepository;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
-@Execution(ExecutionMode.SAME_THREAD)
+@Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class AttributeStatisticsAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}/statistics/")

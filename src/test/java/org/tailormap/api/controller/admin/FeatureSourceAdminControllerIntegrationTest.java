@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -28,6 +30,7 @@ import org.tailormap.api.persistence.Group;
  * SPDX-License-Identifier: MIT
  */
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class FeatureSourceAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

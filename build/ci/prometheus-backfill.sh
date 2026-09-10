@@ -17,8 +17,12 @@ generate_metrics() {
   local metric_name=$1
   local labels=$2
 
-  for i in $(seq 0 59); do
-    timestamp=$(date -d "${dateHour}:$(printf "%02d" "$i"):00" +%s)
+  for minute in $(seq 0 59); do
+    timestamp=$(date -d "${dateHour}:$(printf "%02d" "$minute"):01" +%s)
+    value=$((RANDOM % 100 + 1))
+    echo "${metric_name}{${labels}} $value $timestamp"
+
+    timestamp=$(date -d "${dateHour}:$(printf "%02d" "$minute"):31" +%s)
     value=$((RANDOM % 100 + 1))
     echo "${metric_name}{${labels}} $value $timestamp"
   done

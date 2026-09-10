@@ -19,6 +19,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.DisableIfTestFails;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import tools.jackson.databind.JsonNode;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisableIfTestFails
 @Order(PROMETHEUS_INTEGRATION_TEST_ORDER)
+@Execution(ExecutionMode.CONCURRENT)
 class PrometheusServiceIntegrationTest {
   @Autowired
   private PrometheusService prometheusService;

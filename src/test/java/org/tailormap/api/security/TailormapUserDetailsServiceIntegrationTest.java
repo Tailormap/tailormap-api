@@ -9,11 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class TailormapUserDetailsServiceIntegrationTest {
 
   @Autowired

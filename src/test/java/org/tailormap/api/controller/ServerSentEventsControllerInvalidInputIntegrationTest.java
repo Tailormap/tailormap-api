@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -19,6 +21,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class ServerSentEventsControllerInvalidInputIntegrationTest {
 
   @Autowired

@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -19,6 +21,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class UnauthorizedControllerIntegrationTest {
   @Autowired
   private MockMvc mockMvc;

@@ -48,7 +48,7 @@ import org.tailormap.api.scheduling.TaskType;
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 @Order(SECOND_INTEGRATION_TEST_ORDER)
 class TaskAdminControllerIntegrationTest {
   @Autowired

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
-import static org.tailormap.api.IntegrationTestOrdering.PROMETHEUS_INTEGRATION_TEST_ORDER;
+import static org.tailormap.api.IntegrationTestOrdering.SECOND_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
 import static org.tailormap.api.prometheus.TagNames.NUMBER_OF_DAYS_REPLACE_TOKEN;
 
@@ -24,11 +24,11 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.restclient.test.autoconfigure.RestClientTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -42,30 +42,21 @@ import tools.jackson.databind.node.ArrayNode;
  * Integration tests for the Prometheus service. These tests assume that the Prometheus server is running on
  * localhost:9090 and that the tailormap_app_request_total metric is available.
  */
-@RestClientTest(
-    properties = {
-      "tailormap-api.prometheus-api-url=http://localhost:9090/api/v1",
-      // get the total count over the last #NUMBER_OF_DAYS# days
-      "tailormap-api.prometheus-api-appmetrics-totals=floor(increase(tailormap_app_request_total[#NUMBER_OF_DAYS#d]))",
-      // get the last update within the last #NUMBER_OF_DAYS# days
-      "tailormap-api.prometheus-api-appmetrics-updated=time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[#NUMBER_OF_DAYS#d:1m])"
-    })
-@Order(PROMETHEUS_INTEGRATION_TEST_ORDER)
+@Order(SECOND_INTEGRATION_TEST_ORDER)
+@Execution(ExecutionMode.CONCURRENT)
 public class PrometheusIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${tailormap-api.prometheus-api-url}")
-  private String prometheusUrl;
+  private final String prometheusUrl = "http://localhost:9090/api/v1/query?query=";
 
   // The number of applications we expect to have metrics for, CI setup has 2 apps
   private final int countedApps = 2;
 
-  @Value("${tailormap-api.prometheus-api-appmetrics-totals}")
-  private String totalsQuery;
+  private final String totalsQuery = "floor(increase(tailormap_app_request_total[#NUMBER_OF_DAYS#d]))";
 
-  @Value("${tailormap-api.prometheus-api-appmetrics-updated}")
-  private String counterLastUpdatedQuery;
+  private final String counterLastUpdatedQuery =
+      "time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[#NUMBER_OF_DAYS#d:1m])";
 
   @BeforeAll
   static void check_prometheus_is_up() {
@@ -80,9 +71,7 @@ public class PrometheusIntegrationTest {
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheus_app_counters_over_90days() throws Exception {
     ResponseEntity<String> response = new RestTemplate()
-        .getForEntity(
-            prometheusUrl + "/query?query=" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
-            String.class);
+        .getForEntity(prometheusUrl + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"), String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
@@ -91,7 +80,7 @@ public class PrometheusIntegrationTest {
 
     JsonNode root = new JsonMapper().readTree(response.getBody());
     logger.atTrace()
-        .setMessage("pp usage response: {}")
+        .setMessage("App usage response: {}")
         .addArgument(root.toPrettyString())
         .log();
     assertEquals("success", root.path("status").asString());
@@ -114,8 +103,7 @@ public class PrometheusIntegrationTest {
   void prometheus_app_counters_last_updated() throws Exception {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
-            prometheusUrl + "/query?query="
-                + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
+            prometheusUrl + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
             String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
@@ -154,8 +142,7 @@ public class PrometheusIntegrationTest {
         + " or label_replace(" + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
         + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")";
 
-    ResponseEntity<String> response =
-        new RestTemplate().getForEntity(prometheusUrl + "/query?query=" + completeQuery, String.class);
+    ResponseEntity<String> response = new RestTemplate().getForEntity(prometheusUrl + completeQuery, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
         "application/json",
@@ -180,7 +167,7 @@ public class PrometheusIntegrationTest {
   void prometheus_app_counters_separate_queried_combined_results() {
     ResponseEntity<String> response = new RestTemplate()
         .getForEntity(
-            prometheusUrl + "/query?query=" +
+            prometheusUrl +
                 // we need to relabel so we can merge the results later
                 "label_replace("
                 + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
@@ -190,7 +177,7 @@ public class PrometheusIntegrationTest {
 
     ResponseEntity<String> response2 = new RestTemplate()
         .getForEntity(
-            prometheusUrl + "/query?query=" +
+            prometheusUrl +
                 // we need to relabel so we can merge the results later
                 "label_replace("
                 + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
