@@ -13,6 +13,8 @@ import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_REQUEST_COUNTER_NAME;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -26,6 +28,7 @@ import org.tailormap.api.persistence.Group;
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {"classpath:application-postgresql-overrides.properties"})
+@Execution(ExecutionMode.CONCURRENT)
 class ViewerControllerWithActuatorIntegrationTest {
   @Autowired
   private MockMvc mockMvc;

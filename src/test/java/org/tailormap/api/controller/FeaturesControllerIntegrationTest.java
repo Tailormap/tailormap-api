@@ -55,7 +55,7 @@ import org.tailormap.api.viewer.model.Service;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(value = ExecutionMode.SAME_THREAD)
 @Stopwatch
 @Order(FIRST_INTEGRATION_TEST_ORDER)
 class FeaturesControllerIntegrationTest {

@@ -16,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -31,6 +33,7 @@ import org.tailormap.api.repository.UploadRepository;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class LayerAttachedUploadsControllerIntegrationTest {
   private static final DateTimeFormatter httpDateHeaderFormatter = DateTimeFormatter.ofPattern(
           "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH)

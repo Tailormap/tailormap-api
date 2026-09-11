@@ -918,7 +918,7 @@ SPDX-License-Identifier: MIT
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                     <trimStackTrace>false</trimStackTrace>
-                    <parallel>all</parallel>
+                    <parallel>classes</parallel>
                     <useUnlimitedThreads>true</useUnlimitedThreads>
                 </configuration>
             </plugin>
@@ -1952,7 +1952,7 @@ SPDX-License-Identifier: MIT
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skipITs>${skipTests}</skipITs>
-                            <parallel>all</parallel>
+                            <parallel>classes</parallel>
                             <useUnlimitedThreads>true</useUnlimitedThreads>
                         </configuration>
                         <executions>

@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Issue;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.repository.SearchIndexRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class SearchIndexEventHandlerIntegrationTest {
   @Autowired
   SearchIndexEventHandler searchIndexEventHandler;

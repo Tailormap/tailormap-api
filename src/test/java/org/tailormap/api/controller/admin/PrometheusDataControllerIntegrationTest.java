@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.junitpioneer.jupiter.displaynamegenerator.ReplaceCamelCaseAndUnderscoreAndNumber;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.tailormap.api.persistence.Group;
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayNameGeneration(ReplaceCamelCaseAndUnderscoreAndNumber.class)
+@Execution(ExecutionMode.CONCURRENT)
 class PrometheusDataControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

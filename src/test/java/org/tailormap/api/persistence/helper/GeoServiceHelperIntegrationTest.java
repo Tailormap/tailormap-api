@@ -8,6 +8,8 @@ package org.tailormap.api.persistence.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.GeoService;
@@ -15,6 +17,7 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.repository.GeoServiceRepository;
 
 @PostgresIntegrationTest
+@Execution(ExecutionMode.CONCURRENT)
 class GeoServiceHelperIntegrationTest {
 
   @Autowired

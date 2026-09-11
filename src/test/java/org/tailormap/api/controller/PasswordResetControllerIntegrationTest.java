@@ -51,7 +51,7 @@ import org.tailormap.api.repository.TemporaryTokenRepository;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PasswordResetControllerIntegrationTest {
   private static final Logger logger =

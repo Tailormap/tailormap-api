@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -37,6 +39,7 @@ import tools.jackson.databind.node.ObjectNode;
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 class ApplicationAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

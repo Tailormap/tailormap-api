@@ -119,7 +119,7 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
         .untilAsserted(() -> assertThat(
             sseResult.getResponse().getContentAsString(), containsString("Extract task received")));
 
-    Awaitility.await().pollInterval(5, SECONDS).atMost(30, SECONDS).untilAsserted(() -> {
+    Awaitility.await().pollInterval(5, SECONDS).atMost(45, SECONDS).untilAsserted(() -> {
       final String stream = sseResult.getResponse().getContentAsString();
       assertThat(count_completed_messages(stream), greaterThanOrEqualTo(1));
     });

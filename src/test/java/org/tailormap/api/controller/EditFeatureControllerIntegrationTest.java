@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,7 @@ import tools.jackson.databind.node.ObjectNode;
 @Order(EDIT_FEATURES_CONTROLLER_INTEGRATION_TEST_ORDER)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 class EditFeatureControllerIntegrationTest {
   /** bestuurlijke gebieden WFS; provincies. */
   private static final String provinciesWFS =
