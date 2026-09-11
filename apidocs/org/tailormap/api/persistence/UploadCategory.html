@@ -63,6 +63,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#LAYER_ATTACHED_FILE" tabindex="0">LAYER_ATTACHED_FILE</a></li>
 <li><a href="#APP_LOGO" tabindex="0">APP_LOGO</a></li>
 <li><a href="#HEADER_LOGO" tabindex="0">HEADER_LOGO</a></li>
+<li><a href="#IMAGE" tabindex="0">IMAGE</a></li>
 <li><a href="#PORTAL_IMAGE" tabindex="0">PORTAL_IMAGE</a></li>
 <li><a href="#DRAWING_STYLE" tabindex="0">DRAWING_STYLE</a></li>
 <li><a href="#DRAWING_STYLE_IMAGE" tabindex="0">DRAWING_STYLE_IMAGE</a></li>
@@ -78,8 +79,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#valueOf(java.lang.String)" tabindex="0">valueOf(String)</a></li>
 <li><a href="#getValue()" tabindex="0">getValue()</a></li>
 <li><a href="#toString()" tabindex="0">toString()</a></li>
-<li><a href="#getUnrestrictedCategories()" tabindex="0">getUnrestrictedCategories()</a></li>
-<li><a href="#getRestrictedCategories()" tabindex="0">getRestrictedCategories()</a></li>
+<li><a href="#isRestricted()" tabindex="0">isRestricted()</a></li>
 </ol>
 </li>
 </ol>
@@ -132,20 +132,22 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="#HEADER_LOGO" class="member-name-link">HEADER_LOGO</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="#LAYER_ATTACHED_FILE" class="member-name-link">LAYER_ATTACHED_FILE</a></code></div>
+<div class="col-first even-row-color"><code><a href="#IMAGE" class="member-name-link">IMAGE</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="#LEGEND" class="member-name-link">LEGEND</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#LAYER_ATTACHED_FILE" class="member-name-link">LAYER_ATTACHED_FILE</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="#PORTAL_IMAGE" class="member-name-link">PORTAL_IMAGE</a></code></div>
+<div class="col-first even-row-color"><code><a href="#LEGEND" class="member-name-link">LEGEND</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="#SSO_IMAGE" class="member-name-link">SSO_IMAGE</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#PORTAL_IMAGE" class="member-name-link">PORTAL_IMAGE</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="#THEME_FAVICON" class="member-name-link">THEME_FAVICON</a></code></div>
+<div class="col-first even-row-color"><code><a href="#SSO_IMAGE" class="member-name-link">SSO_IMAGE</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="#THEME_THEME_LOGO" class="member-name-link">THEME_THEME_LOGO</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#THEME_FAVICON" class="member-name-link">THEME_FAVICON</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="#UNRESTRICTED" class="member-name-link">UNRESTRICTED</a></code></div>
+<div class="col-first even-row-color"><code><a href="#THEME_THEME_LOGO" class="member-name-link">THEME_THEME_LOGO</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="#UNRESTRICTED" class="member-name-link">UNRESTRICTED</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -160,28 +162,25 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getRestrictedCategories()" class="member-name-link">getRestrictedCategories</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUnrestrictedCategories()" class="member-name-link">getUnrestrictedCategories</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getValue()" class="member-name-link">getValue</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isRestricted()" class="member-name-link">isRestricted</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the string representation of the enum value.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#values()" class="member-name-link">values</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#values()" class="member-name-link">values</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
 </div>
@@ -234,6 +233,14 @@ the order they are declared.</div>
 <h3>HEADER_LOGO</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></span>&nbsp;<span class="element-name">HEADER_LOGO</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="IMAGE">
+<h3>IMAGE</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></span>&nbsp;<span class="element-name">IMAGE</span></div>
 </div>
 </section>
 </li>
@@ -366,18 +373,10 @@ not permitted.)</div>
 </section>
 </li>
 <li>
-<section class="detail" id="getUnrestrictedCategories()">
-<h3>getUnrestrictedCategories</h3>
+<section class="detail" id="isRestricted()">
+<h3>isRestricted</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&gt;</span>&nbsp;<span class="element-name">getUnrestrictedCategories</span>()</div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getRestrictedCategories()">
-<h3>getRestrictedCategories</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&gt;</span>&nbsp;<span class="element-name">getRestrictedCategories</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isRestricted</span>()</div>
 </div>
 </section>
 </li>
