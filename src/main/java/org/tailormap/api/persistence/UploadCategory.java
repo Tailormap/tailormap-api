@@ -6,26 +6,30 @@
 package org.tailormap.api.persistence;
 
 import jakarta.persistence.EnumeratedValue;
-import java.util.List;
 
 public enum UploadCategory {
-  LEGEND("legend"),
-  LAYER_ATTACHED_FILE("layer-attached-file"),
-  APP_LOGO("app-logo"),
-  HEADER_LOGO("header-logo"),
-  PORTAL_IMAGE("portal-image"),
-  DRAWING_STYLE("drawing-style"),
-  DRAWING_STYLE_IMAGE("drawing-style-image"),
-  SSO_IMAGE("sso-image"),
-  THEME_THEME_LOGO("theme-theme-logo"),
-  THEME_FAVICON("theme-favicon"),
-  UNRESTRICTED("unrestricted");
+  LEGEND("legend", true),
+  LAYER_ATTACHED_FILE("layer-attached-file", true),
+
+  APP_LOGO("app-logo", false),
+  HEADER_LOGO("header-logo", false),
+  IMAGE("image", false),
+  PORTAL_IMAGE("portal-image", false),
+  DRAWING_STYLE("drawing-style", false),
+  DRAWING_STYLE_IMAGE("drawing-style-image", false),
+  SSO_IMAGE("sso-image", false),
+  THEME_THEME_LOGO("theme-theme-logo", false),
+  THEME_FAVICON("theme-favicon", false),
+  UNRESTRICTED("unrestricted", false);
 
   @EnumeratedValue
   private final String value;
 
-  UploadCategory(String value) {
+  private final boolean restricted;
+
+  UploadCategory(String value, boolean restricted) {
     this.value = value;
+    this.restricted = restricted;
   }
 
   public String getValue() {
@@ -43,19 +47,7 @@ public enum UploadCategory {
     return getValue();
   }
 
-  public static List<UploadCategory> getUnrestrictedCategories() {
-    return List.of(
-        APP_LOGO,
-        PORTAL_IMAGE,
-        DRAWING_STYLE,
-        DRAWING_STYLE_IMAGE,
-        SSO_IMAGE,
-        THEME_THEME_LOGO,
-        THEME_FAVICON,
-        UNRESTRICTED);
-  }
-
-  public static List<UploadCategory> getRestrictedCategories() {
-    return List.of(LAYER_ATTACHED_FILE, LEGEND);
+  public boolean isRestricted() {
+    return restricted;
   }
 }

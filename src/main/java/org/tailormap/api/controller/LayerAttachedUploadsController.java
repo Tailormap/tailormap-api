@@ -66,7 +66,7 @@ public class LayerAttachedUploadsController {
       @PathVariable(name = "id") UUID id,
       @PathVariable(name = "filename", required = false) String filename) {
 
-    if (UploadCategory.getUnrestrictedCategories().contains(category)) {
+    if (!category.isRestricted()) {
       // return from the normal '/uploads' endpoint if the category is not restricted while removing the
       // application and layer from the path. This could happen for "unrestricted" categories like APP_LOGO,
       // UNRESTRICTED, etc. that have been attached to a layer.

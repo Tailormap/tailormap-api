@@ -71,18 +71,22 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void get_with_disallowed_category() throws Exception {
-    for (UploadCategory category : UploadCategory.getRestrictedCategories()) {
-      mockMvc.perform(get(
-              apiBasePath + "/uploads/" + category + "/00000000-0000-0000-0000-000000000000/file.txt"))
-          .andExpect(status().isBadRequest());
+    for (UploadCategory category : UploadCategory.values()) {
+      if (category.isRestricted()) {
+        mockMvc.perform(get(apiBasePath + "/uploads/" + category
+                + "/00000000-0000-0000-0000-000000000000/file.txt"))
+            .andExpect(status().isBadRequest());
+      }
     }
   }
 
   @Test
   void get_latest_with_disallowed_category() throws Exception {
-    for (UploadCategory category : UploadCategory.getRestrictedCategories()) {
-      mockMvc.perform(get(apiBasePath + "/uploads/" + category + "/latest"))
-          .andExpect(status().isBadRequest());
+    for (UploadCategory category : UploadCategory.values()) {
+      if (category.isRestricted()) {
+        mockMvc.perform(get(apiBasePath + "/uploads/" + category + "/latest"))
+            .andExpect(status().isBadRequest());
+      }
     }
   }
 
