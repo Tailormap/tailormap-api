@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  @PostgresIntegrationTest
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  @TestPropertySource(locations = {<span class="jxr_string">"classpath:application-postgresql-overrides.properties"</span>})
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  @DisplayNameGeneration(ReplaceCamelCaseAndUnderscoreAndNumber.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Execution(ExecutionMode.CONCURRENT)
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Execution(value = ExecutionMode.SAME_THREAD)
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">class</strong> IngestMetricsControllerIntegrationTest {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
