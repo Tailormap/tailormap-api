@@ -502,10 +502,13 @@ public class SolrHelper implements AutoCloseable, Constants {
       List<String> displayValues = solrDocument.getFieldValues(INDEX_DISPLAY_FIELD).stream()
           .map(Object::toString)
           .toList();
-      searchResponse.addDocumentsItem(new SearchDocument()
-          .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
-          .geometry(solrDocument.getFieldValue(INDEX_GEOM_FIELD).toString())
-          .displayValues(displayValues));
+      Object geom = solrDocument.getFieldValue(INDEX_GEOM_FIELD);
+      if (geom != null) {
+        searchResponse.addDocumentsItem(new SearchDocument()
+            .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
+            .geometry(geom.toString())
+            .displayValues(displayValues));
+      }
     });
 
     return searchResponse;
