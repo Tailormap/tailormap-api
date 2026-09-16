@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  @PostgresIntegrationTest
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @Execution(value = ExecutionMode.SAME_THREAD, reason = <span class="jxr_string">"we need specific ordering of tests"</span>)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  @Execution(ExecutionMode.CONCURRENT)
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  @Order(SECOND_INTEGRATION_TEST_ORDER)
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">class</strong> <a name="TaskAdminControllerIntegrationTest" href="../../../../../org/tailormap/api/controller/admin/TaskAdminControllerIntegrationTest.html#TaskAdminControllerIntegrationTest">TaskAdminControllerIntegrationTest</a> {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    @Autowired
