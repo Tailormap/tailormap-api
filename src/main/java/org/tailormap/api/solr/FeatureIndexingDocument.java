@@ -26,7 +26,6 @@ public class FeatureIndexingDocument implements Constants {
   private String[] displayFields;
 
   @Field(value = INDEX_GEOM_FIELD)
-  @SuppressWarnings("unused")
   private String geometry;
 
   public FeatureIndexingDocument(String fid, Long searchLayerId) {
@@ -36,6 +35,10 @@ public class FeatureIndexingDocument implements Constants {
 
   public void setGeometry(String wktGeometry) {
     this.geometry = wktGeometry;
+  }
+
+  public String getGeometry() {
+    return geometry;
   }
 
   public void setSearchFields(String[] searchFields) {
