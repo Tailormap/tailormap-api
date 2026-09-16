@@ -38,6 +38,10 @@ public class FeatureIndexingDocument implements Constants {
     this.geometry = wktGeometry;
   }
 
+  public String getGeometry() {
+    return geometry;
+  }
+
   public void setSearchFields(String[] searchFields) {
     this.searchFields = searchFields;
   }

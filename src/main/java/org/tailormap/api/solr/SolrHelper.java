@@ -351,6 +351,12 @@ public class SolrHelper implements AutoCloseable, Constants {
               feature.getID(),
               tmFeatureType.getName());
           indexSkippedCounter++;
+        } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
+          logger.trace(
+              "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
+              feature.getID(),
+              tmFeatureType.getName());
+          indexSkippedCounter++;
         } else {
           doc.setSearchFields(searchValues.toArray(new String[0]));
           doc.setDisplayFields(displayValues.toArray(new String[0]));
