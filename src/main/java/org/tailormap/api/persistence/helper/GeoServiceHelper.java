@@ -5,10 +5,6 @@
  */
 package org.tailormap.api.persistence.helper;
 
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
-
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -29,6 +25,7 @@ import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
 import org.geotools.data.ows.OperationType;
 import org.geotools.http.HTTPClientFinder;
+import org.geotools.ows.ServiceException;
 import org.geotools.ows.wms.Layer;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
@@ -46,6 +43,7 @@ import org.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import org.tailormap.api.geotools.WMSServiceExceptionUtil;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
 import org.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
@@ -106,21 +104,22 @@ public class GeoServiceHelper {
         .orElse(null);
   }
 
-  public void loadServiceCapabilities(GeoService geoService) throws Exception {
-
-    if (geoService.getProtocol() == XYZ) {
+  public GeoService loadServiceCapabilities(GeoService geoService)
+      throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
+          UnsupportedOperationException {
+    if (geoService.getProtocol() == GeoServiceProtocol.XYZ) {
       setXyzCapabilities(geoService);
-      return;
+      return geoService;
     }
 
-    if (geoService.getProtocol() == TILES3D) {
+    if (geoService.getProtocol() == GeoServiceProtocol.TILES3D) {
       set3DTilesCapabilities(geoService);
-      return;
+      return geoService;
     }
 
-    if (geoService.getProtocol() == QUANTIZEDMESH) {
+    if (geoService.getProtocol() == GeoServiceProtocol.QUANTIZEDMESH) {
       setQuantizedMeshCapabilities(geoService);
-      return;
+      return geoService;
     }
 
     ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(
@@ -169,6 +168,7 @@ public class GeoServiceHelper {
               .map(GeoServiceLayer::getName)
               .collect(Collectors.toList()));
     }
+    return geoService;
   }
 
   private static void setXyzCapabilities(GeoService geoService) {
@@ -297,7 +297,9 @@ public class GeoServiceHelper {
     }
   }
 
-  private void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
+  private void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
+      throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
+          UnsupportedOperationException {
     WebMapServer wms;
     try {
       wms = new WebMapServer(
@@ -318,7 +320,7 @@ public class GeoServiceHelper {
       if (contentType != null && contentType.contains("text/xml")) {
         String wmsException =
             WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
-        throw new Exception("Error loading WMS capabilities: "
+        throw new IOException("Error loading WMS capabilities: "
             + (wmsException != null
                 ? wmsException
                 : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8)));
@@ -330,7 +332,7 @@ public class GeoServiceHelper {
       // exception message. In a container environment the JVM is always in English so never
       // localized.
       if (e.getMessage().contains("Server returned HTTP response code: 401 for URL:")) {
-        throw new Exception(
+        throw new IOException(
             "Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)");
       } else {
         throw e;
@@ -341,7 +343,7 @@ public class GeoServiceHelper {
     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();
 
     if (getMap == null) {
-      throw new Exception("Service does not support GetMap");
+      throw new UnsupportedOperationException("Service does not support GetMap");
     }
 
     setServiceInfo(geoService, client, wms);
@@ -389,7 +391,8 @@ public class GeoServiceHelper {
         Set.of());
   }
 
-  private void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
+  private void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
+      throws ServiceException, URISyntaxException, IOException {
     WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);
     setServiceInfo(geoService, client, wmts);
 

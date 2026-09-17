@@ -41,6 +41,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.tailormap.api.persistence.json.AuthorizationRule;
+import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -77,15 +78,25 @@ public class GeoService extends AuditMetadata {
 
   /**
    * The URL from which the capabilities of this service can be loaded and the URL to use for the service, except when
-   * the advertisedUrl should be used by explicit user request. TODO: never use URL in capabilities? TODO: explicitly
-   * specify relative URLs can be used? Or even if it should be automatically converted to a relative URL if the
-   * hostname/port matches our URL? TODO: what to do with parameters such as VERSION in the URL?
+   * the advertisedUrl should be used by explicit user request.
+   *
+   * <p>TODO: never use URL in capabilities?
+   *
+   * <p>TODO: explicitly specify relative URLs can be used? Or even if it should be automatically converted to a
+   * relative URL if the hostname/port matches our URL?
+   *
+   * <p>TODO: what to do with parameters such as VERSION in the URL?
    */
   @NotNull @Column(length = 2048)
   private String url;
 
+  /**
+   * The node this service is to be attached to.
+   *
+   * @see CatalogNode#getId()
+   */
   @Transient
-  private boolean refreshCapabilities;
+  private String catalogNodeId;
 
   /**
    * Non-null when authentication is required for this service. Currently, the only authentication method is password
@@ -190,12 +201,12 @@ public class GeoService extends AuditMetadata {
     return this;
   }
 
-  public boolean isRefreshCapabilities() {
-    return refreshCapabilities;
+  public String getCatalogNodeId() {
+    return catalogNodeId;
   }
 
-  public void setRefreshCapabilities(boolean refreshCapabilities) {
-    this.refreshCapabilities = refreshCapabilities;
+  public void setCatalogNodeId(String catalogNodeId) {
+    this.catalogNodeId = catalogNodeId;
   }
 
   public ServiceAuthentication getAuthentication() {
