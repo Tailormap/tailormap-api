@@ -351,6 +351,12 @@ public class SolrHelper implements AutoCloseable, Constants {
               feature.getID(),
               tmFeatureType.getName());
           indexSkippedCounter++;
+        } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
+          logger.trace(
+              "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
+              feature.getID(),
+              tmFeatureType.getName());
+          indexSkippedCounter++;
         } else {
           doc.setSearchFields(searchValues.toArray(new String[0]));
           doc.setDisplayFields(displayValues.toArray(new String[0]));
@@ -502,10 +508,13 @@ public class SolrHelper implements AutoCloseable, Constants {
       List<String> displayValues = solrDocument.getFieldValues(INDEX_DISPLAY_FIELD).stream()
           .map(Object::toString)
           .toList();
-      searchResponse.addDocumentsItem(new SearchDocument()
-          .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
-          .geometry(solrDocument.getFieldValue(INDEX_GEOM_FIELD).toString())
-          .displayValues(displayValues));
+      Object geom = solrDocument.getFieldValue(INDEX_GEOM_FIELD);
+      if (geom != null) {
+        searchResponse.addDocumentsItem(new SearchDocument()
+            .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
+            .geometry(geom.toString())
+            .displayValues(displayValues));
+      }
     });
 
     return searchResponse;
