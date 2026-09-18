@@ -16,19 +16,15 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
   // JSR-303 validator
   private final LocalValidatorFactoryBean localValidatorFactoryBean;
 
-  private final FeatureSourceValidator featureSourceValidator;
-
   private final ApplicationValidator applicationValidator;
 
   private final SearchIndexValidator searchIndexValidator;
 
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
-      FeatureSourceValidator featureSourceValidator,
       ApplicationValidator applicationValidator,
       SearchIndexValidator searchIndexValidator) {
     this.localValidatorFactoryBean = localValidatorFactoryBean;
-    this.featureSourceValidator = featureSourceValidator;
     this.applicationValidator = applicationValidator;
     this.searchIndexValidator = searchIndexValidator;
   }
@@ -38,8 +34,6 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
     validatingListener
         .addValidator("beforeCreate", localValidatorFactoryBean)
         .addValidator("beforeSave", localValidatorFactoryBean)
-        .addValidator("beforeCreate", featureSourceValidator)
-        .addValidator("beforeSave", featureSourceValidator)
         .addValidator("beforeCreate", applicationValidator)
         .addValidator("beforeSave", applicationValidator)
         .addValidator("beforeCreate", searchIndexValidator)

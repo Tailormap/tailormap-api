@@ -820,6 +820,10 @@ public class PopulateTestData {
         new CatalogNode().id("GeoServiceAdminController").title("GeoServiceAdminController test node");
     rootCatalogNode.addChildrenItem(geoServiceAdminControllerNode.getId());
     catalog.getNodes().add(geoServiceAdminControllerNode);
+    CatalogNode featureSourceAdminControllerNode =
+        new CatalogNode().id("FeatureSourceAdminController").title("FeatureSourceAdminController test node");
+    rootCatalogNode.addChildrenItem(featureSourceAdminControllerNode.getId());
+    catalog.getNodes().add(featureSourceAdminControllerNode);
 
     for (TMFeatureSource featureSource : featureSources.values()) {
       featureSourceCatalogNode.addItemsItem(new TailormapObjectRef()
