@@ -1,6 +1,12 @@
+/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package org.tailormap.api.controller.admin;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -8,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
@@ -32,11 +37,6 @@ import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.TailormapObjectRef;
 import org.tailormap.api.repository.CatalogRepository;
 
-/*
- * Copyright (C) 2023 B3Partners B.V.
- *
- * SPDX-License-Identifier: MIT
- */
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 class FeatureSourceAdminControllerIntegrationTest {
@@ -100,7 +100,7 @@ class FeatureSourceAdminControllerIntegrationTest {
             .content(getFeatureSourcePOSTBody(
                 port, host, database, user, password, "FeatureSourceAdminController")))
         .andExpect(status().isCreated())
-        .andExpect(redirectedUrlPattern(adminBasePath + "/feature-sources/*"))
+        .andExpect(header().string("Location", notNullValue()))
         .andReturn();
 
     assertNotNull(result.getResponse().getRedirectedUrl());

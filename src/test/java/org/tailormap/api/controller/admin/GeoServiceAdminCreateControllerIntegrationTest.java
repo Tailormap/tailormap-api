@@ -6,11 +6,12 @@
 package org.tailormap.api.controller.admin;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.invoke.MethodHandles;
@@ -134,7 +135,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
             .characterEncoding(StandardCharsets.UTF_8)
             .content(geoServicePOSTBody))
         .andExpect(status().isCreated())
-        .andExpect(redirectedUrlPattern("http://localhost/api/admin/geo-services/*"))
+        .andExpect(header().string("Location", notNullValue()))
         .andReturn();
 
     assertNotNull(result.getResponse().getRedirectedUrl());

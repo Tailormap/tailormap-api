@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package org.tailormap.api.controller.admin;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -33,11 +38,6 @@ import org.tailormap.api.persistence.Group;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-/*
- * Copyright (C) 2023 B3Partners B.V.
- *
- * SPDX-License-Identifier: MIT
- */
 @PostgresIntegrationTest
 class GeoServiceAdminControllerIntegrationTest {
   @Autowired

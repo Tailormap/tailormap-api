@@ -9,6 +9,7 @@ package org.tailormap.api.controller.admin;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -149,7 +151,8 @@ public class GeoServiceAdminController {
    * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
    */
   @PostMapping(path = "${tailormap-api.admin.base-path}/geo-services/new")
-  public ResponseEntity<EntityModel<GeoService>> createGeoService(@RequestBody GeoService geoService)
+  @Transactional
+  public ResponseEntity<EntityModel<GeoService>> createGeoService(@RequestBody @Valid GeoService geoService)
       throws ServiceException, URISyntaxException, IOException, ObjectOptimisticLockingFailureException {
 
     final String catalogNodeId = geoService.getCatalogNodeId();
@@ -176,7 +179,7 @@ public class GeoServiceAdminController {
     geoService = geoServiceHelper.loadServiceCapabilities(geoService);
 
     Catalog catalog = catalogRepository
-        .findById(Catalog.MAIN)
+        .findByIdWithLock(Catalog.MAIN)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Main catalog not found"));
     CatalogNode attachTo = catalog.getNodes().stream()
         .filter(node -> node.getId().equals(catalogNodeId))

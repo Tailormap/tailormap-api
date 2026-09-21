@@ -7,6 +7,7 @@
 package org.tailormap.api.controller.admin;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +104,9 @@ public class FeatureSourceAdminController {
    * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
    */
   @PostMapping(path = "${tailormap-api.admin.base-path}/feature-sources/new")
-  public ResponseEntity<EntityModel<TMFeatureSource>> createFeatureSource(@RequestBody TMFeatureSource featureSource)
+  @Transactional
+  public ResponseEntity<EntityModel<TMFeatureSource>> createFeatureSource(
+      @RequestBody @Valid TMFeatureSource featureSource)
       throws IOException, ObjectOptimisticLockingFailureException {
     final String catalogNodeId = featureSource.getCatalogNodeId();
     if (StringUtils.isBlank(catalogNodeId)) {
@@ -117,7 +120,7 @@ public class FeatureSourceAdminController {
     }
 
     Catalog catalog = catalogRepository
-        .findById(Catalog.MAIN)
+        .findByIdWithLock(Catalog.MAIN)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Main catalog not found"));
     CatalogNode attachTo = catalog.getNodes().stream()
         .filter(node -> node.getId().equals(catalogNodeId))
