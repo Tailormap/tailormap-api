@@ -100,7 +100,7 @@ class FeatureSourceAdminControllerIntegrationTest {
             .content(getFeatureSourcePOSTBody(
                 port, host, database, user, password, "FeatureSourceAdminController")))
         .andExpect(status().isCreated())
-        .andExpect(redirectedUrlPattern("**/feature-sources/*"))
+        .andExpect(redirectedUrlPattern(adminBasePath + "/feature-sources/*"))
         .andReturn();
 
     assertNotNull(result.getResponse().getRedirectedUrl());

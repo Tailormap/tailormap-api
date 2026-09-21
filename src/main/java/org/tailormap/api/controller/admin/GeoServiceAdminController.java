@@ -18,9 +18,12 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.ows.ServiceException;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -69,14 +72,9 @@ public class GeoServiceAdminController {
   public ResponseEntity<?> badRequestException(Exception ex) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     String msg = ex.getMessage();
-    //      case "IllegalArgumentException":
-    //      case "UnsupportedOperationException":
-
-    msg = switch (ex.getClass().getSimpleName()) {
-      case "UnknownHostException" -> "Unknown host: \"" + ex.getMessage() + "\"";
-      default -> msg;
-    };
-
+    if (ex.getClass().getSimpleName().equals("UnknownHostException")) {
+      msg = "Unknown host: \"" + ex.getMessage() + "\"";
+    }
     return ResponseEntity.status(status)
         .contentType(MediaType.APPLICATION_JSON)
         .body(new ErrorResponse().message(msg).code(status.value()));
@@ -85,7 +83,6 @@ public class GeoServiceAdminController {
   @ExceptionHandler({ServiceException.class, IOException.class})
   public ResponseEntity<?> internalServerError(Exception ex) {
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
     return ResponseEntity.status(status)
         .contentType(MediaType.APPLICATION_JSON)
         .body(new ErrorResponse().message(ex.getMessage()).code(status.value()));
@@ -141,23 +138,27 @@ public class GeoServiceAdminController {
     }
   }
 
+  /**
+   * Create a new GeoService and attach it to a catalog node.
+   *
+   * @param geoService the GeoService to create
+   * @return the created GeoService as a HATEOAS resource with a link to the resource
+   * @throws ServiceException if there is an error loading the service capabilities
+   * @throws URISyntaxException if the URL is invalid
+   * @throws IOException if there is an error loading the service capabilities
+   * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
+   */
   @PostMapping(path = "${tailormap-api.admin.base-path}/geo-services/new")
-  public ResponseEntity<List<GeoServiceLayer>> createGeoService(@RequestBody GeoService geoService)
-      throws ServiceException, URISyntaxException, IOException {
+  public ResponseEntity<EntityModel<GeoService>> createGeoService(@RequestBody GeoService geoService)
+      throws ServiceException, URISyntaxException, IOException, ObjectOptimisticLockingFailureException {
 
     final String catalogNodeId = geoService.getCatalogNodeId();
     if (StringUtils.isBlank(catalogNodeId)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Catalog node id is required");
     }
-    Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
-    CatalogNode attachTo = catalog.getNodes().stream()
-        .filter(node -> node.getId().equals(catalogNodeId))
-        .findFirst()
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog node not found"));
 
     URI uri;
     try {
-
       if (geoService.getProtocol() == XYZ) {
         // For XYZ URL templates, remove replacements
         // Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains
@@ -173,17 +174,21 @@ public class GeoServiceAdminController {
     }
 
     geoService = geoServiceHelper.loadServiceCapabilities(geoService);
-    geoService = geoServiceRepository.save(geoService);
 
+    Catalog catalog = catalogRepository
+        .findById(Catalog.MAIN)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Main catalog not found"));
+    CatalogNode attachTo = catalog.getNodes().stream()
+        .filter(node -> node.getId().equals(catalogNodeId))
+        .findFirst()
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog node not found"));
+    geoService = geoServiceRepository.save(geoService);
     attachTo.addItemsItem(
         new TailormapObjectRef().id(geoService.getId()).kind(TailormapObjectRef.KindEnum.GEO_SERVICE));
-
     catalogRepository.saveAndFlush(catalog);
     geoService = geoServiceRepository.saveAndFlush(geoService);
 
-    return ResponseEntity.created(repositoryEntityLinks
-            .linkToItemResource(GeoService.class, geoService.getId())
-            .toUri())
-        .build();
+    Link selfLink = repositoryEntityLinks.linkToItemResource(GeoService.class, geoService.getId());
+    return ResponseEntity.created(selfLink.toUri()).body(EntityModel.of(geoService, selfLink));
   }
 }

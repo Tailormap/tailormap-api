@@ -13,9 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,25 +94,36 @@ public class FeatureSourceAdminController {
     return null;
   }
 
+  /**
+   * Create a new feature source and attach it to a catalog node.
+   *
+   * @param featureSource the feature source to create, must contain a catalogNodeId to attach to
+   * @return the created feature source as a HATEOAS resource with a link to the resource
+   * @throws IOException if there is an error loading capabilities
+   * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
+   */
   @PostMapping(path = "${tailormap-api.admin.base-path}/feature-sources/new")
-  public ResponseEntity<?> createFeatureSource(@RequestBody TMFeatureSource featureSource) throws IOException {
+  public ResponseEntity<EntityModel<TMFeatureSource>> createFeatureSource(@RequestBody TMFeatureSource featureSource)
+      throws IOException, ObjectOptimisticLockingFailureException {
     final String catalogNodeId = featureSource.getCatalogNodeId();
     if (StringUtils.isBlank(catalogNodeId)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Catalog node id is required");
     }
-    Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
-    CatalogNode attachTo = catalog.getNodes().stream()
-        .filter(node -> node.getId().equals(catalogNodeId))
-        .findFirst()
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog node not found"));
 
     try {
       featureSource = tmFeatureSourceHelper.createFeatureSource(featureSource);
-      featureSource = featureSourceRepository.save(featureSource);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    Catalog catalog = catalogRepository
+        .findById(Catalog.MAIN)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Main catalog not found"));
+    CatalogNode attachTo = catalog.getNodes().stream()
+        .filter(node -> node.getId().equals(catalogNodeId))
+        .findFirst()
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog node not found"));
+    featureSource = featureSourceRepository.save(featureSource);
     attachTo.addItemsItem(new TailormapObjectRef()
         .id(featureSource.getId().toString())
         .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE));
@@ -117,9 +131,7 @@ public class FeatureSourceAdminController {
     catalogRepository.saveAndFlush(catalog);
     featureSource = featureSourceRepository.saveAndFlush(featureSource);
 
-    return ResponseEntity.created(repositoryEntityLinks
-            .linkToItemResource(TMFeatureSource.class, featureSource.getId())
-            .toUri())
-        .build();
+    Link selfLink = repositoryEntityLinks.linkToItemResource(TMFeatureSource.class, featureSource.getId());
+    return ResponseEntity.created(selfLink.toUri()).body(EntityModel.of(featureSource, selfLink));
   }
 }
