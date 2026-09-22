@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 import org.geotools.ows.ServiceException;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.EntityModel;
@@ -32,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -144,6 +144,7 @@ public class GeoServiceAdminController {
    * Create a new GeoService and attach it to a catalog node.
    *
    * @param geoService the GeoService to create
+   * @param catalogNodeId the node this service is to be attached to
    * @return the created GeoService as a HATEOAS resource with a link to the resource
    * @throws ServiceException if there is an error loading the service capabilities
    * @throws URISyntaxException if the URL is invalid
@@ -152,13 +153,9 @@ public class GeoServiceAdminController {
    */
   @PostMapping(path = "${tailormap-api.admin.base-path}/geo-services/new")
   @Transactional
-  public ResponseEntity<EntityModel<GeoService>> createGeoService(@RequestBody @Valid GeoService geoService)
+  public ResponseEntity<EntityModel<GeoService>> createGeoService(
+      @RequestBody @Valid GeoService geoService, @RequestParam String catalogNodeId)
       throws ServiceException, URISyntaxException, IOException, ObjectOptimisticLockingFailureException {
-
-    final String catalogNodeId = geoService.getCatalogNodeId();
-    if (StringUtils.isBlank(catalogNodeId)) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Catalog node id is required");
-    }
 
     URI uri;
     try {

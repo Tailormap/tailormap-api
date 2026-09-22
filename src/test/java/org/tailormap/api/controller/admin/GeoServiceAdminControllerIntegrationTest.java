@@ -63,7 +63,6 @@ class GeoServiceAdminControllerIntegrationTest {
         .createObjectNode()
         .put("protocol", "wms")
         .put("title", "test")
-        .put("catalogNodeId", "GeoServiceAdminController")
         .put("url", url);
   }
 
@@ -86,6 +85,7 @@ class GeoServiceAdminControllerIntegrationTest {
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
       MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
+              .param("catalogNodeId", "GeoServiceAdminController")
               .contentType(MediaType.APPLICATION_JSON)
               .content(geoServicePOSTBody))
           .andExpect(status().isCreated())
@@ -205,6 +205,7 @@ class GeoServiceAdminControllerIntegrationTest {
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
       mockMvc.perform(post(adminBasePath + "/geo-services/new")
+              .param("catalogNodeId", "GeoServiceAdminController")
               .contentType(MediaType.APPLICATION_JSON)
               .content(geoServicePOSTBody))
           .andExpect(status().isInternalServerError())
@@ -250,6 +251,7 @@ class GeoServiceAdminControllerIntegrationTest {
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
       MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
+              .param("catalogNodeId", "GeoServiceAdminController")
               .contentType(MediaType.APPLICATION_JSON)
               .content(geoServicePOSTBody))
           .andExpect(status().isCreated())

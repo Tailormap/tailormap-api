@@ -16,7 +16,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
@@ -41,7 +40,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.tailormap.api.persistence.json.AuthorizationRule;
-import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -89,14 +87,6 @@ public class GeoService extends AuditMetadata {
    */
   @NotNull @Column(length = 2048)
   private String url;
-
-  /**
-   * The node this service is to be attached to.
-   *
-   * @see CatalogNode#getId()
-   */
-  @Transient
-  private String catalogNodeId;
 
   /**
    * Non-null when authentication is required for this service. Currently, the only authentication method is password
@@ -199,14 +189,6 @@ public class GeoService extends AuditMetadata {
   public GeoService setUrl(String url) {
     this.url = sanitiseUrl(url);
     return this;
-  }
-
-  public String getCatalogNodeId() {
-    return catalogNodeId;
-  }
-
-  public void setCatalogNodeId(String catalogNodeId) {
-    this.catalogNodeId = catalogNodeId;
   }
 
   public ServiceAuthentication getAuthentication() {

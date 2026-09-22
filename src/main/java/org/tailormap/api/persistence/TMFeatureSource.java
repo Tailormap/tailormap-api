@@ -22,7 +22,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -81,9 +80,6 @@ public class TMFeatureSource extends AuditMetadata {
 
   @Version
   private Long version;
-
-  @Transient
-  private String catalogNodeId;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -160,14 +156,6 @@ public class TMFeatureSource extends AuditMetadata {
   public TMFeatureSource setVersion(Long version) {
     this.version = version;
     return this;
-  }
-
-  public String getCatalogNodeId() {
-    return catalogNodeId;
-  }
-
-  public void setCatalogNodeId(String catalogNodeId) {
-    this.catalogNodeId = catalogNodeId;
   }
 
   public String getNotes() {

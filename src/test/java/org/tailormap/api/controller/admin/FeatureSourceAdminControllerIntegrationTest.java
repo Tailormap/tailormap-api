@@ -49,14 +49,12 @@ class FeatureSourceAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private String getFeatureSourcePOSTBody(
-      int port, String host, String database, String user, String password, String catalogNodeId) {
+  private String getFeatureSourcePOSTBody(int port, String host, String database, String user, String password) {
     return """
 {
 "title": "My Test Source",
 "protocol": "JDBC",
 "url": "",
-"refreshCapabilities": true,
 "jdbcConnection": {
 "dbtype": "postgis",
 "port": %s,
@@ -68,9 +66,7 @@ class FeatureSourceAdminControllerIntegrationTest {
 "method": "password",
 "username": "%s",
 "password": "%s"
-},
-"catalogNodeId": "%s"
-}""".formatted(port, host, database, user, password, catalogNodeId);
+}""".formatted(port, host, database, user, password);
   }
 
   @Test
@@ -96,9 +92,9 @@ class FeatureSourceAdminControllerIntegrationTest {
     jdbcTemplate.execute("drop table if exists test");
 
     MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources/new")
+            .param("catalogNodeId", "FeatureSourceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getFeatureSourcePOSTBody(
-                port, host, database, user, password, "FeatureSourceAdminController")))
+            .content(getFeatureSourcePOSTBody(port, host, database, user, password)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", notNullValue()))
         .andReturn();
@@ -183,8 +179,9 @@ class FeatureSourceAdminControllerIntegrationTest {
     String password = "980f1c8A-25933b2";
 
     mockMvc.perform(post(adminBasePath + "/feature-sources/new")
+            .param("catalogNodeId", "invalid")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getFeatureSourcePOSTBody(port, host, database, user, password, "invalid")))
+            .content(getFeatureSourcePOSTBody(port, host, database, user, password)))
         .andDo(print())
         .andExpect(status().isNotFound());
   }

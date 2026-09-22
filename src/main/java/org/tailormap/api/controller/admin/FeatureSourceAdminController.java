@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.persistence.Catalog;
@@ -98,7 +98,8 @@ public class FeatureSourceAdminController {
   /**
    * Create a new feature source and attach it to a catalog node.
    *
-   * @param featureSource the feature source to create, must contain a catalogNodeId to attach to
+   * @param featureSource the feature source to create
+   * @param catalogNodeId the node this feature source is to be attached to
    * @return the created feature source as a HATEOAS resource with a link to the resource
    * @throws IOException if there is an error loading capabilities
    * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
@@ -106,13 +107,8 @@ public class FeatureSourceAdminController {
   @PostMapping(path = "${tailormap-api.admin.base-path}/feature-sources/new")
   @Transactional
   public ResponseEntity<EntityModel<TMFeatureSource>> createFeatureSource(
-      @RequestBody @Valid TMFeatureSource featureSource)
+      @RequestBody @Valid TMFeatureSource featureSource, @RequestParam String catalogNodeId)
       throws IOException, ObjectOptimisticLockingFailureException {
-    final String catalogNodeId = featureSource.getCatalogNodeId();
-    if (StringUtils.isBlank(catalogNodeId)) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Catalog node id is required");
-    }
-
     try {
       featureSource = tmFeatureSourceHelper.createFeatureSource(featureSource);
     } catch (IllegalArgumentException e) {
