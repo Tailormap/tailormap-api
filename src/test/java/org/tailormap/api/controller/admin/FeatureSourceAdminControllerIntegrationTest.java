@@ -16,7 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -49,24 +51,25 @@ class FeatureSourceAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private String getFeatureSourcePOSTBody(int port, String host, String database, String user, String password) {
-    return """
-{
-"title": "My Test Source",
-"protocol": "JDBC",
-"url": "",
-"jdbcConnection": {
-"dbtype": "postgis",
-"port": %s,
-"host": "%s",
-"database": "%s",
-"schema": "public"
-},
-"authentication": {
-"method": "password",
-"username": "%s",
-"password": "%s"
-}""".formatted(port, host, database, user, password);
+  private String getFeatureSourcePOSTBody(int port, String host, String database, String user, String password)
+      throws Exception {
+    return new ObjectMapper()
+        .writeValueAsString(Map.of(
+            "title", "My Test Source",
+            "protocol", "JDBC",
+            "url", "",
+            "jdbcConnection",
+                Map.of(
+                    "dbtype", "postgis",
+                    "port", port,
+                    "host", host,
+                    "database", database,
+                    "schema", "public"),
+            "authentication",
+                Map.of(
+                    "method", "password",
+                    "username", user,
+                    "password", password)));
   }
 
   @Test
