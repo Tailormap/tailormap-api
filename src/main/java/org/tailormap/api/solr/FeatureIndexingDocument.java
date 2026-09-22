@@ -26,7 +26,6 @@ public class FeatureIndexingDocument implements Constants {
   private String[] displayFields;
 
   @Field(value = INDEX_GEOM_FIELD)
-  @SuppressWarnings("unused")
   private String geometry;
 
   public FeatureIndexingDocument(String fid, Long searchLayerId) {

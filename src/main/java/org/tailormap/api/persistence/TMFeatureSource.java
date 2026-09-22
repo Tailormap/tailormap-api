@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.persistence;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -21,7 +22,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -63,9 +63,10 @@ public class TMFeatureSource extends AuditMetadata {
       return String.valueOf(value);
     }
 
+    @JsonCreator
     public static TMFeatureSource.Protocol fromValue(String value) {
       for (TMFeatureSource.Protocol p : TMFeatureSource.Protocol.values()) {
-        if (p.value.equals(value)) {
+        if (p.value.equalsIgnoreCase(value)) {
           return p;
         }
       }
@@ -79,9 +80,6 @@ public class TMFeatureSource extends AuditMetadata {
 
   @Version
   private Long version;
-
-  @Transient
-  private boolean refreshCapabilities;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -158,14 +156,6 @@ public class TMFeatureSource extends AuditMetadata {
   public TMFeatureSource setVersion(Long version) {
     this.version = version;
     return this;
-  }
-
-  public boolean isRefreshCapabilities() {
-    return refreshCapabilities;
-  }
-
-  public void setRefreshCapabilities(boolean refreshCapabilities) {
-    this.refreshCapabilities = refreshCapabilities;
   }
 
   public String getNotes() {
