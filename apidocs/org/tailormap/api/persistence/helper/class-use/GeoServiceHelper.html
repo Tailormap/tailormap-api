@@ -60,11 +60,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="#org.tailormap.api.configuration.dev">org.tailormap.api.configuration.dev</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.controller.admin">org.tailormap.api.controller.admin</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.repository.validation">org.tailormap.api.repository.validation</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
@@ -94,6 +94,23 @@ loadScripts(document, 'script');</script>
  <a href="../../../repository/UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository,
  <a href="../../../repository/PageRepository.html" title="interface in org.tailormap.api.repository">PageRepository</a>&nbsp;pageRepository,
  org.springframework.jdbc.core.simple.JdbcClient&nbsp;jdbcClient)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.controller.admin">
+<h2>Uses of <a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a> in <a href="../../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></h2>
+<div class="caption"><span>Constructors in <a href="../../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a> with parameters of type <a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../../controller/admin/GeoServiceAdminController.html#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.CatalogRepository)" class="member-name-link">GeoServiceAdminController</a><wbr>(<a href="../../../repository/GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
+ org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks,
+ <a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
+ <a href="../../../repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -129,20 +146,6 @@ loadScripts(document, 'script');</script>
  jakarta.persistence.EntityManager&nbsp;entityManager,
  <a href="../../../security/AuthorisationService.html" title="class in org.tailormap.api.security">AuthorisationService</a>&nbsp;authorisationService,
  <a href="../../../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="org.tailormap.api.repository.validation">
-<h2>Uses of <a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a> in <a href="../../../repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></h2>
-<div class="caption"><span>Constructors in <a href="../../../repository/validation/package-summary.html">org.tailormap.api.repository.validation</a> with parameters of type <a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier</div>
-<div class="table-header col-second">Constructor</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../../repository/validation/GeoServiceValidator.html#%3Cinit%3E(org.tailormap.api.persistence.helper.GeoServiceHelper)" class="member-name-link">GeoServiceValidator</a><wbr>(<a href="../GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

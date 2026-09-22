@@ -58,15 +58,48 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Package</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.geotools.featuresources">org.tailormap.api.geotools.featuresources</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.controller.admin">org.tailormap.api.controller.admin</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.geotools.featuresources">org.tailormap.api.geotools.featuresources</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
+<li>
+<section class="detail" id="org.tailormap.api.controller.admin">
+<h2>Uses of <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a> in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></h2>
+<div class="caption"><span>Methods in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a> that return types with arguments of type <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceAdminController.</span><code><a href="../../controller/admin/FeatureSourceAdminController.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)" class="member-name-link">createFeatureSource</a><wbr>(@Valid <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a new feature source and attach it to a catalog node.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a> with parameters of type <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FeatureSourceAdminController.</span><code><a href="../../controller/admin/FeatureSourceAdminController.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)" class="member-name-link">createFeatureSource</a><wbr>(@Valid <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a new feature source and attach it to a catalog node.</div>
+</div>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="org.tailormap.api.geotools.featuresources">
 <h2>Uses of <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a> in <a href="../../geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a></h2>
@@ -155,6 +188,35 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">TMFeatureType.</span><code><a href="../TMFeatureType.html#setFeatureSource(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">setFeatureSource</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.persistence.helper">
+<h2>Uses of <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a> in <a href="../helper/package-summary.html">org.tailormap.api.persistence.helper</a></h2>
+<div class="caption"><span>Methods in <a href="../helper/package-summary.html">org.tailormap.api.persistence.helper</a> that return <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TMFeatureSourceHelper.</span><code><a href="../helper/TMFeatureSourceHelper.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">createFeatureSource</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">TMFeatureSourceHelper.</span><code><a href="../helper/TMFeatureSourceHelper.html#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../helper/package-summary.html">org.tailormap.api.persistence.helper</a> with parameters of type <a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TMFeatureSourceHelper.</span><code><a href="../helper/TMFeatureSourceHelper.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">createFeatureSource</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">TMFeatureSourceHelper.</span><code><a href="../helper/TMFeatureSourceHelper.html#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

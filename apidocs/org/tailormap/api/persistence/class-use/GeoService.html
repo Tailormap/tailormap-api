@@ -60,16 +60,18 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="#org.tailormap.api.controller">org.tailormap.api.controller</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.controller.admin">org.tailormap.api.controller.admin</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence">org.tailormap.api.persistence</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.tailormap.api.security">org.tailormap.api.security</a></div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.repository">org.tailormap.api.repository</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.security">org.tailormap.api.security</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.util">org.tailormap.api.util</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -254,6 +256,35 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="org.tailormap.api.controller.admin">
+<h2>Uses of <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a> in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></h2>
+<div class="caption"><span>Methods in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a> that return types with arguments of type <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GeoServiceAdminController.</span><code><a href="../../controller/admin/GeoServiceAdminController.html#createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)" class="member-name-link">createGeoService</a><wbr>(@Valid <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a new GeoService and attach it to a catalog node.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../controller/admin/package-summary.html">org.tailormap.api.controller.admin</a> with parameters of type <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GeoServiceAdminController.</span><code><a href="../../controller/admin/GeoServiceAdminController.html#createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)" class="member-name-link">createGeoService</a><wbr>(@Valid <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a new GeoService and attach it to a catalog node.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="org.tailormap.api.persistence">
 <h2>Uses of <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a> in <a href="../package-summary.html">org.tailormap.api.persistence</a></h2>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.tailormap.api.persistence</a> that return <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span></div>
@@ -344,6 +375,9 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Returns the value of the <code>geoService</code> record component.</div>
 </div>
+<div class="col-first even-row-color"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GeoServiceHelper.</span><code><a href="../helper/GeoServiceHelper.html#loadServiceCapabilities(org.tailormap.api.persistence.GeoService)" class="member-name-link">loadServiceCapabilities</a><wbr>(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../helper/package-summary.html">org.tailormap.api.persistence.helper</a> with parameters of type <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span></div>
 <div class="summary-table three-column-summary">
@@ -361,7 +395,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;projection,
  <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GeoServiceHelper.</span><code><a href="../helper/GeoServiceHelper.html#loadServiceCapabilities(org.tailormap.api.persistence.GeoService)" class="member-name-link">loadServiceCapabilities</a><wbr>(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>

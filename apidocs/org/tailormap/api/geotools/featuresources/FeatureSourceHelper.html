@@ -66,8 +66,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#createDataStore(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">createDataStore(TMFeatureSource)</a></li>
 <li><a href="#createDataStore(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" tabindex="0">createDataStore(TMFeatureSource, Integer)</a></li>
 <li><a href="#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" tabindex="0">openGeoToolsFeatureSource(TMFeatureType, Integer)</a></li>
-<li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">loadCapabilities(TMFeatureSource)</a></li>
 <li><a href="#openDatastore(java.util.Map,java.lang.String)" tabindex="0">openDatastore(Map, String)</a></li>
+<li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">loadCapabilities(TMFeatureSource)</a></li>
 <li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" tabindex="0">loadCapabilities(TMFeatureSource, Integer)</a></li>
 <li><a href="#getFeatureTypeInfo(org.tailormap.api.persistence.TMFeatureType,org.geotools.api.data.ResourceInfo,org.geotools.api.data.SimpleFeatureSource)" tabindex="0">getFeatureTypeInfo(TMFeatureType, ResourceInfo, SimpleFeatureSource)</a></li>
 </ol>
@@ -230,11 +230,12 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)">
-<h3>loadCapabilities</h3>
+<section class="detail" id="openDatastore(java.util.Map,java.lang.String)">
+<h3>openDatastore</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadCapabilities</span><wbr><span class="parameters">(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs)</span>
-                      throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.geotools.api.data.DataStore</span>&nbsp;<span class="element-name">openDatastore</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;params,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordKey)</span>
+                                              throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
@@ -243,12 +244,11 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="openDatastore(java.util.Map,java.lang.String)">
-<h3>openDatastore</h3>
+<section class="detail" id="loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)">
+<h3>loadCapabilities</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.geotools.api.data.DataStore</span>&nbsp;<span class="element-name">openDatastore</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;params,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordKey)</span>
-                                              throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadCapabilities</span><wbr><span class="parameters">(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs)</span>
+                      throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>

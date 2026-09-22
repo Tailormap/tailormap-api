@@ -52,20 +52,19 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          .createObjectNode()
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          .put(<span class="jxr_string">"protocol"</span>, <span class="jxr_string">"wms"</span>)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          .put(<span class="jxr_string">"title"</span>, <span class="jxr_string">"test"</span>)
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          .put(<span class="jxr_string">"refreshCapabilities"</span>, <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          .put(<span class="jxr_string">"url"</span>, (String) <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .toPrettyString();
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      mockMvc.perform(post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .content(geoServicePOSTBody))
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          .andExpect(status().isBadRequest())
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          .andExpect(
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>              content()
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>                  .json(
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>                      <span class="jxr_string">"{\&quot;errors\&quot;:[{\&quot;entity\&quot;:\&quot;GeoService\&quot;,\&quot;property\&quot;:\&quot;url\&quot;,\&quot;invalidValue\&quot;:null,\&quot;message\&quot;:\&quot;must not be null\&quot;}]}"</span>));
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    }
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          .put(<span class="jxr_string">"url"</span>, (String) <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          .toPrettyString();
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      mockMvc.perform(post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .content(geoServicePOSTBody))
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          .andExpect(status().isBadRequest())
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          .andExpect(
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>              content()
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .json(
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                      <span class="jxr_string">"{\&quot;errors\&quot;:[{\&quot;entity\&quot;:\&quot;GeoService\&quot;,\&quot;property\&quot;:\&quot;url\&quot;,\&quot;invalidValue\&quot;:null,\&quot;message\&quot;:\&quot;must not be null\&quot;}]}"</span>));
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

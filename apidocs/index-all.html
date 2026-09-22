@@ -756,6 +756,8 @@ RepositoryConstraintViolationException gets converted to JSON.</div>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
+<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#badRequestException(java.lang.Exception)" class="member-name-link">badRequestException(Exception)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#baseApp(java.lang.String)" class="member-name-link">baseApp(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#baseApps(java.util.List)" class="member-name-link">baseApps(List)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
@@ -1046,6 +1048,16 @@ request to do a POST request with all parameters in the body to handle large POS
 </dd>
 <dt><a href="org/tailormap/api/controller/EditFeatureController.html#createFeature(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.Feature)" class="member-name-link">createFeature(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, Feature)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/EditFeatureController.html" title="class in org.tailormap.api.controller">EditFeatureController</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)" class="member-name-link">createFeatureSource(TMFeatureSource, String)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
+<dd>
+<div class="block">Create a new feature source and attach it to a catalog node.</div>
+</dd>
+<dt><a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">createFeatureSource(TMFeatureSource)</a> - Method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)" class="member-name-link">createGeoService(GeoService, String)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
+<dd>
+<div class="block">Create a new GeoService and attach it to a catalog node.</div>
+</dd>
 <dt><a href="org/tailormap/api/service/CreateLayerExtractService.html#createLayerExtract(java.lang.String,org.tailormap.api.persistence.TMFeatureType,java.util.Set,org.geotools.api.filter.Filter,java.lang.String,org.geotools.api.filter.sort.SortOrder,org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat,java.lang.String)" class="member-name-link">createLayerExtract(String, TMFeatureType, Set, Filter, String, SortOrder, LayerExtractController.ExtractOutputFormat, String)</a> - Method in class org.tailormap.api.service.<a href="org/tailormap/api/service/CreateLayerExtractService.html" title="class in org.tailormap.api.service">CreateLayerExtractService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/service/CreateLayerExtractService.html" class="type-name-link" title="class in org.tailormap.api.service">CreateLayerExtractService</a> - Class in <a href="org/tailormap/api/service/package-summary.html">org.tailormap.api.service</a></dt>
@@ -1814,7 +1826,7 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">FeatureSourceAdminController(FeatureSourceRepository, ApplicationContext, RepositoryEntityLinks)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.persistence.helper.TMFeatureSourceHelper,org.tailormap.api.repository.CatalogRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">FeatureSourceAdminController(FeatureSourceRepository, TMFeatureSourceHelper, CatalogRepository, RepositoryEntityLinks)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html" class="type-name-link" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a> - Class in <a href="org/tailormap/api/geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a></dt>
 <dd>&nbsp;</dd>
@@ -1832,10 +1844,6 @@ default PasswordEncoder (bcrypt).</div>
 <dd>
 <div class="block">Calculate statistics (min/max/average/sum) and metadata (count) for an attribute of a feature source.</div>
 </dd>
-<dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" class="type-name-link" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a> - Class in <a href="org/tailormap/api/repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html#%3Cinit%3E()" class="member-name-link">FeatureSourceValidator()</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
 <div class="block">A -possibly empty- list of features with requested attributes and presentation metadata</div>
@@ -2061,6 +2069,10 @@ default PasswordEncoder (bcrypt).</div>
 <dt><a href="org/tailormap/api/repository/GeoServiceRepository.html#findByIds(java.util.List)" class="member-name-link">findByIds(List)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a></dt>
 <dd>
 <div class="block">Find multiple geo-services.</div>
+</dd>
+<dt><a href="org/tailormap/api/repository/CatalogRepository.html#findByIdWithLock(java.lang.String)" class="member-name-link">findByIdWithLock(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a></dt>
+<dd>
+<div class="block">Find a catalog by id with a pessimistic write lock.</div>
 </dd>
 <dt><a href="org/tailormap/api/repository/ConfigurationRepository.html#findByKey(java.lang.String)" class="member-name-link">findByKey(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a></dt>
 <dd>&nbsp;</dd>
@@ -2325,7 +2337,7 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">GeoServiceAdminController(GeoServiceRepository, ApplicationContext, RepositoryEntityLinks)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.CatalogRepository)" class="member-name-link">GeoServiceAdminController(GeoServiceRepository, RepositoryEntityLinks, GeoServiceHelper, CatalogRepository)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a> - Class in <a href="org/tailormap/api/persistence/json/package-summary.html">org.tailormap.api.persistence.json</a></dt>
 <dd>
@@ -2380,10 +2392,6 @@ default PasswordEncoder (bcrypt).</div>
 <div class="block">Server type to use for vendor-specific capabilities (high DPI, legends, etc.)</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/projections/GeoServiceSummary.html" class="type-name-link" title="interface in org.tailormap.api.persistence.projections">GeoServiceSummary</a> - Interface in <a href="org/tailormap/api/persistence/projections/package-summary.html">org.tailormap.api.persistence.projections</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/GeoServiceValidator.html" class="type-name-link" title="class in org.tailormap.api.repository.validation">GeoServiceValidator</a> - Class in <a href="org/tailormap/api/repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/GeoServiceValidator.html#%3Cinit%3E(org.tailormap.api.persistence.helper.GeoServiceHelper)" class="member-name-link">GeoServiceValidator(GeoServiceHelper)</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/GeoServiceValidator.html" title="class in org.tailormap.api.repository.validation">GeoServiceValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/GeoToolsConfiguration.html" class="type-name-link" title="class in org.tailormap.api.configuration">GeoToolsConfiguration</a> - Class in <a href="org/tailormap/api/configuration/package-summary.html">org.tailormap.api.configuration</a></dt>
 <dd>&nbsp;</dd>
@@ -5858,6 +5866,10 @@ minimum: 1</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html" title="class in org.tailormap.api.controller.admin">AttributeStatisticsAdminController</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/PrometheusDataController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/PrometheusDataController.html" title="class in org.tailormap.api.controller.admin">PrometheusDataController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
@@ -6425,6 +6437,10 @@ minimum: 1</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/InternalAdminAuthentication.html#%3Cinit%3E()" class="member-name-link">InternalAdminAuthentication()</a> - Constructor for class org.tailormap.api.security.<a href="org/tailormap/api/security/InternalAdminAuthentication.html" title="class in org.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html#internalServerError(java.lang.Exception)" class="member-name-link">internalServerError(Exception)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in org.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html#internalServerError(java.lang.Exception)" class="member-name-link">internalServerError(Exception)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/GeoServiceAdminController.html" title="class in org.tailormap.api.controller.admin">GeoServiceAdminController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/Task.html#INTERRUPTABLE_KEY" class="member-name-link">INTERRUPTABLE_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/InvalidPasswordException.html" class="type-name-link" title="class in org.tailormap.api.security">InvalidPasswordException</a> - Exception Class in <a href="org/tailormap/api/security/package-summary.html">org.tailormap.api.security</a></dt>
@@ -6483,10 +6499,6 @@ work).</div>
 <dt><a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html#isPublic(java.lang.Boolean)" class="member-name-link">isPublic(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html" title="class in org.tailormap.api.persistence.json">AdminAdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/GeoService.html#isPublished()" class="member-name-link">isPublished()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/GeoService.html#isRefreshCapabilities()" class="member-name-link">isRefreshCapabilities()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#isRefreshCapabilities()" class="member-name-link">isRefreshCapabilities()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/UploadCategory.html#isRestricted()" class="member-name-link">isRestricted()</a> - Method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a></dt>
 <dd>&nbsp;</dd>
@@ -6728,6 +6740,8 @@ work).</div>
 <div class="block">List drawings.</div>
 </dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities(TMFeatureSource)</a> - Method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities(TMFeatureSource)</a> - Method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" class="member-name-link">loadCapabilities(TMFeatureSource, Integer)</a> - Method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
@@ -8871,10 +8885,6 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#setReadTimeout(int)" class="member-name-link">setReadTimeout(int)</a> - Method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.html" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/GeoService.html#setRefreshCapabilities(boolean)" class="member-name-link">setRefreshCapabilities(boolean)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#setRefreshCapabilities(boolean)" class="member-name-link">setRefreshCapabilities(boolean)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html#setRequest(org.tailormap.api.persistence.json.TMServiceCapabilitiesRequest)" class="member-name-link">setRequest(TMServiceCapabilitiesRequest)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in org.tailormap.api.persistence.json">TMServiceCapsCapabilities</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#setRequired(java.lang.Boolean)" class="member-name-link">setRequired(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
@@ -9517,10 +9527,6 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/ApplicationValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/ApplicationValidator.html" title="class in org.tailormap.api.repository.validation">ApplicationValidator</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/GeoServiceValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/GeoServiceValidator.html" title="class in org.tailormap.api.repository.validation">GeoServiceValidator</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/SearchIndexValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/SearchIndexValidator.html" title="class in org.tailormap.api.repository.validation">SearchIndexValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html#SWITCH" class="member-name-link">SWITCH</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterEditConfiguration.FilterToolEnum</a></dt>
@@ -9863,6 +9869,10 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#%3Cinit%3E()" class="member-name-link">TMFeatureSource()</a> - Constructor for class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html" class="type-name-link" title="enum class in org.tailormap.api.persistence">TMFeatureSource.Protocol</a> - Enum Class in <a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html" class="type-name-link" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a> - Class in <a href="org/tailormap/api/persistence/helper/package-summary.html">org.tailormap.api.persistence.helper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html#%3Cinit%3E()" class="member-name-link">TMFeatureSourceHelper()</a> - Constructor for class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/TMFeatureSourceHelper.html" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/projections/TMFeatureSourceSummary.html" class="type-name-link" title="interface in org.tailormap.api.persistence.projections">TMFeatureSourceSummary</a> - Interface in <a href="org/tailormap/api/persistence/projections/package-summary.html">org.tailormap.api.persistence.projections</a></dt>
 <dd>&nbsp;</dd>
@@ -10585,10 +10595,6 @@ commonly produced by GeoServer.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/ApplicationValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)" class="member-name-link">validate(Object, Errors)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/ApplicationValidator.html" title="class in org.tailormap.api.repository.validation">ApplicationValidator</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)" class="member-name-link">validate(Object, Errors)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in org.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/GeoServiceValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)" class="member-name-link">validate(Object, Errors)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/GeoServiceValidator.html" title="class in org.tailormap.api.repository.validation">GeoServiceValidator</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/SearchIndexValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)" class="member-name-link">validate(Object, Errors)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/SearchIndexValidator.html" title="class in org.tailormap.api.repository.validation">SearchIndexValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/service/CreateLayerExtractService.html#validateClientId(java.lang.String)" class="member-name-link">validateClientId(String)</a> - Method in class org.tailormap.api.service.<a href="org/tailormap/api/service/CreateLayerExtractService.html" title="class in org.tailormap.api.service">CreateLayerExtractService</a></dt>
@@ -10599,7 +10605,7 @@ commonly produced by GeoServer.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/ValidationConfiguration.html" class="type-name-link" title="class in org.tailormap.api.repository.validation">ValidationConfiguration</a> - Class in <a href="org/tailormap/api/repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/repository/validation/ValidationConfiguration.html#%3Cinit%3E(org.springframework.validation.beanvalidation.LocalValidatorFactoryBean,org.tailormap.api.repository.validation.GeoServiceValidator,org.tailormap.api.repository.validation.FeatureSourceValidator,org.tailormap.api.repository.validation.ApplicationValidator,org.tailormap.api.repository.validation.SearchIndexValidator)" class="member-name-link">ValidationConfiguration(LocalValidatorFactoryBean, GeoServiceValidator, FeatureSourceValidator, ApplicationValidator, SearchIndexValidator)</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/ValidationConfiguration.html" title="class in org.tailormap.api.repository.validation">ValidationConfiguration</a></dt>
+<dt><a href="org/tailormap/api/repository/validation/ValidationConfiguration.html#%3Cinit%3E(org.springframework.validation.beanvalidation.LocalValidatorFactoryBean,org.tailormap.api.repository.validation.ApplicationValidator,org.tailormap.api.repository.validation.SearchIndexValidator)" class="member-name-link">ValidationConfiguration(LocalValidatorFactoryBean, ApplicationValidator, SearchIndexValidator)</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/ValidationConfiguration.html" title="class in org.tailormap.api.repository.validation">ValidationConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ValidationResult.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">ValidationResult</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>

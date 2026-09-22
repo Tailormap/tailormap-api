@@ -58,12 +58,16 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" tabindex="0">GeoServiceAdminController(GeoServiceRepository, ApplicationContext, RepositoryEntityLinks)</a></li>
+<li><a href="#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.CatalogRepository)" tabindex="0">GeoServiceAdminController(GeoServiceRepository, RepositoryEntityLinks, GeoServiceHelper, CatalogRepository)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#badRequestException(java.lang.Exception)" tabindex="0">badRequestException(Exception)</a></li>
+<li><a href="#internalServerError(java.lang.Exception)" tabindex="0">internalServerError(Exception)</a></li>
+<li><a href="#handleException(org.springframework.web.server.ResponseStatusException)" tabindex="0">handleException(ResponseStatusException)</a></li>
 <li><a href="#refreshCapabilities(java.lang.String,jakarta.servlet.http.HttpServletResponse)" tabindex="0">refreshCapabilities(String, HttpServletResponse)</a></li>
+<li><a href="#createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)" tabindex="0">createGeoService(GeoService, String)</a></li>
 </ol>
 </li>
 </ol>
@@ -94,9 +98,10 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">GeoServiceAdminController</a><wbr>(<a href="../../repository/GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
- org.springframework.context.ApplicationContext&nbsp;applicationContext,
- org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.GeoServiceRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.CatalogRepository)" class="member-name-link">GeoServiceAdminController</a><wbr>(<a href="../../repository/GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
+ org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks,
+ <a href="../../persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
+ <a href="../../repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -112,6 +117,21 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#badRequestException(java.lang.Exception)" class="member-name-link">badRequestException</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&gt;&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)" class="member-name-link">createGeoService</a><wbr>(@Valid <a href="../../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Create a new GeoService and attach it to a catalog node.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException</a><wbr>(org.springframework.web.server.ResponseStatusException&nbsp;ex)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#internalServerError(java.lang.Exception)" class="member-name-link">internalServerError</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#refreshCapabilities(java.lang.String,jakarta.servlet.http.HttpServletResponse)" class="member-name-link">refreshCapabilities</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  jakarta.servlet.http.HttpServletResponse&nbsp;httpServletResponse)</code></div>
@@ -134,12 +154,13 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.GeoServiceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)">
+<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.GeoServiceRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.CatalogRepository)">
 <h3>GeoServiceAdminController</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">GeoServiceAdminController</span><wbr><span class="parameters">(<a href="../../repository/GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
- org.springframework.context.ApplicationContext&nbsp;applicationContext,
- org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks)</span></div>
+ org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks,
+ <a href="../../persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
+ <a href="../../repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository)</span></div>
 </div>
 </section>
 </li>
@@ -152,17 +173,83 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="badRequestException(java.lang.Exception)">
+<h3>badRequestException</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@ExceptionHandler({<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a>.class,<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a>.class,<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URISyntaxException.html" title="class or interface in java.net" class="external-link">URISyntaxException</a>.class,<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/UnknownHostException.html" title="class or interface in java.net" class="external-link">UnknownHostException</a>.class})
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">badRequestException</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="internalServerError(java.lang.Exception)">
+<h3>internalServerError</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@ExceptionHandler({org.geotools.ows.ServiceException.class,<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>.class})
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">internalServerError</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="handleException(org.springframework.web.server.ResponseStatusException)">
+<h3>handleException</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">handleException</span><wbr><span class="parameters">(org.springframework.web.server.ResponseStatusException&nbsp;ex)</span></div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="refreshCapabilities(java.lang.String,jakarta.servlet.http.HttpServletResponse)">
 <h3>refreshCapabilities</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@PostMapping(path="${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities")
+@ResponseStatus
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&gt;&gt;</span>&nbsp;<span class="element-name">refreshCapabilities</span><wbr><span class="parameters">(@PathVariable
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  jakarta.servlet.http.HttpServletResponse&nbsp;httpServletResponse)</span>
-                                                                                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
+                                                                                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a>,
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URISyntaxException.html" title="class or interface in java.net" class="external-link">URISyntaxException</a>,
+org.geotools.ows.ServiceException,
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URISyntaxException.html" title="class or interface in java.net" class="external-link">URISyntaxException</a></code></dd>
+<dd><code>org.geotools.ows.ServiceException</code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="createGeoService(org.tailormap.api.persistence.GeoService,java.lang.String)">
+<h3>createGeoService</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@PostMapping(path="${tailormap-api.admin.base-path}/geo-services/new")
+@Transactional
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;org.springframework.hateoas.EntityModel&lt;<a href="../../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&gt;&gt;</span>&nbsp;<span class="element-name">createGeoService</span><wbr><span class="parameters">(@RequestBody @Valid
+ @Valid <a href="../../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ @RequestParam
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</span>
+                                                                                                              throws <span class="exceptions">org.geotools.ows.ServiceException,
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URISyntaxException.html" title="class or interface in java.net" class="external-link">URISyntaxException</a>,
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
+org.springframework.orm.ObjectOptimisticLockingFailureException</span></div>
+<div class="block">Create a new GeoService and attach it to a catalog node.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>geoService</code> - the GeoService to create</dd>
+<dd><code>catalogNodeId</code> - the node this service is to be attached to</dd>
+<dt>Returns:</dt>
+<dd>the created GeoService as a HATEOAS resource with a link to the resource</dd>
+<dt>Throws:</dt>
+<dd><code>org.geotools.ows.ServiceException</code> - if there is an error loading the service capabilities</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URISyntaxException.html" title="class or interface in java.net" class="external-link">URISyntaxException</a></code> - if the URL is invalid</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if there is an error loading the service capabilities</dd>
+<dd><code>org.springframework.orm.ObjectOptimisticLockingFailureException</code> - if there is a concurrent modification likely of the catalog</dd>
 </dl>
 </div>
 </section>

@@ -58,12 +58,15 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" tabindex="0">FeatureSourceAdminController(FeatureSourceRepository, ApplicationContext, RepositoryEntityLinks)</a></li>
+<li><a href="#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.persistence.helper.TMFeatureSourceHelper,org.tailormap.api.repository.CatalogRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" tabindex="0">FeatureSourceAdminController(FeatureSourceRepository, TMFeatureSourceHelper, CatalogRepository, RepositoryEntityLinks)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#handleException(org.springframework.web.server.ResponseStatusException)" tabindex="0">handleException(ResponseStatusException)</a></li>
+<li><a href="#internalServerError(java.lang.Exception)" tabindex="0">internalServerError(Exception)</a></li>
 <li><a href="#refreshCapabilities(java.lang.Long,jakarta.servlet.http.HttpServletResponse)" tabindex="0">refreshCapabilities(Long, HttpServletResponse)</a></li>
+<li><a href="#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)" tabindex="0">createFeatureSource(TMFeatureSource, String)</a></li>
 </ol>
 </li>
 </ol>
@@ -94,8 +97,9 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">FeatureSourceAdminController</a><wbr>(<a href="../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
- org.springframework.context.ApplicationContext&nbsp;applicationContext,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.persistence.helper.TMFeatureSourceHelper,org.tailormap.api.repository.CatalogRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)" class="member-name-link">FeatureSourceAdminController</a><wbr>(<a href="../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
+ <a href="../../persistence/helper/TMFeatureSourceHelper.html" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a>&nbsp;tmFeatureSourceHelper,
+ <a href="../../repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository,
  org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -112,10 +116,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;org.springframework.hateoas.EntityModel&lt;<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)" class="member-name-link">createFeatureSource</a><wbr>(@Valid <a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Create a new feature source and attach it to a catalog node.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException</a><wbr>(org.springframework.web.server.ResponseStatusException&nbsp;ex)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#refreshCapabilities(java.lang.Long,jakarta.servlet.http.HttpServletResponse)" class="member-name-link">refreshCapabilities</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id,
- jakarta.servlet.http.HttpServletResponse&nbsp;httpServletResponse)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#internalServerError(java.lang.Exception)" class="member-name-link">internalServerError</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity<wbr>&lt;?&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#refreshCapabilities(java.lang.Long,jakarta.servlet.http.HttpServletResponse)" class="member-name-link">refreshCapabilities</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id,
+ jakarta.servlet.http.HttpServletResponse&nbsp;httpServletResponse)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -134,11 +150,12 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.FeatureSourceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)">
+<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.persistence.helper.TMFeatureSourceHelper,org.tailormap.api.repository.CatalogRepository,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)">
 <h3>FeatureSourceAdminController</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FeatureSourceAdminController</span><wbr><span class="parameters">(<a href="../../repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
- org.springframework.context.ApplicationContext&nbsp;applicationContext,
+ <a href="../../persistence/helper/TMFeatureSourceHelper.html" title="class in org.tailormap.api.persistence.helper">TMFeatureSourceHelper</a>&nbsp;tmFeatureSourceHelper,
+ <a href="../../repository/CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository,
  org.springframework.data.rest.webmvc.support.RepositoryEntityLinks&nbsp;repositoryEntityLinks)</span></div>
 </div>
 </section>
@@ -152,6 +169,24 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="handleException(org.springframework.web.server.ResponseStatusException)">
+<h3>handleException</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">handleException</span><wbr><span class="parameters">(org.springframework.web.server.ResponseStatusException&nbsp;ex)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="internalServerError(java.lang.Exception)">
+<h3>internalServerError</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@ExceptionHandler(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>.class)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">internalServerError</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;ex)</span></div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="refreshCapabilities(java.lang.Long,jakarta.servlet.http.HttpServletResponse)">
 <h3>refreshCapabilities</h3>
 <div class="horizontal-scroll">
@@ -160,10 +195,36 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">refreshCapabilities</span><wbr><span class="parameters">(@PathVariable
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id,
  jakarta.servlet.http.HttpServletResponse&nbsp;httpServletResponse)</span>
-                                                               throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
+                                                               throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="createFeatureSource(org.tailormap.api.persistence.TMFeatureSource,java.lang.String)">
+<h3>createFeatureSource</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@PostMapping(path="${tailormap-api.admin.base-path}/feature-sources/new")
+@Transactional
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;org.springframework.hateoas.EntityModel&lt;<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&gt;&gt;</span>&nbsp;<span class="element-name">createFeatureSource</span><wbr><span class="parameters">(@RequestBody @Valid
+ @Valid <a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource,
+ @RequestParam
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;catalogNodeId)</span>
+                                                                                                                      throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
+org.springframework.orm.ObjectOptimisticLockingFailureException</span></div>
+<div class="block">Create a new feature source and attach it to a catalog node.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>featureSource</code> - the feature source to create</dd>
+<dd><code>catalogNodeId</code> - the node this feature source is to be attached to</dd>
+<dt>Returns:</dt>
+<dd>the created feature source as a HATEOAS resource with a link to the resource</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if there is an error loading capabilities</dd>
+<dd><code>org.springframework.orm.ObjectOptimisticLockingFailureException</code> - if there is a concurrent modification likely of the catalog</dd>
 </dl>
 </div>
 </section>

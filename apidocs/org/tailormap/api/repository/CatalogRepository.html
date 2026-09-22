@@ -55,6 +55,11 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list" tabindex="-1">
 <li><a href="#" tabindex="0">Description</a></li>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
+<li><a href="#method-detail" tabindex="0">Method Details</a>
+<ol class="toc-list">
+<li><a href="#findByIdWithLock(java.lang.String)" tabindex="0">findByIdWithLock(String)</a></li>
+</ol>
+</li>
 </ol>
 <button class="hide-sidebar"><span>Hide sidebar&nbsp;</span><img src="../../../../resource-files/left.svg" alt="Hide sidebar"></button><button class="show-sidebar"><img src="../../../../resource-files/right.svg" alt="Show sidebar"><span>&nbsp;Show sidebar</span></button></nav>
 <main role="main">
@@ -79,6 +84,21 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <li>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../persistence/Catalog.html" title="class in org.tailormap.api.persistence">Catalog</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByIdWithLock(java.lang.String)" class="member-name-link">findByIdWithLock</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Find a catalog by id with a pessimistic write lock.</div>
+</div>
+</div>
+</div>
+</div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.springframework.data.repository.CrudRepository">Methods inherited from interface&nbsp;org.springframework.data.repository.CrudRepository</h3>
 <code>count, delete, deleteAll, deleteAll, deleteAllById, deleteById, existsById, findById, save</code></div>
@@ -100,6 +120,37 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.springframework.data.repository.history.RevisionRepository">Methods inherited from interface&nbsp;org.springframework.data.repository.history.RevisionRepository</h3>
 <code>findLastChangeRevision, findRevision, findRevisions, findRevisions</code></div>
+</section>
+</li>
+</ul>
+</section>
+<section class="details">
+<ul class="details-list">
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="findByIdWithLock(java.lang.String)">
+<h3>findByIdWithLock</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@Query("SELECT c FROM Catalog c WHERE c.id = :id")
+@Lock(PESSIMISTIC_WRITE)
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/Catalog.html" title="class in org.tailormap.api.persistence">Catalog</a>&gt;</span>&nbsp;<span class="element-name">findByIdWithLock</span><wbr><span class="parameters">(@Param("id")
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</span></div>
+<div class="block">Find a catalog by id with a pessimistic write lock. This will prevent other transactions from modifying the
+catalog until the current transaction is complete.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - the id of the catalog</dd>
+<dt>Returns:</dt>
+<dd>an Optional containing the catalog if found, or empty if not found</dd>
+</dl>
+</div>
+</section>
+</li>
+</ul>
 </section>
 </li>
 </ul>
