@@ -122,7 +122,7 @@ try {
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
         SolrHelper solrHelper = new SolrHelper(solrClient).withQueryTimeout(solrQueryTimeout)) {
       final SearchResponse searchResponse = solrHelper.findInIndex(
-          searchIndex, solrQuery, solrFilterQuery, solrPoint, solrDistance, start, numResultsToReturn);
+          searchIndex, solrQuery, solrFilterQuery, solrPoint, solrDistance, start, numResultsToReturn,projectionCode);
       return (null == searchResponse.getDocuments()
               || searchResponse.getDocuments().isEmpty())
           ? ResponseEntity.noContent().build()
