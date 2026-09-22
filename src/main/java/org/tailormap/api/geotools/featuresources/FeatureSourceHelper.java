@@ -60,10 +60,6 @@ public abstract class FeatureSourceHelper {
     return ds.getFeatureSource(tmft.getName());
   }
 
-  public void loadCapabilities(TMFeatureSource tmfs) throws IOException {
-    loadCapabilities(tmfs, null);
-  }
-
   public DataStore openDatastore(Map<String, Object> params, String passwordKey) throws IOException {
     Map<String, Object> logParams = new HashMap<>(params);
     String passwd = (String) params.get(passwordKey);
@@ -81,6 +77,10 @@ public abstract class FeatureSourceHelper {
       throw new IOException("No datastore found using parameters " + logParams);
     }
     return ds;
+  }
+
+  public void loadCapabilities(TMFeatureSource tmfs) throws IOException {
+    loadCapabilities(tmfs, null);
   }
 
   public void loadCapabilities(TMFeatureSource tmfs, Integer timeout) throws IOException {

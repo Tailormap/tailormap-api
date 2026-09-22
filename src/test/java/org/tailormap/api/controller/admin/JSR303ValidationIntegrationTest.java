@@ -44,7 +44,6 @@ class JSR303ValidationIntegrationTest {
         .createObjectNode()
         .put("protocol", "wms")
         .put("title", "test")
-        .put("refreshCapabilities", true)
         .put("url", (String) null)
         .toPrettyString();
 

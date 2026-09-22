@@ -1,13 +1,24 @@
+/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package org.tailormap.api.controller.admin;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -22,27 +33,50 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
+import org.tailormap.api.persistence.Catalog;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.json.CatalogNode;
+import org.tailormap.api.persistence.json.TailormapObjectRef;
+import org.tailormap.api.repository.CatalogRepository;
 
-/*
- * Copyright (C) 2023 B3Partners B.V.
- *
- * SPDX-License-Identifier: MIT
- */
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 class FeatureSourceAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
+  @Autowired
+  private CatalogRepository catalogRepository;
+
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
+
+  private String getFeatureSourcePOSTBody(int port, String host, String database, String user, String password)
+      throws Exception {
+    return new ObjectMapper()
+        .writeValueAsString(Map.of(
+            "title", "My Test Source",
+            "protocol", "JDBC",
+            "url", "",
+            "jdbcConnection",
+                Map.of(
+                    "dbtype", "postgis",
+                    "port", port,
+                    "host", host,
+                    "database", database,
+                    "schema", "public"),
+            "authentication",
+                Map.of(
+                    "method", "password",
+                    "username", user,
+                    "password", password)));
+  }
 
   @Test
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  void refresh_jdbc_feature_source_capabilities() throws Exception {
+  void create_and_refresh_jdbc_feature_source_capabilities() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
     final int expectedTotal = 39;
 
@@ -60,35 +94,42 @@ class FeatureSourceAdminControllerIntegrationTest {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute("drop table if exists test");
 
-    String featureSourcePOSTBody = """
-{
-"title": "My Test Source",
-"protocol": "JDBC",
-"url": "",
-"refreshCapabilities": true,
-"jdbcConnection": {
-"dbtype": "postgis",
-"port": %s,
-"host": "%s",
-"database": "%s",
-"schema": "public"
-},
-"authentication": {
-"method": "password",
-"username": "%s",
-"password": "%s"
-}
-}""".formatted(port, host, database, user, password);
-
-    MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources")
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources/new")
+            .param("catalogNodeId", "FeatureSourceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(featureSourcePOSTBody))
+            .content(getFeatureSourcePOSTBody(port, host, database, user, password)))
         .andExpect(status().isCreated())
+        .andExpect(header().string("Location", notNullValue()))
+        .andReturn();
+
+    assertNotNull(result.getResponse().getRedirectedUrl());
+    String fsId = result.getResponse()
+        .getRedirectedUrl()
+        .substring(result.getResponse().getRedirectedUrl().lastIndexOf("/") + 1);
+
+    // check that the created service is added to the catalog
+    Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
+    CatalogNode attachedTo = catalog.getNodes().stream()
+        .filter(node -> node.getId().equals("FeatureSourceAdminController"))
+        .findFirst()
+        .orElseThrow();
+
+    TailormapObjectRef objectRef = attachedTo.getItems().stream()
+        .filter(item -> fsId.equals(item.getId()))
+        .findFirst()
+        .orElseThrow();
+
+    assertEquals(fsId, objectRef.getId());
+    assertEquals(TailormapObjectRef.KindEnum.FEATURE_SOURCE, objectRef.getKind());
+
+    result = mockMvc.perform(get(result.getResponse().getRedirectedUrl()))
+        .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
         .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
         .andExpect(jsonPath("$.protocol").value("JDBC"))
         .andReturn();
+
     Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     String selfLink = JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
 
@@ -109,8 +150,8 @@ class FeatureSourceAdminControllerIntegrationTest {
     } finally {
       try {
         new JdbcTemplate(dataSource).execute("drop table test");
-      } catch (Exception ignored) {
-        // tell the compiler we want to ignore any exceptions
+      } catch (Exception e) {
+        // ignore
       }
     }
 
@@ -125,5 +166,26 @@ class FeatureSourceAdminControllerIntegrationTest {
         .andExpect(jsonPath("$.allFeatureTypes.length()").value(expectedTotal))
         .andExpect(jsonPath("$.protocol").value("JDBC"))
         .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isEmpty());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void create_feature_source_with_invalid_catalog_node_id() throws Exception {
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    String host = "localhost";
+    int port = 54322;
+    String database = "geodata";
+    String user = "geodata";
+    String password = "980f1c8A-25933b2";
+
+    mockMvc.perform(post(adminBasePath + "/feature-sources/new")
+            .param("catalogNodeId", "invalid")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getFeatureSourcePOSTBody(port, host, database, user, password)))
+        .andDo(print())
+        .andExpect(status().isNotFound());
   }
 }
