@@ -68,7 +68,6 @@ class GeoServiceAdminCreateControllerIntegrationTest {
         .createObjectNode()
         .put("title", title)
         .put("protocol", serviceProtocol)
-        .put("catalogNodeId", "GeoServiceAdminController")
         .put("url", url);
   }
 
@@ -85,6 +84,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
     String geoServicePOSTBody = getGeoServicePOSTBody("invalid url test", "wms", "http://invalid-url")
         .toPrettyString();
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
+            .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
             .content(geoServicePOSTBody))
         .andExpect(status().isBadRequest())
@@ -99,6 +99,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
     String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "wms", "ftp://invalid-url")
         .toPrettyString();
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
+            .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
             .content(geoServicePOSTBody))
         .andExpect(status().isBadRequest())
@@ -113,6 +114,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
     String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "invalid-protocol", "ftp://invalid-url")
         .toPrettyString();
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
+            .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
             .content(geoServicePOSTBody))
         .andExpect(status().isBadRequest())
@@ -130,6 +132,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
             "valid test", "wms", "https://snapshot.tailormap.nl/geoserver/wms")
         .toPrettyString();
     MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
+            .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
             .accept("application/hal+json")
             .characterEncoding(StandardCharsets.UTF_8)

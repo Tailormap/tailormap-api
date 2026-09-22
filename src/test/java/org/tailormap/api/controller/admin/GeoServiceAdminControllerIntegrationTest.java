@@ -219,6 +219,7 @@ class GeoServiceAdminControllerIntegrationTest {
           .build());
 
       mockMvc.perform(post(adminBasePath + "/geo-services/new")
+              .param("catalogNodeId", "GeoServiceAdminController")
               .contentType(MediaType.APPLICATION_JSON)
               .content(geoServicePOSTBody))
           .andExpect(status().isInternalServerError())
