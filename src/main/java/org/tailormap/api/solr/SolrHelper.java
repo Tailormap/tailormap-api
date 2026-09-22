@@ -458,7 +458,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       Double solrDistance,
       int start,
       int numResultsToReturn,
-      String projectioncode)
+      String projectionCode)
       throws IOException, SolrServerException, SolrException {
 
     if (null == solrQuery || solrQuery.isBlank()) {
@@ -514,7 +514,7 @@ public class SolrHelper implements AutoCloseable, Constants {
         searchResponse.addDocumentsItem(new SearchDocument()
             .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
             .geometry(geom.toString())
-            .projectionCode(projectionCode)                            
+            .projectionCode(projectionCode)
             .displayValues(displayValues));
       }
     });
