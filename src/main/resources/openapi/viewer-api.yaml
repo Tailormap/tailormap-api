@@ -377,10 +377,6 @@ components:
           description: 'The geometry of the feature (WKT)'
           type: string
           nullable: true
-        projectionCode:
-          description: 'The coordinate reference system of the geometry, for example EPSG:4326'
-          type: string
-          nullable: true
         displayValues:
           description: 'The values from the index to display in the search result'
           type: array
