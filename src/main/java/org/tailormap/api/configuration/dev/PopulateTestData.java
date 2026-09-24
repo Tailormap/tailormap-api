@@ -47,6 +47,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.PropertyPlaceholderHelper;
+import org.tailormap.api.admin.model.CapabilitiesLoadingEvent;
 import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -64,6 +65,7 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.User;
+import org.tailormap.api.persistence.helper.CapabilitiesLoadingProgressReporting;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -177,6 +179,9 @@ public class PopulateTestData {
 
   @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
   private String solrGeometryValidationRule;
+
+  @Value("${tailormap-api.timeout}")
+  private int timeout;
 
   private static final String PROVINCIE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Provinciegebied";
 
@@ -700,7 +705,18 @@ public class PopulateTestData {
     catalog.getNodes().add(wfsFeatureSourceCatalogNode);
 
     for (TMFeatureSource featureSource : testWFS) {
-      new WFSFeatureSourceHelper().loadCapabilities(featureSource);
+      new WFSFeatureSourceHelper()
+          .loadCapabilities(
+              featureSource,
+              timeout,
+              (CapabilitiesLoadingProgressReporting) event -> {
+                logger.warn("WFS loading: {}", event);
+              },
+              new CapabilitiesLoadingEvent()
+                  .id(featureSource.getId().toString())
+                  .title(featureSource.getTitle())
+                  .message("Loading capabilities for " + featureSource.getTitle()
+                      + " feature source"));
       wfsFeatureSourceCatalogNode.addItemsItem(new TailormapObjectRef()
           .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
           .id(featureSource.getId().toString()));
@@ -777,7 +793,19 @@ public class PopulateTestData {
                 "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
     featureSourceRepository.saveAll(featureSources.values());
 
-    new WFSFeatureSourceHelper().loadCapabilities(featureSources.get("pdok-kadaster-bestuurlijkegebieden"));
+    new WFSFeatureSourceHelper()
+        .loadCapabilities(
+            featureSources.get("pdok-kadaster-bestuurlijkegebieden"),
+            timeout,
+            (CapabilitiesLoadingProgressReporting) event -> {
+              logger.warn("WFS loading: {}", event);
+            },
+            new CapabilitiesLoadingEvent()
+                .id("pdok-kadaster-bestuurlijkegebieden")
+                .title(featureSources
+                    .get("pdok-kadaster-bestuurlijkegebieden")
+                    .getTitle())
+                .message("Loading capabilities for pdok-kadaster-bestuurlijkegebieden feature source"));
     geoServiceRepository.findById("pdok-kadaster-bestuurlijkegebieden").ifPresent(geoService -> {
       geoService
           .getSettings()
@@ -836,9 +864,31 @@ public class PopulateTestData {
       featureSources.values().forEach(fs -> {
         try {
           if (fs.getProtocol() == TMFeatureSource.Protocol.JDBC) {
-            new JDBCFeatureSourceHelper().loadCapabilities(fs);
+            new JDBCFeatureSourceHelper()
+                .loadCapabilities(
+                    fs,
+                    timeout,
+                    (CapabilitiesLoadingProgressReporting) event -> {
+                      logger.debug("JDBC loading: {}", event);
+                    },
+                    new CapabilitiesLoadingEvent()
+                        .id(fs.getId().toString())
+                        .title(fs.getTitle())
+                        .message("Loading JDBC capabilities for " + fs.getTitle()
+                            + " feature source"));
           } else if (fs.getProtocol() == TMFeatureSource.Protocol.WFS) {
-            new WFSFeatureSourceHelper().loadCapabilities(fs);
+            new WFSFeatureSourceHelper()
+                .loadCapabilities(
+                    fs,
+                    timeout,
+                    (CapabilitiesLoadingProgressReporting) event -> {
+                      logger.warn("WFS loading: {}", event);
+                    },
+                    new CapabilitiesLoadingEvent()
+                        .id(fs.getId().toString())
+                        .title(fs.getTitle())
+                        .message("Loading WFS capabilities for " + fs.getTitle()
+                            + " feature source"));
           }
         } catch (Exception e) {
           logger.error("Error loading capabilities for feature source {}", fs.getTitle(), e);
