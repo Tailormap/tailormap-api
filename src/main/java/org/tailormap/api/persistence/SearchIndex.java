@@ -41,6 +41,7 @@ public class SearchIndex extends AuditMetadata implements Serializable {
   @NotNull private String name;
 
   private Long featureTypeId;
+  private String sourceCrs;
 
   /** List of attribute names that were used when building the search index. */
   @JsonProperty("searchFieldsUsed")
@@ -97,6 +98,15 @@ public class SearchIndex extends AuditMetadata implements Serializable {
 
   public SearchIndex setFeatureTypeId(Long featureTypeId) {
     this.featureTypeId = featureTypeId;
+    return this;
+  }
+
+  public String getSourceCrs() {
+    return sourceCrs;
+  }
+
+  public SearchIndex setSourceCrs(String sourceCrs) {
+    this.sourceCrs = sourceCrs;
     return this;
   }
 

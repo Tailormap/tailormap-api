@@ -15,7 +15,6 @@ import java.lang.invoke.MethodHandles;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrException;
-import org.geotools.api.data.SimpleFeatureSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,15 +28,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
-import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.SearchIndex;
-import org.tailormap.api.persistence.TMFeatureType;
-import org.tailormap.api.persistence.helper.GeoToolsHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
-import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -53,8 +48,6 @@ public class SearchController {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final SearchIndexRepository searchIndexRepository;
-  private final FeatureTypeRepository featureTypeRepository;
-  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final SolrService solrService;
 
   @Value("${tailormap-api.solr-query-timeout-seconds:7}")
@@ -63,14 +56,8 @@ public class SearchController {
   @Value("${tailormap-api.default-page-size:100}")
   private int numResultsToReturn;
 
-  public SearchController(
-      SearchIndexRepository searchIndexRepository,
-      FeatureTypeRepository featureTypeRepository,
-      FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      SolrService solrService) {
+  public SearchController(SearchIndexRepository searchIndexRepository, SolrService solrService) {
     this.searchIndexRepository = searchIndexRepository;
-    this.featureTypeRepository = featureTypeRepository;
-    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.solrService = solrService;
   }
 
@@ -95,30 +82,12 @@ public class SearchController {
           HttpStatus.NOT_FOUND,
           "Layer '%s' does not have a search index".formatted(appTreeLayerNode.getLayerName()));
     }
+
     final SearchIndex searchIndex = searchIndexRepository
         .findById(appLayerSettings.getSearchIndexId())
         .orElseThrow(() -> new ResponseStatusException(
             HttpStatus.NOT_FOUND,
             "Layer '%s' does not have a search index".formatted(appTreeLayerNode.getLayerName())));
-
-    final TMFeatureType featureType = featureTypeRepository
-        .findById(searchIndex.getFeatureTypeId())
-        .orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Feature type for search index '%s' not found".formatted(searchIndex.getName())));
-
-    final String projectionCode;
-
-    try {
-      SimpleFeatureSource featureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(featureType);
-
-      projectionCode =
-          GeoToolsHelper.crsToString(featureSource.getSchema().getCoordinateReferenceSystem());
-    } catch (IOException e) {
-      logger.error("Unable to determine CRS for search index '{}'", searchIndex.getName(), e);
-      throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, "Unable to determine CRS for search index", e);
-    }
 
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
         SolrHelper solrHelper = new SolrHelper(solrClient).withQueryTimeout(solrQueryTimeout)) {
@@ -130,7 +99,7 @@ public class SearchController {
           solrDistance,
           start,
           numResultsToReturn,
-          projectionCode);
+          application.getCrs());
       return (null == searchResponse.getDocuments()
               || searchResponse.getDocuments().isEmpty())
           ? ResponseEntity.noContent().build()
