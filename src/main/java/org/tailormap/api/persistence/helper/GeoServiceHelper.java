@@ -5,12 +5,18 @@
  */
 package org.tailormap.api.persistence.helper;
 
+import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
+
+import ch.rasc.sse.eventbus.SseEvent;
+import ch.rasc.sse.eventbus.SseEventBus;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +40,11 @@ import org.geotools.ows.wmts.model.WMTSLayer;
 import org.geotools.xml.DocumentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.tailormap.api.admin.model.CapabilitiesLoadingEvent;
+import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.configuration.TailormapConfig;
 import org.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import org.tailormap.api.geotools.WMSServiceExceptionUtil;
@@ -53,17 +60,21 @@ import org.tailormap.api.persistence.json.TMServiceCapsCapabilities;
 import org.tailormap.api.persistence.json.TMServiceInfo;
 import org.tailormap.api.persistence.json.WMSStyle;
 import org.tailormap.api.viewer.model.Service.ServerTypeEnum;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
-public class GeoServiceHelper {
-
+public class GeoServiceHelper implements CapabilitiesLoadingProgressReporting {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final TailormapConfig tailormapConfig;
+  private final SseEventBus eventBus;
+  private final JsonMapper mapper;
 
-  @Autowired
-  public GeoServiceHelper(TailormapConfig tailormapConfig) {
+  public GeoServiceHelper(TailormapConfig tailormapConfig, SseEventBus eventBus, JsonMapper mapper) {
     this.tailormapConfig = tailormapConfig;
+    this.eventBus = eventBus;
+    this.mapper = mapper;
   }
 
   public static ServerTypeEnum guessServerTypeFromUrl(String url) {
@@ -107,6 +118,15 @@ public class GeoServiceHelper {
   public GeoService loadServiceCapabilities(GeoService geoService)
       throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
           UnsupportedOperationException {
+
+    final Instant startedAt = Instant.now();
+    final OffsetDateTime startedAtOffset =
+        startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt));
+    CapabilitiesLoadingEvent event = new CapabilitiesLoadingEvent()
+        .startedAt(startedAtOffset)
+        .title(StringUtils.isNotBlank(geoService.getTitle()) ? geoService.getTitle() : geoService.getUrl())
+        .id(geoService.getId() != null ? geoService.getId() : null);
+
     if (geoService.getProtocol() == GeoServiceProtocol.XYZ) {
       setXyzCapabilities(geoService);
       return geoService;
@@ -141,11 +161,12 @@ public class GeoServiceHelper {
         geoService.getId() == null ? "(new)" : "id " + geoService.getId(),
         geoService.getUrl());
 
+    reportCapabilitiesLoadingProgress(event.message("Getting capabilities for " + event.getTitle()));
     // TODO: micrometer met tags voor URL/id van service
 
     switch (geoService.getProtocol()) {
-      case WMS -> loadWMSCapabilities(geoService, client);
-      case WMTS -> loadWMTSCapabilities(geoService, client);
+      case WMS -> loadWMSCapabilities(geoService, client, event);
+      case WMTS -> loadWMTSCapabilities(geoService, client, event);
       default ->
         throw new UnsupportedOperationException(
             "Unsupported geo service protocol: " + geoService.getProtocol());
@@ -168,6 +189,11 @@ public class GeoServiceHelper {
               .map(GeoServiceLayer::getName)
               .collect(Collectors.toList()));
     }
+    this.reportCapabilitiesLoadingProgress(event.message("Finished loading geoservice capabilities in "
+            + (Instant.now().toEpochMilli() - startedAt.toEpochMilli()) + " ms")
+        // total is not set for WMS/WMTS capabilities loading,
+        // so we just set it to progress (or 1) to indicate that we are done
+        .progress(event.getProgress() == null ? 1 : event.getProgress()));
     return geoService;
   }
 
@@ -297,11 +323,14 @@ public class GeoServiceHelper {
     }
   }
 
-  private void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
+  private void loadWMSCapabilities(
+      GeoService geoService, ResponseTeeingHTTPClient client, CapabilitiesLoadingEvent event)
       throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
           UnsupportedOperationException {
     WebMapServer wms;
     try {
+      reportCapabilitiesLoadingProgress(
+          event.message("Loading WMS capabilities").progress(0));
       wms = new WebMapServer(
           new URI(geoService.getUrl()).toURL(),
           client,
@@ -383,6 +412,8 @@ public class GeoServiceHelper {
                   .getTitle()
               : "(none)");
     }
+    reportCapabilitiesLoadingProgress(
+        event.message("Loaded WMS capabilities").progress(1));
     geoService.setLayers(new ArrayList<>());
     addLayerRecursive(
         geoService,
@@ -391,8 +422,11 @@ public class GeoServiceHelper {
         Set.of());
   }
 
-  private void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
+  private void loadWMTSCapabilities(
+      GeoService geoService, ResponseTeeingHTTPClient client, CapabilitiesLoadingEvent event)
       throws ServiceException, URISyntaxException, IOException {
+    reportCapabilitiesLoadingProgress(
+        event.message("Loading WMTS capabilities").progress(0));
     WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);
     setServiceInfo(geoService, client, wmts);
 
@@ -436,5 +470,20 @@ public class GeoServiceHelper {
         .findFirst()
         .map(WMSStyle::getLegendUrl)
         .orElse(null);
+  }
+
+  @Override
+  public void reportCapabilitiesLoadingProgress(CapabilitiesLoadingEvent event) {
+    ServerSentEvent serverSentEvent = new ServerSentEvent()
+        .eventType(ServerSentEvent.EventTypeEnum.CAPABILITIES_LOADING)
+        .details(event);
+    try {
+      if (this.eventBus.countSubscribers(DEFAULT_EVENT) == 0) {
+        return;
+      }
+      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, mapper.writeValueAsString(serverSentEvent)));
+    } catch (JacksonException e) {
+      logger.error("Error publishing geoservice capabilities loading progress event", e);
+    }
   }
 }

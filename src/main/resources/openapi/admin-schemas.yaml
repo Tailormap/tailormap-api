@@ -22,7 +22,7 @@ components:
         eventType:
           type: string
           description: 'Type of event'
-          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated', 'task-progress' ]
+          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated', 'task-progress', 'capabilities-loading' ]
         details:
           type: object
 
@@ -36,6 +36,39 @@ components:
         object:
           description: 'The entity in JSON, only included in created and updated events.'
           type: object
+
+    CapabilitiesLoadingEvent:
+      description: 'Capabilities loading event. This event is sent when the server is loading capabilities for a source.'
+      type: object
+      properties:
+        id:
+          description: 'The ID of the source for which capabilities are being loaded, when known (unknown for a new source). 
+          An integer for feature sources, a string for geoservice sources.'
+          type: string
+          nullable: true
+        title:
+          description: 'Title of the source for which capabilities are being loaded.'
+          type: string
+        total:
+          description: 'Total number of layers/featuretypes to process. May be `null` or empty if unknown.'
+          type: integer
+          format: int32
+          nullable: true
+        progress:
+          description: 'Number of layers/featuretypes processed so far.'
+          type: integer
+          format: int32
+          default: 0
+        startedAt:
+          description: 'Zoned date-time when the loading started.'
+          type: string
+          format: date-time
+          nullable: true
+          example: '2024-12-12T16:02:34.587142504+01:00'
+        message:
+          description: 'Optional message to display to the user.'
+          type: string
+          nullable: true
 
     TaskProgressEvent:
       description: 'Task progress event. This event is sent when a _running_ task makes progress, including start/stop. 
