@@ -37,6 +37,18 @@ public class TransformationUtil {
     // utility class
   }
 
+  @Nullable public static MathTransform getTransformation(@NonNull String sourceCrs, @NonNull String targetCrs)
+      throws FactoryException {
+    final CoordinateReferenceSystem sourceCRS = CRS.decode(sourceCrs);
+    final CoordinateReferenceSystem targetCRS = CRS.decode(targetCrs);
+
+    if (!CRS.isEquivalent(sourceCRS, targetCRS)) {
+      return CRS.findMathTransform(sourceCRS, targetCRS);
+    }
+
+    return null;
+  }
+
   /**
    * Determine whether we need to transform geometries to the application CRS. Note that this uses the "default
    * geometry" attribute of the feature source, in cases where a feature source has multiple geometry attributes (with
