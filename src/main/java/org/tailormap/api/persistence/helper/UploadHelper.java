@@ -9,10 +9,12 @@ package org.tailormap.api.persistence.helper;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.controller.LayerAttachedUploadsController;
 import org.tailormap.api.controller.UploadsController;
 import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.repository.UploadRepository;
 
@@ -20,6 +22,9 @@ import org.tailormap.api.repository.UploadRepository;
 public class UploadHelper {
 
   private final UploadRepository uploadRepository;
+
+  private static final Pattern UPLOAD_REPLACE_PATTERN =
+      Pattern.compile("upload://([a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8})");
 
   public UploadHelper(UploadRepository uploadRepository) {
     this.uploadRepository = uploadRepository;
@@ -90,5 +95,34 @@ public class UploadHelper {
     } else {
       return getUrlForImage(imageId, category);
     }
+  }
+
+  public String replaceUploadLinks(Application application, String appLayerId, String description) {
+    if (description == null) {
+      return null;
+    }
+
+    return UPLOAD_REPLACE_PATTERN.matcher(description).replaceAll(matchResult -> {
+      try {
+        UUID uploadId = UUID.fromString(matchResult.group(1));
+        Upload upload = uploadRepository.findById(uploadId).orElse(null);
+        if (upload == null) {
+          return "";
+        }
+        return linkTo(LayerAttachedUploadsController.class)
+            .slash("api")
+            .slash("app")
+            .slash(application.getName())
+            .slash("layer")
+            .slash(appLayerId)
+            .slash("uploads")
+            .slash(upload.getCategory().toString())
+            .slash(uploadId.toString())
+            .slash(upload.getFilename())
+            .toString();
+      } catch (Exception _ignored) {
+        return "";
+      }
+    });
   }
 }

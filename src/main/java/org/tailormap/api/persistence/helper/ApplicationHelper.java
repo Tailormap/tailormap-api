@@ -80,6 +80,7 @@ public class ApplicationHelper {
   private final EntityManager entityManager;
   private final AuthorisationService authorisationService;
   private final SearchIndexRepository searchIndexRepository;
+  private final UploadHelper uploadHelper;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
@@ -89,7 +90,8 @@ public class ApplicationHelper {
       FeatureSourceRepository featureSourceRepository,
       EntityManager entityManager,
       AuthorisationService authorisationService,
-      SearchIndexRepository searchIndexRepository) {
+      SearchIndexRepository searchIndexRepository,
+      UploadHelper uploadHelper) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
     this.configurationRepository = configurationRepository;
@@ -98,6 +100,7 @@ public class ApplicationHelper {
     this.entityManager = entityManager;
     this.authorisationService = authorisationService;
     this.searchIndexRepository = searchIndexRepository;
+    this.uploadHelper = uploadHelper;
   }
 
   public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
@@ -392,6 +395,8 @@ public class ApplicationHelper {
           nullIfEmpty(serviceLayerSettings.getDescription()),
           nullIfEmpty(defaultLayerSettings.getDescription()),
           nullIfEmpty(serviceLayer.getAbstractText()));
+      description = uploadHelper.replaceUploadLinks(app, layerRef.getId(), description);
+
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getAttribution()),
