@@ -18,11 +18,9 @@ import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.geotools.api.referencing.operation.MathTransform;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.mockito.ArgumentCaptor;
-import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.viewer.model.SearchResponse;
@@ -52,21 +50,17 @@ class SolrHelperTest {
     SearchIndex searchIndex =
         new SearchIndex().setId(7L).setName("Reddingposten").setSourceCrs("EPSG:4326");
 
-    /*
-     * Construct the application point using the same GeoTools transformation
-     * mechanism used by Tailormap. This avoids hard-coded projected coordinates
-     * and CRS axis-order assumptions in the test.
-     */
     Geometry sourcePoint = GeometryProcessor.wktToGeometry(sourceGeometryWkt);
     assertNotNull(sourcePoint);
 
-    MathTransform toApplication = TransformationUtil.getTransformation("EPSG:4326", "EPSG:3857");
-    assertNotNull(toApplication);
-
-    Geometry applicationPointGeometry = GeometryProcessor.transformGeometry(sourcePoint, toApplication);
-
-    String applicationPoint =
-        applicationPointGeometry.getCoordinate().x + " " + applicationPointGeometry.getCoordinate().y;
+    /*
+     * Known EPSG:3857 coordinates for longitude 3.7651071548461914,
+     * latitude 51.742008209228516. Keep these values independent from
+     * TransformationUtil so axis-order regressions are detected.
+     */
+    String applicationPoint = "419129.8112595891 6753610.983561384";
+    Geometry applicationPointGeometry = GeometryProcessor.wktToGeometry("POINT (" + applicationPoint + ")");
+    assertNotNull(applicationPointGeometry);
 
     double distance = 0.005;
 
