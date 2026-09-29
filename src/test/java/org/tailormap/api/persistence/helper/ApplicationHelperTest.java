@@ -52,6 +52,9 @@ class ApplicationHelperTest {
   @MockitoBean
   SearchIndexRepository searchIndexRepository;
 
+  @MockitoBean
+  UploadHelper uploadsHelper;
+
   @Autowired
   ApplicationHelper applicationHelper;
 
