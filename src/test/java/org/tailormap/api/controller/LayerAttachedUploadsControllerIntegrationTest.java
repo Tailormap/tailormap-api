@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,6 +86,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLogo.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"pdok_logo.png\""))
         .andExpect(content().bytes(new ClassPathResource("test/pdok_logo.png").getContentAsByteArray()));
   }
 
@@ -101,6 +103,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLogo.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"pdok_logo.png\""))
         .andExpect(content().bytes(new ClassPathResource("test/pdok_logo.png").getContentAsByteArray()));
   }
 
@@ -134,6 +137,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLogo.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"pdok_logo.png\""))
         .andExpect(content().bytes(new ClassPathResource("test/pdok_logo.png").getContentAsByteArray()));
   }
 
@@ -154,6 +158,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, upload.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"upload0.png\""))
         .andExpect(content().bytes(new ClassPathResource("test/upload.png").getContentAsByteArray()));
   }
 
@@ -223,6 +228,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"gemeentegebied-legend.png\""))
         .andExpect(content()
             .bytes(new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray()));
   }
@@ -244,6 +250,7 @@ class LayerAttachedUploadsControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.IMAGE_PNG))
         .andExpect(header().exists("Last-Modified"))
         .andExpect(header().string(DESCRIPTION_HEADER_NAME, uploadedLegend.getDescription()))
+        .andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"gemeentegebied-legend.png\""))
         .andExpect(content()
             .bytes(new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray()));
   }
