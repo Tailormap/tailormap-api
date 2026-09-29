@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.UploadCategory;
-import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.viewer.model.AdditionalProperty;
 import org.tailormap.api.viewer.model.LoginConfiguration;
 import org.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
@@ -41,7 +41,7 @@ import tools.jackson.databind.JsonNode;
 public class UserController {
   private final OIDCRepository oidcRepository;
   private final ConfigurationRepository configurationRepository;
-  private final UploadHelper uploadHelper;
+  private final UploadsService uploadsService;
   private final GroupRepository groupRepository;
 
   @Value("${tailormap-api.password-reset.enabled:false}")
@@ -50,11 +50,11 @@ public class UserController {
   public UserController(
       OIDCRepository oidcRepository,
       ConfigurationRepository configurationRepository,
-      UploadHelper uploadHelper,
+      UploadsService uploadsService,
       GroupRepository groupRepository) {
     this.oidcRepository = oidcRepository;
     this.configurationRepository = configurationRepository;
-    this.uploadHelper = uploadHelper;
+    this.uploadsService = uploadsService;
     this.groupRepository = groupRepository;
   }
 
@@ -135,7 +135,7 @@ public class UserController {
             .name(reg.getClientName())
             .url("/api/oauth2/authorization/" + reg.getRegistrationId())
             .showForViewer(metadata.getShowForViewer())
-            .image(uploadHelper.getUrlForImage(metadata.getImage(), UploadCategory.SSO_IMAGE)));
+            .image(uploadsService.getUrlForImage(metadata.getImage(), UploadCategory.SSO_IMAGE)));
       }
     }
 

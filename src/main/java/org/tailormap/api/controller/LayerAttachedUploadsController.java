@@ -5,10 +5,10 @@
  */
 package org.tailormap.api.controller;
 
-import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_MODIFIED;
+import static org.tailormap.api.service.UploadsService.createUploadResponseEntity;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +17,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.ObjectUtils;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
-import org.springframework.http.CacheControl;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,20 +93,7 @@ public class LayerAttachedUploadsController {
     Upload upload = uploadRepository
         .findWithContentByIdAndCategory(id, category)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-
-    return ResponseEntity.ok()
-        .header("Content-Type", upload.getMimeType())
-        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
-        .header(
-            CONTENT_DISPOSITION,
-            ContentDisposition.inline()
-                .filename(upload.getFilename())
-                .build()
-                .toString())
-        .lastModified(upload.getLastModified().toInstant())
-        .contentLength(upload.getContentLength())
-        .cacheControl(CacheControl.noCache().cachePublic())
-        .body(upload.getContent());
+    return createUploadResponseEntity(upload);
   }
 
   /**

@@ -60,6 +60,7 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.viewer.model.AppLayer;
 import org.tailormap.api.viewer.model.LayerSearchIndex;
 import org.tailormap.api.viewer.model.LayerTreeNode;
@@ -80,7 +81,7 @@ public class ApplicationHelper {
   private final EntityManager entityManager;
   private final AuthorisationService authorisationService;
   private final SearchIndexRepository searchIndexRepository;
-  private final UploadHelper uploadHelper;
+  private final UploadsService uploadsService;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
@@ -91,7 +92,7 @@ public class ApplicationHelper {
       EntityManager entityManager,
       AuthorisationService authorisationService,
       SearchIndexRepository searchIndexRepository,
-      UploadHelper uploadHelper) {
+      UploadsService uploadsService) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
     this.configurationRepository = configurationRepository;
@@ -100,7 +101,7 @@ public class ApplicationHelper {
     this.entityManager = entityManager;
     this.authorisationService = authorisationService;
     this.searchIndexRepository = searchIndexRepository;
-    this.uploadHelper = uploadHelper;
+    this.uploadsService = uploadsService;
   }
 
   public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
@@ -395,7 +396,7 @@ public class ApplicationHelper {
           nullIfEmpty(serviceLayerSettings.getDescription()),
           nullIfEmpty(defaultLayerSettings.getDescription()),
           nullIfEmpty(serviceLayer.getAbstractText()));
-      description = uploadHelper.replaceUploadLinks(app, layerRef.getId(), description);
+      description = uploadsService.replaceUploadLinks(app, layerRef.getId(), description);
 
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(

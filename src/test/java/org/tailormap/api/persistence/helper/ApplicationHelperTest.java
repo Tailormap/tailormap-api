@@ -22,6 +22,7 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.viewer.model.MapResponse;
 import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 
@@ -53,7 +54,7 @@ class ApplicationHelperTest {
   SearchIndexRepository searchIndexRepository;
 
   @MockitoBean
-  UploadHelper uploadsHelper;
+  UploadsService uploadsService;
 
   @Autowired
   ApplicationHelper applicationHelper;
