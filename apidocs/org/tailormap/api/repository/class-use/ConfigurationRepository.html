@@ -125,24 +125,24 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><code><a href="../../controller/ConfigurationController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository)" class="member-name-link">ConfigurationController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../controller/PageController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.security.AuthorisationService,org.tailormap.api.repository.PageRepository,org.tailormap.api.persistence.helper.UploadHelper)" class="member-name-link">PageController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
+<div class="col-second odd-row-color"><code><a href="../../controller/PageController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.security.AuthorisationService,org.tailormap.api.repository.PageRepository,org.tailormap.api.service.UploadsService)" class="member-name-link">PageController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
  <a href="../ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
  <a href="../../security/AuthorisationService.html" title="class in org.tailormap.api.security">AuthorisationService</a>&nbsp;authorisationService,
  <a href="../PageRepository.html" title="interface in org.tailormap.api.repository">PageRepository</a>&nbsp;pageRepository,
- <a href="../../persistence/helper/UploadHelper.html" title="class in org.tailormap.api.persistence.helper">UploadHelper</a>&nbsp;uploadHelper)</code></div>
+ <a href="../../service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a>&nbsp;uploadsService)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../controller/UserController.html#%3Cinit%3E(org.tailormap.api.security.OIDCRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.persistence.helper.UploadHelper,org.tailormap.api.repository.GroupRepository)" class="member-name-link">UserController</a><wbr>(<a href="../../security/OIDCRepository.html" title="class in org.tailormap.api.security">OIDCRepository</a>&nbsp;oidcRepository,
+<div class="col-second even-row-color"><code><a href="../../controller/UserController.html#%3Cinit%3E(org.tailormap.api.security.OIDCRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.service.UploadsService,org.tailormap.api.repository.GroupRepository)" class="member-name-link">UserController</a><wbr>(<a href="../../security/OIDCRepository.html" title="class in org.tailormap.api.security">OIDCRepository</a>&nbsp;oidcRepository,
  <a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
- <a href="../../persistence/helper/UploadHelper.html" title="class in org.tailormap.api.persistence.helper">UploadHelper</a>&nbsp;uploadHelper,
+ <a href="../../service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a>&nbsp;uploadsService,
  <a href="../GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a>&nbsp;groupRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../controller/ViewerController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.persistence.helper.ApplicationHelper,org.tailormap.api.security.AuthorisationService,org.tailormap.api.persistence.helper.UploadHelper,org.tailormap.api.persistence.helper.ViewerResponseHelper)" class="member-name-link">ViewerController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
+<div class="col-second odd-row-color"><code><a href="../../controller/ViewerController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.persistence.helper.ApplicationHelper,org.tailormap.api.security.AuthorisationService,org.tailormap.api.service.UploadsService,org.tailormap.api.persistence.helper.ViewerResponseHelper)" class="member-name-link">ViewerController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
  <a href="../ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
  <a href="../../persistence/helper/ApplicationHelper.html" title="class in org.tailormap.api.persistence.helper">ApplicationHelper</a>&nbsp;applicationHelper,
  <a href="../../security/AuthorisationService.html" title="class in org.tailormap.api.security">AuthorisationService</a>&nbsp;authorisationService,
- <a href="../../persistence/helper/UploadHelper.html" title="class in org.tailormap.api.persistence.helper">UploadHelper</a>&nbsp;uploadHelper,
+ <a href="../../service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a>&nbsp;uploadsService,
  <a href="../../persistence/helper/ViewerResponseHelper.html" title="class in org.tailormap.api.persistence.helper">ViewerResponseHelper</a>&nbsp;viewerResponseHelper)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
@@ -157,14 +157,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../persistence/helper/ApplicationHelper.html#%3Cinit%3E(org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.FeatureSourceRepository,jakarta.persistence.EntityManager,org.tailormap.api.security.AuthorisationService,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">ApplicationHelper</a><wbr>(<a href="../../persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
+<div class="col-second even-row-color"><code><a href="../../persistence/helper/ApplicationHelper.html#%3Cinit%3E(org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.FeatureSourceRepository,jakarta.persistence.EntityManager,org.tailormap.api.security.AuthorisationService,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.service.UploadsService)" class="member-name-link">ApplicationHelper</a><wbr>(<a href="../../persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
  <a href="../GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
  <a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
  <a href="../ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
  <a href="../FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
  jakarta.persistence.EntityManager&nbsp;entityManager,
  <a href="../../security/AuthorisationService.html" title="class in org.tailormap.api.security">AuthorisationService</a>&nbsp;authorisationService,
- <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
+ <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+ <a href="../../service/UploadsService.html" title="class in org.tailormap.api.service">UploadsService</a>&nbsp;uploadsService)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
