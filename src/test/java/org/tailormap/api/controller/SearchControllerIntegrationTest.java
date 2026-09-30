@@ -35,7 +35,7 @@ import org.tailormap.api.util.Constants;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.SAME_THREAD)
 @Stopwatch
 class SearchControllerIntegrationTest implements Constants, TestUrls {
   @Value("${tailormap-api.base-path}")
