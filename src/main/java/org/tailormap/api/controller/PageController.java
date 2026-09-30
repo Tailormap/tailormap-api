@@ -19,13 +19,13 @@ import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Page;
 import org.tailormap.api.persistence.UploadCategory;
-import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.json.MenuItem;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.PageRepository;
 import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.viewer.model.PageResponse;
 import org.tailormap.api.viewer.model.ViewerMenuItem;
 import org.tailormap.api.viewer.model.ViewerPageTile;
@@ -40,19 +40,19 @@ public class PageController {
   private final ApplicationRepository applicationRepository;
   private final AuthorisationService authorisationService;
   private final PageRepository pageRepository;
-  private final UploadHelper uploadHelper;
+  private final UploadsService uploadsService;
 
   public PageController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
       AuthorisationService authorisationService,
       PageRepository pageRepository,
-      UploadHelper uploadHelper) {
+      UploadsService uploadsService) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.pageRepository = pageRepository;
     this.authorisationService = authorisationService;
-    this.uploadHelper = uploadHelper;
+    this.uploadsService = uploadsService;
   }
 
   private ResponseStatusException notFound() {
@@ -169,7 +169,7 @@ public class PageController {
       result.shouldBeFiltered = true;
     }
 
-    viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), UploadCategory.PORTAL_IMAGE));
+    viewerPageTile.image(uploadsService.getUrlForImage(tile.getImage(), UploadCategory.PORTAL_IMAGE));
 
     return result;
   }

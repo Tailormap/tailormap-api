@@ -9,6 +9,7 @@ package org.tailormap.api.controller;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_MODIFIED;
+import static org.tailormap.api.service.UploadsService.createUploadResponseEntity;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
@@ -60,14 +61,7 @@ public class UploadsController {
     Upload upload = uploadRepository
         .findWithContentByIdAndCategory(id, category)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-
-    return ResponseEntity.ok()
-        .header("Content-Type", upload.getMimeType())
-        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
-        .lastModified(upload.getLastModified().toInstant())
-        .contentLength(upload.getContentLength())
-        .cacheControl(CacheControl.noCache().cachePublic())
-        .body(upload.getContent());
+    return createUploadResponseEntity(upload);
   }
 
   /**

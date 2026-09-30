@@ -22,12 +22,12 @@ import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.UploadCategory;
 import org.tailormap.api.persistence.helper.ApplicationHelper;
-import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.helper.ViewerResponseHelper;
 import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.security.AuthorisationService;
+import org.tailormap.api.service.UploadsService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.MapResponse;
 import org.tailormap.api.viewer.model.ViewerResponse;
@@ -39,7 +39,7 @@ public class ViewerController implements TagNames {
   private final ApplicationRepository applicationRepository;
   private final ApplicationHelper applicationHelper;
   private final AuthorisationService authorisationService;
-  private final UploadHelper uploadHelper;
+  private final UploadsService uploadsService;
   private final ViewerResponseHelper viewerResponseHelper;
 
   public ViewerController(
@@ -47,13 +47,13 @@ public class ViewerController implements TagNames {
       ApplicationRepository applicationRepository,
       ApplicationHelper applicationHelper,
       AuthorisationService authorisationService,
-      UploadHelper uploadHelper,
+      UploadsService uploadsService,
       ViewerResponseHelper viewerResponseHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.applicationHelper = applicationHelper;
     this.authorisationService = authorisationService;
-    this.uploadHelper = uploadHelper;
+    this.uploadsService = uploadsService;
     this.viewerResponseHelper = viewerResponseHelper;
   }
 
@@ -84,7 +84,7 @@ public class ViewerController implements TagNames {
 
     AppStyling styling = viewerResponse.getStyling();
     if (styling != null) {
-      styling.setLogo(uploadHelper.getUrlForImage(styling.getLogo(), UploadCategory.APP_LOGO));
+      styling.setLogo(uploadsService.getUrlForImage(styling.getLogo(), UploadCategory.APP_LOGO));
     }
 
     // count/increment the number of times this viewer has been requested
@@ -111,7 +111,7 @@ public class ViewerController implements TagNames {
     mapResponse.getAppLayers().stream()
         .filter(l ->
             l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
-        .forEach(l -> l.setLegendImageUrl(uploadHelper.getUrlForLayerAttachedImage(
+        .forEach(l -> l.setLegendImageUrl(uploadsService.getUrlForLayerAttachedImage(
             UUID.fromString(l.getLegendImageUrl()), UploadCategory.LEGEND, app, l.getId())));
     return mapResponse;
   }
