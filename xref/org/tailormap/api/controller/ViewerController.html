@@ -30,12 +30,12 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Configuration;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.UploadCategory;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.ApplicationHelper;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.ViewerResponseHelper;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.prometheus.TagNames;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorisationService;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.service.UploadsService;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.UploadHelper;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.ViewerResponseHelper;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.prometheus.TagNames;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorisationService;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.AppStyling;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.MapResponse;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerResponse;
@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ApplicationRepository" href="../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ApplicationHelper" href="../../../../org/tailormap/api/persistence/helper/ApplicationHelper.html#ApplicationHelper">ApplicationHelper</a> applicationHelper;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AuthorisationService" href="../../../../org/tailormap/api/security/AuthorisationService.html#AuthorisationService">AuthorisationService</a> authorisationService;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UploadsService" href="../../../../org/tailormap/api/service/UploadsService.html#UploadsService">UploadsService</a> uploadsService;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UploadHelper" href="../../../../org/tailormap/api/persistence/helper/UploadHelper.html#UploadHelper">UploadHelper</a> uploadHelper;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ViewerResponseHelper" href="../../../../org/tailormap/api/persistence/helper/ViewerResponseHelper.html#ViewerResponseHelper">ViewerResponseHelper</a> viewerResponseHelper;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> <a name="ViewerController" href="../../../../org/tailormap/api/controller/ViewerController.html#ViewerController">ViewerController</a>(
@@ -55,13 +55,13 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>        <a name="ApplicationRepository" href="../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository,
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>        <a name="ApplicationHelper" href="../../../../org/tailormap/api/persistence/helper/ApplicationHelper.html#ApplicationHelper">ApplicationHelper</a> applicationHelper,
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>        <a name="AuthorisationService" href="../../../../org/tailormap/api/security/AuthorisationService.html#AuthorisationService">AuthorisationService</a> authorisationService,
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>        <a name="UploadsService" href="../../../../org/tailormap/api/service/UploadsService.html#UploadsService">UploadsService</a> uploadsService,
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>        <a name="UploadHelper" href="../../../../org/tailormap/api/persistence/helper/UploadHelper.html#UploadHelper">UploadHelper</a> uploadHelper,
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>        <a name="ViewerResponseHelper" href="../../../../org/tailormap/api/persistence/helper/ViewerResponseHelper.html#ViewerResponseHelper">ViewerResponseHelper</a> viewerResponseHelper) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">this</strong>.configurationRepository = configurationRepository;
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">this</strong>.applicationRepository = applicationRepository;
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">this</strong>.applicationHelper = applicationHelper;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">this</strong>.authorisationService = authorisationService;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">this</strong>.uploadsService = uploadsService;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">this</strong>.uploadHelper = uploadHelper;
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">this</strong>.viewerResponseHelper = viewerResponseHelper;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    }
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      AppStyling styling = viewerResponse.getStyling();
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">if</strong> (styling != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        styling.setLogo(uploadsService.getUrlForImage(styling.getLogo(), UploadCategory.APP_LOGO));
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        styling.setLogo(uploadHelper.getUrlForImage(styling.getLogo(), UploadCategory.APP_LOGO));
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      <em class="jxr_comment">// count/increment the number of times this viewer has been requested</em>
@@ -119,7 +119,7 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     mapResponse.getAppLayers().stream()
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         .filter(l -&gt;
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>             l.getLegendImageUrl() != <strong class="jxr_keyword">null</strong> &amp;&amp; l.getLegendImageUrl().matches(UUID_REGEX))
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         .forEach(l -&gt; l.setLegendImageUrl(uploadsService.getUrlForLayerAttachedImage(
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         .forEach(l -&gt; l.setLegendImageUrl(uploadHelper.getUrlForLayerAttachedImage(
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>             UUID.fromString(l.getLegendImageUrl()), UploadCategory.LEGEND, app, l.getId())));
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">return</strong> mapResponse;
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>   }

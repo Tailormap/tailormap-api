@@ -74,6 +74,36 @@
 <th>File</th>
 <th>Line</th></tr>
 <tr class="b">
+<td>org/tailormap/api/controller/LayerAttachedUploadsController.java</td>
+<td><a href="./xref/org/tailormap/api/controller/LayerAttachedUploadsController.html#L87">87</a></td></tr>
+<tr class="a">
+<td>org/tailormap/api/controller/UploadsController.java</td>
+<td><a href="./xref/org/tailormap/api/controller/UploadsController.html#L56">56</a></td></tr>
+<tr class="b">
+<td colspan="2">
+<pre>if (!uploadsService.checkIfModifiedSince(id, request.getDateHeader(&quot;If-Modified-Since&quot;))) {
+      return ResponseEntity.status(NOT_MODIFIED).build();
+    }
+    // TODO this would fail when we have added a LEGEND upload to a layer description, because the category would be
+    //  wrong, since the frontend generating the url does not know the category of the upload, so it is likely to
+    //  always use LAYER_ATTACHED_FILE.
+    Upload upload = uploadRepository
+        .findWithContentByIdAndCategory(id, category)
+        .orElseThrow(() -&gt; new ResponseStatusException(NOT_FOUND));
+
+    return ResponseEntity.ok()
+        .header(&quot;Content-Type&quot;, upload.getMimeType())
+        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())
+        .lastModified(upload.getLastModified().toInstant())
+        .contentLength(upload.getContentLength())
+        .cacheControl(CacheControl.noCache().cachePublic())
+        .body(upload.getContent());
+  }</pre></td></tr></table>
+<table class="table table-striped">
+<tr class="a">
+<th>File</th>
+<th>Line</th></tr>
+<tr class="b">
 <td>org/tailormap/api/controller/admin/AttributeStatisticsAdminController.java</td>
 <td><a href="./xref/org/tailormap/api/controller/admin/AttributeStatisticsAdminController.html#L36">36</a></td></tr>
 <tr class="a">
