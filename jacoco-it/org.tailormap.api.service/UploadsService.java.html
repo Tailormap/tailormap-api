@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UploadsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.service</a> &gt; <span class="el_source">UploadsService.java</span></div><h1>UploadsService.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2026 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.service;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+
+import java.time.temporal.ChronoField;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.tailormap.api.controller.LayerAttachedUploadsController;
+import org.tailormap.api.controller.UploadsController;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.UploadCategory;
+import org.tailormap.api.repository.UploadRepository;
+
+@Service
+public class UploadsService {
+  private final UploadRepository uploadRepository;
+  public static final String DESCRIPTION_HEADER_NAME = &quot;TM-Description&quot;;
+  /** The scheme used in Markdown files to reference an upload. For example, {@code upload://&lt;upload-id&gt;}. */
+  public static final String UPLOAD_MARKDOWN_SCHEME = &quot;upload://&quot;;
+
+<span class="nc" id="L32">  private static final Pattern UPLOAD_REPLACE_PATTERN =</span>
+<span class="nc" id="L33">      Pattern.compile(&quot;upload://([a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8})&quot;);</span>
+
+<span class="nc" id="L35">  public UploadsService(UploadRepository uploadRepository) {</span>
+<span class="nc" id="L36">    this.uploadRepository = uploadRepository;</span>
+<span class="nc" id="L37">  }</span>
+
+  /**
+   * Checks if the upload with the given ID has been modified since the provided timestamp.
+   *
+   * @param id the UUID of the upload
+   * @param ifModifiedSince the timestamp to compare against (in milliseconds)
+   * @return true if the upload has been modified since the provided timestamp or when the upload does not exist,
+   *     false otherwise
+   */
+  public boolean checkIfModifiedSince(UUID id, long ifModifiedSince) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (ifModifiedSince == -1) {</span>
+<span class="nc" id="L49">      return true;</span>
+    }
+
+<span class="nc" id="L52">    return uploadRepository</span>
+<span class="nc" id="L53">        .findLastModifiedById(id)</span>
+<span class="nc" id="L54">        .map(uploadLastModified -&gt; ifModifiedSince</span>
+            &lt; uploadLastModified
+<span class="nc" id="L56">                .with(ChronoField.MILLI_OF_SECOND, 0)</span>
+<span class="nc" id="L57">                .toInstant()</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                .toEpochMilli())</span>
+<span class="nc" id="L59">        .orElse(true);</span>
+  }
+
+  public String getUrlForImage(String imageId, UploadCategory category) {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (imageId == null) {</span>
+<span class="nc" id="L64">      return null;</span>
+    }
+    try {
+<span class="nc" id="L67">      UUID uuid = UUID.fromString(imageId);</span>
+<span class="nc" id="L68">      return getUrlForImage(uuid, category);</span>
+<span class="nc" id="L69">    } catch (IllegalArgumentException e) {</span>
+      // Illegal UUID, return null
+<span class="nc" id="L71">      return null;</span>
+    }
+  }
+
+  public String getUrlForImage(UUID imageId, UploadCategory category) {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (imageId == null) {</span>
+<span class="nc" id="L77">      return null;</span>
+    }
+<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (category.isRestricted()) {</span>
+<span class="nc" id="L80">      throw new IllegalArgumentException(</span>
+          &quot;Access to restricted category is not allowed without application and layer context&quot;);
+    }
+<span class="nc" id="L83">    return uploadRepository</span>
+<span class="nc" id="L84">        .findByIdAndCategory(imageId, category)</span>
+<span class="nc" id="L85">        .map(upload -&gt; linkTo(UploadsController.class)</span>
+<span class="nc" id="L86">            .slash(&quot;api&quot;)</span>
+<span class="nc" id="L87">            .slash(&quot;uploads&quot;)</span>
+<span class="nc" id="L88">            .slash(category)</span>
+<span class="nc" id="L89">            .slash(imageId.toString())</span>
+<span class="nc" id="L90">            .slash(upload.getFilename())</span>
+<span class="nc" id="L91">            .toString())</span>
+<span class="nc" id="L92">        .orElse(null);</span>
+  }
+
+  /**
+   * Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.
+   *
+   * @param imageId the id of the image
+   * @param category the category of the image, e.g. LEGEND
+   * @param application the application the image is attached to
+   * @param layerId the id of the layer the image is attached to
+   * @return the URL for the layer-attached image or null
+   */
+  public String getUrlForLayerAttachedImage(
+      UUID imageId, UploadCategory category, Application application, String layerId) {
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (imageId == null) {</span>
+<span class="nc" id="L107">      return null;</span>
+    }
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (category.isRestricted()) {</span>
+<span class="nc" id="L110">      return uploadRepository</span>
+<span class="nc" id="L111">          .findByIdAndCategory(imageId, category)</span>
+<span class="nc" id="L112">          .map(upload -&gt; linkTo(LayerAttachedUploadsController.class)</span>
+<span class="nc" id="L113">              .slash(&quot;api&quot;)</span>
+<span class="nc" id="L114">              .slash(&quot;app&quot;)</span>
+<span class="nc" id="L115">              .slash(application.getName())</span>
+<span class="nc" id="L116">              .slash(&quot;layer&quot;)</span>
+<span class="nc" id="L117">              .slash(layerId)</span>
+<span class="nc" id="L118">              .slash(&quot;uploads&quot;)</span>
+<span class="nc" id="L119">              .slash(category)</span>
+<span class="nc" id="L120">              .slash(imageId.toString())</span>
+<span class="nc" id="L121">              .slash(upload.getFilename())</span>
+<span class="nc" id="L122">              .toString())</span>
+<span class="nc" id="L123">          .orElse(null);</span>
+    } else {
+<span class="nc" id="L125">      return getUrlForImage(imageId, category);</span>
+    }
+  }
+
+  public String replaceUploadLinks(Application application, String appLayerId, String description) {
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (description == null) {</span>
+<span class="nc" id="L131">      return null;</span>
+    }
+
+<span class="nc" id="L134">    return UPLOAD_REPLACE_PATTERN.matcher(description).replaceAll(matchResult -&gt; {</span>
+      try {
+<span class="nc" id="L136">        UUID uploadId = UUID.fromString(matchResult.group(1));</span>
+<span class="nc" id="L137">        Upload upload = uploadRepository.findById(uploadId).orElse(null);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (upload == null) {</span>
+<span class="nc" id="L139">          return &quot;&quot;;</span>
+        }
+<span class="nc" id="L141">        return linkTo(LayerAttachedUploadsController.class)</span>
+<span class="nc" id="L142">            .slash(&quot;api&quot;)</span>
+<span class="nc" id="L143">            .slash(&quot;app&quot;)</span>
+<span class="nc" id="L144">            .slash(application.getName())</span>
+<span class="nc" id="L145">            .slash(&quot;layer&quot;)</span>
+<span class="nc" id="L146">            .slash(appLayerId)</span>
+<span class="nc" id="L147">            .slash(&quot;uploads&quot;)</span>
+<span class="nc" id="L148">            .slash(upload.getCategory().toString())</span>
+<span class="nc" id="L149">            .slash(uploadId.toString())</span>
+<span class="nc" id="L150">            .slash(upload.getFilename())</span>
+<span class="nc" id="L151">            .toString();</span>
+<span class="nc" id="L152">      } catch (Exception _ignored) {</span>
+<span class="nc" id="L153">        return &quot;&quot;;</span>
+      }
+    });
+  }
+
+  public static ResponseEntity&lt;byte[]&gt; createUploadResponseEntity(Upload upload) {
+<span class="nc" id="L159">    return ResponseEntity.ok()</span>
+<span class="nc" id="L160">        .header(&quot;Content-Type&quot;, upload.getMimeType())</span>
+<span class="nc" id="L161">        .header(UploadsService.DESCRIPTION_HEADER_NAME, upload.getDescription())</span>
+<span class="nc" id="L162">        .header(</span>
+            CONTENT_DISPOSITION,
+<span class="nc" id="L164">            ContentDisposition.inline()</span>
+<span class="nc" id="L165">                .filename(upload.getFilename())</span>
+<span class="nc" id="L166">                .build()</span>
+<span class="nc" id="L167">                .toString())</span>
+<span class="nc" id="L168">        .lastModified(upload.getLastModified().toInstant())</span>
+<span class="nc" id="L169">        .contentLength(upload.getContentLength())</span>
+<span class="nc" id="L170">        .cacheControl(CacheControl.noCache().cachePublic())</span>
+<span class="nc" id="L171">        .body(upload.getContent());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
