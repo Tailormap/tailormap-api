@@ -27,8 +27,10 @@ import org.geotools.api.feature.type.AttributeType;
 import org.geotools.jdbc.JDBCFeatureStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tailormap.api.admin.model.CapabilitiesLoadingEvent;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.CapabilitiesLoadingProgressReporting;
 import org.tailormap.api.persistence.helper.GeoToolsHelper;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.persistence.json.TMAttributeType;
@@ -70,7 +72,7 @@ public abstract class FeatureSourceHelper {
     DataStore ds;
     try {
       ds = DataStoreFinder.getDataStore(params);
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new IOException("Cannot open datastore using parameters: " + logParams, e);
     }
     if (ds == null) {
@@ -79,11 +81,16 @@ public abstract class FeatureSourceHelper {
     return ds;
   }
 
-  public void loadCapabilities(TMFeatureSource tmfs) throws IOException {
-    loadCapabilities(tmfs, null);
-  }
+  public void loadCapabilities(
+      TMFeatureSource tmfs,
+      Integer timeout,
+      CapabilitiesLoadingProgressReporting reporter,
+      CapabilitiesLoadingEvent event)
+      throws IOException {
 
-  public void loadCapabilities(TMFeatureSource tmfs, Integer timeout) throws IOException {
+    reporter.reportCapabilitiesLoadingProgress(
+        event.message("Opening datastore for feature source " + tmfs.getTitle()));
+
     DataStore ds = createDataStore(tmfs, timeout);
     try {
       if (StringUtils.isBlank(tmfs.getTitle())) {
@@ -101,6 +108,11 @@ public abstract class FeatureSourceHelper {
               .source(si.getSource())));
 
       List<String> typeNames = Arrays.asList(ds.getTypeNames());
+      int progress = 0;
+      reporter.reportCapabilitiesLoadingProgress(
+          event.message("Retrieved service information for feature source " + tmfs.getTitle())
+              .total(typeNames.size())
+              .progress(progress));
       logger.debug(
           "Type names for {} {}: {}",
           tmfs.getProtocol().getValue(),
@@ -134,6 +146,10 @@ public abstract class FeatureSourceHelper {
             pft.getAttributes().clear();
 
             SimpleFeatureType gtFt = gtFs.getSchema();
+
+            reporter.reportCapabilitiesLoadingProgress(event.message("Retrieved feature type " + typeName)
+                .progress(++progress));
+
             pft.setWriteable(gtFs instanceof JDBCFeatureStore
                 && !Boolean.TRUE.equals(gtFt.getUserData().get(JDBC_READ_ONLY)));
             String primaryKeyName = null;

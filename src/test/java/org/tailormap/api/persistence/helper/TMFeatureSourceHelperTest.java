@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.tailormap.api.admin.model.CapabilitiesLoadingEvent;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
 
@@ -17,7 +18,12 @@ class TMFeatureSourceHelperTest {
 
   @BeforeEach
   void setUp() {
-    tmFeatureSourceHelper = new TMFeatureSourceHelper();
+    tmFeatureSourceHelper = new TMFeatureSourceHelper(null, null) {
+      @Override
+      public void reportCapabilitiesLoadingProgress(CapabilitiesLoadingEvent event) {
+        // Do nothing, not needed for these tests
+      }
+    };
   }
 
   @Test
