@@ -39,6 +39,8 @@ import org.apache.solr.common.SolrException;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.jspecify.annotations.NonNull;
@@ -48,10 +50,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.TaskProgressEvent;
+import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.GeoToolsHelper;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.util.Constants;
@@ -292,6 +296,9 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     // collect features to index
     SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
+    String sourceCrs = GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem());
+    searchIndex = searchIndexRepository.save(searchIndex.setSourceCrs(sourceCrs));
+
     Query q = new Query(fs.getName().toString());
     // filter out any hidden properties (there should be none though)
     tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
@@ -457,7 +464,8 @@ public class SolrHelper implements AutoCloseable, Constants {
       String solrPoint,
       Double solrDistance,
       int start,
-      int numResultsToReturn)
+      int numResultsToReturn,
+      String applicationCrs)
       throws IOException, SolrServerException, SolrException {
 
     if (null == solrQuery || solrQuery.isBlank()) {
@@ -465,6 +473,24 @@ public class SolrHelper implements AutoCloseable, Constants {
     }
 
     logger.info("Query index for '{}' in {} (id {})", solrQuery, searchIndex.getName(), searchIndex.getId());
+
+    MathTransform toApplication = null;
+    MathTransform toSource = null;
+
+    if (searchIndex.getSourceCrs() != null && applicationCrs != null) {
+      try {
+        toApplication = TransformationUtil.getTransformation(searchIndex.getSourceCrs(), applicationCrs);
+        toSource = TransformationUtil.getTransformation(applicationCrs, searchIndex.getSourceCrs());
+      } catch (FactoryException e) {
+        logger.error(
+            "Could not create transformations between search index CRS {} and application CRS {}",
+            searchIndex.getSourceCrs(),
+            applicationCrs,
+            e);
+      }
+    }
+
+    final MathTransform resultTransform = toApplication;
 
     // TODO We could escape special/syntax characters, but that also prevents using
     //      keys like ~ and *
@@ -489,7 +515,19 @@ public class SolrHelper implements AutoCloseable, Constants {
           || !(solrFilterQuery.startsWith("{!geofilt") || solrFilterQuery.startsWith("{!bbox"))) {
         query.addFilterQuery("{!geofilt sfield=" + INDEX_GEOM_FIELD + "}");
       }
-      query.add("pt", solrPoint);
+
+      String transformedSolrPoint = solrPoint;
+
+      if (toSource != null) {
+        Geometry pointGeometry = GeometryProcessor.wktToGeometry("POINT (" + solrPoint + ")");
+        if (pointGeometry != null) {
+          Geometry transformedPoint = GeometryProcessor.transformGeometry(pointGeometry, toSource);
+          transformedSolrPoint =
+              transformedPoint.getCoordinate().x + " " + transformedPoint.getCoordinate().y;
+        }
+      }
+
+      query.add("pt", transformedSolrPoint);
       query.add("d", solrDistance.toString());
     }
     query.set("q.op", "AND");
@@ -510,9 +548,19 @@ public class SolrHelper implements AutoCloseable, Constants {
           .toList();
       Object geom = solrDocument.getFieldValue(INDEX_GEOM_FIELD);
       if (geom != null) {
+        String geometry = geom.toString();
+
+        if (resultTransform != null) {
+          Geometry parsedGeometry = GeometryProcessor.wktToGeometry(geometry);
+          if (parsedGeometry != null) {
+            geometry = GeometryProcessor.geometryToWKT(
+                GeometryProcessor.transformGeometry(parsedGeometry, resultTransform));
+          }
+        }
+
         searchResponse.addDocumentsItem(new SearchDocument()
             .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())
-            .geometry(geom.toString())
+            .geometry(geometry)
             .displayValues(displayValues));
       }
     });
