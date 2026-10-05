@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeoServiceHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence.helper</a> &gt; <span class="el_source">GeoServiceHelper.java</span></div><h1>GeoServiceHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.persistence.helper;
+
+import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
+
+import ch.rasc.sse.eventbus.SseEvent;
+import ch.rasc.sse.eventbus.SseEventBus;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.api.data.ServiceInfo;
+import org.geotools.data.ows.AbstractOpenWebService;
+import org.geotools.data.ows.Capabilities;
+import org.geotools.data.ows.OperationType;
+import org.geotools.http.HTTPClientFinder;
+import org.geotools.ows.ServiceException;
+import org.geotools.ows.wms.Layer;
+import org.geotools.ows.wms.WMSCapabilities;
+import org.geotools.ows.wms.WebMapServer;
+import org.geotools.ows.wmts.WebMapTileServer;
+import org.geotools.ows.wmts.model.WMTSLayer;
+import org.geotools.xml.DocumentFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.tailormap.api.admin.model.CapabilitiesLoadingEvent;
+import org.tailormap.api.admin.model.ServerSentEvent;
+import org.tailormap.api.configuration.TailormapConfig;
+import org.tailormap.api.geotools.ResponseTeeingHTTPClient;
+import org.tailormap.api.geotools.WMSServiceExceptionUtil;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.persistence.json.GeoServiceProtocol;
+import org.tailormap.api.persistence.json.ServiceAuthentication;
+import org.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
+import org.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
+import org.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap;
+import org.tailormap.api.persistence.json.TMServiceCaps;
+import org.tailormap.api.persistence.json.TMServiceCapsCapabilities;
+import org.tailormap.api.persistence.json.TMServiceInfo;
+import org.tailormap.api.persistence.json.WMSStyle;
+import org.tailormap.api.viewer.model.Service.ServerTypeEnum;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
+
+@Service
+public class GeoServiceHelper implements CapabilitiesLoadingProgressReporting {
+<span class="nc" id="L68">  private static final Logger logger =</span>
+<span class="nc" id="L69">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+  private final TailormapConfig tailormapConfig;
+  private final SseEventBus eventBus;
+  private final JsonMapper mapper;
+
+<span class="nc" id="L74">  public GeoServiceHelper(TailormapConfig tailormapConfig, SseEventBus eventBus, JsonMapper mapper) {</span>
+<span class="nc" id="L75">    this.tailormapConfig = tailormapConfig;</span>
+<span class="nc" id="L76">    this.eventBus = eventBus;</span>
+<span class="nc" id="L77">    this.mapper = mapper;</span>
+<span class="nc" id="L78">  }</span>
+
+  public static ServerTypeEnum guessServerTypeFromUrl(String url) {
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (StringUtils.isBlank(url)) {</span>
+<span class="nc" id="L83">      return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;</span>
+    }
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (url.contains(&quot;/arcgis/&quot;)) {</span>
+<span class="nc" id="L86">      return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;</span>
+    }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (url.contains(&quot;/geoserver/&quot;)) {</span>
+<span class="nc" id="L89">      return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GEOSERVER;</span>
+    }
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (url.contains(&quot;/mapserv&quot;)) { // /cgi-bin/mapserv, /cgi-bin/mapserv.cgi, /cgi-bin/mapserv.fcgi</span>
+<span class="nc" id="L92">      return org.tailormap.api.viewer.model.Service.ServerTypeEnum.MAPSERVER;</span>
+    }
+<span class="nc" id="L94">    return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;</span>
+  }
+
+  public static String getWmsRequest(String uri) {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    return getWmsRequest(uri == null ? null : URI.create(uri));</span>
+  }
+
+  /**
+   * Extracts the value of the WMS &amp;quot;REQUEST&amp;quot; parameter (case-insensitive) from the given URI.
+   *
+   * @param uri the URI to extract the request parameter from
+   * @return the value of the request parameter, or null if not found
+   */
+  public static String getWmsRequest(URI uri) {
+<span class="nc bnc" id="L108" title="All 4 branches missed.">    if (uri == null || uri.getQuery() == null) {</span>
+<span class="nc" id="L109">      return null;</span>
+    }
+<span class="nc" id="L111">    return UriComponentsBuilder.fromUri(uri).build().getQueryParams().entrySet().stream()</span>
+<span class="nc" id="L112">        .filter(entry -&gt; &quot;request&quot;.equalsIgnoreCase(entry.getKey()))</span>
+<span class="nc" id="L113">        .map(entry -&gt; entry.getValue().getFirst())</span>
+<span class="nc" id="L114">        .findFirst()</span>
+<span class="nc" id="L115">        .orElse(null);</span>
+  }
+
+  public GeoService loadServiceCapabilities(GeoService geoService)
+      throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
+          UnsupportedOperationException {
+
+<span class="nc" id="L122">    final Instant startedAt = Instant.now();</span>
+<span class="nc" id="L123">    final OffsetDateTime startedAtOffset =</span>
+<span class="nc" id="L124">        startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt));</span>
+<span class="nc" id="L125">    CapabilitiesLoadingEvent event = new CapabilitiesLoadingEvent()</span>
+<span class="nc" id="L126">        .startedAt(startedAtOffset)</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        .title(StringUtils.isNotBlank(geoService.getTitle()) ? geoService.getTitle() : geoService.getUrl())</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        .id(geoService.getId() != null ? geoService.getId() : null);</span>
+
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (geoService.getProtocol() == GeoServiceProtocol.XYZ) {</span>
+<span class="nc" id="L131">      setXyzCapabilities(geoService);</span>
+<span class="nc" id="L132">      return geoService;</span>
+    }
+
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (geoService.getProtocol() == GeoServiceProtocol.TILES3D) {</span>
+<span class="nc" id="L136">      set3DTilesCapabilities(geoService);</span>
+<span class="nc" id="L137">      return geoService;</span>
+    }
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (geoService.getProtocol() == GeoServiceProtocol.QUANTIZEDMESH) {</span>
+<span class="nc" id="L141">      setQuantizedMeshCapabilities(geoService);</span>
+<span class="nc" id="L142">      return geoService;</span>
+    }
+
+<span class="nc" id="L145">    ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(</span>
+<span class="nc" id="L146">        HTTPClientFinder.createClient(), null, Set.of(&quot;Access-Control-Allow-Origin&quot;));</span>
+
+<span class="nc" id="L148">    ServiceAuthentication auth = geoService.getAuthentication();</span>
+<span class="nc bnc" id="L149" title="All 4 branches missed.">    if (auth != null &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {</span>
+<span class="nc" id="L150">      client.setUser(auth.getUsername());</span>
+<span class="nc" id="L151">      client.setPassword(auth.getPassword());</span>
+    }
+
+<span class="nc" id="L154">    client.setReadTimeout(this.tailormapConfig.getTimeout());</span>
+<span class="nc" id="L155">    client.setConnectTimeout(this.tailormapConfig.getTimeout());</span>
+<span class="nc" id="L156">    client.setTryGzip(true);</span>
+
+<span class="nc" id="L158">    logger.info(</span>
+        &quot;Get capabilities for {} {} from URL {}&quot;,
+<span class="nc" id="L160">        geoService.getProtocol(),</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        geoService.getId() == null ? &quot;(new)&quot; : &quot;id &quot; + geoService.getId(),</span>
+<span class="nc" id="L162">        geoService.getUrl());</span>
+
+<span class="nc" id="L164">    reportCapabilitiesLoadingProgress(event.message(&quot;Getting capabilities for &quot; + event.getTitle()));</span>
+    // TODO: micrometer met tags voor URL/id van service
+
+<span class="nc bnc" id="L167" title="All 3 branches missed.">    switch (geoService.getProtocol()) {</span>
+<span class="nc" id="L168">      case WMS -&gt; loadWMSCapabilities(geoService, client, event);</span>
+<span class="nc" id="L169">      case WMTS -&gt; loadWMTSCapabilities(geoService, client, event);</span>
+      default -&gt;
+<span class="nc" id="L171">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L172">            &quot;Unsupported geo service protocol: &quot; + geoService.getProtocol());</span>
+    }
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    if (geoService.getTitle() == null) {</span>
+<span class="nc" id="L176">      geoService.setTitle(Optional.ofNullable(geoService.getServiceCapabilities())</span>
+<span class="nc" id="L177">          .map(TMServiceCaps::getServiceInfo)</span>
+<span class="nc" id="L178">          .map(TMServiceInfo::getTitle)</span>
+<span class="nc" id="L179">          .orElse(null));</span>
+    }
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L183">      logger.debug(&quot;Loaded service layers: {}&quot;, geoService.getLayers());</span>
+    } else {
+<span class="nc" id="L185">      logger.info(</span>
+          &quot;Loaded service layers: {}&quot;,
+<span class="nc" id="L187">          geoService.getLayers().stream()</span>
+<span class="nc" id="L188">              .filter(Predicate.not(GeoServiceLayer::getVirtual))</span>
+<span class="nc" id="L189">              .map(GeoServiceLayer::getName)</span>
+<span class="nc" id="L190">              .collect(Collectors.toList()));</span>
+    }
+<span class="nc" id="L192">    this.reportCapabilitiesLoadingProgress(event.message(&quot;Finished loading geoservice capabilities in &quot;</span>
+<span class="nc" id="L193">            + (Instant.now().toEpochMilli() - startedAt.toEpochMilli()) + &quot; ms&quot;)</span>
+        // total is not set for WMS/WMTS capabilities loading,
+        // so we just set it to progress (or 1) to indicate that we are done
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        .progress(event.getProgress() == null ? 1 : event.getProgress()));</span>
+<span class="nc" id="L197">    return geoService;</span>
+  }
+
+  private static void setXyzCapabilities(GeoService geoService) {
+<span class="nc" id="L201">    geoService.setLayers(List.of(new GeoServiceLayer()</span>
+<span class="nc" id="L202">        .id(&quot;0&quot;)</span>
+<span class="nc" id="L203">        .root(true)</span>
+<span class="nc" id="L204">        .name(&quot;xyz&quot;)</span>
+<span class="nc" id="L205">        .title(geoService.getTitle())</span>
+<span class="nc" id="L206">        .crs(Set.of(geoService.getSettings().getXyzCrs()))</span>
+<span class="nc" id="L207">        .virtual(false)</span>
+<span class="nc" id="L208">        .queryable(false)));</span>
+<span class="nc" id="L209">  }</span>
+
+  private static void set3DTilesCapabilities(GeoService geoService) {
+<span class="nc" id="L212">    geoService.setLayers(List.of(new GeoServiceLayer()</span>
+<span class="nc" id="L213">        .id(&quot;0&quot;)</span>
+<span class="nc" id="L214">        .root(true)</span>
+<span class="nc" id="L215">        .name(&quot;tiles3d&quot;)</span>
+<span class="nc" id="L216">        .title(geoService.getTitle())</span>
+<span class="nc" id="L217">        .virtual(false)</span>
+<span class="nc" id="L218">        .queryable(false)));</span>
+<span class="nc" id="L219">  }</span>
+
+  private static void setQuantizedMeshCapabilities(GeoService geoService) {
+<span class="nc" id="L222">    geoService.setLayers(List.of(new GeoServiceLayer()</span>
+<span class="nc" id="L223">        .id(&quot;0&quot;)</span>
+<span class="nc" id="L224">        .root(true)</span>
+<span class="nc" id="L225">        .name(&quot;quantizedmesh&quot;)</span>
+<span class="nc" id="L226">        .title(geoService.getTitle())</span>
+<span class="nc" id="L227">        .virtual(false)</span>
+<span class="nc" id="L228">        .queryable(false)));</span>
+<span class="nc" id="L229">  }</span>
+
+  private void setServiceInfo(
+      GeoService geoService,
+      ResponseTeeingHTTPClient client,
+      AbstractOpenWebService&lt;? extends Capabilities, Layer&gt; ows) {
+<span class="nc" id="L235">    geoService.setCapabilities(client.getLatestResponseCopy());</span>
+<span class="nc" id="L236">    geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);</span>
+<span class="nc" id="L237">    geoService.setCapabilitiesFetched(Instant.now());</span>
+
+<span class="nc" id="L239">    ServiceInfo info = ows.getInfo();</span>
+
+<span class="nc" id="L241">    TMServiceCaps caps = new TMServiceCaps();</span>
+<span class="nc" id="L242">    geoService.setServiceCapabilities(caps);</span>
+
+<span class="nc" id="L244">    caps.setCorsAllowOrigin(client.getLatestResponse().getResponseHeader(&quot;Access-Control-Allow-Origin&quot;));</span>
+
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (info != null) {</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">      if (StringUtils.isBlank(geoService.getTitle())) {</span>
+<span class="nc" id="L248">        geoService.setTitle(info.getTitle());</span>
+      }
+
+<span class="nc" id="L251">      caps.serviceInfo(new TMServiceInfo()</span>
+<span class="nc" id="L252">          .keywords(info.getKeywords())</span>
+<span class="nc" id="L253">          .description(info.getDescription())</span>
+<span class="nc" id="L254">          .title(info.getTitle())</span>
+<span class="nc" id="L255">          .publisher(info.getPublisher())</span>
+<span class="nc" id="L256">          .schema(info.getSchema())</span>
+<span class="nc" id="L257">          .source(info.getSource()));</span>
+
+<span class="nc" id="L259">      geoService.setAdvertisedUrl(info.getSource().toString());</span>
+<span class="nc bnc" id="L260" title="All 4 branches missed.">    } else if (ows.getCapabilities() != null &amp;&amp; ows.getCapabilities().getService() != null) {</span>
+<span class="nc" id="L261">      org.geotools.data.ows.Service service = ows.getCapabilities().getService();</span>
+
+<span class="nc bnc" id="L263" title="All 2 branches missed.">      if (StringUtils.isBlank(geoService.getTitle())) {</span>
+<span class="nc" id="L264">        geoService.setTitle(service.getTitle());</span>
+      }
+<span class="nc" id="L266">      caps.setServiceInfo(new TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));</span>
+    }
+<span class="nc" id="L268">  }</span>
+
+  private GeoServiceLayer toGeoServiceLayer(Layer l, List&lt;? extends Layer&gt; layers) {
+<span class="nc" id="L271">    return new GeoServiceLayer()</span>
+<span class="nc" id="L272">        .id(String.valueOf(layers.indexOf(l)))</span>
+<span class="nc" id="L273">        .name(l.getName())</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        .root(l.getParent() == null)</span>
+<span class="nc" id="L275">        .title(l.getTitle())</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">        .maxScale(Double.isNaN(l.getScaleDenominatorMax()) ? null : l.getScaleDenominatorMax())</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">        .minScale(Double.isNaN(l.getScaleDenominatorMin()) ? null : l.getScaleDenominatorMin())</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        .virtual(l.getName() == null)</span>
+<span class="nc" id="L279">        .crs(l.getSrs())</span>
+<span class="nc" id="L280">        .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))</span>
+<span class="nc" id="L281">        .styles(l.getStyles().stream()</span>
+<span class="nc" id="L282">            .map(gtStyle -&gt; {</span>
+<span class="nc" id="L283">              WMSStyle style = new WMSStyle()</span>
+<span class="nc" id="L284">                  .name(gtStyle.getName())</span>
+<span class="nc" id="L285">                  .title(Optional.ofNullable(gtStyle.getTitle())</span>
+<span class="nc" id="L286">                      .map(Objects::toString)</span>
+<span class="nc" id="L287">                      .orElse(null))</span>
+<span class="nc" id="L288">                  .abstractText(Optional.ofNullable(gtStyle.getAbstract())</span>
+<span class="nc" id="L289">                      .map(Objects::toString)</span>
+<span class="nc" id="L290">                      .orElse(null));</span>
+              try {
+<span class="nc" id="L292">                List&lt;?&gt; legendUrls = gtStyle.getLegendURLs();</span>
+                // GeoTools will replace invalid URLs with null in legendURLs
+<span class="nc bnc" id="L294" title="All 6 branches missed.">                if (legendUrls != null &amp;&amp; !legendUrls.isEmpty() &amp;&amp; legendUrls.getFirst() != null) {</span>
+<span class="nc" id="L295">                  style.legendUrl(new URI((String) legendUrls.getFirst()));</span>
+                }
+<span class="nc" id="L297">              } catch (URISyntaxException ignored) {</span>
+                // Won't occur because GeoTools would have already returned null on
+                // invalid URL
+<span class="nc" id="L300">              }</span>
+<span class="nc" id="L301">              return style;</span>
+            })
+<span class="nc" id="L303">            .collect(Collectors.toList()))</span>
+<span class="nc" id="L304">        .queryable(l.isQueryable())</span>
+<span class="nc" id="L305">        .abstractText(l.get_abstract())</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        .keywords(l.getKeywords() == null ? Set.of() : Set.copyOf(List.of(l.getKeywords())))</span>
+<span class="nc" id="L307">        .children(l.getLayerChildren().stream()</span>
+<span class="nc" id="L308">            .map(layers::indexOf)</span>
+<span class="nc" id="L309">            .map(String::valueOf)</span>
+<span class="nc" id="L310">            .collect(Collectors.toList()));</span>
+  }
+
+  private void addLayerRecursive(
+      GeoService geoService, List&lt;? extends Layer&gt; layers, Layer layer, Set&lt;String&gt; parentCrs) {
+<span class="nc" id="L315">    GeoServiceLayer geoServiceLayer = toGeoServiceLayer(layer, layers);</span>
+    // Crses are inherited from the parent and this is applied by GeoTools so Layer.getSrs() has all
+    // supported crses, but to save space we reverse that by only saving new crses for child layers
+    // -- just like the original WMS capabilities.
+<span class="nc" id="L319">    geoServiceLayer.getCrs().removeAll(parentCrs);</span>
+<span class="nc" id="L320">    geoService.getLayers().add(geoServiceLayer);</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">    for (Layer l : layer.getLayerChildren()) {</span>
+<span class="nc" id="L322">      addLayerRecursive(geoService, layers, l, layer.getSrs());</span>
+<span class="nc" id="L323">    }</span>
+<span class="nc" id="L324">  }</span>
+
+  private void loadWMSCapabilities(
+      GeoService geoService, ResponseTeeingHTTPClient client, CapabilitiesLoadingEvent event)
+      throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
+          UnsupportedOperationException {
+    WebMapServer wms;
+    try {
+<span class="nc" id="L332">      reportCapabilitiesLoadingProgress(</span>
+<span class="nc" id="L333">          event.message(&quot;Loading WMS capabilities&quot;).progress(0));</span>
+<span class="nc" id="L334">      wms = new WebMapServer(</span>
+<span class="nc" id="L335">          new URI(geoService.getUrl()).toURL(),</span>
+          client,
+<span class="nc" id="L337">          Map.of(</span>
+              // allow DTD for WMS 1.1.x
+<span class="nc" id="L339">              DocumentFactory.ENABLE_DTD, true));</span>
+<span class="nc" id="L340">    } catch (ClassCastException | IllegalStateException e) {</span>
+      // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
+      // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
+      // ClassCastException.
+
+      // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to
+      // Throwable.initCause() on a SAXException that already has a cause.
+      // In these cases, try to extract a message from the HTTP response
+<span class="nc" id="L348">      String contentType = client.getLatestResponse().getContentType();</span>
+<span class="nc bnc" id="L349" title="All 4 branches missed.">      if (contentType != null &amp;&amp; contentType.contains(&quot;text/xml&quot;)) {</span>
+<span class="nc" id="L350">        String wmsException =</span>
+<span class="nc" id="L351">            WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());</span>
+<span class="nc" id="L352">        throw new IOException(&quot;Error loading WMS capabilities: &quot;</span>
+<span class="nc bnc" id="L353" title="All 2 branches missed.">            + (wmsException != null</span>
+<span class="nc" id="L354">                ? wmsException</span>
+<span class="nc" id="L355">                : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8)));</span>
+      } else {
+<span class="nc" id="L357">        throw e;</span>
+      }
+<span class="nc" id="L359">    } catch (IOException e) {</span>
+      // This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses)
+      // exception message. In a container environment the JVM is always in English so never
+      // localized.
+<span class="nc bnc" id="L363" title="All 2 branches missed.">      if (e.getMessage().contains(&quot;Server returned HTTP response code: 401 for URL:&quot;)) {</span>
+<span class="nc" id="L364">        throw new IOException(</span>
+            &quot;Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)&quot;);
+      } else {
+<span class="nc" id="L367">        throw e;</span>
+      }
+<span class="nc" id="L369">    }</span>
+
+<span class="nc" id="L371">    OperationType getMap = wms.getCapabilities().getRequest().getGetMap();</span>
+<span class="nc" id="L372">    OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();</span>
+
+<span class="nc bnc" id="L374" title="All 2 branches missed.">    if (getMap == null) {</span>
+<span class="nc" id="L375">      throw new UnsupportedOperationException(&quot;Service does not support GetMap&quot;);</span>
+    }
+
+<span class="nc" id="L378">    setServiceInfo(geoService, client, wms);</span>
+
+<span class="nc" id="L380">    WMSCapabilities wmsCapabilities = wms.getCapabilities();</span>
+
+    // TODO Jackson annotations op GeoTools classes of iets anders slims?
+
+<span class="nc" id="L384">    geoService</span>
+<span class="nc" id="L385">        .getServiceCapabilities()</span>
+<span class="nc" id="L386">        .capabilities(new TMServiceCapsCapabilities()</span>
+<span class="nc" id="L387">            .version(wmsCapabilities.getVersion())</span>
+<span class="nc" id="L388">            .updateSequence(wmsCapabilities.getUpdateSequence())</span>
+<span class="nc" id="L389">            .abstractText(wmsCapabilities.getService().get_abstract())</span>
+<span class="nc" id="L390">            .request(new TMServiceCapabilitiesRequest()</span>
+<span class="nc" id="L391">                .getMap(new TMServiceCapabilitiesRequestGetMap()</span>
+<span class="nc" id="L392">                    .formats(Set.copyOf(getMap.getFormats())))</span>
+<span class="nc" id="L393">                .getFeatureInfo(</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">                    getFeatureInfo == null</span>
+<span class="nc" id="L395">                        ? null</span>
+                        : new TMServiceCapabilitiesRequestGetFeatureInfo()
+<span class="nc" id="L397">                            .formats(Set.copyOf(getFeatureInfo.getFormats())))</span>
+<span class="nc" id="L398">                .describeLayer(</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">                    wms.getCapabilities().getRequest().getDescribeLayer() != null)));</span>
+
+<span class="nc bnc" id="L401" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L402">      logger.debug(&quot;Loaded capabilities, service capabilities: {}&quot;, geoService.getServiceCapabilities());</span>
+    } else {
+<span class="nc" id="L404">      logger.info(</span>
+          &quot;Loaded capabilities from \&quot;{}\&quot;, title: \&quot;{}\&quot;&quot;,
+<span class="nc" id="L406">          geoService.getUrl(),</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">          geoService.getServiceCapabilities() != null</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">                  &amp;&amp; geoService.getServiceCapabilities().getServiceInfo() != null</span>
+              ? geoService
+<span class="nc" id="L410">                  .getServiceCapabilities()</span>
+<span class="nc" id="L411">                  .getServiceInfo()</span>
+<span class="nc" id="L412">                  .getTitle()</span>
+<span class="nc" id="L413">              : &quot;(none)&quot;);</span>
+    }
+<span class="nc" id="L415">    reportCapabilitiesLoadingProgress(</span>
+<span class="nc" id="L416">        event.message(&quot;Loaded WMS capabilities&quot;).progress(1));</span>
+<span class="nc" id="L417">    geoService.setLayers(new ArrayList&lt;&gt;());</span>
+<span class="nc" id="L418">    addLayerRecursive(</span>
+        geoService,
+<span class="nc" id="L420">        wms.getCapabilities().getLayerList(),</span>
+<span class="nc" id="L421">        wms.getCapabilities().getLayer(),</span>
+<span class="nc" id="L422">        Set.of());</span>
+<span class="nc" id="L423">  }</span>
+
+  private void loadWMTSCapabilities(
+      GeoService geoService, ResponseTeeingHTTPClient client, CapabilitiesLoadingEvent event)
+      throws ServiceException, URISyntaxException, IOException {
+<span class="nc" id="L428">    reportCapabilitiesLoadingProgress(</span>
+<span class="nc" id="L429">        event.message(&quot;Loading WMTS capabilities&quot;).progress(0));</span>
+<span class="nc" id="L430">    WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);</span>
+<span class="nc" id="L431">    setServiceInfo(geoService, client, wmts);</span>
+
+    // TODO set capabilities if we need something from it
+
+<span class="nc" id="L435">    List&lt;WMTSLayer&gt; layers = wmts.getCapabilities().getLayerList();</span>
+<span class="nc" id="L436">    geoService.setLayers(</span>
+<span class="nc" id="L437">        layers.stream().map(l -&gt; toGeoServiceLayer(l, layers)).collect(Collectors.toList()));</span>
+<span class="nc" id="L438">  }</span>
+
+  /**
+   * Try to extract the legend url from the styles of the layer. This works by getting all styles for the layer and
+   * then removing any styles attached to other (parent) layers from the list of all styles. What remains is/are the
+   * legend url(s) for the layer. &lt;i&gt;NOTE: when a layer has more than one -not an inherited style- style the first
+   * style is used.&lt;/i&gt;
+   *
+   * @param service the service that has the layer
+   * @param serviceLayer the layer to get the legend url for
+   * @return a URI to the legend image or null if not found
+   */
+  public static URI getLayerLegendUrlFromStyles(GeoService service, GeoServiceLayer serviceLayer) {
+<span class="nc bnc" id="L451" title="All 2 branches missed.">    if (serviceLayer.getRoot()) {</span>
+      // if this is a root layer, there are no parent layers, return the first style we find for
+      // this layer, if any
+<span class="nc" id="L454">      return serviceLayer.getStyles().stream()</span>
+<span class="nc" id="L455">          .findFirst()</span>
+<span class="nc" id="L456">          .map(WMSStyle::getLegendUrl)</span>
+<span class="nc" id="L457">          .orElse(null);</span>
+    }
+
+<span class="nc" id="L460">    final List&lt;WMSStyle&gt; allOurLayersStyles = serviceLayer.getStyles();</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">    if (allOurLayersStyles.size() == 1) {</span>
+<span class="nc" id="L462">      return allOurLayersStyles.getFirst().getLegendUrl();</span>
+    }
+    // remove the styles from all the other layer(s) from the list of all our layers styles
+<span class="nc" id="L465">    service.getLayers().stream()</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        .filter(layer -&gt; !layer.equals(serviceLayer))</span>
+<span class="nc" id="L467">        .forEach(layer -&gt; allOurLayersStyles.removeAll(layer.getStyles()));</span>
+
+<span class="nc" id="L469">    return allOurLayersStyles.stream()</span>
+<span class="nc" id="L470">        .findFirst()</span>
+<span class="nc" id="L471">        .map(WMSStyle::getLegendUrl)</span>
+<span class="nc" id="L472">        .orElse(null);</span>
+  }
+
+  @Override
+  public void reportCapabilitiesLoadingProgress(CapabilitiesLoadingEvent event) {
+<span class="nc" id="L477">    ServerSentEvent serverSentEvent = new ServerSentEvent()</span>
+<span class="nc" id="L478">        .eventType(ServerSentEvent.EventTypeEnum.CAPABILITIES_LOADING)</span>
+<span class="nc" id="L479">        .details(event);</span>
+    try {
+<span class="nc bnc" id="L481" title="All 2 branches missed.">      if (this.eventBus.countSubscribers(DEFAULT_EVENT) == 0) {</span>
+<span class="nc" id="L482">        return;</span>
+      }
+<span class="nc" id="L484">      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, mapper.writeValueAsString(serverSentEvent)));</span>
+<span class="nc" id="L485">    } catch (JacksonException e) {</span>
+<span class="nc" id="L486">      logger.error(&quot;Error publishing geoservice capabilities loading progress event&quot;, e);</span>
+<span class="nc" id="L487">    }</span>
+<span class="nc" id="L488">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

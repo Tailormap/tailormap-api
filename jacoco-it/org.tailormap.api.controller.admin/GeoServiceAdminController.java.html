@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeoServiceAdminController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller.admin</a> &gt; <span class="el_source">GeoServiceAdminController.java</span></div><h1>GeoServiceAdminController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.controller.admin;
+
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Objects;
+import org.geotools.ows.ServiceException;
+import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.persistence.Catalog;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.helper.GeoServiceHelper;
+import org.tailormap.api.persistence.json.CatalogNode;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
+import org.tailormap.api.persistence.json.TailormapObjectRef;
+import org.tailormap.api.repository.CatalogRepository;
+import org.tailormap.api.repository.GeoServiceRepository;
+import org.tailormap.api.viewer.model.ErrorResponse;
+
+<span class="nc" id="L49">@RestController</span>
+public class GeoServiceAdminController {
+
+  private final GeoServiceRepository geoServiceRepository;
+  private final RepositoryEntityLinks repositoryEntityLinks;
+  private final GeoServiceHelper geoServiceHelper;
+  private final CatalogRepository catalogRepository;
+
+  public GeoServiceAdminController(
+      GeoServiceRepository geoServiceRepository,
+      RepositoryEntityLinks repositoryEntityLinks,
+      GeoServiceHelper geoServiceHelper,
+<span class="nc" id="L61">      CatalogRepository catalogRepository) {</span>
+<span class="nc" id="L62">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L63">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L64">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L65">    this.catalogRepository = catalogRepository;</span>
+<span class="nc" id="L66">  }</span>
+
+  @ExceptionHandler({
+    IllegalArgumentException.class,
+    UnsupportedOperationException.class,
+    URISyntaxException.class,
+    UnknownHostException.class
+  })
+  public ResponseEntity&lt;?&gt; badRequestException(Exception ex) {
+<span class="nc" id="L75">    HttpStatus status = HttpStatus.BAD_REQUEST;</span>
+<span class="nc" id="L76">    String msg = ex.getMessage();</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">    if (ex.getClass().getSimpleName().equals(&quot;UnknownHostException&quot;)) {</span>
+<span class="nc" id="L78">      msg = &quot;Unknown host: \&quot;&quot; + ex.getMessage() + &quot;\&quot;&quot;;</span>
+    }
+<span class="nc" id="L80">    return ResponseEntity.status(status)</span>
+<span class="nc" id="L81">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L82">        .body(new ErrorResponse().message(msg).code(status.value()));</span>
+  }
+
+  @ExceptionHandler({ServiceException.class, IOException.class})
+  public ResponseEntity&lt;?&gt; internalServerError(Exception ex) {
+<span class="nc" id="L87">    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;</span>
+<span class="nc" id="L88">    return ResponseEntity.status(status)</span>
+<span class="nc" id="L89">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L90">        .body(new ErrorResponse().message(ex.getMessage()).code(status.value()));</span>
+  }
+
+  @ExceptionHandler({ResponseStatusException.class})
+  public ResponseEntity&lt;?&gt; handleException(ResponseStatusException ex) {
+<span class="nc" id="L95">    return ResponseEntity.status(ex.getStatusCode())</span>
+<span class="nc" id="L96">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L97">        .body(new ErrorResponse()</span>
+<span class="nc" id="L98">            .message(</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">                ex.getReason() != null</span>
+<span class="nc" id="L100">                    ? ex.getReason()</span>
+<span class="nc" id="L101">                    : ex.getBody().getTitle())</span>
+<span class="nc" id="L102">            .code(ex.getStatusCode().value()));</span>
+  }
+
+  @PostMapping(path = &quot;${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities&quot;)
+  @ResponseStatus
+  public ResponseEntity&lt;List&lt;GeoServiceLayer&gt;&gt; refreshCapabilities(
+      @PathVariable String id, HttpServletResponse httpServletResponse)
+      throws IOException, IllegalArgumentException, URISyntaxException, ServiceException,
+          UnsupportedOperationException {
+
+<span class="nc" id="L112">    GeoService geoService =</span>
+<span class="nc" id="L113">        geoServiceRepository.findById(id).orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
+
+<span class="nc" id="L115">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    assert authentication != null;</span>
+<span class="nc" id="L118">    boolean isAdmin =</span>
+<span class="nc" id="L119">        authentication.getAuthorities().stream().anyMatch(a -&gt; Objects.equals(a.getAuthority(), Group.ADMIN));</span>
+<span class="nc" id="L120">    boolean hasRefreshCapabilities = authentication.getAuthorities().stream()</span>
+<span class="nc" id="L121">        .anyMatch(a -&gt; Objects.equals(a.getAuthority(), Group.REFRESH_CAPABILITIES));</span>
+
+<span class="nc bnc" id="L123" title="All 4 branches missed.">    if (!isAdmin &amp;&amp; !hasRefreshCapabilities) {</span>
+      // Should not be allowed by securityMatchers in ApiSecurityConfiguration
+<span class="nc" id="L125">      throw new ResponseStatusException(HttpStatus.FORBIDDEN);</span>
+    }
+
+<span class="nc" id="L128">    geoService = geoServiceHelper.loadServiceCapabilities(geoService);</span>
+<span class="nc" id="L129">    geoService = geoServiceRepository.saveAndFlush(geoService);</span>
+
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (isAdmin) {</span>
+<span class="nc" id="L132">      httpServletResponse.sendRedirect(String.valueOf(repositoryEntityLinks</span>
+<span class="nc" id="L133">          .linkToItemResource(GeoService.class, id)</span>
+<span class="nc" id="L134">          .toUri()));</span>
+<span class="nc" id="L135">      return null;</span>
+    } else {
+      // Do not redirect to the GeoService resource (which they don't have access to), but return the refreshed
+      // layers directly (which do not contain sensitive information such as authentication credentials)
+<span class="nc" id="L139">      return ResponseEntity.ok(geoService.getLayers());</span>
+    }
+  }
+
+  /**
+   * Create a new GeoService and attach it to a catalog node.
+   *
+   * @param geoService the GeoService to create
+   * @param catalogNodeId the node this service is to be attached to
+   * @return the created GeoService as a HATEOAS resource with a link to the resource
+   * @throws ServiceException if there is an error loading the service capabilities
+   * @throws URISyntaxException if the URL is invalid
+   * @throws IOException if there is an error loading the service capabilities
+   * @throws ObjectOptimisticLockingFailureException if there is a concurrent modification likely of the catalog
+   */
+  @PostMapping(path = &quot;${tailormap-api.admin.base-path}/geo-services/new&quot;)
+  @Transactional
+  public ResponseEntity&lt;EntityModel&lt;GeoService&gt;&gt; createGeoService(
+      @RequestBody @Valid GeoService geoService, @RequestParam String catalogNodeId)
+      throws ServiceException, URISyntaxException, IOException, ObjectOptimisticLockingFailureException {
+
+    URI uri;
+    try {
+<span class="nc bnc" id="L162" title="All 2 branches missed.">      if (geoService.getProtocol() == XYZ) {</span>
+        // For XYZ URL templates, remove replacements
+        // Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains
+<span class="nc" id="L165">        uri = new URI(geoService.getUrl().replaceAll(&quot;\\{[a-z\\-]+}&quot;, &quot;&quot;));</span>
+      } else {
+<span class="nc" id="L167">        uri = new URI(geoService.getUrl());</span>
+      }
+<span class="nc" id="L169">    } catch (Exception e) {</span>
+<span class="nc" id="L170">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid URI&quot;);</span>
+<span class="nc" id="L171">    }</span>
+<span class="nc bnc" id="L172" title="All 4 branches missed.">    if (!&quot;https&quot;.equals(uri.getScheme()) &amp;&amp; !&quot;http&quot;.equals(uri.getScheme())) {</span>
+<span class="nc" id="L173">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Invalid URI scheme&quot;);</span>
+    }
+
+<span class="nc" id="L176">    geoService = geoServiceHelper.loadServiceCapabilities(geoService);</span>
+
+<span class="nc" id="L178">    Catalog catalog = catalogRepository</span>
+<span class="nc" id="L179">        .findByIdWithLock(Catalog.MAIN)</span>
+<span class="nc" id="L180">        .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Main catalog not found&quot;));</span>
+<span class="nc" id="L181">    CatalogNode attachTo = catalog.getNodes().stream()</span>
+<span class="nc" id="L182">        .filter(node -&gt; node.getId().equals(catalogNodeId))</span>
+<span class="nc" id="L183">        .findFirst()</span>
+<span class="nc" id="L184">        .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Catalog node not found&quot;));</span>
+<span class="nc" id="L185">    geoService = geoServiceRepository.save(geoService);</span>
+<span class="nc" id="L186">    attachTo.addItemsItem(</span>
+<span class="nc" id="L187">        new TailormapObjectRef().id(geoService.getId()).kind(TailormapObjectRef.KindEnum.GEO_SERVICE));</span>
+<span class="nc" id="L188">    catalogRepository.saveAndFlush(catalog);</span>
+<span class="nc" id="L189">    geoService = geoServiceRepository.saveAndFlush(geoService);</span>
+
+<span class="nc" id="L191">    Link selfLink = repositoryEntityLinks.linkToItemResource(GeoService.class, geoService.getId());</span>
+<span class="nc" id="L192">    return ResponseEntity.created(selfLink.toUri()).body(EntityModel.of(geoService, selfLink));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
