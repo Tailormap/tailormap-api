@@ -58,13 +58,14 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E()" tabindex="0">TMFeatureSourceHelper()</a></li>
+<li><a href="#%3Cinit%3E(ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)" tabindex="0">TMFeatureSourceHelper(SseEventBus, JsonMapper)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">loadCapabilities(TMFeatureSource)</a></li>
 <li><a href="#createFeatureSource(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">createFeatureSource(TMFeatureSource)</a></li>
+<li><a href="#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" tabindex="0">reportCapabilitiesLoadingProgress(CapabilitiesLoadingEvent)</a></li>
 </ol>
 </li>
 </ol>
@@ -78,11 +79,16 @@ loadScripts(document, 'script');</script>
 <div class="inheritance">org.tailormap.api.persistence.helper.TMFeatureSourceHelper</div>
 </div>
 <section class="class-description" id="class-description">
+<dl class="notes">
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></code></dd>
+</dl>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">TMFeatureSourceHelper</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
+implements <a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></span></div>
 </div>
 </section>
 <section class="summary">
@@ -95,7 +101,8 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">TMFeatureSourceHelper</a>()</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)" class="member-name-link">TMFeatureSourceHelper</a><wbr>(ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -117,6 +124,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;featureSource)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" class="member-name-link">reportCapabilitiesLoadingProgress</a><wbr>(<a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Emit a capabilities loading progress event to the event bus.</div>
+</div>
 </div>
 </div>
 </div>
@@ -135,10 +147,11 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;()">
+<section class="detail" id="&lt;init&gt;(ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)">
 <h3>TMFeatureSourceHelper</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TMFeatureSourceHelper</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TMFeatureSourceHelper</span><wbr><span class="parameters">(ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</span></div>
 </div>
 </section>
 </li>
@@ -174,6 +187,23 @@ loadScripts(document, 'script');</script>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">
+<h3>reportCapabilitiesLoadingProgress</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reportCapabilitiesLoadingProgress</span><wbr><span class="parameters">(<a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="CapabilitiesLoadingProgressReporting.html#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">CapabilitiesLoadingProgressReporting</a></code></span></div>
+<div class="block">Emit a capabilities loading progress event to the event bus. An implementing class could use this method to
+report progress of loading capabilities from a feature source on a SSE event bus or a logging framework.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="CapabilitiesLoadingProgressReporting.html#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">reportCapabilitiesLoadingProgress</a></code>&nbsp;in interface&nbsp;<code><a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>event</code> - The capabilities loading event to report</dd>
 </dl>
 </div>
 </section>

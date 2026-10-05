@@ -58,7 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(org.tailormap.api.configuration.TailormapConfig)" tabindex="0">GeoServiceHelper(TailormapConfig)</a></li>
+<li><a href="#%3Cinit%3E(org.tailormap.api.configuration.TailormapConfig,ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)" tabindex="0">GeoServiceHelper(TailormapConfig, SseEventBus, JsonMapper)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -68,6 +68,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#getWmsRequest(java.net.URI)" tabindex="0">getWmsRequest(URI)</a></li>
 <li><a href="#loadServiceCapabilities(org.tailormap.api.persistence.GeoService)" tabindex="0">loadServiceCapabilities(GeoService)</a></li>
 <li><a href="#getLayerLegendUrlFromStyles(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" tabindex="0">getLayerLegendUrlFromStyles(GeoService, GeoServiceLayer)</a></li>
+<li><a href="#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" tabindex="0">reportCapabilitiesLoadingProgress(CapabilitiesLoadingEvent)</a></li>
 </ol>
 </li>
 </ol>
@@ -81,11 +82,16 @@ loadScripts(document, 'script');</script>
 <div class="inheritance">org.tailormap.api.persistence.helper.GeoServiceHelper</div>
 </div>
 <section class="class-description" id="class-description">
+<dl class="notes">
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></code></dd>
+</dl>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">GeoServiceHelper</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
+implements <a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></span></div>
 </div>
 </section>
 <section class="summary">
@@ -98,7 +104,9 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.configuration.TailormapConfig)" class="member-name-link">GeoServiceHelper</a><wbr>(<a href="../../configuration/TailormapConfig.html" title="class in org.tailormap.api.configuration">TailormapConfig</a>&nbsp;tailormapConfig)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.configuration.TailormapConfig,ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)" class="member-name-link">GeoServiceHelper</a><wbr>(<a href="../../configuration/TailormapConfig.html" title="class in org.tailormap.api.configuration">TailormapConfig</a>&nbsp;tailormapConfig,
+ ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -134,6 +142,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadServiceCapabilities(org.tailormap.api.persistence.GeoService)" class="member-name-link">loadServiceCapabilities</a><wbr>(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" class="member-name-link">reportCapabilitiesLoadingProgress</a><wbr>(<a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Emit a capabilities loading progress event to the event bus.</div>
+</div>
 </div>
 </div>
 </div>
@@ -152,11 +165,12 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.tailormap.api.configuration.TailormapConfig)">
+<section class="detail" id="&lt;init&gt;(org.tailormap.api.configuration.TailormapConfig,ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper)">
 <h3>GeoServiceHelper</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@Autowired
-</span><span class="modifiers">public</span>&nbsp;<span class="element-name">GeoServiceHelper</span><wbr><span class="parameters">(<a href="../../configuration/TailormapConfig.html" title="class in org.tailormap.api.configuration">TailormapConfig</a>&nbsp;tailormapConfig)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">GeoServiceHelper</span><wbr><span class="parameters">(<a href="../../configuration/TailormapConfig.html" title="class in org.tailormap.api.configuration">TailormapConfig</a>&nbsp;tailormapConfig,
+ ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ tools.jackson.databind.json.JsonMapper&nbsp;mapper)</span></div>
 </div>
 </section>
 </li>
@@ -236,6 +250,23 @@ style is used.</i></div>
 <dd><code>serviceLayer</code> - the layer to get the legend url for</dd>
 <dt>Returns:</dt>
 <dd>a URI to the legend image or null if not found</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">
+<h3>reportCapabilitiesLoadingProgress</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reportCapabilitiesLoadingProgress</span><wbr><span class="parameters">(<a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="CapabilitiesLoadingProgressReporting.html#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">CapabilitiesLoadingProgressReporting</a></code></span></div>
+<div class="block">Emit a capabilities loading progress event to the event bus. An implementing class could use this method to
+report progress of loading capabilities from a feature source on a SSE event bus or a logging framework.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="CapabilitiesLoadingProgressReporting.html#reportCapabilitiesLoadingProgress(org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">reportCapabilitiesLoadingProgress</a></code>&nbsp;in interface&nbsp;<code><a href="CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>event</code> - The capabilities loading event to report</dd>
 </dl>
 </div>
 </section>

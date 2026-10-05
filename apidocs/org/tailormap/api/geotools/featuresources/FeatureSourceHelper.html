@@ -67,8 +67,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#createDataStore(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" tabindex="0">createDataStore(TMFeatureSource, Integer)</a></li>
 <li><a href="#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" tabindex="0">openGeoToolsFeatureSource(TMFeatureType, Integer)</a></li>
 <li><a href="#openDatastore(java.util.Map,java.lang.String)" tabindex="0">openDatastore(Map, String)</a></li>
-<li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" tabindex="0">loadCapabilities(TMFeatureSource)</a></li>
-<li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" tabindex="0">loadCapabilities(TMFeatureSource, Integer)</a></li>
+<li><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer,org.tailormap.api.persistence.helper.CapabilitiesLoadingProgressReporting,org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" tabindex="0">loadCapabilities(TMFeatureSource, Integer, CapabilitiesLoadingProgressReporting, CapabilitiesLoadingEvent)</a></li>
 <li><a href="#getFeatureTypeInfo(org.tailormap.api.persistence.TMFeatureType,org.geotools.api.data.ResourceInfo,org.geotools.api.data.SimpleFeatureSource)" tabindex="0">getFeatureTypeInfo(TMFeatureType, ResourceInfo, SimpleFeatureSource)</a></li>
 </ol>
 </li>
@@ -134,20 +133,19 @@ loadScripts(document, 'script');</script>
  org.geotools.api.data.SimpleFeatureSource&nbsp;gtFs)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer,org.tailormap.api.persistence.helper.CapabilitiesLoadingProgressReporting,org.tailormap.api.admin.model.CapabilitiesLoadingEvent)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout,
+ <a href="../../persistence/helper/CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a>&nbsp;reporter,
+ <a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)" class="member-name-link">loadCapabilities</a><wbr>(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.geotools.api.data.DataStore</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#openDatastore(java.util.Map,java.lang.String)" class="member-name-link">openDatastore</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;params,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.geotools.api.data.DataStore</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#openDatastore(java.util.Map,java.lang.String)" class="member-name-link">openDatastore</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;params,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordKey)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.geotools.api.data.SimpleFeatureSource</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#openGeoToolsFeatureSource(org.tailormap.api.persistence.TMFeatureType,java.lang.Integer)" class="member-name-link">openGeoToolsFeatureSource</a><wbr>(<a href="../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -244,24 +242,13 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="loadCapabilities(org.tailormap.api.persistence.TMFeatureSource)">
-<h3>loadCapabilities</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadCapabilities</span><wbr><span class="parameters">(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs)</span>
-                      throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
-<dl class="notes">
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)">
+<section class="detail" id="loadCapabilities(org.tailormap.api.persistence.TMFeatureSource,java.lang.Integer,org.tailormap.api.persistence.helper.CapabilitiesLoadingProgressReporting,org.tailormap.api.admin.model.CapabilitiesLoadingEvent)">
 <h3>loadCapabilities</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadCapabilities</span><wbr><span class="parameters">(<a href="../../persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a>&nbsp;tmfs,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout)</span>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;timeout,
+ <a href="../../persistence/helper/CapabilitiesLoadingProgressReporting.html" title="interface in org.tailormap.api.persistence.helper">CapabilitiesLoadingProgressReporting</a>&nbsp;reporter,
+ <a href="../../admin/model/CapabilitiesLoadingEvent.html" title="class in org.tailormap.api.admin.model">CapabilitiesLoadingEvent</a>&nbsp;event)</span>
                       throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
