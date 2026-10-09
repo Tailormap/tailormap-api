@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  @Schema(name = <span class="jxr_string">"Feature"</span>, description = <span class="jxr_string">" A possibly complete feature from the attribute source. The feature could have been filtered to not provide certain attributes. Any geometry attributes will be presented in WKT format "</span>)
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.25.0"</span>)
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Feature" href="../../../../../org/tailormap/api/viewer/model/Feature.html#Feature">Feature</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">   * Metadata of feature attachments, only when supported by the layer or the service. Use the `/attachment` endpoint to retrieve separate attachments</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">   * @return attachments</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Valid @Size(min = 0) 
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Size(min = 0) 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>   @Schema(name = <span class="jxr_string">"attachments"</span>, accessMode = Schema.AccessMode.READ_ONLY, description = <span class="jxr_string">"Metadata of feature attachments, only when supported by the layer or the service. Use the `/attachment` endpoint to retrieve separate attachments"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>   @JsonProperty(<span class="jxr_string">"attachments"</span>)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid AttachmentMetadata&gt; getAttachments() {

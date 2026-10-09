@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  @Schema(name = <span class="jxr_string">"MapResponse"</span>, description = <span class="jxr_string">"Any information needed to draw a basic map on a page. May include base layers."</span>)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.25.0"</span>)
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="MapResponse" href="../../../../../org/tailormap/api/viewer/model/MapResponse.html#MapResponse">MapResponse</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * Get services</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * @return services</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @NotNull 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>   @Schema(name = <span class="jxr_string">"services"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>   @JsonProperty(<span class="jxr_string">"services"</span>)
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">public</strong> Set&lt;@Valid Service&gt; getServices() {
@@ -153,7 +153,7 @@
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">   * Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time.</em>
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> <em class="jxr_javadoccomment">   * @return baseLayerTreeNodes</em>
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>   @NotNull 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>   @Schema(name = <span class="jxr_string">"baseLayerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>   @JsonProperty(<span class="jxr_string">"baseLayerTreeNodes"</span>)
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid LayerTreeNode&gt; getBaseLayerTreeNodes() {
@@ -182,7 +182,7 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">   * Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree.</em>
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> <em class="jxr_javadoccomment">   * @return layerTreeNodes</em>
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>   @NotNull 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>   @Schema(name = <span class="jxr_string">"layerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>   @JsonProperty(<span class="jxr_string">"layerTreeNodes"</span>)
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid LayerTreeNode&gt; getLayerTreeNodes() {
@@ -211,7 +211,7 @@
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> <em class="jxr_javadoccomment">   * Unordered list of all tree nodes of terrain layers. Start with the node with root set to true and use the ordered children array property to order the tree.</em>
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> <em class="jxr_javadoccomment">   * @return terrainLayerTreeNodes</em>
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>   @Valid 
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>   
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>   @Schema(name = <span class="jxr_string">"terrainLayerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of terrain layers. Start with the node with root set to true and use the ordered children array property to order the tree."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>   @JsonProperty(<span class="jxr_string">"terrainLayerTreeNodes"</span>)
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid LayerTreeNode&gt; getTerrainLayerTreeNodes() {
@@ -240,7 +240,7 @@
 <a class="jxr_linenumber" name="L232" href="#L232">232</a> <em class="jxr_javadoccomment">   * Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead.</em>
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">   * @return appLayers</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   @NotNull 
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>   @Schema(name = <span class="jxr_string">"appLayers"</span>, description = <span class="jxr_string">"Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>   @JsonProperty(<span class="jxr_string">"appLayers"</span>)
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid AppLayer&gt; getAppLayers() {

@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Schema(name = <span class="jxr_string">"AppLayer"</span>, description = <span class="jxr_string">" A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. "</span>)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.25.0"</span>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AppLayer" href="../../../../../org/tailormap/api/viewer/model/AppLayer.html#AppLayer">AppLayer</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -781,7 +781,7 @@
 <a class="jxr_linenumber" name="L773" href="#L773">773</a> <em class="jxr_javadoccomment">   * Functionality that should be hidden for a layer in the UI. The functionality is still available in the backend, so not a \&quot;security\&quot; setting.</em>
 <a class="jxr_linenumber" name="L774" href="#L774">774</a> <em class="jxr_javadoccomment">   * @return hiddenFunctionality</em>
 <a class="jxr_linenumber" name="L775" href="#L775">775</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L776" href="#L776">776</a>   @Valid 
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>   
 <a class="jxr_linenumber" name="L777" href="#L777">777</a>   @Schema(name = <span class="jxr_string">"hiddenFunctionality"</span>, description = <span class="jxr_string">"Functionality that should be hidden for a layer in the UI. The functionality is still available in the backend, so not a \&quot;security\&quot; setting."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L778" href="#L778">778</a>   @JsonProperty(<span class="jxr_string">"hiddenFunctionality"</span>)
 <a class="jxr_linenumber" name="L779" href="#L779">779</a>   <strong class="jxr_keyword">public</strong> Set&lt;HiddenLayerFunctionalityEnum&gt; getHiddenFunctionality() {
@@ -811,7 +811,7 @@
 <a class="jxr_linenumber" name="L803" href="#L803">803</a> <em class="jxr_javadoccomment">   * Configured WMS styles for this layer, if any.</em>
 <a class="jxr_linenumber" name="L804" href="#L804">804</a> <em class="jxr_javadoccomment">   * @return styles</em>
 <a class="jxr_linenumber" name="L805" href="#L805">805</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L806" href="#L806">806</a>   @Valid 
+<a class="jxr_linenumber" name="L806" href="#L806">806</a>   
 <a class="jxr_linenumber" name="L807" href="#L807">807</a>   @Schema(name = <span class="jxr_string">"styles"</span>, description = <span class="jxr_string">"Configured WMS styles for this layer, if any."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L808" href="#L808">808</a>   @JsonProperty(<span class="jxr_string">"styles"</span>)
 <a class="jxr_linenumber" name="L809" href="#L809">809</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid WMSStyle&gt; getStyles() {

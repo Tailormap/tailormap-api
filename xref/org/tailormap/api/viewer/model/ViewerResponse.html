@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  @Schema(name = <span class="jxr_string">"ViewerResponse"</span>, description = <span class="jxr_string">"Basic viewer information"</span>)
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.25.0"</span>)
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ViewerResponse" href="../../../../../org/tailormap/api/viewer/model/ViewerResponse.html#ViewerResponse">ViewerResponse</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -252,7 +252,7 @@
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> <em class="jxr_javadoccomment">   * List of filter groups to show in the application.</em>
 <a class="jxr_linenumber" name="L245" href="#L245">245</a> <em class="jxr_javadoccomment">   * @return filterGroups</em>
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>   @Valid @Size(min = 0) 
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>   @Size(min = 0) 
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>   @Schema(name = <span class="jxr_string">"filterGroups"</span>, description = <span class="jxr_string">"List of filter groups to show in the application."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>   @JsonProperty(<span class="jxr_string">"filterGroups"</span>)
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid FilterGroup&gt; getFilterGroups() {
@@ -331,7 +331,7 @@
 <a class="jxr_linenumber" name="L323" href="#L323">323</a> <em class="jxr_javadoccomment">   * Configured components (controls) for the viewer</em>
 <a class="jxr_linenumber" name="L324" href="#L324">324</a> <em class="jxr_javadoccomment">   * @return components</em>
 <a class="jxr_linenumber" name="L325" href="#L325">325</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>   @NotNull @Valid @Size(min = 0) 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>   @NotNull @Size(min = 0) 
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>   @Schema(name = <span class="jxr_string">"components"</span>, description = <span class="jxr_string">"Configured components (controls) for the viewer"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>   @JsonProperty(<span class="jxr_string">"components"</span>)
 <a class="jxr_linenumber" name="L329" href="#L329">329</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid Component&gt; getComponents() {

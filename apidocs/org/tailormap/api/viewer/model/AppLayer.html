@@ -183,7 +183,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="annotations">@Generated(value="org.openapitools.codegen.languages.SpringCodegen",
-           comments="Generator version: 7.25.0")
+           comments="Generator version: 7.26.0")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">AppLayer</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></span></div>
@@ -290,7 +290,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Whether this layer has attributes that can be accessed eg. for feature info or attribute list</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../../persistence/json/HiddenLayerFunctionalityEnum.html" title="enum class in org.tailormap.api.persistence.json">HiddenLayerFunctionalityEnum</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../../persistence/json/HiddenLayerFunctionalityEnum.html" title="enum class in org.tailormap.api.persistence.json">HiddenLayerFunctionalityEnum</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHiddenFunctionality()" class="member-name-link">getHiddenFunctionality</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Functionality that should be hidden for a layer in the UI.</div>
@@ -370,7 +370,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get serviceId</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;@Valid <a href="../../persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;@Valid <a href="../../persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStyles()" class="member-name-link">getStyles</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configured WMS styles for this layer, if any.</div>
@@ -1511,8 +1511,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="getHiddenFunctionality()">
 <h3>getHiddenFunctionality</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@Valid
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../../persistence/json/HiddenLayerFunctionalityEnum.html" title="enum class in org.tailormap.api.persistence.json">HiddenLayerFunctionalityEnum</a>&gt;</span>&nbsp;<span class="element-name">getHiddenFunctionality</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../../persistence/json/HiddenLayerFunctionalityEnum.html" title="enum class in org.tailormap.api.persistence.json">HiddenLayerFunctionalityEnum</a>&gt;</span>&nbsp;<span class="element-name">getHiddenFunctionality</span>()</div>
 <div class="block">Functionality that should be hidden for a layer in the UI. The functionality is still available in the backend, so not a \"security\" setting.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -1549,8 +1548,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="getStyles()">
 <h3>getStyles</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations">@Valid
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../../persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;</span>&nbsp;<span class="element-name">getStyles</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="../../persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a>&gt;</span>&nbsp;<span class="element-name">getStyles</span>()</div>
 <div class="block">Configured WMS styles for this layer, if any.</div>
 <dl class="notes">
 <dt>Returns:</dt>
