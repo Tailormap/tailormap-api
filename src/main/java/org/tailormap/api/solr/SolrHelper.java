@@ -296,8 +296,6 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     // collect features to index
     SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
-    String sourceCrs = GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem());
-    searchIndex = searchIndexRepository.save(searchIndex.setSourceCrs(sourceCrs));
 
     Query q = new Query(fs.getName().toString());
     // filter out any hidden properties (there should be none though)
@@ -326,6 +324,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     int indexCounter = 0;
     int indexSkippedCounter = 0;
     try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
+      searchIndex.setSourceCrs(GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem()));
       while (iterator.hasNext()) {
         indexCounter++;
         SimpleFeature feature = iterator.next();
