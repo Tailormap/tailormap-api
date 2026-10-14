@@ -2112,7 +2112,7 @@ default PasswordEncoder (bcrypt).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/UploadRepository.html#findFirstWithContentByCategoryOrderByLastModifiedDesc(org.tailormap.api.persistence.UploadCategory)" class="member-name-link">findFirstWithContentByCategoryOrderByLastModifiedDesc(UploadCategory)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/solr/SolrHelper.html#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" class="member-name-link">findInIndex(SearchIndex, String, String, String, Double, int, int)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
+<dt><a href="org/tailormap/api/solr/SolrHelper.html#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int,java.lang.String)" class="member-name-link">findInIndex(SearchIndex, String, String, String, Double, int, int, String)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
 <dd>
 <div class="block">Search in the index for a layer.</div>
 </dd>
@@ -5049,6 +5049,8 @@ minimum: 1</div>
 <dd>
 <div class="block">source of the filter group</div>
 </dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#getSourceCrs()" class="member-name-link">getSourceCrs()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Drawing.html#getSrid()" class="member-name-link">getSrid()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></dt>
 <dd>
 <div class="block">The EPSG SRID code of the drawing's features, defaults to the SRID of the application.</div>
@@ -5397,6 +5399,8 @@ minimum: 1</div>
 <dd>
 <div class="block">the total number of available search documents, could be an estimated value.</div>
 </dd>
+<dt><a href="org/tailormap/api/geotools/TransformationUtil.html#getTransformation(java.lang.String,java.lang.String)" class="member-name-link">getTransformation(String, String)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/TransformationUtil.html" title="class in org.tailormap.api.geotools">TransformationUtil</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/TransformationUtil.html#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToApplication(Application, SimpleFeatureSource)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/TransformationUtil.html" title="class in org.tailormap.api.geotools">TransformationUtil</a></dt>
 <dd>
 <div class="block">Determine whether we need to transform geometries to the application CRS.</div>
@@ -9032,6 +9036,8 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#setSource(java.net.URI)" class="member-name-link">setSource(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceInfo.html#setSource(java.net.URI)" class="member-name-link">setSource(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceInfo.html" title="class in org.tailormap.api.persistence.json">TMServiceInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#setSourceCrs(java.lang.String)" class="member-name-link">setSourceCrs(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Drawing.html#setSrid(java.lang.Integer)" class="member-name-link">setSrid(Integer)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></dt>
 <dd>&nbsp;</dd>

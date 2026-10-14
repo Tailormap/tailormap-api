@@ -57,6 +57,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#getTransformation(java.lang.String,java.lang.String)" tabindex="0">getTransformation(String, String)</a></li>
 <li><a href="#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" tabindex="0">getTransformationToApplication(Application, SimpleFeatureSource)</a></li>
 <li><a href="#getTransformationToDataSource(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" tabindex="0">getTransformationToDataSource(Application, SimpleFeatureSource)</a></li>
 <li><a href="#transformFilterGeometries(org.geotools.api.filter.Filter,org.geotools.api.referencing.operation.MathTransform)" tabindex="0">transformFilterGeometries(Filter, MathTransform)</a></li>
@@ -93,21 +94,25 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @Nullable org.geotools.api.referencing.operation.MathTransform</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToApplication</a><wbr>(@NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Determine whether we need to transform geometries to the application CRS.</div>
-</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTransformation(java.lang.String,java.lang.String)" class="member-name-link">getTransformation</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sourceCrs,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;targetCrs)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @Nullable org.geotools.api.referencing.operation.MathTransform</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTransformationToDataSource(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToDataSource</a><wbr>(@NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToApplication</a><wbr>(@NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Determine whether we need to transform geometries to the application CRS.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @Nullable org.geotools.api.referencing.operation.MathTransform</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTransformationToDataSource(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">getTransformationToDataSource</a><wbr>(@NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Determine whether we need to transform geometry to data source crs.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.geotools.api.filter.Filter</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#transformFilterGeometries(org.geotools.api.filter.Filter,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformFilterGeometries</a><wbr>(@NonNull org.geotools.api.filter.Filter&nbsp;filter,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.geotools.api.filter.Filter</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#transformFilterGeometries(org.geotools.api.filter.Filter,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">transformFilterGeometries</a><wbr>(@NonNull org.geotools.api.filter.Filter&nbsp;filter,
  @Nullable org.geotools.api.referencing.operation.MathTransform&nbsp;transform)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Transforms the geometries in the given (intersects) spatial filter using the specified transformation.</div>
 </div>
 </div>
@@ -127,6 +132,20 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="getTransformation(java.lang.String,java.lang.String)">
+<h3>getTransformation</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@Nullable org.geotools.api.referencing.operation.MathTransform</span>&nbsp;<span class="element-name">getTransformation</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sourceCrs,
+ @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;targetCrs)</span>
+                                                                                        throws <span class="exceptions">org.geotools.api.referencing.FactoryException</span></div>
+<dl class="notes">
+<dt>Throws:</dt>
+<dd><code>org.geotools.api.referencing.FactoryException</code></dd>
+</dl>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="getTransformationToApplication(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)">
 <h3>getTransformationToApplication</h3>

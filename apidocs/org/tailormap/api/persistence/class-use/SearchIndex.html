@@ -99,11 +99,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setSearchFieldsUsed(java.util.List)" class="member-name-link">setSearchFieldsUsed</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;searchFieldsUsed)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setStatus(org.tailormap.api.persistence.SearchIndex.Status)" class="member-name-link">setStatus</a><wbr>(<a href="../SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a>&nbsp;status)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setSourceCrs(java.lang.String)" class="member-name-link">setSourceCrs</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sourceCrs)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setSummary(org.tailormap.api.admin.model.SearchIndexSummary)" class="member-name-link">setSummary</a><wbr>(<a href="../../admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a>&nbsp;summary)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setStatus(org.tailormap.api.persistence.SearchIndex.Status)" class="member-name-link">setStatus</a><wbr>(<a href="../SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a>&nbsp;status)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SearchIndex.</span><code><a href="../SearchIndex.html#setSummary(org.tailormap.api.admin.model.SearchIndexSummary)" class="member-name-link">setSummary</a><wbr>(<a href="../../admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a>&nbsp;summary)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -211,13 +214,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Add or update a feature type index for a layer.</div>
 </div>
 <div class="col-first even-row-color"><code><a href="../../viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SolrHelper.</span><code><a href="../../solr/SolrHelper.html#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+<div class="col-second even-row-color"><span class="type-name-label">SolrHelper.</span><code><a href="../../solr/SolrHelper.html#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int,java.lang.String)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrQuery,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrFilterQuery,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrPoint,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;solrDistance,
  int&nbsp;start,
- int&nbsp;numResultsToReturn)</code></div>
+ int&nbsp;numResultsToReturn,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;applicationCrs)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Search in the index for a layer.</div>
 </div>

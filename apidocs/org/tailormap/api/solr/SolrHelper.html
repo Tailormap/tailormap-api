@@ -70,7 +70,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)" tabindex="0">addFeatureTypeIndex(SearchIndex, TMFeatureType, FeatureSourceFactoryHelper, SearchIndexRepository)</a></li>
 <li><a href="#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,java.util.function.Consumer,java.util.UUID)" tabindex="0">addFeatureTypeIndex(SearchIndex, TMFeatureType, FeatureSourceFactoryHelper, SearchIndexRepository, Consumer, UUID)</a></li>
 <li><a href="#clearIndexForLayer(java.lang.Long)" tabindex="0">clearIndexForLayer(Long)</a></li>
-<li><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" tabindex="0">findInIndex(SearchIndex, String, String, String, Double, int, int)</a></li>
+<li><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int,java.lang.String)" tabindex="0">findInIndex(SearchIndex, String, String, String, Double, int, int, String)</a></li>
 <li><a href="#close()" tabindex="0">close()</a></li>
 </ol>
 </li>
@@ -165,13 +165,14 @@ well as automatically closing the client when used in a try-with-resources.</div
 <div class="block">Close the wrapped Solr client.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int,java.lang.String)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrQuery,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrFilterQuery,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrPoint,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;solrDistance,
  int&nbsp;start,
- int&nbsp;numResultsToReturn)</code></div>
+ int&nbsp;numResultsToReturn,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;applicationCrs)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Search in the index for a layer.</div>
 </div>
@@ -362,7 +363,7 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)">
+<section class="detail" id="findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int,java.lang.String)">
 <h3>findInIndex</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></span>&nbsp;<span class="element-name">findInIndex</span><wbr><span class="parameters">(@NotNull
@@ -372,7 +373,8 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrPoint,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;solrDistance,
  int&nbsp;start,
- int&nbsp;numResultsToReturn)</span>
+ int&nbsp;numResultsToReturn,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;applicationCrs)</span>
                            throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
 org.apache.solr.client.solrj.SolrServerException,
 org.apache.solr.common.SolrException</span></div>
