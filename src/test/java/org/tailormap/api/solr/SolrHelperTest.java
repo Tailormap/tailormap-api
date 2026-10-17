@@ -7,8 +7,10 @@ package org.tailormap.api.solr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +20,7 @@ import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrException;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.mockito.ArgumentCaptor;
@@ -47,8 +50,11 @@ class SolrHelperTest {
     when(queryResponse.getResults()).thenReturn(documents);
     when(solrClient.query(any(SolrQuery.class))).thenReturn(queryResponse);
 
-    SearchIndex searchIndex =
-        new SearchIndex().setId(7L).setName("Reddingposten").setSourceCrs("EPSG:4326");
+    SearchIndex searchIndex = new SearchIndex()
+        .setId(7L)
+        .setName("Reddingposten")
+        .setSourceCrs("EPSG:4326")
+        .setSpatialIndexVersion(2);
 
     Geometry sourcePoint = GeometryProcessor.wktToGeometry(sourceGeometryWkt);
     assertNotNull(sourcePoint);
@@ -129,8 +135,11 @@ class SolrHelperTest {
     when(queryResponse.getResults()).thenReturn(documents);
     when(solrClient.query(any(SolrQuery.class))).thenReturn(queryResponse);
 
-    SearchIndex searchIndex =
-        new SearchIndex().setId(7L).setName("Reddingposten").setSourceCrs("EPSG:4326");
+    SearchIndex searchIndex = new SearchIndex()
+        .setId(7L)
+        .setName("Reddingposten")
+        .setSourceCrs("EPSG:4326")
+        .setSpatialIndexVersion(2);
 
     String point = "3.7651071548461914 51.742008209228516";
     double distance = 0.005;
@@ -153,53 +162,177 @@ class SolrHelperTest {
   }
 
   @Test
-  void find_in_index_without_source_crs_preserves_existing_behavior() throws Exception {
+  void legacy_index_rejects_geographic_distance_search() throws Exception {
+    SolrClient solrClient = mock(SolrClient.class);
+    SearchIndex searchIndex = new SearchIndex().setId(7L).setName("Existing search index");
+
+    try (SolrHelper solrHelper = new SolrHelper(solrClient)) {
+      SolrException error = assertThrows(
+          SolrException.class,
+          () -> solrHelper.findInIndex(
+              searchIndex, "*", null, "419121.8 6750463.6", 0.005, 0, 10, "EPSG:3857"));
+
+      assertEquals(400, error.code());
+    }
+
+    verify(solrClient, never()).query(any(SolrQuery.class));
+  }
+
+  @Test
+  void legacy_index_allows_non_spatial_search() throws Exception {
     SolrClient solrClient = mock(SolrClient.class);
     QueryResponse queryResponse = mock(QueryResponse.class);
-
-    String geometryWkt = "POINT (3.7651071548461914 51.742008209228516)";
-
-    SolrDocument document = new SolrDocument();
-    document.setField("id", "lgstations.108");
-    document.setField("displayFields", List.of("Jan van Renesseweg"));
-    document.setField("geometry", geometryWkt);
-
     SolrDocumentList documents = new SolrDocumentList();
-    documents.add(document);
-    documents.setNumFound(1);
+    documents.setNumFound(0);
     documents.setStart(0);
 
     when(queryResponse.getResults()).thenReturn(documents);
     when(solrClient.query(any(SolrQuery.class))).thenReturn(queryResponse);
 
-    /*
-     * Existing search_index records will initially have a null sourceCrs after
-     * the database migration, until the index has been rebuilt.
-     */
     SearchIndex searchIndex = new SearchIndex().setId(7L).setName("Existing search index");
 
-    String point = "419121.8 6750463.6";
-    double distance = 0.005;
-
-    SearchResponse response;
     try (SolrHelper solrHelper = new SolrHelper(solrClient)) {
-      response = solrHelper.findInIndex(searchIndex, "*", null, point, distance, 0, 10, "EPSG:3857");
+      SearchResponse response =
+          solrHelper.findInIndex(searchIndex, "reddingspost", null, null, null, 0, 10, "EPSG:3857");
+
+      assertEquals(0, response.getDocuments().size());
     }
 
-    ArgumentCaptor<SolrQuery> queryCaptor = ArgumentCaptor.forClass(SolrQuery.class);
-    verify(solrClient).query(queryCaptor.capture());
+    verify(solrClient).query(any(SolrQuery.class));
+  }
 
-    SolrQuery sentQuery = queryCaptor.getValue();
+  @Test
+  void geographic_filter_uses_wgs84_field() throws Exception {
+    for (String filter : List.of(
+        "{!geofilt sfield=geometry}", "{!bbox sfield=geometry}", "{!geofilt}", "  {!bbox sfield=geometry}")) {
 
-    /*
-     * Without a stored source CRS Tailormap cannot safely transform either the
-     * spatial query point or the returned geometry, so the previous behaviour
-     * is retained.
-     */
-    assertEquals(point, sentQuery.get("pt"));
-    assertEquals("0.005", sentQuery.get("d"));
+      SolrClient solrClient = mock(SolrClient.class);
+      QueryResponse queryResponse = mock(QueryResponse.class);
+      SolrDocumentList documents = new SolrDocumentList();
+      documents.setNumFound(0);
+      when(queryResponse.getResults()).thenReturn(documents);
+      when(solrClient.query(any(SolrQuery.class))).thenReturn(queryResponse);
 
-    assertEquals(1, response.getDocuments().size());
-    assertEquals(geometryWkt, response.getDocuments().getFirst().getGeometry());
+      SearchIndex index = new SearchIndex()
+          .setId(7L)
+          .setName("Geographic test")
+          .setSourceCrs("EPSG:4326")
+          .setSpatialIndexVersion(2);
+
+      try (SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        solrHelper.findInIndex(index, "*", filter, "3.765107 51.742008", 0.005, 0, 10, "EPSG:4326");
+      }
+
+      ArgumentCaptor<SolrQuery> captor = ArgumentCaptor.forClass(SolrQuery.class);
+      verify(solrClient).query(captor.capture());
+
+      String[] filters = captor.getValue().getFilterQueries();
+      assertNotNull(filters);
+      assertEquals(2, filters.length);
+      assertEquals(true, filters[1].contains("sfield=geometryGeographic"));
+      assertEquals(false, filters[1].contains("sfield=geometry}"));
+      assertEquals("0.005", captor.getValue().get("d"));
+    }
+  }
+
+  @Test
+  void legacy_index_rejects_spatial_filter_with_leading_spaces() throws Exception {
+    SolrClient solrClient = mock(SolrClient.class);
+    SearchIndex index = new SearchIndex().setId(7L).setName("Legacy index").setSpatialIndexVersion(1);
+
+    try (SolrHelper solrHelper = new SolrHelper(solrClient)) {
+      SolrException error = assertThrows(
+          SolrException.class,
+          () -> solrHelper.findInIndex(
+              index, "*", "  {!bbox sfield=geometry}", null, null, 0, 10, "EPSG:4326"));
+      assertEquals(400, error.code());
+    }
+
+    verify(solrClient, never()).query(any(SolrQuery.class));
+  }
+
+  @Test
+  void geographic_filter_rejects_unknown_spatial_field() throws Exception {
+    SolrClient solrClient = mock(SolrClient.class);
+    SearchIndex index =
+        new SearchIndex().setId(7L).setName("Geographic test").setSpatialIndexVersion(2);
+
+    try (SolrHelper solrHelper = new SolrHelper(solrClient)) {
+      SolrException error = assertThrows(
+          SolrException.class,
+          () -> solrHelper.findInIndex(
+              index,
+              "*",
+              "{!geofilt sfield=otherGeometry}",
+              "3.765107 51.742008",
+              0.005,
+              0,
+              10,
+              "EPSG:4326"));
+      assertEquals(400, error.code());
+    }
+
+    verify(solrClient, never()).query(any(SolrQuery.class));
+  }
+
+  @Test
+  void find_in_index_transforms_rd_new_search_point_to_wgs84() throws Exception {
+    SolrClient solrClient = mock(SolrClient.class);
+    QueryResponse response = mock(QueryResponse.class);
+
+    SolrDocumentList documents = new SolrDocumentList();
+    documents.setNumFound(0);
+    when(response.getResults()).thenReturn(documents);
+    when(solrClient.query(any(SolrQuery.class))).thenReturn(response);
+
+    SearchIndex index = new SearchIndex()
+        .setId(7L)
+        .setName("RD New index")
+        .setSourceCrs("EPSG:28992")
+        .setSpatialIndexVersion(2);
+
+    try (SolrHelper helper = new SolrHelper(solrClient)) {
+      helper.findInIndex(index, "*", null, "155000 463000", 0.005, 0, 10, "EPSG:28992");
+    }
+
+    ArgumentCaptor<SolrQuery> captor = ArgumentCaptor.forClass(SolrQuery.class);
+    verify(solrClient).query(captor.capture());
+
+    SolrQuery query = captor.getValue();
+
+    Geometry point = GeometryProcessor.wktToGeometry("POINT (" + query.get("pt") + ")");
+
+    assertNotNull(point);
+    assertEquals(5.3872035084, point.getCoordinate().x, 0.00001);
+    assertEquals(52.1551723012, point.getCoordinate().y, 0.00001);
+
+    assertEquals("0.005", query.get("d"));
+    assertEquals(true, List.of(query.getFilterQueries()).contains("{!geofilt sfield=geometryGeographic}"));
+  }
+
+  @Test
+  void geographic_filter_rejects_local_point_and_distance() throws Exception {
+    SolrClient solrClient = mock(SolrClient.class);
+
+    SearchIndex index =
+        new SearchIndex().setId(7L).setName("Geographic test").setSpatialIndexVersion(2);
+
+    try (SolrHelper helper = new SolrHelper(solrClient)) {
+      SolrException error = assertThrows(
+          SolrException.class,
+          () -> helper.findInIndex(
+              index,
+              "*",
+              "{!geofilt sfield=geometry pt=3.765,51.742 d=0.005}",
+              "3.765 51.742",
+              0.005,
+              0,
+              10,
+              "EPSG:4326"));
+
+      assertEquals(400, error.code());
+    }
+
+    verify(solrClient, never()).query(any(SolrQuery.class));
   }
 }

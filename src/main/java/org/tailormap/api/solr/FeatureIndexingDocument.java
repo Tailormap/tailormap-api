@@ -28,6 +28,9 @@ public class FeatureIndexingDocument implements Constants {
   @Field(value = INDEX_GEOM_FIELD)
   private String geometry;
 
+  @Field(value = INDEX_GEOGRAPHIC_GEOM_FIELD)
+  private String geometryGeographic;
+
   public FeatureIndexingDocument(String fid, Long searchLayerId) {
     this.fid = fid;
     this.searchLayer = searchLayerId;
@@ -39,6 +42,14 @@ public class FeatureIndexingDocument implements Constants {
 
   public String getGeometry() {
     return geometry;
+  }
+
+  public void setGeometryGeographic(String wktGeometry) {
+    this.geometryGeographic = wktGeometry;
+  }
+
+  public String getGeometryGeographic() {
+    return geometryGeographic;
   }
 
   public void setSearchFields(String[] searchFields) {
