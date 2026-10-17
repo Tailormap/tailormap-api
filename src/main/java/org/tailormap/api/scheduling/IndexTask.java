@@ -18,7 +18,6 @@ import java.time.Instant;
 import java.util.UUID;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrException;
 import org.jspecify.annotations.NonNull;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -124,12 +123,13 @@ public class IndexTask extends QuartzJobBean implements Task {
       persistedJobData.put(EXECUTION_FINISHED_KEY, Instant.now());
       persistedJobData.put(LAST_RESULT_KEY, "Index task executed successfully");
       context.setResult("Index task executed successfully");
-    } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
+    } catch (IOException | SolrServerException | RuntimeException e) {
       logger.error("Error indexing", e);
       persistedJobData.put(EXECUTION_FINISHED_KEY, null);
       persistedJobData.put(
           LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
       searchIndexRepository.save(searchIndex
+          .setSpatialIndexVersion(1)
           .setStatus(SearchIndex.Status.ERROR)
           .setSummary(new SearchIndexSummary().errorMessage(e.getMessage())));
       context.setResult("Error indexing. Check logs for details.");

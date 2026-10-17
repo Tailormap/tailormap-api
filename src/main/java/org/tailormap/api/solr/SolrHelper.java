@@ -41,8 +41,10 @@ import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.JTS;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
@@ -74,6 +76,8 @@ public class SolrHelper implements AutoCloseable, Constants {
   /** the Solr field type name geometry fields: {@value #SOLR_SPATIAL_FIELDNAME}. */
   private static final String SOLR_SPATIAL_FIELDNAME = "tm_geometry_rpt";
 
+  private static final String SOLR_GEOGRAPHIC_FIELDNAME = "tm_geometry_geographic";
+
   private final SolrClient solrClient;
 
   /** the Solr search field definition requests for Tailormap. */
@@ -90,6 +94,11 @@ public class SolrHelper implements AutoCloseable, Constants {
       INDEX_GEOM_FIELD,
           new SchemaRequest.AddField(
               Map.of("name", INDEX_GEOM_FIELD, "type", SOLR_SPATIAL_FIELDNAME, "stored", true)),
+      INDEX_GEOGRAPHIC_GEOM_FIELD,
+          new SchemaRequest.AddField(Map.of(
+              "name", INDEX_GEOGRAPHIC_GEOM_FIELD,
+              "type", SOLR_GEOGRAPHIC_FIELDNAME,
+              "stored", true)),
       INDEX_SEARCH_FIELD,
           new SchemaRequest.AddField(Map.of(
               "name", INDEX_SEARCH_FIELD,
@@ -289,136 +298,171 @@ public class SolrHelper implements AutoCloseable, Constants {
       propertyNames.addAll(displayFields);
     }
 
-    clearIndexForLayer(searchIndex.getId());
-
     logger.info("Indexing started for index: {}, feature type: {}", searchIndex.getName(), tmFeatureType.getName());
     searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
     // collect features to index
     SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
 
-    Query q = new Query(fs.getName().toString());
-    // filter out any hidden properties (there should be none though)
-    tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
-    if (propertyNames.isEmpty()) {
-      logger.warn(
-          "No valid properties to index for feature type: {}, skipping index {}.",
-          tmFeatureType.getName(),
-          searchIndex.getName());
-      return searchIndexRepository.save(searchIndex
-          .setStatus(SearchIndex.Status.ERROR)
-          .setSummary(
-              summary.errorMessage("No valid properties to index. Check if any properties are hidden.")));
-    }
-    q.setPropertyNames(List.copyOf(propertyNames));
-    q.setStartIndex(0);
-    // TODO: make maxFeatures configurable?
-    // q.setMaxFeatures(Integer.MAX_VALUE);
-    logger.trace("Indexing query: {}", q);
-    SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
-    final int total = simpleFeatureCollection.size();
-    List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
-    // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
-    //   issue for now but could be if the feature source is very, very large or slow
-    UpdateResponse updateResponse;
-    int indexCounter = 0;
-    int indexSkippedCounter = 0;
-    try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
-      searchIndex.setSourceCrs(GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem()));
-      while (iterator.hasNext()) {
-        indexCounter++;
-        SimpleFeature feature = iterator.next();
-        // note that this will create a unique document
-        FeatureIndexingDocument doc = new FeatureIndexingDocument(feature.getID(), searchIndex.getId());
-        List<String> searchValues = new ArrayList<>();
-        List<String> displayValues = new ArrayList<>();
-        propertyNames.forEach(propertyName -> {
-          Object value = feature.getAttribute(propertyName);
-          if (value != null) {
-            if (value instanceof Geometry
-                && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
-              // We could use GeoJSON, but WKT is more compact and that would also incur a
-              // change to the API
-              doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
-            } else {
-              if (searchFields.contains(propertyName)) {
-                searchValues.add(value.toString());
-              }
-              if (displayFields.contains(propertyName)) {
-                displayValues.add(value.toString());
+    try {
+      Query q = new Query(fs.getName().toString());
+      // filter out any hidden properties (there should be none though)
+      tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
+      if (propertyNames.isEmpty()) {
+        logger.warn(
+            "No valid properties to index for feature type: {}, skipping index {}.",
+            tmFeatureType.getName(),
+            searchIndex.getName());
+        return searchIndexRepository.save(searchIndex
+            .setStatus(SearchIndex.Status.ERROR)
+            .setSummary(summary.errorMessage(
+                "No valid properties to index. Check if any properties are hidden.")));
+      }
+      q.setPropertyNames(List.copyOf(propertyNames));
+      q.setStartIndex(0);
+      // TODO: make maxFeatures configurable?
+      // q.setMaxFeatures(Integer.MAX_VALUE);
+      logger.trace("Indexing query: {}", q);
+      SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
+      final int total = simpleFeatureCollection.size();
+      List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
+      // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
+      //   issue for now but could be if the feature source is very, very large or slow
+      UpdateResponse updateResponse;
+      int indexCounter = 0;
+      int indexSkippedCounter = 0;
+      try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
+        String sourceCrs = GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem());
+
+        if (sourceCrs == null || sourceCrs.isBlank()) {
+          throw new IOException("Cannot create geographic search index without source CRS");
+        }
+
+        final MathTransform toGeographic;
+        try {
+          toGeographic = TransformationUtil.getTransformation(sourceCrs, "EPSG:4326");
+        } catch (FactoryException e) {
+          throw new IOException("Cannot transform search index from " + sourceCrs + " to EPSG:4326", e);
+        }
+
+        searchIndex.setSourceCrs(sourceCrs);
+
+        // Invalidate geographic distance search before replacing Solr documents.
+        searchIndex = searchIndexRepository.save(searchIndex.setSpatialIndexVersion(1));
+
+        clearIndexForLayer(searchIndex.getId());
+
+        while (iterator.hasNext()) {
+          indexCounter++;
+          SimpleFeature feature = iterator.next();
+          // note that this will create a unique document
+          FeatureIndexingDocument doc = new FeatureIndexingDocument(feature.getID(), searchIndex.getId());
+          List<String> searchValues = new ArrayList<>();
+          List<String> displayValues = new ArrayList<>();
+          propertyNames.forEach(propertyName -> {
+            Object value = feature.getAttribute(propertyName);
+            if (value != null) {
+              if (value instanceof Geometry geometry
+                  && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
+                // We could use GeoJSON, but WKT is more compact and that would also incur a
+                // change to the API
+                doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
+                try {
+                  Geometry geographicGeometry =
+                      toGeographic == null ? geometry : JTS.transform(geometry, toGeographic);
+                  doc.setGeometryGeographic(
+                      GeometryProcessor.processGeometry(geographicGeometry, true, true, null));
+                } catch (TransformException e) {
+                  throw new IllegalStateException(
+                      "Cannot transform indexed geometry to EPSG:4326", e);
+                }
+              } else {
+                if (searchFields.contains(propertyName)) {
+                  searchValues.add(value.toString());
+                }
+                if (displayFields.contains(propertyName)) {
+                  displayValues.add(value.toString());
+                }
               }
             }
+          });
+          if (searchValues.isEmpty() || displayValues.isEmpty()) {
+            // this is a record/document that can either not be found or not be displayed
+            logger.trace(
+                "No search or display values found for feature: {} in feature type: {}, skipped for indexing",
+                feature.getID(),
+                tmFeatureType.getName());
+            indexSkippedCounter++;
+          } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
+            logger.trace(
+                "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
+                feature.getID(),
+                tmFeatureType.getName());
+            indexSkippedCounter++;
+          } else {
+            doc.setSearchFields(searchValues.toArray(new String[0]));
+            doc.setDisplayFields(displayValues.toArray(new String[0]));
+            docsBatch.add(doc);
           }
-        });
-        if (searchValues.isEmpty() || displayValues.isEmpty()) {
-          // this is a record/document that can either not be found or not be displayed
-          logger.trace(
-              "No search or display values found for feature: {} in feature type: {}, skipped for indexing",
-              feature.getID(),
-              tmFeatureType.getName());
-          indexSkippedCounter++;
-        } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
-          logger.trace(
-              "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
-              feature.getID(),
-              tmFeatureType.getName());
-          indexSkippedCounter++;
-        } else {
-          doc.setSearchFields(searchValues.toArray(new String[0]));
-          doc.setDisplayFields(displayValues.toArray(new String[0]));
-          docsBatch.add(doc);
-        }
 
-        if (indexCounter % solrBatchSize == 0) {
-          updateResponse = solrClient.addBeans(docsBatch, solrQueryTimeout);
-          logger.info(
-              "Added {} documents of {} to index, result status: {}",
-              indexCounter - indexSkippedCounter,
-              total,
-              updateResponse.getStatus());
-          progressListener.accept(
-              taskProgressEvent.total(total).progress((indexCounter - indexSkippedCounter)));
-          docsBatch.clear();
+          if (indexCounter % solrBatchSize == 0) {
+            updateResponse = solrClient.addBeans(docsBatch, solrQueryTimeout);
+            logger.info(
+                "Added {} documents of {} to index, result status: {}",
+                indexCounter - indexSkippedCounter,
+                total,
+                updateResponse.getStatus());
+            progressListener.accept(
+                taskProgressEvent.total(total).progress((indexCounter - indexSkippedCounter)));
+            docsBatch.clear();
+          }
         }
       }
+
+      if (!docsBatch.isEmpty()) {
+        solrClient.addBeans(docsBatch, solrQueryTimeout);
+        logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
+        progressListener.accept(taskProgressEvent
+            .progress((indexCounter - indexSkippedCounter))
+            .total(total));
+      }
+      final Instant finishedAt = Instant.now();
+      final OffsetDateTime finishedAtOffset =
+          finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt));
+      Duration processTime = Duration.between(startedAt, finishedAt).abs();
+      logger.info(
+          "Indexing finished for index: {}, feature type: {} at {} in {}",
+          searchIndex.getName(),
+          tmFeatureType.getName(),
+          finishedAtOffset,
+          processTime);
+      updateResponse = this.solrClient.commit();
+      if (updateResponse.getStatus() != 0) {
+        throw new IOException("Solr commit failed with status " + updateResponse.getStatus());
+      }
+      logger.trace("Update response commit status: {}", updateResponse.getStatus());
+
+      if (indexSkippedCounter > 0) {
+        logger.warn(
+            "{} features were skipped because no search or display values were found.",
+            indexSkippedCounter);
+      }
+
+      return searchIndexRepository.save(searchIndex
+          .setSpatialIndexVersion(2)
+          .setLastIndexed(finishedAtOffset)
+          .setStatus(SearchIndex.Status.INDEXED)
+          .setSummary(summary.total(total)
+              .skippedCounter(indexSkippedCounter)
+              .duration(BigDecimal.valueOf(processTime.getSeconds())
+                  .add(BigDecimal.valueOf(processTime.getNano(), 9))
+                  .doubleValue())
+              .errorMessage(null)));
     } finally {
-      if (fs.getDataStore() != null) fs.getDataStore().dispose();
+      if (fs.getDataStore() != null) {
+        fs.getDataStore().dispose();
+      }
     }
-
-    if (!docsBatch.isEmpty()) {
-      solrClient.addBeans(docsBatch, solrQueryTimeout);
-      logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
-      progressListener.accept(taskProgressEvent
-          .progress((indexCounter - indexSkippedCounter))
-          .total(total));
-    }
-    final Instant finishedAt = Instant.now();
-    final OffsetDateTime finishedAtOffset =
-        finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt));
-    Duration processTime = Duration.between(startedAt, finishedAt).abs();
-    logger.info(
-        "Indexing finished for index: {}, feature type: {} at {} in {}",
-        searchIndex.getName(),
-        tmFeatureType.getName(),
-        finishedAtOffset,
-        processTime);
-    updateResponse = this.solrClient.commit();
-    logger.trace("Update response commit status: {}", updateResponse.getStatus());
-
-    if (indexSkippedCounter > 0) {
-      logger.warn(
-          "{} features were skipped because no search or display values were found.", indexSkippedCounter);
-    }
-
-    return searchIndexRepository.save(searchIndex
-        .setLastIndexed(finishedAtOffset)
-        .setStatus(SearchIndex.Status.INDEXED)
-        .setSummary(summary.total(total)
-            .skippedCounter(indexSkippedCounter)
-            .duration(BigDecimal.valueOf(processTime.getSeconds())
-                .add(BigDecimal.valueOf(processTime.getNano(), 9))
-                .doubleValue())
-            .errorMessage(null)));
   }
 
   /**
@@ -435,12 +479,56 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (response.getResults().getNumFound() > 0) {
       logger.info("Clearing index for searchLayer {}", searchLayerId);
       UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + ":" + searchLayerId);
-      logger.trace("Delete response status: {}", updateResponse.getStatus());
+      if (updateResponse.getStatus() != 0) {
+        throw new IOException("Solr index deletion failed with status " + updateResponse.getStatus());
+      }
+
       updateResponse = solrClient.commit();
-      logger.trace("Commit response status: {}", updateResponse.getStatus());
+      if (updateResponse.getStatus() != 0) {
+        throw new IOException("Solr index deletion commit failed with status " + updateResponse.getStatus());
+      }
     } else {
       logger.info("No index to clear for layer {}", searchLayerId);
     }
+  }
+
+  private static String normalizeGeographicFilter(String filter) {
+    int closing = filter.indexOf('}');
+    if (closing < 0) {
+      throw new SolrException(
+          SolrException.ErrorCode.BAD_REQUEST, "Invalid spatial filter: missing closing brace");
+    }
+
+    String localParams = filter.substring(0, closing + 1);
+    String remainder = filter.substring(closing + 1);
+
+    // Spatial coordinates must come from the API parameters so that
+    // the search point is transformed from the application CRS.
+    if (java.util.regex.Pattern.compile("\\b(?:pt|d)\\s*=")
+        .matcher(localParams)
+        .find()) {
+      throw new SolrException(
+          SolrException.ErrorCode.BAD_REQUEST,
+          "Spatial filter must supply pt and d as separate API parameters");
+    }
+
+    java.util.regex.Matcher matcher =
+        java.util.regex.Pattern.compile("\\bsfield\\s*=\\s*([^\\s}]+)").matcher(localParams);
+
+    if (matcher.find()) {
+      String field = matcher.group(1);
+      if (!INDEX_GEOM_FIELD.equals(field) && !INDEX_GEOGRAPHIC_GEOM_FIELD.equals(field)) {
+        throw new SolrException(
+            SolrException.ErrorCode.BAD_REQUEST, "Unsupported spatial search field: " + field);
+      }
+
+      localParams = matcher.replaceFirst("sfield=" + INDEX_GEOGRAPHIC_GEOM_FIELD);
+    } else {
+      localParams =
+          localParams.substring(0, localParams.length() - 1) + " sfield=" + INDEX_GEOGRAPHIC_GEOM_FIELD + "}";
+    }
+
+    return localParams + remainder;
   }
 
   /**
@@ -467,6 +555,17 @@ public class SolrHelper implements AutoCloseable, Constants {
       String applicationCrs)
       throws IOException, SolrServerException, SolrException {
 
+    boolean spatialQuery = (solrPoint != null && solrDistance != null)
+        || (solrFilterQuery != null
+            && (solrFilterQuery.stripLeading().startsWith("{!geofilt")
+                || solrFilterQuery.stripLeading().startsWith("{!bbox")));
+
+    if (spatialQuery && !Integer.valueOf(2).equals(searchIndex.getSpatialIndexVersion())) {
+      throw new SolrException(
+          SolrException.ErrorCode.BAD_REQUEST,
+          "Search index must be rebuilt before geographic distance search is available");
+    }
+
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
     }
@@ -474,12 +573,10 @@ public class SolrHelper implements AutoCloseable, Constants {
     logger.info("Query index for '{}' in {} (id {})", solrQuery, searchIndex.getName(), searchIndex.getId());
 
     MathTransform toApplication = null;
-    MathTransform toSource = null;
 
     if (searchIndex.getSourceCrs() != null && applicationCrs != null) {
       try {
         toApplication = TransformationUtil.getTransformation(searchIndex.getSourceCrs(), applicationCrs);
-        toSource = TransformationUtil.getTransformation(applicationCrs, searchIndex.getSourceCrs());
       } catch (FactoryException e) {
         logger.error(
             "Could not create transformations between search index CRS {} and application CRS {}",
@@ -506,27 +603,53 @@ public class SolrHelper implements AutoCloseable, Constants {
         .setRows(numResultsToReturn)
         .setStart(start);
 
-    if (null != solrFilterQuery && !solrFilterQuery.isBlank()) {
-      query.addFilterQuery(solrFilterQuery);
-    }
-    if (null != solrPoint && null != solrDistance) {
-      if (null == solrFilterQuery
-          || !(solrFilterQuery.startsWith("{!geofilt") || solrFilterQuery.startsWith("{!bbox"))) {
-        query.addFilterQuery("{!geofilt sfield=" + INDEX_GEOM_FIELD + "}");
-      }
-
-      String transformedSolrPoint = solrPoint;
-
-      if (toSource != null) {
-        Geometry pointGeometry = GeometryProcessor.wktToGeometry("POINT (" + solrPoint + ")");
-        if (pointGeometry != null) {
-          Geometry transformedPoint = GeometryProcessor.transformGeometry(pointGeometry, toSource);
-          transformedSolrPoint =
-              transformedPoint.getCoordinate().x + " " + transformedPoint.getCoordinate().y;
+    String spatialFilter = null;
+    if (solrFilterQuery != null && !solrFilterQuery.isBlank()) {
+      String trimmedFilter = solrFilterQuery.stripLeading();
+      if (trimmedFilter.startsWith("{!geofilt") || trimmedFilter.startsWith("{!bbox")) {
+        spatialFilter = normalizeGeographicFilter(trimmedFilter);
+        if (solrPoint == null || solrDistance == null) {
+          throw new SolrException(
+              SolrException.ErrorCode.BAD_REQUEST, "Spatial filter requires a point and distance");
         }
+        query.addFilterQuery(spatialFilter);
+      } else {
+        query.addFilterQuery(solrFilterQuery);
+      }
+    }
+
+    if (null != solrPoint && null != solrDistance) {
+      if (spatialFilter == null) {
+        query.addFilterQuery("{!geofilt sfield=" + INDEX_GEOGRAPHIC_GEOM_FIELD + "}");
       }
 
-      query.add("pt", transformedSolrPoint);
+      // The geographic distance field uses WGS84 and kilometers.
+      // Transform the query point from the application CRS, not the source CRS.
+      if (applicationCrs == null || applicationCrs.isBlank()) {
+        throw new IllegalArgumentException("Application CRS is required for geographic distance search");
+      }
+
+      Geometry pointGeometry = GeometryProcessor.wktToGeometry("POINT (" + solrPoint + ")");
+      if (pointGeometry == null) {
+        throw new IllegalArgumentException("Invalid spatial search point");
+      }
+
+      final MathTransform toGeographic;
+      try {
+        toGeographic = TransformationUtil.getTransformation(applicationCrs, "EPSG:4326");
+      } catch (FactoryException e) {
+        throw new IllegalArgumentException(
+            "Cannot transform spatial search point from " + applicationCrs + " to EPSG:4326", e);
+      }
+
+      Geometry geographicPoint;
+      try {
+        geographicPoint = toGeographic == null ? pointGeometry : JTS.transform(pointGeometry, toGeographic);
+      } catch (TransformException e) {
+        throw new IllegalArgumentException("Cannot transform spatial search point", e);
+      }
+
+      query.add("pt", geographicPoint.getCoordinate().x + " " + geographicPoint.getCoordinate().y);
       query.add("d", solrDistance.toString());
     }
     query.set("q.op", "AND");
@@ -577,18 +700,19 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (null != this.solrClient) this.solrClient.close();
   }
 
-  private boolean checkSchemaIfFieldExists(String fieldName) {
+  private boolean checkSchemaIfFieldExists(String fieldName) throws SolrServerException, IOException {
     SchemaRequest.Field fieldCheck = new SchemaRequest.Field(fieldName);
     try {
-      SchemaResponse.FieldResponse isField = fieldCheck.process(solrClient);
-      logger.debug("Field {} exists", isField.getField());
+      SchemaResponse.FieldResponse response = fieldCheck.process(solrClient);
+      logger.debug("Field {} exists", response.getField());
       return true;
-    } catch (SolrServerException | RemoteSolrException e) {
-      logger.debug("Field {} does not exist or could not be retrieved. Assuming it does not exist.", fieldName);
-    } catch (IOException e) {
-      logger.error("Tried getting field: {}, but failed.", fieldName, e);
+    } catch (RemoteSolrException e) {
+      if (e.code() == 404) {
+        logger.debug("Solr schema field {} does not exist", fieldName);
+        return false;
+      }
+      throw e;
     }
-    return false;
   }
 
   /**
@@ -606,22 +730,53 @@ public class SolrHelper implements AutoCloseable, Constants {
     }
   }
 
-  /** Programmatically create the schema if it does not exist. */
-  private void createSchemaIfNotExists() {
-    solrSearchFields.forEach((key, value) -> {
-      try {
-        if (key.equals(INDEX_GEOM_FIELD)) {
-          createGeometryFieldTypeIfNotExists();
-        }
-        createSchemaFieldIfNotExists(key);
-      } catch (SolrServerException | IOException e) {
-        logger.error(
-            "Error creating schema field: {} indexing may fail. Details: {}",
-            key,
-            e.getLocalizedMessage(),
-            e);
+  /**
+   * Create the required Solr fields and field types.
+   *
+   * <p>Abort indexing if a schema operation fails. Continuing could mark an index ready while required geographic
+   * fields are unavailable.
+   */
+  private void createSchemaIfNotExists() throws SolrServerException, IOException {
+    for (String fieldName : solrSearchFields.keySet()) {
+      if (fieldName.equals(INDEX_GEOM_FIELD)) {
+        createGeometryFieldTypeIfNotExists();
+      } else if (fieldName.equals(INDEX_GEOGRAPHIC_GEOM_FIELD)) {
+        createGeographicFieldTypeIfNotExists();
       }
-    });
+
+      createSchemaFieldIfNotExists(fieldName);
+    }
+  }
+
+  private void createGeographicFieldTypeIfNotExists() throws SolrServerException, IOException {
+    try {
+      new SchemaRequest.FieldType(SOLR_GEOGRAPHIC_FIELDNAME).process(solrClient);
+      return;
+    } catch (RemoteSolrException e) {
+      if (e.code() != 404) {
+        throw e;
+      }
+      logger.debug("Geographic Solr field type does not exist yet");
+    }
+
+    Map<String, Object> attributes = new HashMap<>(Map.of(
+        "name", SOLR_GEOGRAPHIC_FIELDNAME,
+        "class", "solr.RptWithGeometrySpatialField",
+        "spatialContextFactory", "JTS",
+        "geo", true,
+        "distanceUnits", "kilometers",
+        "format", "WKT",
+        "autoIndex", true,
+        "prefixTree", "packedQuad",
+        "validationRule", solrGeometryValidationRule));
+
+    attributes.put("distErrPct", "0.025");
+    attributes.put("maxDistErr", "0.001");
+
+    FieldTypeDefinition definition = new FieldTypeDefinition();
+    definition.setAttributes(attributes);
+
+    new SchemaRequest.AddFieldType(definition).process(solrClient);
   }
 
   private void createGeometryFieldTypeIfNotExists() throws SolrServerException, IOException {
@@ -630,12 +785,11 @@ public class SolrHelper implements AutoCloseable, Constants {
       SchemaResponse.FieldTypeResponse isFieldType = fieldTypeCheck.process(solrClient);
       logger.debug("Field type {} exists", isFieldType.getFieldType());
       return;
-    } catch (SolrServerException | RemoteSolrException e) {
-      logger.debug(
-          "Field type {} does not exist or could not be retrieved. Assuming it does not exist.",
-          SOLR_SPATIAL_FIELDNAME);
-    } catch (IOException e) {
-      logger.error("Tried getting field type: {}, but failed.", SOLR_SPATIAL_FIELDNAME, e);
+    } catch (RemoteSolrException e) {
+      if (e.code() != 404) {
+        throw e;
+      }
+      logger.debug("Solr geometry field type {} does not exist", SOLR_SPATIAL_FIELDNAME);
     }
 
     logger.info(

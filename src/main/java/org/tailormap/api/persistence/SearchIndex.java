@@ -43,6 +43,10 @@ public class SearchIndex extends AuditMetadata implements Serializable {
   private Long featureTypeId;
   private String sourceCrs;
 
+  /** Version of the spatial data actually indexed in Solr. */
+  @NotNull @Column(nullable = false)
+  private Integer spatialIndexVersion = 1;
+
   /** List of attribute names that were used when building the search index. */
   @JsonProperty("searchFieldsUsed")
   @JdbcTypeCode(SqlTypes.JSON)
@@ -107,6 +111,15 @@ public class SearchIndex extends AuditMetadata implements Serializable {
 
   public SearchIndex setSourceCrs(String sourceCrs) {
     this.sourceCrs = sourceCrs;
+    return this;
+  }
+
+  public Integer getSpatialIndexVersion() {
+    return spatialIndexVersion;
+  }
+
+  public SearchIndex setSpatialIndexVersion(Integer spatialIndexVersion) {
+    this.spatialIndexVersion = spatialIndexVersion;
     return this;
   }
 
