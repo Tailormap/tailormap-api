@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import org.apache.solr.client.solrj.RemoteSolrException;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.request.schema.FieldTypeDefinition;
@@ -80,43 +79,41 @@ public class SolrHelper implements AutoCloseable, Constants {
 
   private final SolrClient solrClient;
 
-  /** the Solr search field definition requests for Tailormap. */
-  private final Map<String, SchemaRequest.AddField> solrSearchFields = Map.of(
+  /** the Solr search field definitions for Tailormap. */
+  private final Map<String, Map<String, Object>> solrSearchFields = Map.of(
       SEARCH_LAYER,
-          new SchemaRequest.AddField(Map.of(
+          Map.of(
               "name", SEARCH_LAYER,
               "type", "string",
               "indexed", true,
               "stored", true,
               "multiValued", false,
               "required", true,
-              "uninvertible", false)),
-      INDEX_GEOM_FIELD,
-          new SchemaRequest.AddField(
-              Map.of("name", INDEX_GEOM_FIELD, "type", SOLR_SPATIAL_FIELDNAME, "stored", true)),
+              "uninvertible", false),
+      INDEX_GEOM_FIELD, Map.of("name", INDEX_GEOM_FIELD, "type", SOLR_SPATIAL_FIELDNAME, "stored", true),
       INDEX_GEOGRAPHIC_GEOM_FIELD,
-          new SchemaRequest.AddField(Map.of(
+          Map.of(
               "name", INDEX_GEOGRAPHIC_GEOM_FIELD,
               "type", SOLR_GEOGRAPHIC_FIELDNAME,
-              "stored", true)),
+              "stored", true),
       INDEX_SEARCH_FIELD,
-          new SchemaRequest.AddField(Map.of(
+          Map.of(
               "name", INDEX_SEARCH_FIELD,
               "type", "text_general",
               "indexed", true,
               "stored", true,
               "multiValued", true,
               "required", true,
-              "uninvertible", false)),
+              "uninvertible", false),
       INDEX_DISPLAY_FIELD,
-          new SchemaRequest.AddField(Map.of(
+          Map.of(
               "name", INDEX_DISPLAY_FIELD,
               "type", "text_general",
               "indexed", false,
               "stored", true,
               "multiValued", true,
               "required", true,
-              "uninvertible", false)));
+              "uninvertible", false));
 
   private int solrQueryTimeout = 7000;
   private int solrBatchSize = 1000;
@@ -723,9 +720,10 @@ public class SolrHelper implements AutoCloseable, Constants {
   private void createSchemaFieldIfNotExists(String fieldName) throws SolrServerException, IOException {
     if (!checkSchemaIfFieldExists(fieldName)) {
       logger.info("Creating Solr field {}.", fieldName);
-      SchemaRequest.AddField schemaRequest = solrSearchFields.get(fieldName);
-      SolrResponse response = schemaRequest.process(solrClient);
-      logger.debug("Field type {} created", response);
+      Map<String, Object> attributes = solrSearchFields.get(fieldName);
+      addSchemaObject(new SchemaRequest.AddField(attributes), attributes, () -> new SchemaRequest.Field(fieldName)
+          .process(solrClient)
+          .getField());
       solrClient.commit();
     }
   }
@@ -776,7 +774,11 @@ public class SolrHelper implements AutoCloseable, Constants {
     FieldTypeDefinition definition = new FieldTypeDefinition();
     definition.setAttributes(attributes);
 
-    new SchemaRequest.AddFieldType(definition).process(solrClient);
+    addSchemaObject(new SchemaRequest.AddFieldType(definition), attributes, () -> new SchemaRequest.FieldType(
+            SOLR_GEOGRAPHIC_FIELDNAME)
+        .process(solrClient)
+        .getFieldType()
+        .getAttributes());
   }
 
   private void createGeometryFieldTypeIfNotExists() throws SolrServerException, IOException {
@@ -824,8 +826,47 @@ public class SolrHelper implements AutoCloseable, Constants {
         // "ENVELOPE(482.06, 284182.97, 637049.52, 306602.42)"
         ));
     spatialFieldTypeDef.setAttributes(spatialFieldAttributes);
-    SchemaRequest.AddFieldType spatialFieldType = new SchemaRequest.AddFieldType(spatialFieldTypeDef);
-    spatialFieldType.process(solrClient);
+    addSchemaObject(
+        new SchemaRequest.AddFieldType(spatialFieldTypeDef),
+        spatialFieldAttributes,
+        () -> new SchemaRequest.FieldType(SOLR_SPATIAL_FIELDNAME)
+            .process(solrClient)
+            .getFieldType()
+            .getAttributes());
     solrClient.commit();
+  }
+
+  @FunctionalInterface
+  private interface SchemaDefinitionLookup {
+    Map<String, Object> read() throws SolrServerException, IOException;
+  }
+
+  /** Recover only when another indexer created the same definition after our existence check. */
+  private void addSchemaObject(
+      SchemaRequest.Update request, Map<String, Object> expected, SchemaDefinitionLookup lookup)
+      throws SolrServerException, IOException {
+    try {
+      request.process(solrClient);
+    } catch (RemoteSolrException error) {
+      if (error.code() != 400 || !error.getMessage().contains("already exists")) {
+        throw error;
+      }
+
+      final Map<String, Object> actual;
+      try {
+        actual = lookup.read();
+      } catch (SolrServerException | IOException | RemoteSolrException lookupError) {
+        error.addSuppressed(lookupError);
+        throw error;
+      }
+      if (actual == null
+          || !expected.entrySet().stream()
+              .allMatch(entry -> actual.containsKey(entry.getKey())
+                  && String.valueOf(entry.getValue())
+                      .equals(String.valueOf(actual.get(entry.getKey()))))) {
+        throw error;
+      }
+      logger.debug("Solr schema object {} was created concurrently", expected.get("name"));
+    }
   }
 }
