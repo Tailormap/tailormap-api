@@ -7,12 +7,12 @@ package org.tailormap.api.configuration;
 
 import jakarta.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
+import org.geotools.util.PreventLocalEntityResolver;
 import org.geotools.util.factory.GeoTools;
 import org.geotools.util.factory.Hints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.tailormap.api.geotools.TMPreventLocalEntityResolver;
 
 @Configuration
 public class GeoToolsConfiguration {
@@ -21,7 +21,8 @@ public class GeoToolsConfiguration {
 
   @PostConstruct
   public void init() {
-    GeoTools.init(new Hints(Hints.ENTITY_RESOLVER, TMPreventLocalEntityResolver.INSTANCE));
+    GeoTools.init(new Hints(Hints.ENTITY_RESOLVER, PreventLocalEntityResolver.INSTANCE));
+
     if (logger.isTraceEnabled()) {
       logger.trace("GeoTools initialised: {}", GeoTools.getAboutInfo());
       logger.trace("GeoTools default hints: {}", GeoTools.getDefaultHints());
