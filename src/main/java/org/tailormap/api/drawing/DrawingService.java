@@ -204,8 +204,6 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
   public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws JacksonException {
 
-    canSaveOrDeleteDrawing(drawing, authentication);
-
     logger.trace(
         "updating drawing: {}, domainData {}, updatedAt {}",
         drawing,
@@ -215,6 +213,8 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
     final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)
         .orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing has been deleted by another user"));
+
+    canSaveOrDeleteDrawing(oldDrawing, authentication);
 
     if (drawing.getVersion() < oldDrawing.getVersion()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user");
@@ -229,8 +229,6 @@ name=:name,
 description=:description,
 domain_data=:domainData::jsonb,
 access=:access,
-created_by=:createdBy,
-created_at=:createdAt,
 updated_by=:updatedBy,
 updated_at=:updatedAt,
 srid=:srid,
@@ -241,8 +239,6 @@ WHERE id = :id RETURNING *""")
         .param("description", drawing.getDescription())
         .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
         .param("access", drawing.getAccess().getValue())
-        .param("createdBy", drawing.getCreatedBy())
-        .param("createdAt", drawing.getCreatedAt())
         .param("updatedBy", authentication.getName())
         .param("updatedAt", OffsetDateTime.now(ZoneId.systemDefault()))
         .param("srid", drawing.getSrid())

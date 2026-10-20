@@ -8,6 +8,8 @@ package org.tailormap.api.controller;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -235,12 +237,12 @@ class DrawingControllerIntegrationTest {
     Integer oldVersion = drawing.getVersion();
     String oldName = drawing.getName();
 
-    // update the NEW_DRAWING_JSON drawing
+    // update the NEW_DRAWING_JSON drawing, createdBy and createdAt are read-only and should be ignored
     String updatedDrawing = NEW_DRAWING_JSON
         .replace("Drawing 1 description", "Edited drawing 2 description")
         .replace("\"name\":", "\"id\":\"" + drawingId + "\",\"name\":")
-        .replace("\"name\":", "\"createdBy\":\"tm-admin\",\"name\":")
-        .replace("\"name\":", "\"createdAt\":\"" + drawing.getCreatedAt() + "\",\"name\":")
+        .replace("\"name\":", "\"createdBy\":\"forged-user\",\"name\":")
+        .replace("\"name\":", "\"createdAt\":\"2000-01-01T00:00:00Z\",\"name\":")
         .replace("\"name\":", "\"version\":" + oldVersion + ",\"name\":");
 
     url = apiBasePath + "/app/default/drawing";
@@ -254,6 +256,7 @@ class DrawingControllerIntegrationTest {
         // API-created values
         .andExpect(jsonPath("$.id").value(drawingId))
         .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        .andExpect(jsonPath("$.createdAt", not(startsWith("2000-01-01"))))
         .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
         .andExpect(jsonPath("$.srid").value(28992))
         .andExpect(jsonPath("$.version").value(oldVersion + 1))
