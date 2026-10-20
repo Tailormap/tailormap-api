@@ -98,7 +98,8 @@ jobs:
     permissions:
       contents: read
       packages: read
-    # if: github.actor != 'dependabot[bot]'
+    # skip for fork PRs: secrets for the docker login are not available there
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     needs: seed-cache
     steps:
       - uses: actions/checkout@v7
