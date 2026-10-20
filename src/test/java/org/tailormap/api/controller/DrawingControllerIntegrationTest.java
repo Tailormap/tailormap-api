@@ -65,7 +65,6 @@ class DrawingControllerIntegrationTest {
 "name": "Drawing 1",
 "description": "Drawing 1 description",
 "domainData": {"items": 1, "domain": "test drawings"},
-"access": "private",
 "srid": 28992,
 "featureCollection": {
 "type": "FeatureCollection",
@@ -116,7 +115,6 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.createdBy").value("tm-admin"))
         .andExpect(jsonPath("$.srid").value(28992))
         .andExpect(jsonPath("$.name").value("Testcase"))
-        .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.description")
             .value("A private access drawing that is inserted as part of the testdata"))
         .andExpect(jsonPath("$.domainData").exists())
@@ -151,7 +149,6 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.srid").value(28992))
         // given values
         .andExpect(jsonPath("$.name").value("Drawing 1"))
-        .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.description").value("Drawing 1 description"))
         .andExpect(jsonPath("$.domainData").exists())
         .andExpect(jsonPath("$.domainData.items").value(1))
@@ -261,7 +258,6 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.srid").value(28992))
         .andExpect(jsonPath("$.version").value(oldVersion + 1))
         // given values
-        .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.name").value(oldName))
         .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
         .andExpect(jsonPath("$.domainData").exists())
@@ -361,7 +357,6 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
         .andExpect(jsonPath("$.srid").value(28992))
         // given values
-        .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
         .andExpect(jsonPath("$.domainData").exists())
         .andExpect(jsonPath("$.domainData.items").value(1))
@@ -407,7 +402,6 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
         .andExpect(jsonPath("$.srid").value(3857))
         // given values
-        .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
         .andExpect(jsonPath("$.domainData").exists())
         .andExpect(jsonPath("$.domainData.items").value(1))
@@ -462,6 +456,43 @@ class DrawingControllerIntegrationTest {
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
         .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "user",
+      password = "user",
+      authorities = {"test-bar"})
+  @Order(1)
+  void delete_drawing_other_user() throws Exception {
+    final String url = apiBasePath + "/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "user",
+      password = "user",
+      authorities = {"test-bar"})
+  @Order(1)
+  void update_drawing_other_user_with_forged_created_by() throws Exception {
+    final String drawing = NEW_DRAWING_JSON
+        .replace("\"name\":", "\"id\":\"" + KNOWN_DRAWING_ID + "\",\"name\":")
+        .replace("\"name\":", "\"createdBy\":\"user\",\"name\":")
+        .replace("\"name\":", "\"version\":1,\"name\":");
+
+    final String url = apiBasePath + "/app/default/drawing";
+    mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(drawing))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401));
   }
 
   @Test

@@ -69,13 +69,6 @@ public class DrawingService {
     final GenericConversionService conversionService = new GenericConversionService();
     DefaultConversionService.addDefaultConverters(conversionService);
 
-    conversionService.addConverter(new Converter<String, Drawing.AccessEnum>() {
-      @Override
-      public Drawing.AccessEnum convert(@NonNull String source) {
-        return Drawing.AccessEnum.fromValue(source);
-      }
-    });
-
     conversionService.addConverter(new Converter<PGobject, Map<String, Object>>() {
       @Override
       @SuppressWarnings("unchecked")
@@ -117,13 +110,12 @@ public class DrawingService {
 
     Drawing storedDrawing = jdbcClient
         .sql("""
-INSERT INTO data.drawing (name, description, domain_data, access, created_at, created_by,srid)
-VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
+INSERT INTO data.drawing (name, description, domain_data, created_at, created_by,srid)
+VALUES (?, ?, ?::jsonb, ?, ?, ?) RETURNING *
 """)
         .param(drawing.getName())
         .param(drawing.getDescription())
         .param(mapper.writeValueAsString(drawing.getDomainData()))
-        .param(drawing.getAccess().getValue())
         .param(OffsetDateTime.now(ZoneId.systemDefault()))
         .param(authentication.getName())
         .param(drawing.getSrid())
@@ -228,7 +220,6 @@ id=:id,
 name=:name,
 description=:description,
 domain_data=:domainData::jsonb,
-access=:access,
 updated_by=:updatedBy,
 updated_at=:updatedAt,
 srid=:srid,
@@ -238,7 +229,6 @@ WHERE id = :id RETURNING *""")
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
         .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
-        .param("access", drawing.getAccess().getValue())
         .param("updatedBy", authentication.getName())
         .param("updatedAt", OffsetDateTime.now(ZoneId.systemDefault()))
         .param("srid", drawing.getSrid())
@@ -425,25 +415,16 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    */
   private void canReadDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
-    boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
-    boolean canRead =
-        switch (drawing.getAccess()) {
-          case PRIVATE -> {
-            if (isAuthenticated) {
-              if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-                // is a drawing owner
-                yield true;
-              }
-              if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
-                yield userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
-                    || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
-              }
-            }
-            yield false;
-          }
-          case SHARED -> isAuthenticated;
-          case PUBLIC -> true;
-        };
+    boolean canRead = false;
+    if (!(authentication instanceof AnonymousAuthenticationToken)) {
+      if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
+        // is a drawing owner
+        canRead = true;
+      } else if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
+        canRead = userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
+            || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
+      }
+    }
 
     if (!canRead) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
@@ -460,24 +441,13 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
   private void canSaveOrDeleteDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
     if (authentication instanceof AnonymousAuthenticationToken) {
-      // Only authenticated users can save drawings, irrelevant of drawing access level
+      // Only authenticated users can save drawings
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
     }
 
-    boolean canSave =
-        switch (drawing.getAccess()) {
-          case PRIVATE -> {
-            if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-              // is a drawing owner
-              yield true;
-            }
-            if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-              yield userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN);
-            }
-            yield false;
-          }
-          case SHARED, PUBLIC -> true;
-        };
+    boolean canSave = Objects.equals(authentication.getName(), drawing.getCreatedBy())
+        || (authentication.getPrincipal() instanceof TailormapUserDetails userDetails
+            && userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN));
 
     if (!canSave) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
