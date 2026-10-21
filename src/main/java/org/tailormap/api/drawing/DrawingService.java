@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
 import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
@@ -266,17 +264,21 @@ WHERE id = :id AND version = :version RETURNING *""")
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       return Set.of();
     }
-    return jdbcClient.sql("SELECT * FROM data.drawing").query(drawingRowMapper).set().stream()
-        .filter(d -> {
-          try {
-            canReadDrawing(d, authentication);
-            return true;
-          } catch (ResponseStatusException e) {
-            return false;
-          }
-        })
-        .sorted(Comparator.comparing(Drawing::getCreatedAt))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+    // filter in the database instead of loading all drawings, must match canReadDrawing()
+    final List<Drawing> drawings;
+    if (canReadAllDrawings(authentication)) {
+      drawings = jdbcClient
+          .sql("SELECT * FROM data.drawing ORDER BY created_at")
+          .query(drawingRowMapper)
+          .list();
+    } else {
+      drawings = jdbcClient
+          .sql("SELECT * FROM data.drawing WHERE created_by = :createdBy ORDER BY created_at")
+          .param("createdBy", authentication.getName())
+          .query(drawingRowMapper)
+          .list();
+    }
+    return new LinkedHashSet<>(drawings);
   }
 
   /**

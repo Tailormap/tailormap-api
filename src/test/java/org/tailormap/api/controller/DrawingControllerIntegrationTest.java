@@ -204,6 +204,23 @@ class DrawingControllerIntegrationTest {
 
   @Test
   @Order(20)
+  void list_drawings_for_read_all_user() throws Exception {
+    authenticateAsUserWithProperty(KEY_DRAWINGS_READ_ALL);
+    final String url = apiBasePath + "/drawing/list";
+    final MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andReturn();
+
+    // drawings of other users should be returned
+    final List<String> drawingIds = JsonPath.read(result.getResponse().getContentAsString(), "$[*].id");
+    assertThat("KNOWN_DRAWING_ID should be in the list", drawingIds, hasItem(KNOWN_DRAWING_ID));
+  }
+
+  @Test
+  @Order(20)
   void list_drawings_for_anonymous() throws Exception {
     final String url = apiBasePath + "/drawing/list";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
