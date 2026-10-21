@@ -111,14 +111,14 @@ public class DrawingService {
     Drawing storedDrawing = jdbcClient
         .sql("""
 INSERT INTO data.drawing (name, description, domain_data, created_at, created_by,srid)
-VALUES (?, ?, ?::jsonb, ?, ?, ?) RETURNING *
+VALUES (:name, :description, :domainData::jsonb, :createdAt, :createdBy, :srid) RETURNING *
 """)
-        .param(drawing.getName())
-        .param(drawing.getDescription())
-        .param(mapper.writeValueAsString(drawing.getDomainData()))
-        .param(OffsetDateTime.now(ZoneId.systemDefault()))
-        .param(authentication.getName())
-        .param(drawing.getSrid())
+        .param("name", drawing.getName())
+        .param("description", drawing.getDescription())
+        .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
+        .param("createdAt", OffsetDateTime.now(ZoneId.systemDefault()))
+        .param("createdBy", authentication.getName())
+        .param("srid", drawing.getSrid())
         .query(drawingRowMapper)
         .single();
 
@@ -239,8 +239,8 @@ WHERE id = :id RETURNING *""")
     // delete even if drawing.getFeatureCollection()==null, because all features could have been
     // removed, (re)insert the featureCollection afterward
     jdbcClient
-        .sql("DELETE FROM data.drawing_feature WHERE drawing_id = ?")
-        .param(drawing.getId())
+        .sql("DELETE FROM data.drawing_feature WHERE drawing_id = :drawingId")
+        .param("drawingId", drawing.getId())
         .update();
 
     if (drawing.getFeatureCollection() != null) {
@@ -303,13 +303,12 @@ WHERE id = :id RETURNING *""")
       @NonNull Authentication authentication,
       boolean withGeometries,
       int requestedSrid) {
-    Optional<Drawing> drawing =
-        jdbcClient
-            .sql("SELECT * FROM data.drawing WHERE id = ?")
-            .param(1, drawingId)
-            .query(drawingRowMapper)
-            .stream()
-            .findFirst();
+    Optional<Drawing> drawing = jdbcClient
+        .sql("SELECT * FROM data.drawing WHERE id = :id")
+        .param("id", drawingId)
+        .query(drawingRowMapper)
+        .stream()
+        .findFirst();
 
     drawing.ifPresent(d -> {
       // check if the user is allowed to read the drawing
@@ -388,7 +387,10 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found")),
         authentication);
 
-    jdbcClient.sql("DELETE FROM data.drawing WHERE id = ?").param(drawingId).update();
+    jdbcClient
+        .sql("DELETE FROM data.drawing WHERE id = :id")
+        .param("id", drawingId)
+        .update();
   }
 
   /**
