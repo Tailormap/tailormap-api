@@ -13,9 +13,7 @@ import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfigur
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.tailormap.api.configuration.JPAConfiguration;
 import org.tailormap.api.security.ActuatorSecurityConfiguration;
 import org.tailormap.api.security.ApiSecurityConfiguration;
@@ -30,8 +28,7 @@ import org.tailormap.api.security.ApiSecurityConfiguration;
       MailSenderAutoConfiguration.class,
       ActuatorSecurityConfiguration.class,
       ApiSecurityConfiguration.class,
+      PostgresIntegrationTestConfiguration.class,
     })
-@ComponentScan(basePackages = {"org.tailormap.api"})
-@EnableWebMvc
 @ActiveProfiles("postgresql")
 public @interface PostgresIntegrationTest {}
