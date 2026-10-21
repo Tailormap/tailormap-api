@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,10 +16,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.IntegrationTestOrdering.EDIT_FEATURES_CONTROLLER_INTEGRATION_TEST_ORDER;
+import static org.tailormap.api.TestJson.json;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
 import com.jayway.jsonpath.JsonPath;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.MethodOrderer;
@@ -43,8 +47,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -101,12 +103,16 @@ class EditFeatureControllerIntegrationTest {
   @Test
   void unauthenticated_post() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    // A mutable map, because Map.of() does not allow null values
+    final Map<String, Object> body = new HashMap<>();
+    body.put("geom", null);
+    body.put("attributes", Map.of("case", "irrelevant"));
 
     mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"geom\":null, \"attributes\":{\"case\":\"irrelevant\"}}"))
+            .content(json(body)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
@@ -121,7 +127,7 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"properties\":{\"naam\":\"test\"}}"))
+            .content(json(Map.of("properties", Map.of("naam", "test")))))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
@@ -141,11 +147,15 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"__fid\": \""
-                + StaticTestData.get("begroeidterreindeel__fid_edit")
-                + "\",\"attributes\" : { \"class\": \"weggemaaid grasland\", \"geom\" : \""
-                + StaticTestData.get("begroeidterreindeel__geom_edit")
-                + "\"}}"))
+            .content(json(Map.of(
+                "__fid",
+                StaticTestData.get("begroeidterreindeel__fid_edit"),
+                "attributes",
+                Map.of(
+                    "class",
+                    "weggemaaid grasland",
+                    "geom",
+                    StaticTestData.get("begroeidterreindeel__geom_edit"))))))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value("400"))
@@ -163,7 +173,7 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"attributes\":{\"doesnotexist\":true}}"))
+            .content(json(Map.of("attributes", Map.of("doesnotexist", true)))))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -181,18 +191,14 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    JsonMapper mapper = new JsonMapper();
-    ObjectNode body = mapper.createObjectNode();
-    ObjectNode attributes = mapper.createObjectNode();
-    attributes.put("terminationdate", "something");
-    attributes.put("geom_kruinlijn", "LINESTRING(0 0, 1 1)");
-    body.set("attributes", attributes);
+    final String body = json(
+        Map.of("attributes", Map.of("terminationdate", "something", "geom_kruinlijn", "LINESTRING(0 0, 1 1)")));
 
     mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(body)))
+            .content(body))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -210,17 +216,13 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    JsonMapper mapper = new JsonMapper();
-    ObjectNode body = mapper.createObjectNode();
-    ObjectNode attributes = mapper.createObjectNode();
-    attributes.put("begroeidterreindeeloptalud", "something");
-    body.set("attributes", attributes);
+    final String body = json(Map.of("attributes", Map.of("begroeidterreindeeloptalud", "something")));
 
     mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(body)))
+            .content(body))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -238,17 +240,13 @@ class EditFeatureControllerIntegrationTest {
     final String url =
         apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
 
-    JsonMapper mapper = new JsonMapper();
-    ObjectNode body = mapper.createObjectNode();
-    ObjectNode attributes = mapper.createObjectNode();
-    attributes.put("eindregistratie", "something");
-    body.set("attributes", attributes);
+    final String body = json(Map.of("attributes", Map.of("eindregistratie", "something")));
 
     mockMvc.perform(patch(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(body)))
+            .content(body))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -271,28 +269,24 @@ class EditFeatureControllerIntegrationTest {
                     .indexOf('.')
                 + 4);
     final String fid = "begroeidterreindeel." + gmlid;
-    final String content = "{\"__fid\":\""
-        + fid
-        + "\",\"attributes\":{"
-        + "\"gmlid\":\""
-        + gmlid
-        + "\","
-        + "\"identificatie\":\"B3P."
-        + gmlid
-        + "\","
-        + "\"lv_publicatiedatum\":\"2021-01-15T10:33:08.000+00:00\","
-        + "\"creationdate\":\"2020-12-23\","
-        + "\"tijdstipregistratie\":\"2021-01-15T07:00:12.000+00:00\","
-        + "\"bronhouder\":\"B3P\","
-        + "\"inonderzoek\":true, "
-        + "\"relatievehoogteligging\":0,"
-        + "\"bgt_status\":\"bestaand\","
-        + "\"plus_status\":\"geenWaarde\","
-        + "\"plus_fysiekvoorkomen\":\"waardeOnbekend\","
-        + "\"class\":\"weggemaaid grasland\", "
-        + "\"geom\":\""
-        + StaticTestData.get("begroeidterreindeel__geom_edit")
-        + "\"}}";
+    final String content = json(Map.of(
+        "__fid",
+        fid,
+        "attributes",
+        Map.ofEntries(
+            entry("gmlid", gmlid),
+            entry("identificatie", "B3P." + gmlid),
+            entry("lv_publicatiedatum", "2021-01-15T10:33:08.000+00:00"),
+            entry("creationdate", "2020-12-23"),
+            entry("tijdstipregistratie", "2021-01-15T07:00:12.000+00:00"),
+            entry("bronhouder", "B3P"),
+            entry("inonderzoek", true),
+            entry("relatievehoogteligging", 0),
+            entry("bgt_status", "bestaand"),
+            entry("plus_status", "geenWaarde"),
+            entry("plus_fysiekvoorkomen", "waardeOnbekend"),
+            entry("class", "weggemaaid grasland"),
+            entry("geom", StaticTestData.get("begroeidterreindeel__geom_edit")))));
 
     mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -323,26 +317,22 @@ class EditFeatureControllerIntegrationTest {
                     .indexOf('.')
                 + 4);
     final String fid = "begroeidterreindeel." + gmlid;
-    final String content = "{\"__fid\":\""
-        + fid
-        + "\",\"attributes\":{"
-        + "\"gmlid\":\""
-        + gmlid
-        + "\","
-        + "\"identificatie\":\"B3P."
-        + gmlid
-        + "\","
-        + "\"tijdstipregistratie\":\"2021-01-15T07:00:12.000+00:00\","
-        + "\"bronhouder\":\"B3P\","
-        + "\"inonderzoek\":true, "
-        + "\"relatievehoogteligging\":0,"
-        + "\"bgt_status\":\"bestaand\","
-        + "\"plus_status\":\"geenWaarde\","
-        + "\"plus_fysiekvoorkomen\":\"waardeOnbekend\","
-        + "\"class\":\"weggemaaid grasland\", "
-        + "\"geom\":\""
-        + StaticTestData.get("begroeidterreindeel__geom_edit")
-        + "\"}}";
+    final String content = json(Map.of(
+        "__fid",
+        fid,
+        "attributes",
+        Map.ofEntries(
+            entry("gmlid", gmlid),
+            entry("identificatie", "B3P." + gmlid),
+            entry("tijdstipregistratie", "2021-01-15T07:00:12.000+00:00"),
+            entry("bronhouder", "B3P"),
+            entry("inonderzoek", true),
+            entry("relatievehoogteligging", 0),
+            entry("bgt_status", "bestaand"),
+            entry("plus_status", "geenWaarde"),
+            entry("plus_fysiekvoorkomen", "waardeOnbekend"),
+            entry("class", "weggemaaid grasland"),
+            entry("geom", StaticTestData.get("begroeidterreindeel__geom_edit")))));
 
     mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -364,32 +354,26 @@ class EditFeatureControllerIntegrationTest {
         + StaticTestData.get("wegdeel__fid_edit")
             .substring(StaticTestData.get("wegdeel__fid_edit").indexOf('.') + 4);
     final String fid = "wegdeel." + gmlid;
-    final String content = "{\"__fid\":\""
-        + fid
-        + "\",\"attributes\":{"
-        + "\"gmlid\":\""
-        + gmlid
-        + "\","
-        + "\"identificatie\":\"B3P."
-        + gmlid
-        + "\","
-        + " \"plus_functiewegdeel\":\"waardeOnbekend\","
-        + " \"creationdate\":\"2016-12-06\","
-        + " \"plus_status\":\"geenWaarde\","
-        + " \"bronhouder\":\"B3P\","
-        + " \"surfacematerial\":\"gesloten verharding\","
-        + " \"plus_fysiekvoorkomenwegdeel\":\"waardeOnbekend\","
-        + " \"geom\":\""
-        + StaticTestData.get("wegdeel__geom_edit")
-        + "\","
-        + " \"geom_kruinlijn\":null,"
-        + " \"bgt_status\":\"bestaand\","
-        + " \"lv_publicatiedatum\":\"2019-11-15T20:18:09.000+00:00\","
-        + " \"relatievehoogteligging\":0,"
-        + " \"function_\":\"rijbaan autosnelweg\","
-        + " \"wegdeeloptalud\":false,"
-        + " \"inonderzoek\":true,"
-        + " \"tijdstipregistratie\": \"2019-11-15T12:52:08.000+00:00\"}}";
+    // A mutable map, because Map.of() does not allow the null value for geom_kruinlijn
+    final Map<String, Object> attributes = new HashMap<>(Map.ofEntries(
+        entry("gmlid", gmlid),
+        entry("identificatie", "B3P." + gmlid),
+        entry("plus_functiewegdeel", "waardeOnbekend"),
+        entry("creationdate", "2016-12-06"),
+        entry("plus_status", "geenWaarde"),
+        entry("bronhouder", "B3P"),
+        entry("surfacematerial", "gesloten verharding"),
+        entry("plus_fysiekvoorkomenwegdeel", "waardeOnbekend"),
+        entry("geom", StaticTestData.get("wegdeel__geom_edit")),
+        entry("bgt_status", "bestaand"),
+        entry("lv_publicatiedatum", "2019-11-15T20:18:09.000+00:00"),
+        entry("relatievehoogteligging", 0),
+        entry("function_", "rijbaan autosnelweg"),
+        entry("wegdeeloptalud", false),
+        entry("inonderzoek", true),
+        entry("tijdstipregistratie", "2019-11-15T12:52:08.000+00:00")));
+    attributes.put("geom_kruinlijn", null);
+    final String content = json(Map.of("__fid", fid, "attributes", attributes));
 
     mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -416,28 +400,24 @@ class EditFeatureControllerIntegrationTest {
         + StaticTestData.get("waterdeel__fid_edit")
             .substring(StaticTestData.get("waterdeel__fid_edit").indexOf('.') + 4);
     final String fid = "WATERDEEL." + gmlid;
-    final String content = "{\"__fid\":\""
-        + fid
-        + "\",\"attributes\":{"
-        + "\"GMLID\":\""
-        + gmlid
-        + "\","
-        + "\"IDENTIFICATIE\":\"B3P."
-        + gmlid
-        + "\","
-        + "\"CREATIONDATE\":\"2016-12-06\","
-        + "\"PLUS_STATUS\":\"geenWaarde\","
-        + "\"BRONHOUDER\":\"B3P\","
-        + "\"CLASS\": \"waterloop\","
-        + "\"PLUS_TYPE\":\"waardeOnbekend\","
-        + "\"GEOM\":\""
-        + StaticTestData.get("waterdeel__edit_geom")
-        + "\","
-        + "\"BGT_STATUS\":\"bestaand\","
-        + "\"LV_PUBLICATIEDATUM\":\"2019-11-15T20:18:09.000+00:00\","
-        + "\"RELATIEVEHOOGTELIGGING\":0,"
-        + "\"INONDERZOEK\":true,"
-        + "\"TIJDSTIPREGISTRATIE\": \"2019-11-15T12:52:08.000+00:00\"}}";
+    final String content = json(Map.of(
+        "__fid",
+        fid,
+        "attributes",
+        Map.ofEntries(
+            entry("GMLID", gmlid),
+            entry("IDENTIFICATIE", "B3P." + gmlid),
+            entry("CREATIONDATE", "2016-12-06"),
+            entry("PLUS_STATUS", "geenWaarde"),
+            entry("BRONHOUDER", "B3P"),
+            entry("CLASS", "waterloop"),
+            entry("PLUS_TYPE", "waardeOnbekend"),
+            entry("GEOM", StaticTestData.get("waterdeel__edit_geom")),
+            entry("BGT_STATUS", "bestaand"),
+            entry("LV_PUBLICATIEDATUM", "2019-11-15T20:18:09.000+00:00"),
+            entry("RELATIEVEHOOGTELIGGING", 0),
+            entry("INONDERZOEK", true),
+            entry("TIJDSTIPREGISTRATIE", "2019-11-15T12:52:08.000+00:00"))));
 
     mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -464,11 +444,17 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"__fid\": \""
-                + StaticTestData.get("begroeidterreindeel__fid_edit")
-                + "\",\"attributes\" : { \"inonderzoek\":true, \"class\": \"weggemaaid grasland\", \"geom\" : \""
-                + StaticTestData.get("begroeidterreindeel__geom_edit")
-                + "\"}}"))
+            .content(json(Map.of(
+                "__fid",
+                StaticTestData.get("begroeidterreindeel__fid_edit"),
+                "attributes",
+                Map.of(
+                    "inonderzoek",
+                    true,
+                    "class",
+                    "weggemaaid grasland",
+                    "geom",
+                    StaticTestData.get("begroeidterreindeel__geom_edit"))))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -495,11 +481,15 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"__fid\": \""
-                + StaticTestData.get("osm_polygon__fid_edit")
-                + "\",\"attributes\" : { \"building\":\"abandoned industrial complex\", \"way\" : \""
-                + StaticTestData.get("osm_polygon__geom_edit_28992")
-                + "\"}}"))
+            .content(json(Map.of(
+                "__fid",
+                StaticTestData.get("osm_polygon__fid_edit"),
+                "attributes",
+                Map.of(
+                    "building",
+                    "abandoned industrial complex",
+                    "way",
+                    StaticTestData.get("osm_polygon__geom_edit_28992"))))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("osm_polygon__fid_edit")))
@@ -525,15 +515,23 @@ class EditFeatureControllerIntegrationTest {
     final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
     final String osm_id = __fid.replace("osm_polygon.", "");
     final String url = apiBasePath + osm_polygonUrlPostgis;
-    final String json =
-        "{\"__fid\": \"%s\",\"attributes\" : { \"osm_id\":%s,\"building\":\"abandoned industrial complex\", \"way\" : \"%s\"}}"
-            .formatted(__fid, osm_id, StaticTestData.get("osm_polygon__geom_edit_28992"));
+    final String content = json(Map.of(
+        "__fid",
+        __fid,
+        "attributes",
+        Map.of(
+            "osm_id",
+            Long.parseLong(osm_id),
+            "building",
+            "abandoned industrial complex",
+            "way",
+            StaticTestData.get("osm_polygon__geom_edit_28992"))));
 
     final MvcResult result = mockMvc.perform(post(url)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+            .content(content))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(__fid))
@@ -561,9 +559,15 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"attributes\":{\"INONDERZOEK\":true,\"CLASS\":\"woeste bergbeek\",\"GEOM\":\""
-                + StaticTestData.get("waterdeel__edit_geom")
-                + "\"}}"))
+            .content(json(Map.of(
+                "attributes",
+                Map.of(
+                    "INONDERZOEK",
+                    true,
+                    "CLASS",
+                    "woeste bergbeek",
+                    "GEOM",
+                    StaticTestData.get("waterdeel__edit_geom"))))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("waterdeel__fid_edit")))
@@ -583,10 +587,15 @@ class EditFeatureControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(
-                "{\"attributes\":{\"inonderzoek\":true,\"surfacematerial\":\"weggemaaid grasland\",\"geom\":\""
-                    + StaticTestData.get("wegdeel__geom_edit")
-                    + "\"}}"))
+            .content(json(Map.of(
+                "attributes",
+                Map.of(
+                    "inonderzoek",
+                    true,
+                    "surfacematerial",
+                    "weggemaaid grasland",
+                    "geom",
+                    StaticTestData.get("wegdeel__geom_edit"))))))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("wegdeel__fid_edit")))
@@ -603,7 +612,7 @@ class EditFeatureControllerIntegrationTest {
   void patch_wfs_feature() throws Exception {
     final String url = apiBasePath + provinciesWFS + "/" + StaticTestData.get("utrecht__fid");
     mockMvc.perform(patch(url)
-            .content("{\"attributes\":{\"naam\": \"Utereg\",\"code\":\"11\"}}")
+            .content(json(Map.of("attributes", Map.of("naam", "Utereg", "code", "11"))))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url)))

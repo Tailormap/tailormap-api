@@ -20,9 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.IntegrationTestOrdering.UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER;
+import static org.tailormap.api.TestJson.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -76,8 +75,6 @@ class UploadsAdminControllerIntegrationTest {
 
   private MockMvc mockMvc;
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
-
   private static final String UUID_PARSE_ERROR_MESSAGE =
       "JSON parse error: Cannot deserialize value of type `java.util.UUID` from String \"fail\": UUID has to be represented by standard 36-char representation";
 
@@ -85,14 +82,6 @@ class UploadsAdminControllerIntegrationTest {
   void initialize() {
     // Required for Spring Data Rest APIs
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-  }
-
-  private static String jsonStringArray(String[] array) {
-    try {
-      return objectMapper.writeValueAsString(array);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Test
@@ -106,13 +95,12 @@ class UploadsAdminControllerIntegrationTest {
         .orElseThrow(() -> new IllegalStateException(
             "Expected upload with filename 'ISO_7001_PI_PF_007.svg' not found in the database"));
 
-    String expected = objectMapper.writeValueAsString(
-        new Object[] {Map.of("id", water.getId().toString(), "hash", "cfb1b538761a21f8d39c0555ba9802b8af4d09a6")
-        });
+    String expected = json(
+        List.of(Map.of("id", water.getId().toString(), "hash", "cfb1b538761a21f8d39c0555ba9802b8af4d09a6")));
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(new String[] {
+            .content(json(new String[] {
               "cfb1b538761a21f8d39c0555ba9802b8af4d09a6", "71f8e7976e4cbc4561c9d62fb283e7f788202acb"
             })))
         .andExpect(status().is2xxSuccessful())
@@ -132,7 +120,7 @@ class UploadsAdminControllerIntegrationTest {
 
     MvcResult result = mockMvc.perform(post(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(idsAndFilenames.keySet().stream()
+            .content(json(idsAndFilenames.keySet().stream()
                 .map(UUID::toString)
                 .toArray(String[]::new))))
         .andExpect(request().asyncStarted())
@@ -176,7 +164,7 @@ class UploadsAdminControllerIntegrationTest {
   void fail_download_zipfile_of_uploads() throws Exception {
     mockMvc.perform(post(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(new String[] {"fail"})))
+            .content(json(new String[] {"fail"})))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value(UUID_PARSE_ERROR_MESSAGE));
@@ -190,7 +178,7 @@ class UploadsAdminControllerIntegrationTest {
   void download_non_existing_upload_id_throws_404() throws Exception {
     mockMvc.perform(post(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(new String[] {"deadbeef-1111-2222-3333-beefdeadbeef"})))
+            .content(json(new String[] {"deadbeef-1111-2222-3333-beefdeadbeef"})))
         .andExpect(status().isNotFound());
   }
 
@@ -205,7 +193,7 @@ class UploadsAdminControllerIntegrationTest {
     List<String> ids = uploadMatches.stream().map(um -> um.id().toString()).toList();
     mockMvc.perform(delete(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(ids.toArray(new String[0]))))
+            .content(json(ids.toArray(new String[0]))))
         .andExpect(status().is2xxSuccessful());
 
     for (String id : ids) {
@@ -221,7 +209,7 @@ class UploadsAdminControllerIntegrationTest {
   void fail_delete_invalid_id() throws Exception {
     mockMvc.perform(delete(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(new String[] {"fail"})))
+            .content(json(new String[] {"fail"})))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value(UUID_PARSE_ERROR_MESSAGE));
@@ -235,7 +223,7 @@ class UploadsAdminControllerIntegrationTest {
   void delete_non_existing_upload_ids_ignored() throws Exception {
     mockMvc.perform(delete(adminBasePath + "/uploads/multi")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonStringArray(new String[] {
+            .content(json(new String[] {
               "1ff99dcb-a808-499c-9af4-d46b84c14fa9", "bef56ad0-b127-4180-aff0-c34793ec0655"
             })))
         .andExpect(status().isOk());

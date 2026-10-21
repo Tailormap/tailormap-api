@@ -10,10 +10,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 
 import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +31,6 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.viewer.model.Component;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
 class PersistentJsonArrayPropertyIntegrationTest {
@@ -50,8 +48,6 @@ class PersistentJsonArrayPropertyIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void post_update_application_components() throws Exception {
-    JsonMapper mapper = new JsonMapper();
-
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     Application app = new Application()
@@ -61,7 +57,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
 
     MvcResult result = mockMvc.perform(post(adminBasePath + "/applications")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(app)))
+            .content(json(app)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -76,7 +72,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
 
     mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getApplicationComponentsPatchBody(mapper, app)))
+            .content(getApplicationComponentsPatchBody(app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -92,7 +88,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
 
     mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getApplicationComponentsPatchBody(mapper, app)))
+            .content(getApplicationComponentsPatchBody(app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -103,7 +99,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
 
     mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getApplicationComponentsPatchBody(mapper, app)))
+            .content(getApplicationComponentsPatchBody(app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -118,7 +114,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
 
     mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(getApplicationComponentsPatchBody(mapper, app)))
+            .content(getApplicationComponentsPatchBody(app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -126,11 +122,8 @@ class PersistentJsonArrayPropertyIntegrationTest {
         .andExpect(jsonPath("$.components[3].type").value("test 4 [test growing array]"));
   }
 
-  private static String getApplicationComponentsPatchBody(JsonMapper mapper, Application app)
-      throws JacksonException {
-    ObjectNode node = mapper.createObjectNode();
-    node.set("components", mapper.convertValue(app, JsonNode.class).get("components"));
-    String patchBody = mapper.writeValueAsString(node);
+  private static String getApplicationComponentsPatchBody(Application app) {
+    String patchBody = json(Map.of("components", app.getComponents()));
     logger.info("PATCH body: {}", patchBody);
     return patchBody;
   }

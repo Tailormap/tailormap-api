@@ -10,7 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -33,8 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -49,8 +50,6 @@ class ApplicationAdminControllerIntegrationTest {
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
-
-  private final JsonMapper mapper = new JsonMapper();
 
   private MockMvc mockMvc;
   private Long maxAppId;
@@ -71,22 +70,22 @@ class ApplicationAdminControllerIntegrationTest {
     JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "application", "id > ?", maxAppId);
   }
 
-  private String getTestApplicationJson(String name) {
-    return mapper.createObjectNode()
-        .put("name", name)
-        .put("crs", "EPSG:3857")
-        .toPrettyString();
+  private static String getTestApplicationJson(String name) {
+    return json(Map.of("name", name, "crs", "EPSG:3857"));
   }
 
-  private String getDuplicateNameErrorJson(String name) {
-    ObjectNode object = mapper.createObjectNode();
-    ArrayNode errors = object.putArray("errors");
-    ObjectNode error = errors.addObject();
-    error.put("entity", "Application");
-    error.put("property", "name");
-    error.put("invalidValue", name);
-    error.put("message", "Application with name \"" + name + "\" already exists.");
-    return object.toPrettyString();
+  private static String getDuplicateNameErrorJson(String name) {
+    return json(Map.of(
+        "errors",
+        List.of(Map.of(
+            "entity",
+            "Application",
+            "property",
+            "name",
+            "invalidValue",
+            name,
+            "message",
+            "Application with name \"" + name + "\" already exists."))));
   }
 
   @Test
@@ -101,7 +100,8 @@ class ApplicationAdminControllerIntegrationTest {
         .andExpect(status().isCreated())
         .andReturn();
 
-    createdAppId = mapper.readTree(result.getResponse().getContentAsString())
+    createdAppId = JsonMapper.shared()
+        .readTree(result.getResponse().getContentAsString())
         .get("id")
         .asLong();
 
