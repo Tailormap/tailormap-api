@@ -2241,7 +2241,7 @@ from [B3Partners](https://www.b3partners.nl)!
     try {
       this.jdbcClient.sql("""
 INSERT INTO data.drawing (id,name,description,domain_data,created_by,created_at,updated_by,updated_at,srid,"version") VALUES
-('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'Testcase','A private access drawing that is inserted as part of the testdata','{"items": 1, "domain": "test drawings"}','tm-admin','2025-02-27 17:53:36.095164+01','tm-admin','2025-02-27 17:54:19.384961+01',28992,1);
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'Testcase','A drawing that is inserted as part of the testdata','{"items": 1, "domain": "test drawings"}','tm-admin','2025-02-27 17:53:36.095164+01','tm-admin','2025-02-27 17:54:19.384961+01',28992,1);
 """).update();
 
       this.jdbcClient.sql("""
