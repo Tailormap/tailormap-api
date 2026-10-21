@@ -409,7 +409,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
   }
 
   /**
-   * Check if the current user can read the drawing. If not, throw an unauthorized exception.
+   * Check if the current user can read the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * not found exception for authenticated users, so the existence of the drawing is not disclosed.
    *
    * @param drawing the drawing to check
    * @param authentication the current user
@@ -417,24 +418,23 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    */
   private void canReadDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
-    boolean canRead = false;
-    if (!(authentication instanceof AnonymousAuthenticationToken)) {
-      if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-        // is a drawing owner
-        canRead = true;
-      } else if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
-        canRead = userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
-            || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
-      }
+    if (authentication instanceof AnonymousAuthenticationToken) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
     }
 
+    boolean canRead = Objects.equals(authentication.getName(), drawing.getCreatedBy())
+        || (authentication.getPrincipal() instanceof TailormapUserDetails userDetails
+            && (userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
+                || userDetails.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL)));
+
     if (!canRead) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found");
     }
   }
 
   /**
-   * Check if the current user can save the drawing. If not, throw an unauthorized exception.
+   * Check if the current user can save the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * forbidden exception for authenticated users.
    *
    * @param drawing the drawing to check
    * @param authentication the current user
@@ -452,7 +452,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
             && userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN));
 
     if (!canSave) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient permissions to save drawing");
     }
   }
 }

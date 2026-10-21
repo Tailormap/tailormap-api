@@ -21,10 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
+import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_READ_ALL;
 
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -39,12 +41,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
+import org.tailormap.api.security.TailormapAdditionalProperty;
+import org.tailormap.api.security.TailormapUserDetails;
 import org.tailormap.api.viewer.model.Drawing;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -309,10 +317,22 @@ class DrawingControllerIntegrationTest {
     final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
 
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isUnauthorized())
+        .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(401))
-        .andExpect(jsonPath("$.url").value("/login"));
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
+  }
+
+  @Test
+  @Order(1)
+  void get_private_drawing_read_all_user() throws Exception {
+    authenticateAsUserWithProperty(KEY_DRAWINGS_READ_ALL);
+    final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(KNOWN_DRAWING_ID));
   }
 
   @Test
@@ -468,9 +488,21 @@ class DrawingControllerIntegrationTest {
     final String url = apiBasePath + "/drawing/" + KNOWN_DRAWING_ID;
 
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isUnauthorized())
+        .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(401));
+        .andExpect(jsonPath("$.code").value(404));
+  }
+
+  @Test
+  @Order(1)
+  void delete_drawing_read_all_user() throws Exception {
+    authenticateAsUserWithProperty(KEY_DRAWINGS_READ_ALL);
+    final String url = apiBasePath + "/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isForbidden())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(403));
   }
 
   @Test
@@ -490,9 +522,44 @@ class DrawingControllerIntegrationTest {
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .content(drawing))
-        .andExpect(status().isUnauthorized())
+        .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(401));
+        .andExpect(jsonPath("$.code").value(404));
+  }
+
+  /**
+   * Authenticate as a non-owner user with the given additional property set to true. The test security context is
+   * cleared after each test.
+   */
+  private static void authenticateAsUserWithProperty(String propertyKey) {
+    TailormapUserDetails principal = new TailormapUserDetails() {
+      @Override
+      public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("test-bar"));
+      }
+
+      @Override
+      public String getPassword() {
+        return "";
+      }
+
+      @Override
+      public String getUsername() {
+        return "user";
+      }
+
+      @Override
+      public String getOrganisation() {
+        return null;
+      }
+
+      @Override
+      public Collection<TailormapAdditionalProperty> getAdditionalGroupProperties() {
+        return List.of(new TailormapAdditionalProperty(propertyKey, false, true));
+      }
+    };
+    TestSecurityContextHolder.setAuthentication(new UsernamePasswordAuthenticationToken(
+        principal, principal.getPassword(), principal.getAuthorities()));
   }
 
   @Test
