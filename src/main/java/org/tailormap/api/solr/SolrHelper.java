@@ -294,91 +294,96 @@ public class SolrHelper implements AutoCloseable, Constants {
     logger.info("Indexing started for index: {}, feature type: {}", searchIndex.getName(), tmFeatureType.getName());
     searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
-    // collect features to index
-    SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
-
-    Query q = new Query(fs.getName().toString());
-    // filter out any hidden properties (there should be none though)
-    tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
-    if (propertyNames.isEmpty()) {
-      logger.warn(
-          "No valid properties to index for feature type: {}, skipping index {}.",
-          tmFeatureType.getName(),
-          searchIndex.getName());
-      return searchIndexRepository.save(searchIndex
-          .setStatus(SearchIndex.Status.ERROR)
-          .setSummary(
-              summary.errorMessage("No valid properties to index. Check if any properties are hidden.")));
-    }
-    q.setPropertyNames(List.copyOf(propertyNames));
-    q.setStartIndex(0);
-    // TODO: make maxFeatures configurable?
-    // q.setMaxFeatures(Integer.MAX_VALUE);
-    logger.trace("Indexing query: {}", q);
-    SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
-    final int total = simpleFeatureCollection.size();
+    final int total;
     List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
-    // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
-    //   issue for now but could be if the feature source is very, very large or slow
     UpdateResponse updateResponse;
     int indexCounter = 0;
     int indexSkippedCounter = 0;
-    try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
-      searchIndex.setSourceCrs(GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem()));
-      while (iterator.hasNext()) {
-        indexCounter++;
-        SimpleFeature feature = iterator.next();
-        // note that this will create a unique document
-        FeatureIndexingDocument doc = new FeatureIndexingDocument(feature.getID(), searchIndex.getId());
-        List<String> searchValues = new ArrayList<>();
-        List<String> displayValues = new ArrayList<>();
-        propertyNames.forEach(propertyName -> {
-          Object value = feature.getAttribute(propertyName);
-          if (value != null) {
-            if (value instanceof Geometry
-                && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
-              // We could use GeoJSON, but WKT is more compact and that would also incur a
-              // change to the API
-              doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
-            } else {
-              if (searchFields.contains(propertyName)) {
-                searchValues.add(value.toString());
-              }
-              if (displayFields.contains(propertyName)) {
-                displayValues.add(value.toString());
+
+    // collect features to index
+    SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
+    // dispose the datastore on any return or exception after it has been opened
+    try {
+      Query q = new Query(fs.getName().toString());
+      // filter out any hidden properties (there should be none though)
+      tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
+      if (propertyNames.isEmpty()) {
+        logger.warn(
+            "No valid properties to index for feature type: {}, skipping index {}.",
+            tmFeatureType.getName(),
+            searchIndex.getName());
+        return searchIndexRepository.save(searchIndex
+            .setStatus(SearchIndex.Status.ERROR)
+            .setSummary(summary.errorMessage(
+                "No valid properties to index. Check if any properties are hidden.")));
+      }
+      q.setPropertyNames(List.copyOf(propertyNames));
+      q.setStartIndex(0);
+      // TODO: make maxFeatures configurable?
+      // q.setMaxFeatures(Integer.MAX_VALUE);
+      logger.trace("Indexing query: {}", q);
+      SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
+      total = simpleFeatureCollection.size();
+      // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
+      //   issue for now but could be if the feature source is very, very large or slow
+      try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
+        searchIndex.setSourceCrs(
+            GeoToolsHelper.crsToString(fs.getSchema().getCoordinateReferenceSystem()));
+        while (iterator.hasNext()) {
+          indexCounter++;
+          SimpleFeature feature = iterator.next();
+          // note that this will create a unique document
+          FeatureIndexingDocument doc = new FeatureIndexingDocument(feature.getID(), searchIndex.getId());
+          List<String> searchValues = new ArrayList<>();
+          List<String> displayValues = new ArrayList<>();
+          propertyNames.forEach(propertyName -> {
+            Object value = feature.getAttribute(propertyName);
+            if (value != null) {
+              if (value instanceof Geometry
+                  && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
+                // We could use GeoJSON, but WKT is more compact and that would also incur a
+                // change to the API
+                doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
+              } else {
+                if (searchFields.contains(propertyName)) {
+                  searchValues.add(value.toString());
+                }
+                if (displayFields.contains(propertyName)) {
+                  displayValues.add(value.toString());
+                }
               }
             }
+          });
+          if (searchValues.isEmpty() || displayValues.isEmpty()) {
+            // this is a record/document that can either not be found or not be displayed
+            logger.trace(
+                "No search or display values found for feature: {} in feature type: {}, skipped for indexing",
+                feature.getID(),
+                tmFeatureType.getName());
+            indexSkippedCounter++;
+          } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
+            logger.trace(
+                "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
+                feature.getID(),
+                tmFeatureType.getName());
+            indexSkippedCounter++;
+          } else {
+            doc.setSearchFields(searchValues.toArray(new String[0]));
+            doc.setDisplayFields(displayValues.toArray(new String[0]));
+            docsBatch.add(doc);
           }
-        });
-        if (searchValues.isEmpty() || displayValues.isEmpty()) {
-          // this is a record/document that can either not be found or not be displayed
-          logger.trace(
-              "No search or display values found for feature: {} in feature type: {}, skipped for indexing",
-              feature.getID(),
-              tmFeatureType.getName());
-          indexSkippedCounter++;
-        } else if (doc.getGeometry() == null || doc.getGeometry().matches("^[A-Z]+\\s*EMPTY\\s*$")) {
-          logger.trace(
-              "No or empty geometry found for feature: {} in feature type: {}, skipped for indexing",
-              feature.getID(),
-              tmFeatureType.getName());
-          indexSkippedCounter++;
-        } else {
-          doc.setSearchFields(searchValues.toArray(new String[0]));
-          doc.setDisplayFields(displayValues.toArray(new String[0]));
-          docsBatch.add(doc);
-        }
 
-        if (indexCounter % solrBatchSize == 0) {
-          updateResponse = solrClient.addBeans(docsBatch, solrQueryTimeout);
-          logger.info(
-              "Added {} documents of {} to index, result status: {}",
-              indexCounter - indexSkippedCounter,
-              total,
-              updateResponse.getStatus());
-          progressListener.accept(
-              taskProgressEvent.total(total).progress((indexCounter - indexSkippedCounter)));
-          docsBatch.clear();
+          if (indexCounter % solrBatchSize == 0) {
+            updateResponse = solrClient.addBeans(docsBatch, solrQueryTimeout);
+            logger.info(
+                "Added {} documents of {} to index, result status: {}",
+                indexCounter - indexSkippedCounter,
+                total,
+                updateResponse.getStatus());
+            progressListener.accept(
+                taskProgressEvent.total(total).progress((indexCounter - indexSkippedCounter)));
+            docsBatch.clear();
+          }
         }
       }
     } finally {
