@@ -215,7 +215,6 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
     Drawing updatedDrawing = jdbcClient
         .sql("""
 UPDATE data.drawing SET
-id = :id,
 name = :name,
 description = :description,
 domain_data = :domainData::jsonb,
