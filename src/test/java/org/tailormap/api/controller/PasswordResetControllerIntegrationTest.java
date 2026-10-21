@@ -114,9 +114,9 @@ class PasswordResetControllerIntegrationTest {
   @Order(2)
   void confirm_password_reset_for_foo() throws Exception {
     final String confirmUrl = apiBasePath + "/user/reset-password";
-    final TemporaryToken latestToken = temporaryTokenRepository.findAll().stream()
-        .reduce((first, second) -> second)
-        .orElse(null);
+    final List<TemporaryToken> tokens = temporaryTokenRepository.findAll();
+    // Select latest token
+    final TemporaryToken latestToken = tokens.isEmpty() ? null : tokens.getLast();
     assertNotNull(latestToken, "There should be a token for user foo");
 
     mockMvc.perform(post(confirmUrl)
