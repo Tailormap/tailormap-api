@@ -422,10 +422,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
     }
 
-    boolean canRead = Objects.equals(authentication.getName(), drawing.getCreatedBy())
-        || (authentication.getPrincipal() instanceof TailormapUserDetails userDetails
-            && (userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
-                || userDetails.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL)));
+    boolean canRead = isDrawingOwner(drawing, authentication) || canReadAllDrawings(authentication);
 
     if (!canRead) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found");
@@ -447,12 +444,27 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
     }
 
-    boolean canSave = Objects.equals(authentication.getName(), drawing.getCreatedBy())
-        || (authentication.getPrincipal() instanceof TailormapUserDetails userDetails
-            && userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN));
+    boolean canSave = isDrawingOwner(drawing, authentication) || isDrawingsAdmin(authentication);
 
     if (!canSave) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient permissions to save drawing");
     }
+  }
+
+  private static boolean isDrawingOwner(@NonNull Drawing drawing, @NonNull Authentication authentication) {
+    return Objects.equals(authentication.getName(), drawing.getCreatedBy());
+  }
+
+  private static boolean isDrawingsAdmin(@NonNull Authentication authentication) {
+    return hasTruePropertyForKey(authentication, KEY_DRAWINGS_ADMIN);
+  }
+
+  private static boolean canReadAllDrawings(@NonNull Authentication authentication) {
+    return isDrawingsAdmin(authentication) || hasTruePropertyForKey(authentication, KEY_DRAWINGS_READ_ALL);
+  }
+
+  private static boolean hasTruePropertyForKey(@NonNull Authentication authentication, String key) {
+    return authentication.getPrincipal() instanceof TailormapUserDetails userDetails
+        && userDetails.hasTruePropertyForKey(key);
   }
 }
