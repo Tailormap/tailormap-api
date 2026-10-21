@@ -13,39 +13,14 @@ import static org.tailormap.api.persistence.Group.ADMIN;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-import org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.tailormap.api.configuration.JPAConfiguration;
-import org.tailormap.api.security.ActuatorSecurityConfiguration;
-import org.tailormap.api.security.ApiSecurityConfiguration;
+import org.tailormap.api.annotation.PostgresIntegrationTest;
 
-/**
- * Test for the {@code spring.jackson.factory.constraints.read.max-document-length} limit on JSON request bodies.
- *
- * <p>This test does not use {@link org.tailormap.api.annotation.PostgresIntegrationTest} because that annotation
- * includes {@code @EnableWebMvc}, which disables the Spring Boot WebMvc auto-configuration that configures the HTTP
- * message converters with the Spring Boot configured {@code JsonMapper}. This test uses the same WebMvc configuration
- * as the application.
- */
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      DataSourceAutoConfiguration.class,
-      HibernateJpaAutoConfiguration.class,
-      MailSenderAutoConfiguration.class,
-      ActuatorSecurityConfiguration.class,
-      ApiSecurityConfiguration.class,
-    })
-@ComponentScan(basePackages = {"org.tailormap.api"})
-@ActiveProfiles("postgresql")
+/** Test for the {@code spring.jackson.factory.constraints.read.max-document-length} limit on JSON request bodies. */
+@PostgresIntegrationTest
 @AutoConfigureMockMvc
 class JsonRequestBodySizeLimitIntegrationTest {
   private static final int MAX_DOCUMENT_LENGTH = 15 * 1024 * 1024;
