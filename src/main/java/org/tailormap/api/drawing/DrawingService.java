@@ -202,9 +202,10 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
         mapper.writeValueAsString(drawing.getDomainData()),
         OffsetDateTime.now(ZoneId.systemDefault()));
 
+    // Use the same message as when the user is not allowed to read the drawing, so the existence of the drawing is
+    // not disclosed
     final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)
-        .orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing has been deleted by another user"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found"));
 
     canSaveOrDeleteDrawing(oldDrawing, authentication);
 
@@ -303,6 +304,11 @@ WHERE id = :id RETURNING *""")
       @NonNull Authentication authentication,
       boolean withGeometries,
       int requestedSrid) {
+    // Check before querying, so anonymous users can't determine whether a drawing exists
+    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
+    }
+
     Optional<Drawing> drawing = jdbcClient
         .sql("SELECT * FROM data.drawing WHERE id = :id")
         .param("id", drawingId)

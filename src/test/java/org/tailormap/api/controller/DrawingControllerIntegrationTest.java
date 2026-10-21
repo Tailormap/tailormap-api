@@ -300,11 +300,24 @@ class DrawingControllerIntegrationTest {
   void get_nonexistent_drawing_anonymous() throws Exception {
     final String url = apiBasePath + "/app/default/drawing/" + UNKNOWN_DRAWING_ID;
 
+    // Same response as for an existing drawing, so the existence of a drawing is not disclosed
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isNotFound())
+        .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Drawing not found"));
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @Order(1)
+  void get_existing_drawing_anonymous() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
   }
 
   @Test
@@ -524,7 +537,32 @@ class DrawingControllerIntegrationTest {
             .content(drawing))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(404));
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "user",
+      password = "user",
+      authorities = {"test-bar"})
+  @Order(1)
+  void update_nonexistent_drawing() throws Exception {
+    // same response as for an existing drawing the user can not read, so the existence of a drawing is not
+    // disclosed
+    final String drawing = NEW_DRAWING_JSON
+        .replace("\"name\":", "\"id\":\"" + UNKNOWN_DRAWING_ID + "\",\"name\":")
+        .replace("\"name\":", "\"version\":1,\"name\":");
+
+    final String url = apiBasePath + "/app/default/drawing";
+    mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(drawing))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
   }
 
   /**
