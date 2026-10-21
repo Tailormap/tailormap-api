@@ -36,19 +36,21 @@ import org.tailormap.api.viewer.model.Drawing;
 import tools.jackson.core.JacksonException;
 
 /**
- * Controller for drawing operations. Note that the following endpoints are secured/require authentication:
+ * Controller for drawing operations. A drawing can only be read by its owner or by users with the drawings-admin or
+ * drawings-read-all property, and only be saved or deleted by its owner or by users with the drawings-admin property.
+ *
+ * <p>The following endpoints require authentication:
  *
  * <ul>
  *   <li>PUT /{viewerKind}/{viewerName}/drawing (@see DrawingController#createOrUpdateDrawing)
+ *   <li>GET /{viewerKind}/{viewerName}/drawing/{drawingId} (@see DrawingController#getDrawing)
  *   <li>DELETE /drawing/{drawingId} (@see DrawingController#deleteDrawing)
  * </ul>
  *
- * The following endpoints do not require authentication (but may return different results based on the user's
- * role/authorization):
+ * The following endpoint does not require authentication, but returns an empty list for anonymous users:
  *
  * <ul>
  *   <li>GET /drawing/list (@see DrawingController#listDrawings)
- *   <li>GET /{viewerKind}/{viewerName}/drawing/{drawingId} (@see DrawingController#getDrawing)
  * </ul>
  */
 @AppRestController
@@ -100,7 +102,7 @@ public class DrawingController {
   }
 
   /**
-   * Get a drawing by id. Does not require authentication per-se, but authorizations are checked at the drawing level.
+   * Get a drawing by id. Requires authentication, authorizations are checked at the drawing level.
    *
    * @param drawingId the id of the drawing to retrieve
    * @param application the application that this drawing is created or updated in (used to determine the SRID)
@@ -129,7 +131,8 @@ public class DrawingController {
   }
 
   /**
-   * List drawings. Does not require authentication per-se, but authorizations are checked at the drawing level.
+   * List drawings readable by the current user. Does not require authentication, but returns an empty set for
+   * anonymous users.
    *
    * @return a, possibly empty, set of drawings
    * @see DrawingService#getDrawingsForUser(Authentication)
