@@ -371,7 +371,7 @@
 <a class="jxr_linenumber" name="L363" href="#L363">363</a> 
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>     FeaturesResponse featuresResponse = <strong class="jxr_keyword">new</strong> FeaturesResponse();
 <a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     SimpleFeatureSource fs;
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     SimpleFeatureSource fs = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>       GeometricShapeFactory shapeFact = <strong class="jxr_keyword">new</strong> GeometricShapeFactory();
 <a class="jxr_linenumber" name="L369" href="#L369">369</a>       shapeFact.setNumPoints(32);
@@ -425,115 +425,121 @@
 <a class="jxr_linenumber" name="L417" href="#L417">417</a>     } <strong class="jxr_keyword">catch</strong> (CQLException | FactoryException | UnsupportedOperationException e) {
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>           HttpStatus.BAD_REQUEST, <span class="jxr_string">"Could not parse requested filter: "</span> + e.getMessage(), e);
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>     }
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>     <strong class="jxr_keyword">return</strong> featuresResponse;
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>   }
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> executeQueryOnFeatureSourceAndClose(
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>       <strong class="jxr_keyword">boolean</strong> simplifyGeometry,
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>       @NotNull FeaturesResponse featuresResponse,
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>       @NotNull TMFeatureType tmFeatureType,
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>       @NotNull AppLayerSettings appLayerSettings,
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>       <strong class="jxr_keyword">boolean</strong> onlyGeometries,
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>       @NotNull SimpleFeatureSource featureSource,
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>       @NotNull Query selectQuery,
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>       @NotNull Application application,
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>       <strong class="jxr_keyword">boolean</strong> skipGeometryOutput,
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>       <strong class="jxr_keyword">boolean</strong> withAttachments)
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>       <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">boolean</strong> addFields = false;
-<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     MathTransform transform = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>       transform = TransformationUtil.getTransformationToApplication(application, featureSource);
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>     } <strong class="jxr_keyword">catch</strong> (FactoryException e) {
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>       logger.error(<span class="jxr_string">"Can not transform geometry to desired CRS"</span>, e);
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>     }
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>     <strong class="jxr_keyword">boolean</strong> ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         &amp;&amp; !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
-<a class="jxr_linenumber" name="L447" href="#L447">447</a> 
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>     List&lt;Object&gt; featurePKs = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>     Map&lt;String, TMFeatureTypeHelper.AttributeWithSettings&gt; configuredAttributes =
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>         getConfiguredAttributes(tmFeatureType, appLayerSettings);
-<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <em class="jxr_comment">// send request to attribute source</em>
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>     <strong class="jxr_keyword">try</strong> (SimpleFeatureIterator feats =
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>         featureSource.getFeatures(selectQuery).features()) {
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>       <strong class="jxr_keyword">while</strong> (feats.hasNext()) {
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>         addFields = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>         <em class="jxr_comment">// transform found simplefeatures to list of Feature</em>
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>         SimpleFeature feature = feats.next();
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         <em class="jxr_comment">// processedGeometry can be null</em>
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>         String processedGeometry = GeometryProcessor.processGeometry(
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>             feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>             simplifyGeometry,
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>             <strong class="jxr_keyword">true</strong>,
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>             transform);
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>         Feature newFeat = <strong class="jxr_keyword">new</strong> Feature().fid(feature.getID()).geometry(processedGeometry);
-<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>         <strong class="jxr_keyword">if</strong> (!onlyGeometries) {
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>           <strong class="jxr_keyword">for</strong> (String attName : configuredAttributes.keySet()) {
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>             Object value = feature.getAttribute(attName);
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>             <strong class="jxr_keyword">if</strong> (value instanceof Geometry geometry) {
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>               <strong class="jxr_keyword">if</strong> (skipGeometryOutput) {
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 value = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>                 value = GeometryProcessor.geometryToWKT(geometry);
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>               }
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>             }
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>             newFeat.putAttributesItem(attName, value);
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>           }
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>           <strong class="jxr_keyword">if</strong> (withAttachments &amp;&amp; ftSupportsAttachments) {
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>             <em class="jxr_comment">// Just add the PK as is, no conversion needed</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>             featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>           }
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>         }
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>         featuresResponse.addFeaturesItem(newFeat);
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>       }
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>       featureSource.getDataStore().dispose();
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>     }
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>     FeatureTypeTemplate ftt = tmFeatureType.getSettings().getTemplate();
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>     <strong class="jxr_keyword">if</strong> (ftt != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>       featuresResponse.setTemplate(ftt.getTemplate());
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>     }
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>     <strong class="jxr_keyword">if</strong> (addFields) {
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>       configuredAttributes.values().stream()
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>           .map(attributeWithSettings -&gt; {
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>             TMAttributeType type =
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>                 attributeWithSettings.attributeDescriptor().getType();
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ColumnMetadata()
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>                 .name(attributeWithSettings
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>                     .attributeDescriptor()
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>                     .getName())
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>                 .alias(attributeWithSettings.settings().getTitle())
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>                 .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
-<a class="jxr_linenumber" name="L505" href="#L505">505</a>           })
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>           .forEach(featuresResponse::addColumnMetadataItem);
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>     }
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>     <strong class="jxr_keyword">if</strong> (ftSupportsAttachments) {
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>       <em class="jxr_comment">//  add attachment metadata</em>
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>       featuresResponse.setAttachmentMetadata(
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>           featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));
-<a class="jxr_linenumber" name="L512" href="#L512">512</a> 
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>       <strong class="jxr_keyword">if</strong> (withAttachments) {
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>         <em class="jxr_comment">//  fetch all attachments for all features, grouped by feature fid</em>
-<a class="jxr_linenumber" name="L515" href="#L515">515</a>         Map&lt;String, List&lt;AttachmentMetadata&gt;&gt; attachmentsByFeatureId =
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>         <em class="jxr_comment">//  add attachment data to features using the feature FID to match</em>
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>         <strong class="jxr_keyword">for</strong> (Feature feature : featuresResponse.getFeatures()) {
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>           String primaryKey = feature.getFid();
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>           List&lt;AttachmentMetadata&gt; attachments = attachmentsByFeatureId.get(primaryKey);
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>           <strong class="jxr_keyword">if</strong> (attachments != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>             feature.setAttachments(attachments);
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>           }
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>         }
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>       }
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>     }
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>   }
-<a class="jxr_linenumber" name="L528" href="#L528">528</a> }
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>       <strong class="jxr_keyword">if</strong> (fs != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         <em class="jxr_comment">// Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is</em>
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <em class="jxr_comment">// invalid the datastore will be left open, so close here to make sure (disposing twice won't hurt)</em>
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         fs.getDataStore().dispose();
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>       }
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>     }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     <strong class="jxr_keyword">return</strong> featuresResponse;
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>   }
+<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> executeQueryOnFeatureSourceAndClose(
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>       <strong class="jxr_keyword">boolean</strong> simplifyGeometry,
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>       @NotNull FeaturesResponse featuresResponse,
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>       @NotNull TMFeatureType tmFeatureType,
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>       @NotNull AppLayerSettings appLayerSettings,
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>       <strong class="jxr_keyword">boolean</strong> onlyGeometries,
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>       @NotNull SimpleFeatureSource featureSource,
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>       @NotNull Query selectQuery,
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>       @NotNull Application application,
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       <strong class="jxr_keyword">boolean</strong> skipGeometryOutput,
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>       <strong class="jxr_keyword">boolean</strong> withAttachments)
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>     <strong class="jxr_keyword">boolean</strong> addFields = false;
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>     MathTransform transform = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       transform = TransformationUtil.getTransformationToApplication(application, featureSource);
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>     } <strong class="jxr_keyword">catch</strong> (FactoryException e) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>       logger.error(<span class="jxr_string">"Can not transform geometry to desired CRS"</span>, e);
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>     }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>     <strong class="jxr_keyword">boolean</strong> ftSupportsAttachments = tmFeatureType.getSettings().getAttachmentAttributes() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>         &amp;&amp; !tmFeatureType.getSettings().getAttachmentAttributes().isEmpty();
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> 
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>     List&lt;Object&gt; featurePKs = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>     Map&lt;String, TMFeatureTypeHelper.AttributeWithSettings&gt; configuredAttributes =
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         getConfiguredAttributes(tmFeatureType, appLayerSettings);
+<a class="jxr_linenumber" name="L457" href="#L457">457</a> 
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>     <em class="jxr_comment">// send request to attribute source</em>
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <strong class="jxr_keyword">try</strong> (SimpleFeatureIterator feats =
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         featureSource.getFeatures(selectQuery).features()) {
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       <strong class="jxr_keyword">while</strong> (feats.hasNext()) {
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>         addFields = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>         <em class="jxr_comment">// transform found simplefeatures to list of Feature</em>
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>         SimpleFeature feature = feats.next();
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> 
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <em class="jxr_comment">// processedGeometry can be null</em>
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>         String processedGeometry = GeometryProcessor.processGeometry(
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>             feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>             simplifyGeometry,
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>             <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>             transform);
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>         Feature newFeat = <strong class="jxr_keyword">new</strong> Feature().fid(feature.getID()).geometry(processedGeometry);
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> 
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>         <strong class="jxr_keyword">if</strong> (!onlyGeometries) {
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>           <strong class="jxr_keyword">for</strong> (String attName : configuredAttributes.keySet()) {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>             Object value = feature.getAttribute(attName);
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>             <strong class="jxr_keyword">if</strong> (value instanceof Geometry geometry) {
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>               <strong class="jxr_keyword">if</strong> (skipGeometryOutput) {
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>                 value = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>               } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>                 value = GeometryProcessor.geometryToWKT(geometry);
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>               }
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>             }
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>             newFeat.putAttributesItem(attName, value);
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>           }
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>           <strong class="jxr_keyword">if</strong> (withAttachments &amp;&amp; ftSupportsAttachments) {
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>             <em class="jxr_comment">// Just add the PK as is, no conversion needed</em>
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>             featurePKs.add(feature.getAttribute(tmFeatureType.getPrimaryKeyAttribute()));
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>           }
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         }
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>         featuresResponse.addFeaturesItem(newFeat);
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>       }
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>       featureSource.getDataStore().dispose();
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>     }
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>     FeatureTypeTemplate ftt = tmFeatureType.getSettings().getTemplate();
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>     <strong class="jxr_keyword">if</strong> (ftt != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>       featuresResponse.setTemplate(ftt.getTemplate());
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>     }
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">if</strong> (addFields) {
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>       configuredAttributes.values().stream()
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>           .map(attributeWithSettings -&gt; {
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>             TMAttributeType type =
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>                 attributeWithSettings.attributeDescriptor().getType();
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ColumnMetadata()
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>                 .name(attributeWithSettings
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>                     .attributeDescriptor()
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>                     .getName())
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>                 .alias(attributeWithSettings.settings().getTitle())
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>                 .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>           })
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>           .forEach(featuresResponse::addColumnMetadataItem);
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>     }
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>     <strong class="jxr_keyword">if</strong> (ftSupportsAttachments) {
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>       <em class="jxr_comment">//  add attachment metadata</em>
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>       featuresResponse.setAttachmentMetadata(
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>           featureTypeHelper.getAttachmentAttributesWithMaxFileUploadSize(tmFeatureType));
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>       <strong class="jxr_keyword">if</strong> (withAttachments) {
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>         <em class="jxr_comment">//  fetch all attachments for all features, grouped by feature fid</em>
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>         Map&lt;String, List&lt;AttachmentMetadata&gt;&gt; attachmentsByFeatureId =
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>             AttachmentsHelper.listAttachmentsForFeaturesByFeatureId(tmFeatureType, featurePKs);
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>         <em class="jxr_comment">//  add attachment data to features using the feature FID to match</em>
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>         <strong class="jxr_keyword">for</strong> (Feature feature : featuresResponse.getFeatures()) {
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>           String primaryKey = feature.getFid();
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>           List&lt;AttachmentMetadata&gt; attachments = attachmentsByFeatureId.get(primaryKey);
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>           <strong class="jxr_keyword">if</strong> (attachments != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>             feature.setAttachments(attachments);
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>           }
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>         }
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>       }
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>     }
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>   }
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
