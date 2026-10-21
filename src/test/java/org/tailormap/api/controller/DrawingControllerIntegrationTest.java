@@ -25,7 +25,7 @@ import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper
 
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.Charset;
-import java.util.Arrays;
+
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -628,11 +628,10 @@ class DrawingControllerIntegrationTest {
         .andExpect(status().isOk())
         .andReturn();
 
-    Drawing drawing = Arrays.stream(
-            new JsonMapper().readValue(result.getResponse().getContentAsString(), Drawing[].class))
-        // Reduce to last drawing in collection
-        .reduce((first, second) -> second)
-        .orElse(null);
+    Drawing[] drawings =
+        new JsonMapper().readValue(result.getResponse().getContentAsString(), Drawing[].class);
+    // Select last drawing in collection
+    Drawing drawing = drawings.length == 0 ? null : drawings[drawings.length - 1];
     assertNotNull(drawing, "drawing should not be null");
     assertNotEquals(KNOWN_DRAWING_ID, drawing.getId().toString());
 
