@@ -231,7 +231,9 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
     AttributeDescriptor pkDescriptor =
         ds.getSchema(featureType.getName()).getDescriptor(featureType.getPrimaryKeyAttribute());
 
-    try (Connection conn = ((DelegatingConnection) ds.getDataSource().getConnection()).getInnermostDelegate()) {
+    // Close the pooled connection, not the innermost delegate, otherwise the connection is not returned to the pool
+    try (Connection pooledConn = ds.getDataSource().getConnection()) {
+      Connection conn = ((DelegatingConnection) pooledConn).getInnermostDelegate();
       DatabaseMetaData metaData = conn.getMetaData();
       try (ResultSet rs = metaData.getColumns(
           conn.getCatalog(),
