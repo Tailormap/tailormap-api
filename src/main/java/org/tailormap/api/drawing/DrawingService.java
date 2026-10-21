@@ -209,23 +209,23 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
 
     canSaveOrDeleteDrawing(oldDrawing, authentication);
 
-    if (drawing.getVersion() < oldDrawing.getVersion()) {
+    if (!Objects.equals(drawing.getVersion(), oldDrawing.getVersion())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user");
     }
-    drawing.setVersion(drawing.getVersion() + 1);
 
+    // Only update if the version is unchanged, to prevent lost updates by concurrent requests
     Drawing updatedDrawing = jdbcClient
         .sql("""
 UPDATE data.drawing SET
-id=:id,
-name=:name,
-description=:description,
-domain_data=:domainData::jsonb,
-updated_by=:updatedBy,
-updated_at=:updatedAt,
-srid=:srid,
-version=:version
-WHERE id = :id RETURNING *""")
+id = :id,
+name = :name,
+description = :description,
+domain_data = :domainData::jsonb,
+updated_by = :updatedBy,
+updated_at = :updatedAt,
+srid = :srid,
+version = version + 1
+WHERE id = :id AND version = :version RETURNING *""")
         .param("id", drawing.getId())
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
@@ -235,7 +235,9 @@ WHERE id = :id RETURNING *""")
         .param("srid", drawing.getSrid())
         .param("version", drawing.getVersion())
         .query(drawingRowMapper)
-        .single();
+        .optional()
+        .orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user"));
 
     // delete even if drawing.getFeatureCollection()==null, because all features could have been
     // removed, (re)insert the featureCollection afterward

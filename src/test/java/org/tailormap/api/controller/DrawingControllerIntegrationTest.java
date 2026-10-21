@@ -604,6 +604,54 @@ class DrawingControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  @Order(31)
+  void update_drawing_with_wrong_version_by_admin() throws Exception {
+    String url = apiBasePath + "/drawing/list";
+    MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    Drawing drawing = Arrays.stream(
+            new JsonMapper().readValue(result.getResponse().getContentAsString(), Drawing[].class))
+        // Reduce to last drawing in collection
+        .reduce((first, second) -> second)
+        .orElse(null);
+    assertNotNull(drawing, "drawing should not be null");
+    assertNotEquals(KNOWN_DRAWING_ID, drawing.getId().toString());
+
+    final String getUrl = apiBasePath + "/app/default/drawing/" + drawing.getId();
+    final String putUrl = apiBasePath + "/app/default/drawing";
+
+    // both an outdated and a higher than current version must be rejected
+    for (int version : new int[] {drawing.getVersion() - 1, drawing.getVersion() + 1}) {
+      String updatedDrawing = NEW_DRAWING_JSON
+          .replace("Drawing 1 description", "Should not be stored")
+          .replace("\"name\":", "\"id\":\"" + drawing.getId() + "\",\"name\":")
+          .replace("\"name\":", "\"version\":" + version + ",\"name\":");
+
+      mockMvc.perform(put(putUrl)
+              .accept(MediaType.APPLICATION_JSON)
+              .with(setServletPath(putUrl))
+              .contentType(MediaType.APPLICATION_JSON)
+              .characterEncoding(Charset.defaultCharset())
+              .content(updatedDrawing))
+          .andExpect(status().isConflict())
+          .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+          .andExpect(jsonPath("$.code").value(409))
+          .andExpect(jsonPath("$.message").value("Drawing has been updated by another user"));
+    }
+
+    mockMvc.perform(get(getUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getUrl)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.version").value(drawing.getVersion()))
+        .andExpect(jsonPath("$.description").value(drawing.getDescription()));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
   @Order(Integer.MAX_VALUE)
   void delete_drawings_by_admin() throws Exception {
     final String url = apiBasePath + "/drawing/list";
