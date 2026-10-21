@@ -233,6 +233,8 @@ CREATED_BY      VARCHAR2(255) NOT NULL)
 
     // Close the pooled connection, not the innermost delegate, otherwise the connection is not returned to the pool
     try (Connection pooledConn = ds.getDataSource().getConnection()) {
+      // Closed by closing pooledConn
+      @SuppressWarnings("PMD.CloseResource")
       Connection conn = ((DelegatingConnection) pooledConn).getInnermostDelegate();
       DatabaseMetaData metaData = conn.getMetaData();
       try (ResultSet rs = metaData.getColumns(
