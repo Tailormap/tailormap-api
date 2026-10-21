@@ -316,8 +316,7 @@ WHERE id = :id AND version = :version RETURNING *""")
         .sql("SELECT * FROM data.drawing WHERE id = :id")
         .param("id", drawingId)
         .query(drawingRowMapper)
-        .stream()
-        .findFirst();
+        .optional();
 
     drawing.ifPresent(d -> {
       // check if the user is allowed to read the drawing
@@ -390,6 +389,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    * @param drawingId the ID of the drawing
    * @param authentication the current user
    */
+  @Transactional
   public void deleteDrawing(@NonNull UUID drawingId, @NonNull Authentication authentication) {
     canSaveOrDeleteDrawing(
         getDrawing(drawingId, authentication)
