@@ -556,6 +556,34 @@ class DrawingControllerIntegrationTest {
   }
 
   @Test
+  @Order(1)
+  void update_drawing_read_all_user_with_forged_created_by() throws Exception {
+    // a user that can read but not save the drawing gets past the read check, so this verifies the save check uses
+    // the stored owner and not the forged owner from the request
+    authenticateAsUserWithProperty(KEY_DRAWINGS_READ_ALL);
+    final String drawing = NEW_DRAWING_JSON
+        .replace("\"name\":", "\"id\":\"" + KNOWN_DRAWING_ID + "\",\"name\":")
+        .replace("\"name\":", "\"createdBy\":\"user\",\"name\":")
+        .replace("\"name\":", "\"version\":1,\"name\":");
+
+    final String url = apiBasePath + "/app/default/drawing";
+    mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(drawing))
+        .andExpect(status().isForbidden())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(403));
+
+    final String getUrl = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+    mockMvc.perform(get(getUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getUrl)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Testcase"))
+        .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        .andExpect(jsonPath("$.version").value(1));
+  }
+
+  @Test
   @WithMockUser(
       username = "user",
       password = "user",
