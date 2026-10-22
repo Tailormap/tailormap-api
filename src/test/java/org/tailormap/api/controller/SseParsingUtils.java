@@ -20,9 +20,14 @@ abstract class SseParsingUtils {
    * {@code {"details":{"message":"Extract task
    * completed","progress":100,"downloadId":"begroeidterreindeel15061479295163305053.csv"},"eventType":"extract-completed","id":"019d6838-7f48-7053-9256-dd4b57c14264"}
    * }
+   *
+   * <p>The stream may be read while the server is still writing to it, so a trailing line without a line terminator
+   * can be an unfinished message. Such a line is left unparsed.
    */
   private static Stream<JsonNode> parseEvents(String sseMessages) {
-    return Arrays.stream(sseMessages.split("\\R"))
+    final int lastLineEnd = Math.max(sseMessages.lastIndexOf('\n'), sseMessages.lastIndexOf('\r'));
+    final String completeLines = sseMessages.substring(0, lastLineEnd + 1);
+    return Arrays.stream(completeLines.split("\\R"))
         .map(String::trim)
         .filter(line -> line.startsWith("data:"))
         .map(line -> JsonMapper.shared().readTree(line.substring("data:".length())));
