@@ -6,80 +6,76 @@
 package org.tailormap.api.controller;
 
 import java.util.Arrays;
-import org.tailormap.api.viewer.model.ServerSentEventResponse;
+import java.util.List;
+import java.util.stream.Stream;
+import org.tailormap.api.viewer.model.ServerSentEventResponse.EventTypeEnum;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 abstract class SseParsingUtils {
 
   /**
-   * Parse the last non-empty line from the SSE stream that looks something like:
-   * {@code data:{"details":{"message":"Extract task
+   * Parse the {@code data:} lines from an SSE stream as JSON events. Each event looks something like:
+   * {@code {"details":{"message":"Extract task
    * completed","progress":100,"downloadId":"begroeidterreindeel15061479295163305053.csv"},"eventType":"extract-completed","id":"019d6838-7f48-7053-9256-dd4b57c14264"}
-   * } as JSON and extract the file from the details.
+   * }
+   *
+   * <p>The stream may be read while the server is still writing to it, so a trailing line without a line terminator
+   * can be an unfinished message. Such a line is left unparsed.
    */
-  String getLastCompletedEventJson(String sseMessages) {
-    return Arrays.stream(sseMessages.split("\\R"))
+  private static Stream<JsonNode> parseEvents(String sseMessages) {
+    final int lastLineEnd = Math.max(sseMessages.lastIndexOf('\n'), sseMessages.lastIndexOf('\r'));
+    final String completeLines = sseMessages.substring(0, lastLineEnd + 1);
+    return Arrays.stream(completeLines.split("\\R"))
         .map(String::trim)
-        .filter(line -> !line.isEmpty())
         .filter(line -> line.startsWith("data:"))
-        .filter(line -> line.contains("\"eventType\":\"extract-completed\""))
-        .reduce((first, second) -> second)
-        .orElseThrow()
-        .substring("data:".length());
+        .map(line -> JsonMapper.shared().readTree(line.substring("data:".length())));
+  }
+
+  private static Stream<JsonNode> parseEvents(String sseMessages, EventTypeEnum eventType) {
+    return parseEvents(sseMessages)
+        .filter(event ->
+            eventType.getValue().equals(event.path("eventType").asString()));
+  }
+
+  /** Get the last extract completed event from the SSE stream as JSON. */
+  String getLastCompletedEventJson(String sseMessages) {
+    List<JsonNode> completedEvents =
+        parseEvents(sseMessages, EventTypeEnum.EXTRACT_COMPLETED).toList();
+    // Select last completed event, throws NoSuchElementException if there is none
+    return completedEvents.getLast().toString();
   }
 
   String getDownloadId(String eventJson) throws JacksonException {
-    return new ObjectMapper()
+    return JsonMapper.shared()
         .readTree(eventJson)
         .path("details")
         .path("downloadId")
         .asString();
   }
 
-  int count_completed_messages(String s) {
-    int count = 0;
-    int index = 0;
-    final String marker = "\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.EXTRACT_COMPLETED + "\"";
-    while ((index = s.indexOf(marker, index)) != -1) {
-      count++;
-      index += marker.length();
-    }
-    return count;
+  int count_completed_messages(String stream) {
+    return (int) parseEvents(stream, EventTypeEnum.EXTRACT_COMPLETED).count();
   }
 
   int count_all_keep_alive_messages(String stream) {
-    int count = 0;
-    int index = 0;
-    final String marker = "\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"";
-    while ((index = stream.indexOf(marker, index)) != -1) {
-      count++;
-      index += marker.length();
-    }
-    return count;
+    return (int) parseEvents(stream, EventTypeEnum.KEEP_ALIVE).count();
   }
 
+  /** Count the keep-alive messages of the viewer event bus, which have empty details and an id. */
   int count_viewer_keep_alive_messages(String stream) {
-    int count = 0;
-    int index = 0;
-    final String marker =
-        "\"details\":{},\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\",\"id\"";
-    while ((index = stream.indexOf(marker, index)) != -1) {
-      count++;
-      index += marker.length();
-    }
-    return count;
+    return (int) parseEvents(stream, EventTypeEnum.KEEP_ALIVE)
+        .filter(event -> event.path("details").isObject()
+            && event.path("details").isEmpty()
+            && event.has("id"))
+        .count();
   }
 
+  /** Count the keep-alive messages of the admin event bus, which have null details. */
   int count_admin_keep_alive_messages(String stream) {
-    int count = 0;
-    int index = 0;
-    final String marker =
-        "\"details\":null,\"eventType\":\"" + ServerSentEventResponse.EventTypeEnum.KEEP_ALIVE + "\"";
-    while ((index = stream.indexOf(marker, index)) != -1) {
-      count++;
-      index += marker.length();
-    }
-    return count;
+    return (int) parseEvents(stream, EventTypeEnum.KEEP_ALIVE)
+        .filter(event -> event.has("details") && event.get("details").isNull())
+        .count();
   }
 }

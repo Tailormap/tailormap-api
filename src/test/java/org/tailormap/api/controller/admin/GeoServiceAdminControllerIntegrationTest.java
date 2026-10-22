@@ -15,8 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.StaticTestData.getResourceString;
+import static org.tailormap.api.TestJson.json;
 
 import com.jayway.jsonpath.JsonPath;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import mockwebserver3.MockResponse;
@@ -35,8 +37,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 
 @PostgresIntegrationTest
 class GeoServiceAdminControllerIntegrationTest {
@@ -58,12 +58,8 @@ class GeoServiceAdminControllerIntegrationTest {
   @Value("classpath:/wms/service_exception_1_3_0.xml")
   private Resource wmsServiceException1_3_0;
 
-  private static ObjectNode getGeoServicePOSTBody(String url) {
-    return new JsonMapper()
-        .createObjectNode()
-        .put("protocol", "wms")
-        .put("title", "test")
-        .put("url", url);
+  private static String getGeoServicePOSTBody(String url) {
+    return json(Map.of("protocol", "wms", "title", "test", "url", url));
   }
 
   @Test
@@ -82,7 +78,7 @@ class GeoServiceAdminControllerIntegrationTest {
       server.start();
 
       String url = server.url("/test-wms").toString();
-      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url);
 
       MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
               .param("catalogNodeId", "GeoServiceAdminController")
@@ -202,7 +198,7 @@ class GeoServiceAdminControllerIntegrationTest {
       server.start();
 
       String url = server.url("/test-wms").toString();
-      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url);
 
       mockMvc.perform(post(adminBasePath + "/geo-services/new")
               .param("catalogNodeId", "GeoServiceAdminController")
@@ -249,7 +245,7 @@ class GeoServiceAdminControllerIntegrationTest {
       server.start();
 
       String url = server.url("/test-wms").toString();
-      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url);
 
       MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
               .param("catalogNodeId", "GeoServiceAdminController")

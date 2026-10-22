@@ -10,7 +10,9 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -46,7 +48,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().json("{\"status\":\"UP\"}"));
+        .andExpect(content().json(json(Map.of("status", "UP"))));
   }
 
   @Test
@@ -57,7 +59,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().json("{\"status\":\"UP\"}"));
+        .andExpect(content().json(json(Map.of("status", "UP"))));
   }
 
   @Test

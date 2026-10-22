@@ -19,14 +19,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_READ_ALL;
 
 import com.jayway.jsonpath.JsonPath;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -39,6 +44,7 @@ import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,32 +73,12 @@ class DrawingControllerIntegrationTest {
   private static final String UNKNOWN_DRAWING_ID = "a73ac8ee-1d64-44be-a05e-b6426e2c1c59";
   private static final String KNOWN_DRAWING_ID = "38faa008-013e-49d4-9528-8f58c94d8791";
 
-  private static final String NEW_DRAWING_JSON = """
-{
-"name": "Drawing 1",
-"description": "Drawing 1 description",
-"domainData": {"items": 1, "domain": "test drawings"},
-"srid": 28992,
-"featureCollection": {
-"type": "FeatureCollection",
-"features": [ {
-"type": "Feature",
-"geometry": {
-"type": "Polygon",
-"coordinates": [[[132300.928,458629.588],[132302.724,458633.881],[132302.947,458634.318],[132303.327,458634.91400000005],[132303.772,458635.463],[132304.277,458635.95800000004],[132304.834,458636.393],[132305.436,458636.76200000005],[132306.076,458637.061],[132306.746,458637.28599999996],[132307.437,458637.433],[132308.141,458637.502],[132308.847,458637.49],[132309.548,458637.399],[132309.586,458637.39099999995],[132310.246,458637.205],[132311.059,458639.08],[132308.945,458639.943],[132306.112,458641.216],[132305.358,458639.943],[132304.898,458639.368],[132304.292,458638.757],[132303.703,458638.277],[132302.98,458637.805],[132302.304,458637.459],[132301.497,458637.14699999994],[132300.764,458636.94999999995],[132298.981,458636.524],[132297.813,458636.3460000001],[132296.568,458636.24199999997],[132295.387,458636.223],[132294.148,458636.288],[132292.419,458636.46499999997],[132290.614,458636.73099999997],[132288.866,458637.069],[132287.14,458637.485],[132270.926,458640.482],[132267.328,458613.3950000001],[132264.028,458607.445],[132258.431,458602.51900000003],[132259.646,458600.0],[132260.791,458597.624],[132267.141,458592.053],[132271.287,458591.25299999997],[132284.279,458588.227],[132294.24,458585.92399999994],[132295.651,458595.245],[132296.248,458600.0],[132297.991,458613.87],[132300.928,458629.588]]]
-},
-"properties": { "prop0": "value0" }
-},
-{
-"type": "Feature",
-"geometry": {
-"type": "Point",
-"coordinates": [ 132300, 458629]
-},
-"properties": { "prop0": "value1", "prop1": 0.0, "rendering": { "fill": "red", "stroke": "black" }}
-}
-] } }
-""";
+  /** Read a new drawing (without id) with features from {@code drawings/new-drawing.json}. */
+  private static Drawing newDrawing() throws IOException {
+    try (InputStream in = new ClassPathResource("drawings/new-drawing.json").getInputStream()) {
+      return JsonMapper.shared().readValue(in, Drawing.class);
+    }
+  }
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -145,7 +131,7 @@ class DrawingControllerIntegrationTest {
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
-            .content(NEW_DRAWING_JSON))
+            .content(json(newDrawing())))
         .andExpect(status().isCreated())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         // API created values
@@ -246,7 +232,7 @@ class DrawingControllerIntegrationTest {
     final String body = result.getResponse().getContentAsString();
     assertNotNull(body, "response body should not be null");
 
-    Drawing[] drawings = new JsonMapper().readValue(body, Drawing[].class);
+    Drawing[] drawings = JsonMapper.shared().readValue(body, Drawing[].class);
     // Select last drawing in collection
     Drawing drawing = drawings.length == 0 ? null : drawings[drawings.length - 1];
     assertNotNull(drawing, "drawing should not be null");
@@ -256,13 +242,13 @@ class DrawingControllerIntegrationTest {
     Integer oldVersion = drawing.getVersion();
     String oldName = drawing.getName();
 
-    // update the NEW_DRAWING_JSON drawing, createdBy and createdAt are read-only and should be ignored
-    String updatedDrawing = NEW_DRAWING_JSON
-        .replace("Drawing 1 description", "Edited drawing 2 description")
-        .replace("\"name\":", "\"id\":\"" + drawingId + "\",\"name\":")
-        .replace("\"name\":", "\"createdBy\":\"forged-user\",\"name\":")
-        .replace("\"name\":", "\"createdAt\":\"2000-01-01T00:00:00Z\",\"name\":")
-        .replace("\"name\":", "\"version\":" + oldVersion + ",\"name\":");
+    // update the new drawing, createdBy and createdAt are read-only and should be ignored
+    String updatedDrawing = json(newDrawing()
+        .id(drawing.getId())
+        .description("Edited drawing 2 description")
+        .createdBy("forged-user")
+        .createdAt(OffsetDateTime.parse("2000-01-01T00:00:00Z"))
+        .version(oldVersion));
 
     url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
@@ -539,10 +525,10 @@ class DrawingControllerIntegrationTest {
       authorities = {"test-bar"})
   @Order(1)
   void update_drawing_other_user_with_forged_created_by() throws Exception {
-    final String drawing = NEW_DRAWING_JSON
-        .replace("\"name\":", "\"id\":\"" + KNOWN_DRAWING_ID + "\",\"name\":")
-        .replace("\"name\":", "\"createdBy\":\"user\",\"name\":")
-        .replace("\"name\":", "\"version\":1,\"name\":");
+    final String drawing = json(newDrawing()
+        .id(UUID.fromString(KNOWN_DRAWING_ID))
+        .createdBy("user")
+        .version(1));
 
     final String url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
@@ -561,10 +547,10 @@ class DrawingControllerIntegrationTest {
     // a user that can read but not save the drawing gets past the read check, so this verifies the save check uses
     // the stored owner and not the forged owner from the request
     authenticateAsUserWithProperty(KEY_DRAWINGS_READ_ALL);
-    final String drawing = NEW_DRAWING_JSON
-        .replace("\"name\":", "\"id\":\"" + KNOWN_DRAWING_ID + "\",\"name\":")
-        .replace("\"name\":", "\"createdBy\":\"user\",\"name\":")
-        .replace("\"name\":", "\"version\":1,\"name\":");
+    final String drawing = json(newDrawing()
+        .id(UUID.fromString(KNOWN_DRAWING_ID))
+        .createdBy("user")
+        .version(1));
 
     final String url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
@@ -592,9 +578,8 @@ class DrawingControllerIntegrationTest {
   void update_nonexistent_drawing() throws Exception {
     // same response as for an existing drawing the user can not read, so the existence of a drawing is not
     // disclosed
-    final String drawing = NEW_DRAWING_JSON
-        .replace("\"name\":", "\"id\":\"" + UNKNOWN_DRAWING_ID + "\",\"name\":")
-        .replace("\"name\":", "\"version\":1,\"name\":");
+    final String drawing =
+        json(newDrawing().id(UUID.fromString(UNKNOWN_DRAWING_ID)).version(1));
 
     final String url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
@@ -654,7 +639,7 @@ class DrawingControllerIntegrationTest {
         .andExpect(status().isOk())
         .andReturn();
 
-    Drawing[] drawings = new JsonMapper().readValue(result.getResponse().getContentAsString(), Drawing[].class);
+    Drawing[] drawings = JsonMapper.shared().readValue(result.getResponse().getContentAsString(), Drawing[].class);
     // Select last drawing in collection
     Drawing drawing = drawings.length == 0 ? null : drawings[drawings.length - 1];
     assertNotNull(drawing, "drawing should not be null");
@@ -665,10 +650,10 @@ class DrawingControllerIntegrationTest {
 
     // both an outdated and a higher than current version must be rejected
     for (int version : new int[] {drawing.getVersion() - 1, drawing.getVersion() + 1}) {
-      String updatedDrawing = NEW_DRAWING_JSON
-          .replace("Drawing 1 description", "Should not be stored")
-          .replace("\"name\":", "\"id\":\"" + drawing.getId() + "\",\"name\":")
-          .replace("\"name\":", "\"version\":" + version + ",\"name\":");
+      String updatedDrawing = json(newDrawing()
+          .id(drawing.getId())
+          .description("Should not be stored")
+          .version(version));
 
       mockMvc.perform(put(putUrl)
               .accept(MediaType.APPLICATION_JSON)

@@ -13,9 +13,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -38,8 +40,6 @@ import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.TailormapObjectRef;
 import org.tailormap.api.repository.CatalogRepository;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
@@ -55,20 +55,13 @@ class GeoServiceAdminCreateControllerIntegrationTest {
   @Autowired
   private CatalogRepository catalogRepository;
 
-  @Autowired
-  private JsonMapper jsonMapper;
-
   private MockMvc mockMvc;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private ObjectNode getGeoServicePOSTBody(String title, String serviceProtocol, String url) {
-    return jsonMapper
-        .createObjectNode()
-        .put("title", title)
-        .put("protocol", serviceProtocol)
-        .put("url", url);
+  private static String getGeoServicePOSTBody(String title, String serviceProtocol, String url) {
+    return json(Map.of("title", title, "protocol", serviceProtocol, "url", url));
   }
 
   @BeforeAll
@@ -81,8 +74,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void create_geo_service_with_invalid_url() throws Exception {
-    String geoServicePOSTBody = getGeoServicePOSTBody("invalid url test", "wms", "http://invalid-url")
-        .toPrettyString();
+    String geoServicePOSTBody = getGeoServicePOSTBody("invalid url test", "wms", "http://invalid-url");
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
             .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
@@ -96,8 +88,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void create_geo_service_with_invalid_uri() throws Exception {
-    String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "wms", "ftp://invalid-url")
-        .toPrettyString();
+    String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "wms", "ftp://invalid-url");
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
             .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
@@ -111,8 +102,7 @@ class GeoServiceAdminCreateControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void create_geo_service_with_invalid_protocol() throws Exception {
-    String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "invalid-protocol", "ftp://invalid-url")
-        .toPrettyString();
+    String geoServicePOSTBody = getGeoServicePOSTBody("invalid uri test", "invalid-protocol", "ftp://invalid-url");
     mockMvc.perform(post(adminBasePath + "/geo-services/new")
             .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)
@@ -128,9 +118,8 @@ class GeoServiceAdminCreateControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void create_geo_service() throws Exception {
-    String geoServicePOSTBody = getGeoServicePOSTBody(
-            "valid test", "wms", "https://snapshot.tailormap.nl/geoserver/wms")
-        .toPrettyString();
+    String geoServicePOSTBody =
+        getGeoServicePOSTBody("valid test", "wms", "https://snapshot.tailormap.nl/geoserver/wms");
     MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services/new")
             .param("catalogNodeId", "GeoServiceAdminController")
             .contentType(MediaType.APPLICATION_JSON)

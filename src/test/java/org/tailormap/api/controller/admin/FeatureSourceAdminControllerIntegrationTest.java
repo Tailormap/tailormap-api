@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestJson.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -53,23 +53,22 @@ class FeatureSourceAdminControllerIntegrationTest {
 
   private String getFeatureSourcePOSTBody(int port, String host, String database, String user, String password)
       throws Exception {
-    return new ObjectMapper()
-        .writeValueAsString(Map.of(
-            "title", "My Test Source",
-            "protocol", "JDBC",
-            "url", "",
-            "jdbcConnection",
-                Map.of(
-                    "dbtype", "postgis",
-                    "port", port,
-                    "host", host,
-                    "database", database,
-                    "schema", "public"),
-            "authentication",
-                Map.of(
-                    "method", "password",
-                    "username", user,
-                    "password", password)));
+    return json(Map.of(
+        "title", "My Test Source",
+        "protocol", "JDBC",
+        "url", "",
+        "jdbcConnection",
+            Map.of(
+                "dbtype", "postgis",
+                "port", port,
+                "host", host,
+                "database", database,
+                "schema", "public"),
+        "authentication",
+            Map.of(
+                "method", "password",
+                "username", user,
+                "password", password)));
   }
 
   @Test

@@ -78,7 +78,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new JsonMapper().readTree(response.getBody());
+    JsonNode root = JsonMapper.shared().readTree(response.getBody());
     logger.atTrace()
         .setMessage("App usage response: {}")
         .addArgument(root.toPrettyString())
@@ -110,7 +110,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new JsonMapper().readTree(response.getBody());
+    JsonNode root = JsonMapper.shared().readTree(response.getBody());
     logger.atTrace()
         .setMessage("App usage last updated response: {}")
         .addArgument(root.toPrettyString())
@@ -148,7 +148,7 @@ public class PrometheusIntegrationTest {
         "application/json",
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
-    JsonNode root = new JsonMapper().readTree(response.getBody());
+    JsonNode root = JsonMapper.shared().readTree(response.getBody());
     logger.atTrace()
         .setMessage("App usage last updated response: {}")
         .addArgument(root.toPrettyString())
@@ -186,8 +186,8 @@ public class PrometheusIntegrationTest {
     assertEquals(HttpStatus.OK, response2.getStatusCode());
 
     try {
-      JsonNode root = new JsonMapper().readTree(response.getBody());
-      JsonNode root2 = new JsonMapper().readTree(response2.getBody());
+      JsonNode root = JsonMapper.shared().readTree(response.getBody());
+      JsonNode root2 = JsonMapper.shared().readTree(response2.getBody());
       PrometheusResultProcessor processor = new PrometheusResultProcessor();
       ArrayNode combined = processor.processPrometheusResultsToJsonArray(root, root2);
       assertEquals(
