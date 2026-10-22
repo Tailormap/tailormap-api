@@ -295,7 +295,8 @@ user is not allowed to perform the operation.</div>
 <section class="detail" id="deleteDrawing(java.util.UUID,org.springframework.security.core.Authentication)">
 <h3>deleteDrawing</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
+<div class="member-signature"><span class="annotations">@Transactional
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteDrawing</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;drawingId,
  @NonNull org.springframework.security.core.Authentication&nbsp;authentication)</span></div>
 <div class="block">Delete a drawing by its ID.</div>
 <dl class="notes">

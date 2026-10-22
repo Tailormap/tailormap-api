@@ -85,19 +85,21 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@Validated
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">DrawingController</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Controller for drawing operations. Note that the following endpoints are secured/require authentication:
+<div class="block">Controller for drawing operations. A drawing can only be read by its owner or by users with the drawings-admin or
+drawings-read-all property, and only be saved or deleted by its owner or by users with the drawings-admin property.
+
+<p>The following endpoints require authentication:
 
 <ul>
   <li>PUT /{viewerKind}/{viewerName}/drawing (@see DrawingController#createOrUpdateDrawing)
+  <li>GET /{viewerKind}/{viewerName}/drawing/{drawingId} (@see DrawingController#getDrawing)
   <li>DELETE /drawing/{drawingId} (@see DrawingController#deleteDrawing)
 </ul>
 
-The following endpoints do not require authentication (but may return different results based on the user's
-role/authorization):
+The following endpoint does not require authentication, but returns an empty list for anonymous users:
 
 <ul>
   <li>GET /drawing/list (@see DrawingController#listDrawings)
-  <li>GET /{viewerKind}/{viewerName}/drawing/{drawingId} (@see DrawingController#getDrawing)
 </ul></div>
 </div>
 </section>
@@ -147,7 +149,7 @@ role/authorization):
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listDrawings()" class="member-name-link">listDrawings</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">List drawings.</div>
+<div class="block">List drawings readable by the current user.</div>
 </div>
 </div>
 </div>
@@ -220,7 +222,7 @@ role/authorization):
  @ModelAttribute
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span>
                                                                         throws <span class="exceptions">org.springframework.web.server.ResponseStatusException</span></div>
-<div class="block">Get a drawing by id. Does not require authentication per-se, but authorizations are checked at the drawing level.</div>
+<div class="block">Get a drawing by id. Requires authentication, authorizations are checked at the drawing level.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>drawingId</code> - the id of the drawing to retrieve</dd>
@@ -246,7 +248,8 @@ role/authorization):
 <div class="member-signature"><span class="annotations">@GetMapping(path="${tailormap-api.base-path}/drawing/list",
             produces="application/json")
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a>&gt;</span>&nbsp;<span class="element-name">listDrawings</span>()</div>
-<div class="block">List drawings. Does not require authentication per-se, but authorizations are checked at the drawing level.</div>
+<div class="block">List drawings readable by the current user. Does not require authentication, but returns an empty set for
+anonymous users.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>a, possibly empty, set of drawings</dd>
