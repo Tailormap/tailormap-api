@@ -48,22 +48,25 @@ class SolrHelperSchemaRaceTest {
   @ParameterizedTest
   @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
   void concurrent_identical_creation_allows_indexing_to_continue(int target) throws Exception {
-    exercise(TARGETS[target], "matching");
+    SchemaRaceResult result = exercise(TARGETS[target], "matching");
+    assertSame(result.expected(), result.actual());
   }
 
   @ParameterizedTest
   @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
   void concurrent_incompatible_definition_is_rejected(int target) throws Exception {
-    exercise(TARGETS[target], "mismatch");
+    SchemaRaceResult result = exercise(TARGETS[target], "mismatch");
+    assertSame(result.expected(), result.actual());
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"missing", "lookup-io", "bad-request", "server-error", "creation-io"})
   void other_schema_failures_are_not_hidden(String outcome) throws Exception {
-    exercise(TARGETS[1], outcome);
+    SchemaRaceResult result = exercise(TARGETS[1], outcome);
+    assertSame(result.expected(), result.actual());
   }
 
-  private void exercise(String target, String outcome) throws Exception {
+  private SchemaRaceResult exercise(String target, String outcome) throws Exception {
     SolrClient solr = mock(SolrClient.class);
     FeatureSourceFactoryHelper factory = mock(FeatureSourceFactoryHelper.class);
     SearchIndexRepository repository = mock(SearchIndexRepository.class);
@@ -121,25 +124,28 @@ class SolrHelperSchemaRaceTest {
         .setPrimaryKeyAttribute("id")
         .setDefaultGeometryAttribute("geom");
 
+    final Exception error;
     try (SolrHelper helper = new SolrHelper(solr)) {
-      Exception error = assertThrows(
+      error = assertThrows(
           Exception.class, () -> helper.addFeatureTypeIndex(index, featureType, factory, repository));
-      Exception expected =
-          switch (outcome) {
-            case "matching" -> reachedFeatures;
-            case "bad-request" -> badRequest;
-            case "server-error" -> serverError;
-            case "creation-io" -> creationIo;
-            default -> duplicate;
-          };
-      assertSame(expected, error);
-      if (outcome.equals("missing") || outcome.equals("lookup-io")) {
-        assertEquals(1, error.getSuppressed().length);
-      }
+    }
+    Exception expected =
+        switch (outcome) {
+          case "matching" -> reachedFeatures;
+          case "bad-request" -> badRequest;
+          case "server-error" -> serverError;
+          case "creation-io" -> creationIo;
+          default -> duplicate;
+        };
+    if (outcome.equals("missing") || outcome.equals("lookup-io")) {
+      assertEquals(1, error.getSuppressed().length);
     }
     assertEquals(1, creations.get());
     assertEquals(List.of("bad-request", "server-error", "creation-io").contains(outcome) ? 1 : 2, lookups.get());
+    return new SchemaRaceResult(expected, error);
   }
+
+  private record SchemaRaceResult(Exception expected, Exception actual) {}
 
   @SuppressWarnings("unchecked")
   private static Map<String, Object> readDefinition(SchemaRequest.Update request) throws IOException {

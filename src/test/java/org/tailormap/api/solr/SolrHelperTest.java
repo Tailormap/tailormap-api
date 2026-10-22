@@ -6,8 +6,10 @@
 package org.tailormap.api.solr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -229,8 +231,8 @@ class SolrHelperTest {
       String[] filters = captor.getValue().getFilterQueries();
       assertNotNull(filters);
       assertEquals(2, filters.length);
-      assertEquals(true, filters[1].contains("sfield=geometryGeographic"));
-      assertEquals(false, filters[1].contains("sfield=geometry}"));
+      assertTrue(filters[1].contains("sfield=geometryGeographic"));
+      assertFalse(filters[1].contains("sfield=geometry}"));
       assertEquals("0.005", captor.getValue().get("d"));
     }
   }
@@ -307,7 +309,7 @@ class SolrHelperTest {
     assertEquals(52.1551723012, point.getCoordinate().y, 0.00001);
 
     assertEquals("0.005", query.get("d"));
-    assertEquals(true, List.of(query.getFilterQueries()).contains("{!geofilt sfield=geometryGeographic}"));
+    assertTrue(List.of(query.getFilterQueries()).contains("{!geofilt sfield=geometryGeographic}"));
   }
 
   @Test
