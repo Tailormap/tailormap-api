@@ -363,7 +363,7 @@ public class FeaturesController implements Constants {
 
     FeaturesResponse featuresResponse = new FeaturesResponse();
 
-    SimpleFeatureSource fs;
+    SimpleFeatureSource fs = null;
     try {
       GeometricShapeFactory shapeFact = new GeometricShapeFactory();
       shapeFact.setNumPoints(32);
@@ -417,6 +417,12 @@ public class FeaturesController implements Constants {
     } catch (CQLException | FactoryException | UnsupportedOperationException e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } finally {
+      if (fs != null) {
+        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is
+        // invalid the datastore will be left open, so close here to make sure (disposing twice won't hurt)
+        fs.getDataStore().dispose();
+      }
     }
     return featuresResponse;
   }

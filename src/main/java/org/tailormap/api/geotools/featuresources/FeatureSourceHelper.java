@@ -59,7 +59,13 @@ public abstract class FeatureSourceHelper {
 
   public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout) throws IOException {
     DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
-    return ds.getFeatureSource(tmft.getName());
+    try {
+      return ds.getFeatureSource(tmft.getName());
+    } catch (IOException | RuntimeException e) {
+      // The caller can't dispose the datastore when no feature source is returned
+      ds.dispose();
+      throw e;
+    }
   }
 
   public DataStore openDatastore(Map<String, Object> params, String passwordKey) throws IOException {
