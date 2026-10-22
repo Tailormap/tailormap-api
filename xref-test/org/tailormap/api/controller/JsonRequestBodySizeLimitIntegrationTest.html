@@ -21,67 +21,42 @@
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.context.SpringBootTest;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.ComponentScan;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.context.ActiveProfiles;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.configuration.JPAConfiguration;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.ActuatorSecurityConfiguration;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.ApiSecurityConfiguration;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * Test for the {@code spring.jackson.factory.constraints.read.max-document-length} limit on JSON request bodies.</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This test does not use {@link org.tailormap.api.annotation.PostgresIntegrationTest} because that annotation</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * includes {@code @EnableWebMvc}, which disables the Spring Boot WebMvc auto-configuration that configures the HTTP</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * message converters with the Spring Boot configured {@code JsonMapper}. This test uses the same WebMvc configuration</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * as the application.</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @SpringBootTest(
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      classes = {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        JPAConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        DataSourceAutoConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        HibernateJpaAutoConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        MailSenderAutoConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>        ActuatorSecurityConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>        ApiSecurityConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      })
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  @ComponentScan(basePackages = {<span class="jxr_string">"org.tailormap.api"</span>})
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  @ActiveProfiles(<span class="jxr_string">"postgresql"</span>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  @AutoConfigureMockMvc
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">class</strong> JsonRequestBodySizeLimitIntegrationTest {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> MAX_DOCUMENT_LENGTH = 15 * 1024 * 1024;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    @Autowired
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Test
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    @WithMockUser(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>        authorities = {ADMIN})
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">void</strong> drawing_exceeding_max_document_length_is_rejected() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <em class="jxr_comment">// the description is well below the max string length, but the document exceeds the max document length</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">final</strong> String drawing = <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  {<span class="jxr_string">"name"</span>:<span class="jxr_string">"Too large drawing"</span>,<span class="jxr_string">"description"</span>:<span class="jxr_string">"%s"</span>,<span class="jxr_string">"domainData"</span>:{},<span class="jxr_string">"featureCollection"</span>:<strong class="jxr_keyword">null</strong>}
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <span class="jxr_string">""</span><span class="jxr_string">".formatted("</span>x<span class="jxr_string">".repeat(MAX_DOCUMENT_LENGTH));
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/drawing"</span>;
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>              .content(drawing)
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>              .with(csrf()))
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          .andExpect(status().isBadRequest());
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.PostgresIntegrationTest;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">/** Test for the {@code spring.jackson.factory.constraints.read.max-document-length} limit on JSON request bodies. */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  @PostgresIntegrationTest
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  @AutoConfigureMockMvc
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">class</strong> <a name="JsonRequestBodySizeLimitIntegrationTest" href="../../../../org/tailormap/api/controller/JsonRequestBodySizeLimitIntegrationTest.html#JsonRequestBodySizeLimitIntegrationTest">JsonRequestBodySizeLimitIntegrationTest</a> {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> MAX_DOCUMENT_LENGTH = 15 * 1024 * 1024;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>    @Autowired
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Test
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        authorities = {ADMIN})
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">void</strong> drawing_exceeding_max_document_length_is_rejected() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <em class="jxr_comment">// the description is well below the max string length, but the document exceeds the max document length</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">final</strong> String drawing = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  {<span class="jxr_string">"name"</span>:<span class="jxr_string">"Too large drawing"</span>,<span class="jxr_string">"description"</span>:<span class="jxr_string">"%s"</span>,<span class="jxr_string">"domainData"</span>:{},<span class="jxr_string">"featureCollection"</span>:<strong class="jxr_keyword">null</strong>}
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <span class="jxr_string">""</span><span class="jxr_string">".formatted("</span>x<span class="jxr_string">".repeat(MAX_DOCUMENT_LENGTH));
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + <span class="jxr_string">"/app/default/drawing"</span>;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>              .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>              .content(drawing)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>              .with(csrf()))
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .andExpect(status().isBadRequest());
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    }
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

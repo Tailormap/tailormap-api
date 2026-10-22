@@ -86,7 +86,7 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          <span class="jxr_string">"application/json"</span>,
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      JsonNode root = <strong class="jxr_keyword">new</strong> JsonMapper().readTree(response.getBody());
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      JsonNode root = JsonMapper.shared().readTree(response.getBody());
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      logger.atTrace()
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          .setMessage(<span class="jxr_string">"App usage response: {}"</span>)
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          .addArgument(root.toPrettyString())
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         <span class="jxr_string">"application/json"</span>,
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> 
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>     JsonNode root = <strong class="jxr_keyword">new</strong> JsonMapper().readTree(response.getBody());
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     JsonNode root = JsonMapper.shared().readTree(response.getBody());
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     logger.atTrace()
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         .setMessage(<span class="jxr_string">"App usage last updated response: {}"</span>)
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         .addArgument(root.toPrettyString())
@@ -156,7 +156,7 @@
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         <span class="jxr_string">"application/json"</span>,
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> 
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>     JsonNode root = <strong class="jxr_keyword">new</strong> JsonMapper().readTree(response.getBody());
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     JsonNode root = JsonMapper.shared().readTree(response.getBody());
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     logger.atTrace()
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         .setMessage(<span class="jxr_string">"App usage last updated response: {}"</span>)
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         .addArgument(root.toPrettyString())
@@ -194,8 +194,8 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>     assertEquals(HttpStatus.OK, response2.getStatusCode());
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> 
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>       JsonNode root = <strong class="jxr_keyword">new</strong> JsonMapper().readTree(response.getBody());
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>       JsonNode root2 = <strong class="jxr_keyword">new</strong> JsonMapper().readTree(response2.getBody());
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>       JsonNode root = JsonMapper.shared().readTree(response.getBody());
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>       JsonNode root2 = JsonMapper.shared().readTree(response2.getBody());
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>       PrometheusResultProcessor processor = <strong class="jxr_keyword">new</strong> PrometheusResultProcessor();
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>       ArrayNode combined = processor.processPrometheusResultsToJsonArray(root, root2);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>       assertEquals(
