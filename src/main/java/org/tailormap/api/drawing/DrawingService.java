@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
 import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
@@ -69,13 +67,6 @@ public class DrawingService {
     final GenericConversionService conversionService = new GenericConversionService();
     DefaultConversionService.addDefaultConverters(conversionService);
 
-    conversionService.addConverter(new Converter<String, Drawing.AccessEnum>() {
-      @Override
-      public Drawing.AccessEnum convert(@NonNull String source) {
-        return Drawing.AccessEnum.fromValue(source);
-      }
-    });
-
     conversionService.addConverter(new Converter<PGobject, Map<String, Object>>() {
       @Override
       @SuppressWarnings("unchecked")
@@ -117,16 +108,15 @@ public class DrawingService {
 
     Drawing storedDrawing = jdbcClient
         .sql("""
-INSERT INTO data.drawing (name, description, domain_data, access, created_at, created_by,srid)
-VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
+INSERT INTO data.drawing (name, description, domain_data, created_at, created_by,srid)
+VALUES (:name, :description, :domainData::jsonb, :createdAt, :createdBy, :srid) RETURNING *
 """)
-        .param(drawing.getName())
-        .param(drawing.getDescription())
-        .param(mapper.writeValueAsString(drawing.getDomainData()))
-        .param(drawing.getAccess().getValue())
-        .param(OffsetDateTime.now(ZoneId.systemDefault()))
-        .param(authentication.getName())
-        .param(drawing.getSrid())
+        .param("name", drawing.getName())
+        .param("description", drawing.getDescription())
+        .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
+        .param("createdAt", OffsetDateTime.now(ZoneId.systemDefault()))
+        .param("createdBy", authentication.getName())
+        .param("srid", drawing.getSrid())
         .query(drawingRowMapper)
         .single();
 
@@ -204,57 +194,53 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
   public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws JacksonException {
 
-    canSaveOrDeleteDrawing(drawing, authentication);
-
     logger.trace(
         "updating drawing: {}, domainData {}, updatedAt {}",
         drawing,
         mapper.writeValueAsString(drawing.getDomainData()),
         OffsetDateTime.now(ZoneId.systemDefault()));
 
+    // Use the same message as when the user is not allowed to read the drawing, so the existence of the drawing is
+    // not disclosed
     final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)
-        .orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing has been deleted by another user"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found"));
 
-    if (drawing.getVersion() < oldDrawing.getVersion()) {
+    canSaveOrDeleteDrawing(oldDrawing, authentication);
+
+    if (!Objects.equals(drawing.getVersion(), oldDrawing.getVersion())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user");
     }
-    drawing.setVersion(drawing.getVersion() + 1);
 
+    // Only update if the version is unchanged, to prevent lost updates by concurrent requests
     Drawing updatedDrawing = jdbcClient
         .sql("""
 UPDATE data.drawing SET
-id=:id,
-name=:name,
-description=:description,
-domain_data=:domainData::jsonb,
-access=:access,
-created_by=:createdBy,
-created_at=:createdAt,
-updated_by=:updatedBy,
-updated_at=:updatedAt,
-srid=:srid,
-version=:version
-WHERE id = :id RETURNING *""")
+name = :name,
+description = :description,
+domain_data = :domainData::jsonb,
+updated_by = :updatedBy,
+updated_at = :updatedAt,
+srid = :srid,
+version = version + 1
+WHERE id = :id AND version = :version RETURNING *""")
         .param("id", drawing.getId())
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
         .param("domainData", mapper.writeValueAsString(drawing.getDomainData()))
-        .param("access", drawing.getAccess().getValue())
-        .param("createdBy", drawing.getCreatedBy())
-        .param("createdAt", drawing.getCreatedAt())
         .param("updatedBy", authentication.getName())
         .param("updatedAt", OffsetDateTime.now(ZoneId.systemDefault()))
         .param("srid", drawing.getSrid())
         .param("version", drawing.getVersion())
         .query(drawingRowMapper)
-        .single();
+        .optional()
+        .orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user"));
 
     // delete even if drawing.getFeatureCollection()==null, because all features could have been
     // removed, (re)insert the featureCollection afterward
     jdbcClient
-        .sql("DELETE FROM data.drawing_feature WHERE drawing_id = ?")
-        .param(drawing.getId())
+        .sql("DELETE FROM data.drawing_feature WHERE drawing_id = :drawingId")
+        .param("drawingId", drawing.getId())
         .update();
 
     if (drawing.getFeatureCollection() != null) {
@@ -277,17 +263,21 @@ WHERE id = :id RETURNING *""")
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       return Set.of();
     }
-    return jdbcClient.sql("SELECT * FROM data.drawing").query(drawingRowMapper).set().stream()
-        .filter(d -> {
-          try {
-            canReadDrawing(d, authentication);
-            return true;
-          } catch (ResponseStatusException e) {
-            return false;
-          }
-        })
-        .sorted(Comparator.comparing(Drawing::getCreatedAt))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+    // filter in the database instead of loading all drawings, must match canReadDrawing()
+    final List<Drawing> drawings;
+    if (canReadAllDrawings(authentication)) {
+      drawings = jdbcClient
+          .sql("SELECT * FROM data.drawing ORDER BY created_at")
+          .query(drawingRowMapper)
+          .list();
+    } else {
+      drawings = jdbcClient
+          .sql("SELECT * FROM data.drawing WHERE created_by = :createdBy ORDER BY created_at")
+          .param("createdBy", authentication.getName())
+          .query(drawingRowMapper)
+          .list();
+    }
+    return new LinkedHashSet<>(drawings);
   }
 
   /**
@@ -317,13 +307,16 @@ WHERE id = :id RETURNING *""")
       @NonNull Authentication authentication,
       boolean withGeometries,
       int requestedSrid) {
-    Optional<Drawing> drawing =
-        jdbcClient
-            .sql("SELECT * FROM data.drawing WHERE id = ?")
-            .param(1, drawingId)
-            .query(drawingRowMapper)
-            .stream()
-            .findFirst();
+    // Check before querying, so anonymous users can't determine whether a drawing exists
+    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
+    }
+
+    Optional<Drawing> drawing = jdbcClient
+        .sql("SELECT * FROM data.drawing WHERE id = :id")
+        .param("id", drawingId)
+        .query(drawingRowMapper)
+        .optional();
 
     drawing.ifPresent(d -> {
       // check if the user is allowed to read the drawing
@@ -396,13 +389,17 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    * @param drawingId the ID of the drawing
    * @param authentication the current user
    */
+  @Transactional
   public void deleteDrawing(@NonNull UUID drawingId, @NonNull Authentication authentication) {
     canSaveOrDeleteDrawing(
         getDrawing(drawingId, authentication)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found")),
         authentication);
 
-    jdbcClient.sql("DELETE FROM data.drawing WHERE id = ?").param(drawingId).update();
+    jdbcClient
+        .sql("DELETE FROM data.drawing WHERE id = :id")
+        .param("id", drawingId)
+        .update();
   }
 
   /**
@@ -421,7 +418,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
   }
 
   /**
-   * Check if the current user can read the drawing. If not, throw an unauthorized exception.
+   * Check if the current user can read the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * not found exception for authenticated users, so the existence of the drawing is not disclosed.
    *
    * @param drawing the drawing to check
    * @param authentication the current user
@@ -429,33 +427,20 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    */
   private void canReadDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
-    boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
-    boolean canRead =
-        switch (drawing.getAccess()) {
-          case PRIVATE -> {
-            if (isAuthenticated) {
-              if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-                // is a drawing owner
-                yield true;
-              }
-              if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
-                yield userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
-                    || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
-              }
-            }
-            yield false;
-          }
-          case SHARED -> isAuthenticated;
-          case PUBLIC -> true;
-        };
+    if (authentication instanceof AnonymousAuthenticationToken) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
+    }
+
+    boolean canRead = isDrawingOwner(drawing, authentication) || canReadAllDrawings(authentication);
 
     if (!canRead) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to access drawing");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing not found");
     }
   }
 
   /**
-   * Check if the current user can save the drawing. If not, throw an unauthorized exception.
+   * Check if the current user can save the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * forbidden exception for authenticated users.
    *
    * @param drawing the drawing to check
    * @param authentication the current user
@@ -464,27 +449,31 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
   private void canSaveOrDeleteDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
     if (authentication instanceof AnonymousAuthenticationToken) {
-      // Only authenticated users can save drawings, irrelevant of drawing access level
+      // Only authenticated users can save drawings
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
     }
 
-    boolean canSave =
-        switch (drawing.getAccess()) {
-          case PRIVATE -> {
-            if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-              // is a drawing owner
-              yield true;
-            }
-            if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-              yield userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN);
-            }
-            yield false;
-          }
-          case SHARED, PUBLIC -> true;
-        };
+    boolean canSave = isDrawingOwner(drawing, authentication) || isDrawingsAdmin(authentication);
 
     if (!canSave) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient permissions to save drawing");
     }
+  }
+
+  private static boolean isDrawingOwner(@NonNull Drawing drawing, @NonNull Authentication authentication) {
+    return Objects.equals(authentication.getName(), drawing.getCreatedBy());
+  }
+
+  private static boolean isDrawingsAdmin(@NonNull Authentication authentication) {
+    return hasTruePropertyForKey(authentication, KEY_DRAWINGS_ADMIN);
+  }
+
+  private static boolean canReadAllDrawings(@NonNull Authentication authentication) {
+    return isDrawingsAdmin(authentication) || hasTruePropertyForKey(authentication, KEY_DRAWINGS_READ_ALL);
+  }
+
+  private static boolean hasTruePropertyForKey(@NonNull Authentication authentication, String key) {
+    return authentication.getPrincipal() instanceof TailormapUserDetails userDetails
+        && userDetails.hasTruePropertyForKey(key);
   }
 }
