@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
-import org.apache.solr.client.solrj.response.SolrPingResponse;
+import org.apache.solr.client.solrj.request.HealthCheckRequest;
+import org.apache.solr.client.solrj.response.HealthCheckResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -55,9 +56,25 @@ public class SolrService {
    * @return the Solr client
    */
   public SolrClient getSolrClientForSearching() {
-    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)
+    return new HttpJdkSolrClient.Builder()
+        .withBaseSolrUrl(this.solrUrl)
+        .withDefaultCollection(this.solrCoreName)
         .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)
         .withFollowRedirects(true)
+        .build();
+  }
+
+  /**
+   * Get a Solr client without a core name or collection. This can be used for e.g. getting the Solr status, health or
+   * creating a new core.
+   *
+   * @return the Solr client configured for the base Solr URL without a core name or collection
+   */
+  public SolrClient getBaseUrlSolrClient() {
+    return new HttpJdkSolrClient.Builder()
+        .withConnectionTimeout(solrConnectionTimeout / 2, TimeUnit.SECONDS)
+        .withFollowRedirects(false)
+        .withBaseSolrUrl(this.solrUrl)
         .build();
   }
 
@@ -66,8 +83,9 @@ public class SolrService {
   }
 
   public boolean isSolrServiceAvailable() {
-    try (SolrClient client = getSolrClientForIndexing()) {
-      SolrPingResponse response = client.ping();
+    try (SolrClient client = getBaseUrlSolrClient()) {
+      HealthCheckRequest request = new HealthCheckRequest();
+      HealthCheckResponse response = request.process(client);
       Metrics.timer("tailormap_solr_ping").record(response.getElapsedTime(), TimeUnit.MILLISECONDS);
       return true;
     } catch (SolrServerException | IOException e) {
