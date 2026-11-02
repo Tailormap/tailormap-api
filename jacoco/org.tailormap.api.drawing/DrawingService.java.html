@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DrawingService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.drawing</a> &gt; <span class="el_source">DrawingService.java</span></div><h1>DrawingService.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.drawing;
+
+import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_ADMIN;
+import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_READ_ALL;
+
+import java.lang.invoke.MethodHandles;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import org.jspecify.annotations.NonNull;
+import org.postgresql.util.PGobject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SimplePropertyRowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.security.TailormapUserDetails;
+import org.tailormap.api.viewer.model.Drawing;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
+
+/**
+ * Service for managing drawings.
+ *
+ * &lt;p&gt;This service provides methods for creating, updating, reading, and deleting drawings and persisting these
+ * operations in the data schema of the tailormap database. Any call can throw a {@link ResponseStatusException} if the
+ * user is not allowed to perform the operation.
+ */
+@Service
+public class DrawingService {
+<span class="nc" id="L56">  private static final Logger logger =</span>
+<span class="nc" id="L57">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final JdbcClient jdbcClient;
+  private final RowMapper&lt;Drawing&gt; drawingRowMapper;
+  private final JsonMapper mapper;
+
+<span class="nc" id="L63">  public DrawingService(JdbcClient jdbcClient, JsonMapper jsonMapper) {</span>
+<span class="nc" id="L64">    this.jdbcClient = jdbcClient;</span>
+<span class="nc" id="L65">    this.mapper = jsonMapper;</span>
+
+<span class="nc" id="L67">    final GenericConversionService conversionService = new GenericConversionService();</span>
+<span class="nc" id="L68">    DefaultConversionService.addDefaultConverters(conversionService);</span>
+
+<span class="nc" id="L70">    conversionService.addConverter(new Converter&lt;PGobject, Map&lt;String, Object&gt;&gt;() {</span>
+      @Override
+      @SuppressWarnings(&quot;unchecked&quot;)
+      public Map&lt;String, Object&gt; convert(@NonNull PGobject source) {
+        try {
+<span class="nc" id="L75">          return jsonMapper.readValue(source.getValue(), Map.class);</span>
+<span class="nc" id="L76">        } catch (JacksonException e) {</span>
+<span class="nc" id="L77">          throw new IllegalArgumentException(&quot;Failed to convert PGobject to Map&quot;, e);</span>
+        }
+      }
+    });
+
+<span class="nc" id="L82">    drawingRowMapper = new SimplePropertyRowMapper&lt;&gt;(Drawing.class, conversionService) {</span>
+      @Override
+      @NonNull public Drawing mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+<span class="nc" id="L85">        return super.mapRow(rs, rowNum);</span>
+      }
+    };
+<span class="nc" id="L88">  }</span>
+
+  /**
+   * Create a new drawing.
+   *
+   * @param drawing the drawing to create
+   * @param authentication the current user
+   * @return the created drawing
+   */
+  @Transactional
+  public Drawing createDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws JacksonException {
+
+<span class="nc" id="L101">    canCreateDrawing(authentication);</span>
+
+<span class="nc" id="L103">    logger.trace(</span>
+        &quot;creating new drawing: {}, domainData {}, createdAt {}&quot;,
+        drawing,
+<span class="nc" id="L106">        mapper.writeValueAsString(drawing.getDomainData()),</span>
+<span class="nc" id="L107">        OffsetDateTime.now(ZoneId.systemDefault()));</span>
+
+<span class="nc" id="L109">    Drawing storedDrawing = jdbcClient</span>
+<span class="nc" id="L110">        .sql(&quot;&quot;&quot;</span>
+INSERT INTO data.drawing (name, description, domain_data, created_at, created_by,srid)
+VALUES (:name, :description, :domainData::jsonb, :createdAt, :createdBy, :srid) RETURNING *
+&quot;&quot;&quot;)
+<span class="nc" id="L114">        .param(&quot;name&quot;, drawing.getName())</span>
+<span class="nc" id="L115">        .param(&quot;description&quot;, drawing.getDescription())</span>
+<span class="nc" id="L116">        .param(&quot;domainData&quot;, mapper.writeValueAsString(drawing.getDomainData()))</span>
+<span class="nc" id="L117">        .param(&quot;createdAt&quot;, OffsetDateTime.now(ZoneId.systemDefault()))</span>
+<span class="nc" id="L118">        .param(&quot;createdBy&quot;, authentication.getName())</span>
+<span class="nc" id="L119">        .param(&quot;srid&quot;, drawing.getSrid())</span>
+<span class="nc" id="L120">        .query(drawingRowMapper)</span>
+<span class="nc" id="L121">        .single();</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (drawing.getFeatureCollection() != null) {</span>
+<span class="nc" id="L124">      ObjectNode featureCollection = insertGeoJsonFeatureCollection(</span>
+<span class="nc" id="L125">          storedDrawing.getId(),</span>
+<span class="nc" id="L126">          drawing.getSrid(),</span>
+<span class="nc" id="L127">          mapper.writeValueAsString(drawing.getFeatureCollection()));</span>
+<span class="nc" id="L128">      storedDrawing.setFeatureCollection(featureCollection);</span>
+    }
+
+<span class="nc" id="L131">    logger.trace(&quot;stored new drawing: {}&quot;, storedDrawing);</span>
+<span class="nc" id="L132">    return storedDrawing;</span>
+  }
+
+  private ObjectNode insertGeoJsonFeatureCollection(UUID drawingId, int srid, String featureCollectionToStore)
+      throws JacksonException {
+<span class="nc" id="L137">    List&lt;JsonNode&gt; storedFeatures = jdbcClient</span>
+<span class="nc" id="L138">        .sql(&quot;&quot;&quot;</span>
+WITH jsonData AS (SELECT :featureCollectionToStore::json AS featureCollection)
+INSERT INTO data.drawing_feature (drawing_id, geometry, properties)
+SELECT :drawingId::uuid AS drawing_id,
+ST_SetSRID(ST_GeomFromGeoJSON(feature -&gt;&gt; 'geometry'), :srid) AS geometry,
+feature -&gt; 'properties' AS properties
+FROM (SELECT json_array_elements(featureCollection -&gt; 'features') AS feature
+FROM jsonData)
+AS f
+RETURNING
+-- since we cannot use aggregate functions in a returning clause, we will return a list of geojson
+-- features and aggregate them into a featureCollection in the next step
+ST_AsGeoJSON(data.drawing_feature.*, geom_column =&gt;'geometry', id_column =&gt; 'id')::json;
+&quot;&quot;&quot;)
+<span class="nc" id="L152">        .param(&quot;featureCollectionToStore&quot;, featureCollectionToStore)</span>
+<span class="nc" id="L153">        .param(&quot;drawingId&quot;, drawingId)</span>
+<span class="nc" id="L154">        .param(&quot;srid&quot;, srid)</span>
+<span class="nc" id="L155">        .query(new RowMapper&lt;JsonNode&gt;() {</span>
+          @Override
+          public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+            try {
+<span class="nc" id="L159">              JsonNode jsonNode = mapper.readTree(rs.getString(1));</span>
+              // merge/un-nest properties with nested properties, because we have a jsonb
+              // column
+              // called &quot;properties&quot; and we are using the `ST_AsGeoJSON(::record,...)`
+              // function
+<span class="nc" id="L164">              final ObjectNode properties = (ObjectNode) jsonNode.get(&quot;properties&quot;);</span>
+<span class="nc" id="L165">              JsonNode nestedProperties = properties.get(&quot;properties&quot;);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">              if (nestedProperties != null) {</span>
+<span class="nc" id="L167">                nestedProperties.properties().stream()</span>
+<span class="nc" id="L168">                    .iterator()</span>
+<span class="nc" id="L169">                    .forEachRemaining(</span>
+<span class="nc" id="L170">                        entry -&gt; properties.putIfAbsent(entry.getKey(), entry.getValue()));</span>
+              }
+<span class="nc" id="L172">              properties.remove(&quot;properties&quot;);</span>
+<span class="nc" id="L173">              return jsonNode;</span>
+<span class="nc" id="L174">            } catch (JacksonException e) {</span>
+<span class="nc" id="L175">              throw new RuntimeException(e);</span>
+            }
+          }
+        })
+<span class="nc" id="L179">        .list();</span>
+
+<span class="nc" id="L181">    return mapper.createObjectNode()</span>
+<span class="nc" id="L182">        .put(&quot;type&quot;, &quot;FeatureCollection&quot;)</span>
+<span class="nc" id="L183">        .set(&quot;features&quot;, mapper.createArrayNode().addAll(storedFeatures));</span>
+  }
+
+  /**
+   * Update an existing drawing.
+   *
+   * @param drawing the drawing to create
+   * @param authentication the current user
+   * @return the created drawing
+   */
+  @Transactional
+  public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws JacksonException {
+
+<span class="nc" id="L197">    logger.trace(</span>
+        &quot;updating drawing: {}, domainData {}, updatedAt {}&quot;,
+        drawing,
+<span class="nc" id="L200">        mapper.writeValueAsString(drawing.getDomainData()),</span>
+<span class="nc" id="L201">        OffsetDateTime.now(ZoneId.systemDefault()));</span>
+
+    // Use the same message as when the user is not allowed to read the drawing, so the existence of the drawing is
+    // not disclosed
+<span class="nc" id="L205">    final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)</span>
+<span class="nc" id="L206">        .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Drawing not found&quot;));</span>
+
+<span class="nc" id="L208">    canSaveOrDeleteDrawing(oldDrawing, authentication);</span>
+
+<span class="nc bnc" id="L210" title="All 2 branches missed.">    if (!Objects.equals(drawing.getVersion(), oldDrawing.getVersion())) {</span>
+<span class="nc" id="L211">      throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Drawing has been updated by another user&quot;);</span>
+    }
+
+    // Only update if the version is unchanged, to prevent lost updates by concurrent requests
+<span class="nc" id="L215">    Drawing updatedDrawing = jdbcClient</span>
+<span class="nc" id="L216">        .sql(&quot;&quot;&quot;</span>
+UPDATE data.drawing SET
+name = :name,
+description = :description,
+domain_data = :domainData::jsonb,
+updated_by = :updatedBy,
+updated_at = :updatedAt,
+srid = :srid,
+version = version + 1
+WHERE id = :id AND version = :version RETURNING *&quot;&quot;&quot;)
+<span class="nc" id="L226">        .param(&quot;id&quot;, drawing.getId())</span>
+<span class="nc" id="L227">        .param(&quot;name&quot;, drawing.getName())</span>
+<span class="nc" id="L228">        .param(&quot;description&quot;, drawing.getDescription())</span>
+<span class="nc" id="L229">        .param(&quot;domainData&quot;, mapper.writeValueAsString(drawing.getDomainData()))</span>
+<span class="nc" id="L230">        .param(&quot;updatedBy&quot;, authentication.getName())</span>
+<span class="nc" id="L231">        .param(&quot;updatedAt&quot;, OffsetDateTime.now(ZoneId.systemDefault()))</span>
+<span class="nc" id="L232">        .param(&quot;srid&quot;, drawing.getSrid())</span>
+<span class="nc" id="L233">        .param(&quot;version&quot;, drawing.getVersion())</span>
+<span class="nc" id="L234">        .query(drawingRowMapper)</span>
+<span class="nc" id="L235">        .optional()</span>
+<span class="nc" id="L236">        .orElseThrow(() -&gt;</span>
+<span class="nc" id="L237">            new ResponseStatusException(HttpStatus.CONFLICT, &quot;Drawing has been updated by another user&quot;));</span>
+
+    // delete even if drawing.getFeatureCollection()==null, because all features could have been
+    // removed, (re)insert the featureCollection afterward
+<span class="nc" id="L241">    jdbcClient</span>
+<span class="nc" id="L242">        .sql(&quot;DELETE FROM data.drawing_feature WHERE drawing_id = :drawingId&quot;)</span>
+<span class="nc" id="L243">        .param(&quot;drawingId&quot;, drawing.getId())</span>
+<span class="nc" id="L244">        .update();</span>
+
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (drawing.getFeatureCollection() != null) {</span>
+<span class="nc" id="L247">      ObjectNode featureCollection = insertGeoJsonFeatureCollection(</span>
+<span class="nc" id="L248">          drawing.getId(), drawing.getSrid(), mapper.writeValueAsString(drawing.getFeatureCollection()));</span>
+<span class="nc" id="L249">      updatedDrawing.setFeatureCollection(featureCollection);</span>
+    }
+
+<span class="nc" id="L252">    logger.trace(&quot;stored updated drawing: {}&quot;, updatedDrawing);</span>
+<span class="nc" id="L253">    return updatedDrawing;</span>
+  }
+
+  /**
+   * Get all drawings for the current user.
+   *
+   * @param authentication the current user
+   * @return the drawings, a possibly empty set
+   */
+  public Set&lt;Drawing&gt; getDrawingsForUser(Authentication authentication) throws ResponseStatusException {
+<span class="nc bnc" id="L263" title="All 4 branches missed.">    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {</span>
+<span class="nc" id="L264">      return Set.of();</span>
+    }
+    // filter in the database instead of loading all drawings, must match canReadDrawing()
+    final List&lt;Drawing&gt; drawings;
+<span class="nc bnc" id="L268" title="All 2 branches missed.">    if (canReadAllDrawings(authentication)) {</span>
+<span class="nc" id="L269">      drawings = jdbcClient</span>
+<span class="nc" id="L270">          .sql(&quot;SELECT * FROM data.drawing ORDER BY created_at&quot;)</span>
+<span class="nc" id="L271">          .query(drawingRowMapper)</span>
+<span class="nc" id="L272">          .list();</span>
+    } else {
+<span class="nc" id="L274">      drawings = jdbcClient</span>
+<span class="nc" id="L275">          .sql(&quot;SELECT * FROM data.drawing WHERE created_by = :createdBy ORDER BY created_at&quot;)</span>
+<span class="nc" id="L276">          .param(&quot;createdBy&quot;, authentication.getName())</span>
+<span class="nc" id="L277">          .query(drawingRowMapper)</span>
+<span class="nc" id="L278">          .list();</span>
+    }
+<span class="nc" id="L280">    return new LinkedHashSet&lt;&gt;(drawings);</span>
+  }
+
+  /**
+   * Get a drawing only — no geometry data — by its ID.
+   *
+   * @param drawingId the ID of the drawing
+   * @param authentication the current user
+   * @return the — thinly populated — drawing
+   */
+  @SuppressWarnings(&quot;SpringTransactionalMethodCallsInspection&quot;)
+  public Optional&lt;Drawing&gt; getDrawing(@NonNull UUID drawingId, @NonNull Authentication authentication) {
+<span class="nc" id="L292">    return this.getDrawing(drawingId, authentication, false, 0);</span>
+  }
+
+  /**
+   * Get a complete drawing by its ID with GeoJSON geometries in the requested srid.
+   *
+   * @param drawingId the ID of the drawing
+   * @param authentication the current user
+   * @param withGeometries whether to fetch the geometries for the drawing
+   * @param requestedSrid the SRID to return the geometries in
+   * @return the complete drawing
+   */
+  @Transactional
+  public Optional&lt;Drawing&gt; getDrawing(
+      @NonNull UUID drawingId,
+      @NonNull Authentication authentication,
+      boolean withGeometries,
+      int requestedSrid) {
+    // Check before querying, so anonymous users can't determine whether a drawing exists
+<span class="nc bnc" id="L311" title="All 4 branches missed.">    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {</span>
+<span class="nc" id="L312">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Insufficient permissions to access drawing&quot;);</span>
+    }
+
+<span class="nc" id="L315">    Optional&lt;Drawing&gt; drawing = jdbcClient</span>
+<span class="nc" id="L316">        .sql(&quot;SELECT * FROM data.drawing WHERE id = :id&quot;)</span>
+<span class="nc" id="L317">        .param(&quot;id&quot;, drawingId)</span>
+<span class="nc" id="L318">        .query(drawingRowMapper)</span>
+<span class="nc" id="L319">        .optional();</span>
+
+<span class="nc" id="L321">    drawing.ifPresent(d -&gt; {</span>
+      // check if the user is allowed to read the drawing
+<span class="nc" id="L323">      canReadDrawing(d, authentication);</span>
+
+<span class="nc" id="L325">      d.setSrid(requestedSrid);</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">      if (withGeometries) {</span>
+<span class="nc" id="L327">        d.setFeatureCollection(getFeatureCollection(drawingId, requestedSrid));</span>
+      }
+<span class="nc" id="L329">    });</span>
+
+<span class="nc" id="L331">    return drawing;</span>
+  }
+
+  /**
+   * Retrieve the feature collection as GeoJSON for a drawing.
+   *
+   * @param drawingId the ID of the drawing
+   * @param srid the SRID to return the geometries in
+   * @return the feature collection as GeoJSON
+   */
+  private JsonNode getFeatureCollection(UUID drawingId, int srid) {
+<span class="nc" id="L342">    return jdbcClient</span>
+<span class="nc" id="L343">        .sql(&quot;&quot;&quot;</span>
+SELECT row_to_json(featureCollection) from (
+SELECT
+'FeatureCollection' AS type,
+array_to_json(array_agg(feature)) AS features FROM (
+SELECT
+'Feature' AS type,
+id as id,
+ST_ASGeoJSON(ST_Transform(geomTable.geometry, :srid))::json AS geometry,
+row_to_json((SELECT l from (SELECT id, drawing_id, properties) AS l)) AS properties
+FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS feature) AS featureCollection
+&quot;&quot;&quot;)
+<span class="nc" id="L355">        .param(&quot;drawingId&quot;, drawingId)</span>
+<span class="nc" id="L356">        .param(&quot;srid&quot;, srid)</span>
+<span class="nc" id="L357">        .query(new RowMapper&lt;JsonNode&gt;() {</span>
+          @Override
+          public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+            try {
+<span class="nc" id="L361">              JsonNode jsonNode = mapper.readTree(rs.getString(1));</span>
+              // merge/un-nest properties with nested properties, because we have a jsonb column
+              // called &quot;properties&quot; and we are using the `ST_AsGeoJSON(::record,...)` function
+<span class="nc" id="L364">              ArrayNode features = (ArrayNode) jsonNode.get(&quot;features&quot;);</span>
+<span class="nc" id="L365">              features.elements().forEach(feature -&gt; {</span>
+<span class="nc" id="L366">                ObjectNode properties = (ObjectNode) feature.get(&quot;properties&quot;);</span>
+<span class="nc" id="L367">                JsonNode nestedProperties = properties.get(&quot;properties&quot;);</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">                if (nestedProperties != null) {</span>
+<span class="nc" id="L369">                  nestedProperties</span>
+<span class="nc" id="L370">                      .properties()</span>
+<span class="nc" id="L371">                      .iterator()</span>
+<span class="nc" id="L372">                      .forEachRemaining(</span>
+<span class="nc" id="L373">                          entry -&gt; properties.putIfAbsent(entry.getKey(), entry.getValue()));</span>
+                }
+<span class="nc" id="L375">                properties.remove(&quot;properties&quot;);</span>
+<span class="nc" id="L376">              });</span>
+<span class="nc" id="L377">              return jsonNode;</span>
+<span class="nc" id="L378">            } catch (JacksonException e) {</span>
+<span class="nc" id="L379">              throw new RuntimeException(e);</span>
+            }
+          }
+        })
+<span class="nc" id="L383">        .single();</span>
+  }
+
+  /**
+   * Delete a drawing by its ID.
+   *
+   * @param drawingId the ID of the drawing
+   * @param authentication the current user
+   */
+  @Transactional
+  public void deleteDrawing(@NonNull UUID drawingId, @NonNull Authentication authentication) {
+<span class="nc" id="L394">    canSaveOrDeleteDrawing(</span>
+<span class="nc" id="L395">        getDrawing(drawingId, authentication)</span>
+<span class="nc" id="L396">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Drawing not found&quot;)),</span>
+        authentication);
+
+<span class="nc" id="L399">    jdbcClient</span>
+<span class="nc" id="L400">        .sql(&quot;DELETE FROM data.drawing WHERE id = :id&quot;)</span>
+<span class="nc" id="L401">        .param(&quot;id&quot;, drawingId)</span>
+<span class="nc" id="L402">        .update();</span>
+<span class="nc" id="L403">  }</span>
+
+  /**
+   * Check if the current user can create a drawing. If not, throw an unauthorized exception.
+   *
+   * @param authentication the current user
+   * @throws ResponseStatusException if the user is not allowed to create a drawing
+   */
+  private void canCreateDrawing(@NonNull Authentication authentication) throws ResponseStatusException {
+<span class="nc bnc" id="L412" title="All 2 branches missed.">    if ((authentication instanceof AnonymousAuthenticationToken)) {</span>
+<span class="nc" id="L413">      throw new ResponseStatusException(</span>
+          HttpStatus.UNAUTHORIZED, &quot;Insufficient permissions to create new drawing&quot;);
+    }
+    // TODO check if this user is allowed to create/add drawings using additional properties, currently none are
+    // defined
+<span class="nc" id="L418">  }</span>
+
+  /**
+   * Check if the current user can read the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * not found exception for authenticated users, so the existence of the drawing is not disclosed.
+   *
+   * @param drawing the drawing to check
+   * @param authentication the current user
+   * @throws ResponseStatusException if the user is not allowed to read the drawing
+   */
+  private void canReadDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws ResponseStatusException {
+<span class="nc bnc" id="L430" title="All 2 branches missed.">    if (authentication instanceof AnonymousAuthenticationToken) {</span>
+<span class="nc" id="L431">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Insufficient permissions to access drawing&quot;);</span>
+    }
+
+<span class="nc bnc" id="L434" title="All 4 branches missed.">    boolean canRead = isDrawingOwner(drawing, authentication) || canReadAllDrawings(authentication);</span>
+
+<span class="nc bnc" id="L436" title="All 2 branches missed.">    if (!canRead) {</span>
+<span class="nc" id="L437">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Drawing not found&quot;);</span>
+    }
+<span class="nc" id="L439">  }</span>
+
+  /**
+   * Check if the current user can save the drawing. If not, throw an unauthorized exception for anonymous users or a
+   * forbidden exception for authenticated users.
+   *
+   * @param drawing the drawing to check
+   * @param authentication the current user
+   * @throws ResponseStatusException if the user is not allowed to save/delete the drawing
+   */
+  private void canSaveOrDeleteDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws ResponseStatusException {
+<span class="nc bnc" id="L451" title="All 2 branches missed.">    if (authentication instanceof AnonymousAuthenticationToken) {</span>
+      // Only authenticated users can save drawings
+<span class="nc" id="L453">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Insufficient permissions to save drawing&quot;);</span>
+    }
+
+<span class="nc bnc" id="L456" title="All 4 branches missed.">    boolean canSave = isDrawingOwner(drawing, authentication) || isDrawingsAdmin(authentication);</span>
+
+<span class="nc bnc" id="L458" title="All 2 branches missed.">    if (!canSave) {</span>
+<span class="nc" id="L459">      throw new ResponseStatusException(HttpStatus.FORBIDDEN, &quot;Insufficient permissions to save drawing&quot;);</span>
+    }
+<span class="nc" id="L461">  }</span>
+
+  private static boolean isDrawingOwner(@NonNull Drawing drawing, @NonNull Authentication authentication) {
+<span class="nc" id="L464">    return Objects.equals(authentication.getName(), drawing.getCreatedBy());</span>
+  }
+
+  private static boolean isDrawingsAdmin(@NonNull Authentication authentication) {
+<span class="nc" id="L468">    return hasTruePropertyForKey(authentication, KEY_DRAWINGS_ADMIN);</span>
+  }
+
+  private static boolean canReadAllDrawings(@NonNull Authentication authentication) {
+<span class="nc bnc" id="L472" title="All 4 branches missed.">    return isDrawingsAdmin(authentication) || hasTruePropertyForKey(authentication, KEY_DRAWINGS_READ_ALL);</span>
+  }
+
+  private static boolean hasTruePropertyForKey(@NonNull Authentication authentication, String key) {
+<span class="nc bnc" id="L476" title="All 2 branches missed.">    return authentication.getPrincipal() instanceof TailormapUserDetails userDetails</span>
+<span class="nc bnc" id="L477" title="All 2 branches missed.">        &amp;&amp; userDetails.hasTruePropertyForKey(key);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.16.202610240946</span></div></body></html>
