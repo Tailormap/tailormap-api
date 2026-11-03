@@ -814,6 +814,7 @@ public class PopulateTestData {
               "Provinciegebied",
               new GeoServiceLayerSettings()
                   .description("The administrative boundary of Dutch Provinces, connected to a WFS.")
+                  .descriptionInPopup(true)
                   .featureType(new FeatureTypeRef()
                       .featureSourceId(featureSources
                           .get("pdok-kadaster-bestuurlijkegebieden")

@@ -217,6 +217,24 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
+  void should_contain_description_in_popup() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            // set in the catalog layer settings
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].descriptionInPopup")
+                .value(contains(true)))
+        .andExpect(
+            // not set, defaults to false
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].descriptionInPopup")
+                .value(contains(false)));
+  }
+
+  @Test
   void should_contain_description_and_styles() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))

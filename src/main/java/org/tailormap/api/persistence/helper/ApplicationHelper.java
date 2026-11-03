@@ -398,6 +398,9 @@ public class ApplicationHelper {
           nullIfEmpty(serviceLayer.getAbstractText()));
       description = uploadsService.replaceUploadLinks(app, layerRef.getId(), description);
 
+      // Only configurable in the catalog settings of a specific layer
+      boolean descriptionInPopup = Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup());
+
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getAttribution()),
@@ -504,6 +507,7 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
+          .descriptionInPopup(descriptionInPopup)
           .keywords(keywords)
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
