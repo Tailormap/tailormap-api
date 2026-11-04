@@ -1007,6 +1007,11 @@ SPDX-License-Identifier: MIT
                              to reduce memory requirements. See also server.tomcat.threads.max, add about ~50 for other threads
                              -->
                             <BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>150</BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>
+                            <!-- Create logfile in (writable) home directory, in addition to stdout. Only in the image so
+                             running the application outside Docker does not need the directory, can be changed with the
+                             LOGGING_FILE_NAME environment variable
+                             -->
+                            <BPE_DEFAULT_LOGGING_FILE_NAME>/home/cnb/tailormap.log</BPE_DEFAULT_LOGGING_FILE_NAME>
                         </env>
                     </image>
                     <layers>
