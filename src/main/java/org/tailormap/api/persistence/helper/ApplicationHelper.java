@@ -398,7 +398,6 @@ public class ApplicationHelper {
           nullIfEmpty(serviceLayer.getAbstractText()));
       description = uploadsService.replaceUploadLinks(app, layerRef.getId(), description);
 
-
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getAttribution()),
