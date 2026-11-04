@@ -398,8 +398,6 @@ public class ApplicationHelper {
           nullIfEmpty(serviceLayer.getAbstractText()));
       description = uploadsService.replaceUploadLinks(app, layerRef.getId(), description);
 
-      // Only configurable in the catalog settings of a specific layer
-      boolean descriptionInPopup = Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup());
 
       @SuppressModernizer
       String attribution = ObjectUtils.firstNonNull(
@@ -472,6 +470,8 @@ public class ApplicationHelper {
           .filter(k -> !serviceLayerSettings.getHiddenKeywords().contains(k))
           .collect(Collectors.toSet());
       keywords.addAll(serviceLayerSettings.getExtraKeywords());
+
+      boolean descriptionInPopup = Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup());
 
       mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
