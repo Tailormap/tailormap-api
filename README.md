@@ -243,8 +243,16 @@ but includes a health check binary that can be used for a Docker Compose healthc
       - "THC_PORT=8080"
       - "THC_PATH=/api/actuator/health"
     healthcheck:
+      interval: 1m
+      timeout: 5s
+      retries: 2
+      start_period: 1m
+      start_interval: 5s
       test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
 ```
+
+The `start_period` gives the application time to start: failed checks during this period are not counted, and with
+`start_interval` the container is marked healthy within seconds after startup.
 
 ## Releasing
 
