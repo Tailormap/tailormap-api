@@ -684,15 +684,15 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                 Scan Information (<a href="#" title="Click to toggle display" id="scanInformationToggle">show all</a>):<br/>
                     <ul class="indent">
                         <li><i>dependency-check version</i>: 13.0.0</li>
-                        <li><i>Report Generated On</i>: Mon, 2 Nov 2026 12:48:12 GMT</li>
+                        <li><i>Report Generated On</i>: Wed, 4 Nov 2026 13:49:16 GMT</li>
                         <li><i>Dependencies Scanned</i>:&nbsp;311 (191 unique)</li>
-                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">3</span></li>
-                        <li><i>Vulnerabilities Found</i>:&nbsp;5</li>
+                        <li><i>Vulnerable Dependencies</i>:&nbsp;<span id="vulnerableCount">4</span></li>
+                        <li><i>Vulnerabilities Found</i>:&nbsp;16</li>
                         <li><i>Vulnerabilities Suppressed</i>:&nbsp;0
                         </li>
                         <li class="scaninfo">...</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-11-02T12:10:25Z</li>
-                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-11-02T11:17:33Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Checked</i>: 2026-11-04T10:50:30Z</li>
+                        <li class="scaninfo hidden"><i>NVD API Last Modified</i>: 2026-11-04T10:17:27Z</li>
                     </ul><br/>
 <h2>Summary</h2>
                 <p><span id="tablecaption-plain">Summary of Vulnerable Dependencies </span><a href="#" title="Click to toggle display" id="vulnerabilityDisplayToggle">(click to show all)</a></p>
@@ -2902,7 +2902,7 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="0">Highest</td>
                         <td>36</td>
                     </tr>
-                    <tr class="notvulnerable">
+                    <tr class=" vulnerable">
                         <td data-sort-value="SQLITE-JDBC-3.53.2.0.JAR"><a href="#l175_22d97e2ee9f10e2701aa7d7b4b13a42805dcd641">sqlite-jdbc-3.53.2.0.jar</a></td>
                         <td data-sort-value="cpe:2.3:a:sqlite:sqlite:3.53.2.0:*:*:*:*:*:*:*cpe:2.3:a:sqlite_jdbc_project:sqlite_jdbc:3.53.2.0:*:*:*:*:*:*:*">
                                 <a href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A3.53.2.0%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A" target="_blank">cpe:2.3:a:sqlite:sqlite:3.53.2.0:*:*:*:*:*:*:*</a>
@@ -2912,8 +2912,8 @@ Getting Help: <a href="https://github.com/dependency-check/DependencyCheck/issue
                         <td data-sort-value="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0">
                                 pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0
 </td>
-                        <td data-sort-value="-10">&nbsp;</td>
-                        <td>0</td>
+                                                                                <td data-sort-value="85.0">HIGH</td>
+                        <td>11</td>
                         <td data-sort-value="0">Highest</td>
                         <td>38</td>
                     </tr>
@@ -16323,8 +16323,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                             </ul>
                         </div>
                 </div>
-                    <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l175_22d97e2ee9f10e2701aa7d7b4b13a42805dcd641"></a>sqlite-jdbc-3.53.2.0.jar</h3>
-                    <div class="subsectioncontent notvulnerable">
+                    <h3 class="subsectionheader standardsubsection"><a name="l175_22d97e2ee9f10e2701aa7d7b4b13a42805dcd641"></a>sqlite-jdbc-3.53.2.0.jar</h3>
+                    <div class="subsectioncontent">
                             <p><b>Description:</b><pre>SQLite JDBC library</pre></p>
                         <p>
                             <b>License:</b><pre class="indent">The Apache Software License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0.txt</pre>
@@ -16395,6 +16395,272 @@ Spring Data REST 3.7.20 and earlier</pre>
                             </li>
                             </ul>
                         </div>
+                    <h4 id="header371" class="subsectionheader collapsed collaspablesubsection white">Published Vulnerabilities</h4>
+                    <div id="content371" class="subsectioncontent standardsubsection">
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119373">CVE-2026-119373</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119373">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 built with FTS5 contains a heap buffer overflow in fts5MergeRowidLists() that undersizes the output buffer when merging detail=none prefix doclists. Attackers who can populate a detail=none FTS5 table with negative rowids and run a prefix MATCH query can write past the allocation, corrupting heap memory and crashing the process.</pre>
+
+                                CWE-787 Out-of-bounds Write<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: HIGH (8.5)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.8)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-fts5-rowidmerge">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-08-04T08:49:27Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/ext/fts5/fts5_index.c#L6107">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/e1c9934f9f11a499029abb020ea715a08970da80">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/a7f8c92f62">PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-fts5-heap-buffer-overflow-via-fts5mergerowidlists">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs6"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119374">CVE-2026-119374</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119374">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 built with FTS5 contains a heap buffer overflow in fts5DoSecureDelete() that allows attackers to write past the leaf page buffer via crafted footer key offsets. Attackers can supply a database file with a corrupted FTS5 index that, when deleted from with secure-delete enabled, corrupts heap memory and crashes the application.</pre>
+
+                                CWE-787 Out-of-bounds Write<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: HIGH (8.5)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.8)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-fts5-securedel">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/ext/fts5/fts5_index.c#L5525">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/d9de6eedbe918c074c7556400fa21df5960704d9">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/9cd4f9e920">PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-heap-buffer-overflow-via-fts5-fts5dosecuredelete">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs7"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119379">CVE-2026-119379</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119379">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 built with the session extension contains a heap buffer overflow vulnerability in sqlite3changeset_apply() that allows attackers to corrupt heap memory by supplying crafted changesets. Attackers can repeat a table name in a second changeset block with a larger column count, causing sessionUpdateFind() to memset past the undersized aUpdateMask allocation.</pre>
+
+                                CWE-787 Out-of-bounds Write<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: HIGH (8.5)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.8)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-session-ncol">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-08-16T10:15:25Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/64459c87cc702d600704fb77ee40ca1782398a52">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/3f57024aecea0f3b">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/ext/session/sqlite3session.c#L5619">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-heap-buffer-overflow-via-session-extension-sessionupdatefind">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs8"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119586">CVE-2026-119586</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119586">suppress</button></p>
+                            <p>                            <pre>SQLite command-line shell through 3.54.1 contains a command injection vulnerability in the .recover command that emits attacker-planted dot-commands stored in sqlite_schema.sql values verbatim. Attackers can craft a database whose schema holds a valid CREATE statement followed by a .shell or .system line, executing OS commands when victims pipe .recover output into sqlite3.</pre>
+
+                                CWE-77 Improper Neutralization of Special Elements used in a Command ('Command Injection')<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: HIGH (8.5)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: HIGH (7.8)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-cli-recover">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.54.1/ext/recover/sqlite3recover.c#L1221-L1223">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.54.1/src/shell.c.in#L7877-L7891">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-cli-through-3.54.1-command-injection-via-recover-output">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs9"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (including) 3.54.1</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119371">CVE-2026-119371</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119371">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains a stack exhaustion vulnerability that allows attackers to bypass the SQLITE_LIMIT_EXPR_DEPTH nesting limit because common table expressions are not counted against it. Attackers can supply a WITH clause chaining tens of thousands of CTEs, via plain SQL or a view in an untrusted database file, causing unbounded selectExpander() recursion that crashes the process.</pre>
+
+                                CWE-674 Uncontrolled Recursion<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-cte-nest">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-10-04T04:58:58Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/src/select.c#L5754">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/e6ff280c839fdfc7418fd5add12e8f32702a17fb">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/f54730871303e655">PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-stack-exhaustion-via-cte-chain-in-selectexpander">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs10"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119372">CVE-2026-119372</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119372">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 built with FTS3/FTS4 and SQLITE_ENABLE_FTS3_PARENTHESIS contains a use-after-free vulnerability in fts3BestSnippet() caused by dangling cached position-list pointers. Attackers can run a full-text MATCH query combining OR and NEAR operators with snippet() to read freed heap memory and crash the process.</pre>
+
+                                CWE-416 Use After Free<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>134c704f-9b21-4f2e-91b3-4a467353bcc0 - <a target="_blank" href="https://sqlite.org/bugs/info/2026-08-17T09:18:24Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-fts3-snippet">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-08-17T09:18:24Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/ext/fts3/fts3_snippet.c#L561">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/a87bd2471a9c0606e78d3c3678bcd9cecaa0e731">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/e4635c4153">PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-use-after-free-in-fts3-fts3bestsnippet-via-snippet">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs11"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119375">CVE-2026-119375</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119375">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains an information disclosure vulnerability that allows attackers to read uninitialized page-cache memory by supplying a WAL file with an undersized page size. Attackers can craft a database and WAL file whose oversized record payload makes queries like substr() return stale bytes, disclosing other table rows and internal pointers.</pre>
+
+                                CWE-908 Use of Uninitialized Resource<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-wal-pagesize">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-08-17T15:54:41Z">ISSUE_TRACKING,PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/src/wal.c#L3672">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/e5bf119821f25be1d7f10ef0a2edbe175289166e">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/f9b4ee369557c36c">PATCH,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-information-disclosure-via-wal-page-size-mismatch">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs12"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119376">CVE-2026-119376</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119376">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains a stack exhaustion vulnerability that allows attackers to bypass the SQLITE_LIMIT_EXPR_DEPTH limit by chaining COLLATE postfix operators. Attackers can supply roughly 175,000 chained COLLATE operators in SQL or an untrusted database view to trigger unbounded recursion in sqlite3WalkExprNN() and crash the process.</pre>
+
+                                CWE-674 Uncontrolled Recursion<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>134c704f-9b21-4f2e-91b3-4a467353bcc0 - <a target="_blank" href="https://sqlite.org/bugs/info/2026-10-04T04:50:56Z">ISSUE_TRACKING</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-collate-depth">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-10-04T04:50:56Z">ISSUE_TRACKING</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/252c0b7bf5a727d2">ISSUE_TRACKING</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/src/expr.c#L175">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/d54522a5b832422ab893a1e9fa7a99ab314ea4e2">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-stack-exhaustion-via-collate-operator-chain">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs13"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119378">CVE-2026-119378</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119378">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains a use-after-free vulnerability in the R-Tree extension that allows attackers to make applications use freed heap memory by manipulating the %_node shadow table. Attackers can supply a database declaring %_node WITHOUT ROWID or with a RAISE(IGNORE) trigger so nodeWrite() hashes nodes as 0, crashing the process after node splits.</pre>
+
+                                CWE-416 Use After Free<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-rtree-rowid0">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/d21bd37c7cfc1b85b17a6703555f0926b6236e04">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/6a9e1415659f9e75">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/ext/rtree/rtree.c#L905">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-use-after-free-in-r-tree-nodewrite">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs14"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119591">CVE-2026-119591</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119591">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains a stack exhaustion vulnerability in countOfViewOptimization() that allows attackers to crash the host process via count(*) over a large multi-row VALUES clause. Attackers supplying SQL or a database file with a crafted view can trigger deeply nested TK_PLUS expressions whose recursive freeing in sqlite3ExprDeleteNN() exhausts the C stack, causing denial of service.</pre>
+
+                                CWE-674 Uncontrolled Recursion<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: MEDIUM (6.8)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: MEDIUM (5.5)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-values-union">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-10-04T05:34:47Z">ISSUE_TRACKING,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/eff50a067c55f972909e7780e506e91382d08de2">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/src/select.c#L7199">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-stack-exhaustion-via-countofviewoptimization-in-values-clause">THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/ab621a3e11ee4acc">VENDOR_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs15"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                                <p><b><a target="_blank" href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-119377">CVE-2026-119377</a></b>&nbsp;&nbsp;<button class="copybutton" title="Generate Suppression XML for this CVE for this file" data-display-name="sqlite-jdbc-3.53.2.0.jar" data-sha1="22d97e2ee9f10e2701aa7d7b4b13a42805dcd641" data-pkgurl="pkg:maven/org.xerial/sqlite-jdbc@3.53.2.0" data-type-to-suppress="cve" data-id-to-suppress="CVE-2026-119377">suppress</button></p>
+                            <p>                            <pre>SQLite before 3.54.0 contains an authorization bypass vulnerability in lookupName() that invokes the authorizer only for the first joined table's USING column. Attackers able to submit SQL can query a shared USING column in a RIGHT or FULL JOIN to read columns denied via sqlite3_set_authorizer() SQLITE_READ restrictions.</pre>
+
+                                CWE-863 Incorrect Authorization<br/><br/>
+                                CVSSv4:
+                                <ul><li>Base Score: LOW (2.0)</li>
+                                    <li>Vector: CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X</li></ul>
+                            CVSSv3:
+                            <ul><li>Base Score: LOW (3.3)</li>
+                                <li>Vector: CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N/E:P/RC:R/MAV:A</li></ul>
+                                <br/>References:<ul>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://abraxaslabs.tech/research/sqlite-fj-using-auth">EXPLOIT,THIRD_PARTY_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/2cb22877683680c1">ISSUE_TRACKING</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/src/info/bbd69ce274620008">ISSUE_TRACKING</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/bugs/info/2026-07-05T08:15:45Z">ISSUE_TRACKING,VENDOR_ADVISORY</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/5694c3bb2a6a40770ecd2f65910eea756734dfd8">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/commit/7ff247c5b9ead3ad8a69c26d3fd264878e127237">PATCH</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://github.com/sqlite/sqlite/blob/version-3.53.4/src/resolve.c#L775">PRODUCT</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://sqlite.org/releaselog/3_54_0.html">RELEASE_NOTES</a></li>
+                                    <li>disclosure@vulncheck.com - <a target="_blank" href="https://www.vulncheck.com/advisories/sqlite-before-3.54.0-authorizer-bypass-via-right-or-full-join-using">THIRD_PARTY_ADVISORY</a></li>
+                                </ul>
+                            </p>
+                                    <p>Vulnerable Software &amp; Versions:<ul>
+                                        <li class="vs16"><a target="_blank" href="https://nvd.nist.gov/vuln/search#/nvd/home?sortOrder=3&amp;sortDirection=2&amp;cpeFilterMode=applicability&amp;resultType=records&amp;cpeName=cpe%3A2.3%3Aa%3Asqlite%3Asqlite%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A%3A%2A">cpe:2.3:a:sqlite:sqlite:*:*:*:*:*:*:*:* versions up to (excluding) 3.54.0</a></li>
+                                    </ul></p>
+                    </div>
                 </div>
                     <h3 class="subsectionheader standardsubsection notvulnerable"><a name="l176_dbf170c73e6a3e52eab0a4331669d63b300c415f"></a>sqlite-jdbc-3.53.2.0.jar: sqlitejdbc.dll</h3>
                     <div class="subsectioncontent notvulnerable">
@@ -16405,16 +16671,16 @@ Spring Data REST 3.7.20 and earlier</pre>
                             <b>SHA256:</b>a787685333653fee2b50000333dacbf90b6a35402ed13b8d904f52e0f9658b58
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header371" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content371" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header372" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content372" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header372" class="subsectionheader white">Identifiers</h4>
-                        <div id="content372" class="subsectioncontent standardsubsection">
+                        <h4 id="header373" class="subsectionheader white">Identifiers</h4>
+                        <div id="content373" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16427,16 +16693,16 @@ Spring Data REST 3.7.20 and earlier</pre>
                             <b>SHA256:</b>05ec98383fb2cebf1d32c1bc609d56960c448122585bc0d8feae607cc31eef03
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header373" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content373" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header374" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content374" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header374" class="subsectionheader white">Identifiers</h4>
-                        <div id="content374" class="subsectioncontent standardsubsection">
+                        <h4 id="header375" class="subsectionheader white">Identifiers</h4>
+                        <div id="content375" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16449,16 +16715,16 @@ Spring Data REST 3.7.20 and earlier</pre>
                             <b>SHA256:</b>8bc91b5fdd561fa0a115cf236508a114cba9962ce2baacb226a978f7025ca3f8
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header375" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content375" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header376" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content376" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header376" class="subsectionheader white">Identifiers</h4>
-                        <div id="content376" class="subsectioncontent standardsubsection">
+                        <h4 id="header377" class="subsectionheader white">Identifiers</h4>
+                        <div id="content377" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16471,16 +16737,16 @@ Spring Data REST 3.7.20 and earlier</pre>
                             <b>SHA256:</b>7d3281c7adbf3d2fe6b07462dee9cb310194c302154175f172ced3aac05c91c3
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                         </p>
-                        <h4 id="header377" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content377" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header378" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content378" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                                     <tr><td>Product</td><td>file</td><td>name</td><td>sqlitejdbc</td><td>High</td></tr>
                             </table>
                         </div>
-                        <h4 id="header378" class="subsectionheader white">Identifiers</h4>
-                        <div id="content378" class="subsectioncontent standardsubsection">
+                        <h4 id="header379" class="subsectionheader white">Identifiers</h4>
+                        <div id="content379" class="subsectioncontent standardsubsection">
                             <ul><li><b>None</b></li></ul>
                         </div>
                 </div>
@@ -16496,8 +16762,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">sse-eventbus-3.3.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.9.5-SNAPSHOT
                         </p>
-                        <h4 id="header379" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content379" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header380" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content380" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>sse-eventbus</td><td>High</td></tr>
@@ -16531,8 +16797,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>3.3.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header380" class="subsectionheader white">Identifiers</h4>
-                        <div id="content380" class="subsectioncontent standardsubsection">
+                        <h4 id="header381" class="subsectionheader white">Identifiers</h4>
+                        <div id="content381" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/ch.rasc/sse-eventbus@3.3.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16552,8 +16818,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-3.0.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.9.5-SNAPSHOT
                         </p>
-                        <h4 id="header381" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content381" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header382" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content382" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>swagger-annotations</td><td>High</td></tr>
@@ -16596,8 +16862,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>3.0.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header382" class="subsectionheader white">Identifiers</h4>
-                        <div id="content382" class="subsectioncontent standardsubsection">
+                        <h4 id="header383" class="subsectionheader white">Identifiers</h4>
+                        <div id="content383" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/io.swagger.core.v3/swagger-annotations@3.0.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16621,8 +16887,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">swagger-annotations-jakarta-2.2.22.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.apache.solr/solr-solrj@10.0.0
                         </p>
-                        <h4 id="header383" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content383" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header384" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content384" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>swagger-annotations-jakarta</td><td>High</td></tr>
@@ -16665,8 +16931,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2.22</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header384" class="subsectionheader white">Identifiers</h4>
-                        <div id="content384" class="subsectioncontent standardsubsection">
+                        <h4 id="header385" class="subsectionheader white">Identifiers</h4>
+                        <div id="content385" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/io.swagger.core.v3/swagger-annotations-jakarta@2.2.22
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16690,8 +16956,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">systems-common-2.1.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.2
                         </p>
-                        <h4 id="header385" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content385" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header386" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content386" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>systems-common</td><td>High</td></tr>
@@ -16733,8 +16999,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.1</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header386" class="subsectionheader white">Identifiers</h4>
-                        <div id="content386" class="subsectioncontent standardsubsection">
+                        <h4 id="header387" class="subsectionheader white">Identifiers</h4>
+                        <div id="content387" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/systems.uom/systems-common@2.1
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16754,8 +17020,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-core-11.0.25.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.2
                         </p>
-                        <h4 id="header387" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content387" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header388" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content388" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-core</td><td>High</td></tr>
@@ -16823,8 +17089,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.25</td><td>Highest</td></tr>
                             </table>
                         </div>
-                            <h4 id="header388" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
-                            <div id="content388" class="subsectioncontent standardsubsection hidden">
+                            <h4 id="header389" class="subsectionheader expandable expandablesubsection white">Related Dependencies</h4>
+                            <div id="content389" class="subsectioncontent standardsubsection hidden">
                             <ul>
                                 <li>tomcat-embed-websocket-11.0.25.jar
                                     <ul>
@@ -16837,8 +17103,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 </li>
                             </ul>
                             </div>
-                        <h4 id="header389" class="subsectionheader white">Identifiers</h4>
-                        <div id="content389" class="subsectioncontent standardsubsection">
+                        <h4 id="header390" class="subsectionheader white">Identifiers</h4>
+                        <div id="content390" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16866,8 +17132,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">tomcat-embed-el-11.0.25.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.springframework.boot/spring-boot-starter-validation@4.1.2
                         </p>
-                        <h4 id="header390" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content390" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header391" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content391" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>tomcat-embed-el</td><td>High</td></tr>
@@ -16905,8 +17171,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>11.0.25</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header391" class="subsectionheader white">Identifiers</h4>
-                        <div id="content391" class="subsectioncontent standardsubsection">
+                        <h4 id="header392" class="subsectionheader white">Identifiers</h4>
+                        <div id="content392" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16927,8 +17193,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:runtime
                                 <br/><span class="tooltip"><span class="tooltiptext">txw2-4.0.9.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.hibernate.orm/hibernate-core@7.4.14.Final
                         </p>
-                        <h4 id="header392" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content392" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header393" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content393" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>txw2</td><td>High</td></tr>
@@ -16962,8 +17228,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>4.0.9</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header393" class="subsectionheader white">Identifiers</h4>
-                        <div id="content393" class="subsectioncontent standardsubsection">
+                        <h4 id="header394" class="subsectionheader white">Identifiers</h4>
+                        <div id="content394" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.glassfish.jaxb/txw2@4.0.9
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -16985,8 +17251,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">unit-api-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.2
                         </p>
-                        <h4 id="header394" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content394" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header395" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content395" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>unit-api</td><td>High</td></tr>
@@ -17100,8 +17366,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header395" class="subsectionheader white">Identifiers</h4>
-                        <div id="content395" class="subsectioncontent standardsubsection">
+                        <h4 id="header396" class="subsectionheader white">Identifiers</h4>
+                        <div id="content396" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/javax.measure/unit-api@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17121,8 +17387,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">uom-lib-common-2.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-api@35.2
                         </p>
-                        <h4 id="header396" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content396" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header397" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content397" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>uom-lib-common</td><td>High</td></tr>
@@ -17170,8 +17436,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header397" class="subsectionheader white">Identifiers</h4>
-                        <div id="content397" class="subsectioncontent standardsubsection">
+                        <h4 id="header398" class="subsectionheader white">Identifiers</h4>
+                        <div id="content398" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/tech.uom.lib/uom-lib-common@2.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17191,8 +17457,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">value-2.12.3.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.tailormap/tailormap-api@12.9.5-SNAPSHOT
                         </p>
-                        <h4 id="header398" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content398" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header399" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content399" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>value</td><td>High</td></tr>
@@ -17222,8 +17488,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>2.12.3</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header399" class="subsectionheader white">Identifiers</h4>
-                        <div id="content399" class="subsectioncontent standardsubsection">
+                        <h4 id="header400" class="subsectionheader white">Identifiers</h4>
+                        <div id="content400" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.immutables/value@2.12.3
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17241,8 +17507,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xml-commons-resolver-1.2.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-xml@35.2
                         </p>
-                        <h4 id="header400" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content400" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header401" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content401" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xml-commons-resolver</td><td>High</td></tr>
@@ -17266,8 +17532,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>1.2</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header401" class="subsectionheader white">Identifiers</h4>
-                        <div id="content401" class="subsectioncontent standardsubsection">
+                        <h4 id="header402" class="subsectionheader white">Identifiers</h4>
+                        <div id="content402" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xml/xml-commons-resolver@1.2
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
@@ -17287,8 +17553,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                 <br/><b>Referenced In Project/Scope:</b> Tailormap API:compile
                                 <br/><span class="tooltip"><span class="tooltiptext">xmlbeans-5.3.0.jar is in the transitive dependency tree of the listed items.</span><b>Included by:</b></span> pkg:maven/org.geotools/gt-excel-writer@35.2
                         </p>
-                        <h4 id="header402" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
-                        <div id="content402" class="subsectioncontent standardsubsection hidden">
+                        <h4 id="header403" class="subsectionheader expandable expandablesubsection white">Evidence</h4>
+                        <div id="content403" class="subsectioncontent standardsubsection hidden">
                             <table class="lined fullwidth" border="0">
                                 <tr><th class="left" style="width:10%;">Type</th><th class="left" style="width:10%;">Source</th><th class="left" style="width:20%;">Name</th><th class="left" style="width:50%;">Value</th><th class="left" style="width:10%;">Confidence</th></tr>
                                     <tr><td>Vendor</td><td>file</td><td>name</td><td>xmlbeans</td><td>High</td></tr>
@@ -17330,8 +17596,8 @@ Spring Data REST 3.7.20 and earlier</pre>
                                     <tr><td>Version</td><td>pom</td><td>version</td><td>5.3.0</td><td>Highest</td></tr>
                             </table>
                         </div>
-                        <h4 id="header403" class="subsectionheader white">Identifiers</h4>
-                        <div id="content403" class="subsectioncontent standardsubsection">
+                        <h4 id="header404" class="subsectionheader white">Identifiers</h4>
+                        <div id="content404" class="subsectioncontent standardsubsection">
                             <ul>
                                     <li>pkg:maven/org.apache.xmlbeans/xmlbeans@5.3.0
                                     &nbsp;&nbsp;(<i>Confidence</i>:High)
