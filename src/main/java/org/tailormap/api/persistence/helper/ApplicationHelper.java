@@ -470,8 +470,6 @@ public class ApplicationHelper {
           .collect(Collectors.toSet());
       keywords.addAll(serviceLayerSettings.getExtraKeywords());
 
-      boolean descriptionInPopup = Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup());
-
       mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -506,7 +504,7 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
-          .descriptionInPopup(descriptionInPopup)
+          .descriptionInPopup(Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup()))
           .keywords(keywords)
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())
