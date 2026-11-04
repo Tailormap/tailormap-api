@@ -18,7 +18,7 @@ import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -230,7 +230,8 @@ public class ApplicationHelper {
     private final Application app;
     private final MapResponse mapResponse;
     // XXX not needed if we have GeoServiceLayer.getService().getName()
-    private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
+    // Identity based: GeoServiceLayer has a value-based hashCode() over mutable fields
+    private final IdentityHashMap<GeoServiceLayer, String> serviceLayerServiceIds = new IdentityHashMap<>();
 
     MapResponseLayerBuilder(Application app, MapResponse mapResponse) {
       this.app = app;
