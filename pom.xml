@@ -1013,7 +1013,7 @@ SPDX-License-Identifier: MIT
                         the image has no shell or curl -->
                         <buildpacks>
                             <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
-                            <buildpack>docker.io/paketobuildpacks/health-checker:2.14.2</buildpack>
+                            <buildpack>docker.io/paketobuildpacks/health-checker:2</buildpack>
                         </buildpacks>
                     </image>
                     <layers>
