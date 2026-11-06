@@ -505,6 +505,7 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
+          .descriptionInPopup(Boolean.TRUE.equals(serviceLayerSettings.getDescriptionInPopup()))
           .keywords(keywords)
           .webMercatorAvailable(webMercatorAvailable)
           .tileset3dStyle(appLayerSettings.getTileset3dStyle())

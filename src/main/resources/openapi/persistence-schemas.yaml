@@ -377,6 +377,10 @@ components:
           description: 'Description to show for this layer.'
           nullable: true
           type: string
+        descriptionInPopup:
+          description: 'Show the description of this layer in a pop-up instead of inline in the layer details.'
+          nullable: true
+          type: boolean
         legendImageId:
           description: 'ID of uploaded legend image'
           nullable: true
