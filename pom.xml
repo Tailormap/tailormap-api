@@ -980,6 +980,7 @@ SPDX-License-Identifier: MIT
                         <tags>${docker.image.tags}</tags>
                         <publish>${docker.publish}</publish>
                         <env>
+                            <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
                             <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
                             <BP_OCI_SOURCE>${project.scm.url}</BP_OCI_SOURCE>
                             <!--suppress UnresolvedMavenProperty -->
@@ -1017,6 +1018,12 @@ SPDX-License-Identifier: MIT
                              -->
                             <BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>150</BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>
                         </env>
+                        <!-- health-checker adds /layers/paketo-buildpacks_health-checker/thc/bin/thc for a container healthcheck,
+                        the image has no shell or curl -->
+                        <buildpacks>
+                            <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+                            <buildpack>docker.io/paketobuildpacks/health-checker:2</buildpack>
+                        </buildpacks>
                     </image>
                     <layers>
                         <enabled>true</enabled>
