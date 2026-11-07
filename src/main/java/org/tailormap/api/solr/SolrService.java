@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
-import org.apache.solr.client.solrj.response.SolrPingResponse;
+import org.apache.solr.client.solrj.request.HealthCheckRequest;
+import org.apache.solr.client.solrj.response.HealthCheckResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,8 @@ public class SolrService {
 
   public boolean isSolrServiceAvailable() {
     try (SolrClient client = getSolrClientForIndexing()) {
-      SolrPingResponse response = client.ping();
+      HealthCheckRequest request = new HealthCheckRequest();
+      HealthCheckResponse response = request.process(client);
       Metrics.timer("tailormap_solr_ping").record(response.getElapsedTime(), TimeUnit.MILLISECONDS);
       return true;
     } catch (SolrServerException | IOException e) {

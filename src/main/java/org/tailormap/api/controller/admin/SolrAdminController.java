@@ -19,7 +19,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.SolrPingResponse;
+import org.apache.solr.client.solrj.request.HealthCheckRequest;
+import org.apache.solr.client.solrj.response.HealthCheckResponse;
 import org.apache.solr.common.SolrException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -127,7 +128,8 @@ public class SolrAdminController implements InitializingBean {
   @GetMapping(path = "${tailormap-api.admin.base-path}/index/ping", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> pingSolr() {
     try (SolrClient solrClient = solrService.getSolrClientForSearching()) {
-      final SolrPingResponse ping = solrClient.ping();
+      final HealthCheckRequest request = new HealthCheckRequest();
+      final HealthCheckResponse ping = request.process(solrClient);
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
       Metrics.timer("tailormap_solr_ping").record(ping.getElapsedTime(), TimeUnit.MILLISECONDS);
       return ResponseEntity.ok(this.jsonMapper
