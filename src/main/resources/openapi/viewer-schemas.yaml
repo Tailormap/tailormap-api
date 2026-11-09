@@ -149,6 +149,11 @@ components:
         description:
           description: 'Description text to show for this layer, may contain some links and images (see htmlify pipe)'
           type: string
+        descriptionInPopup:
+          description: 'Whether to show a button which opens the description in a pop-up instead of showing the description inline.'
+          type: boolean
+          nullable: false
+          default: false
         keywords:
           description: 'Keywords for this layer, to be used for filtering layers'
           type: array
