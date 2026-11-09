@@ -457,7 +457,8 @@ public class GeoServiceHelper implements CapabilitiesLoadingProgressReporting {
           .orElse(null);
     }
 
-    final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
+    // Work on a copy: the styles list belongs to the (persistent) GeoService entity and must not be modified
+    final List<WMSStyle> allOurLayersStyles = new ArrayList<>(serviceLayer.getStyles());
     if (allOurLayersStyles.size() == 1) {
       return allOurLayersStyles.getFirst().getLegendUrl();
     }
