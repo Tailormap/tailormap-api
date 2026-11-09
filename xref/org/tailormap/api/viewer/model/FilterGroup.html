@@ -33,7 +33,7 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Schema(name = <span class="jxr_string">"FilterGroup"</span>, description = <span class="jxr_string">"A group of filters. The group can be used to group filters together, or to disable a group of filters."</span>)
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.27.0"</span>)
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FilterGroup" href="../../../../../org/tailormap/api/persistence/json/FilterGroup.html#FilterGroup">FilterGroup</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">   * NOTE spatial is not supported (for now) for preconfigured filters</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> enum TypeEnum {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> enum TypeEnum <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      ATTRIBUTE(<span class="jxr_string">"ATTRIBUTE"</span>);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String value;
@@ -82,7 +82,7 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * The operator for the filter group, we may want to support the OR operator in the future</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">public</strong> enum OperatorEnum {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">public</strong> enum OperatorEnum <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      AND(<span class="jxr_string">"AND"</span>),
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      OR(<span class="jxr_string">"OR"</span>);

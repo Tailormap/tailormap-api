@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  @Schema(name = <span class="jxr_string">"filterEditConfiguration"</span>, description = <span class="jxr_string">"configuration for editing filter"</span>)
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  @JsonTypeName(<span class="jxr_string">"filterEditConfiguration"</span>)
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.26.0"</span>)
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.27.0"</span>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FilterEditConfiguration" href="../../../../../org/tailormap/api/persistence/json/FilterEditConfiguration.html#FilterEditConfiguration">FilterEditConfiguration</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -45,7 +45,7 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     * the type of filter tool</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">public</strong> enum FilterToolEnum {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">public</strong> enum FilterToolEnum <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          SLIDER(<span class="jxr_string">"SLIDER"</span>),
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          CHECKBOX(<span class="jxr_string">"CHECKBOX"</span>),
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     * the mode of input for the filter</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">public</strong> enum InputModeEnum {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">public</strong> enum InputModeEnum <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          SLIDER(<span class="jxr_string">"SLIDER"</span>), INPUT_FIELD(<span class="jxr_string">"INPUT_FIELD"</span>), SLIDER_AND_INPUT_FIELD(<span class="jxr_string">"SLIDER_AND_INPUT_FIELD"</span>);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
