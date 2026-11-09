@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestJson.json;
 
@@ -29,7 +30,7 @@ import org.tailormap.api.persistence.Group;
 
 /**
  * Integration test for the actuator security configuration. The test verifies that the actuator endpoints are secured
- * as expected; {@code health} is publicly accessible, {@code prometheus} requires authentication.
+ * as expected; {@code health} is publicly accessible without details, {@code prometheus} requires authentication.
  */
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -48,7 +49,8 @@ class ActuatorSecurityConfigurationIntegrationTest {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().json(json(Map.of("status", "UP"))));
+        .andExpect(content().json(json(Map.of("status", "UP"))))
+        .andExpect(jsonPath("$.components").doesNotExist());
   }
 
   @Test
@@ -59,7 +61,8 @@ class ActuatorSecurityConfigurationIntegrationTest {
     mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().json(json(Map.of("status", "UP"))));
+        .andExpect(content().json(json(Map.of("status", "UP"))))
+        .andExpect(jsonPath("$.components").doesNotExist());
   }
 
   @Test

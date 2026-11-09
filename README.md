@@ -233,6 +233,27 @@ See:
 
 If you inject the wrong one you may not receive the events you want, and you risk sending administrative events to the viewer.
 
+## Health check
+
+The health endpoint `/api/actuator/health` does not require authentication. The Docker image has no shell or `curl`,
+but includes a health check binary that can be used for a Docker Compose healthcheck:
+
+```yaml
+    environment:
+      - "THC_PORT=8080"
+      - "THC_PATH=/api/actuator/health"
+    healthcheck:
+      interval: 1m
+      timeout: 5s
+      retries: 2
+      start_period: 1m
+      start_interval: 5s
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
+```
+
+The `start_period` gives the application time to start: failed checks during this period are not counted, and with
+`start_interval` the container is marked healthy within seconds after startup.
+
 ## Releasing
 
 ### Prerequisites
