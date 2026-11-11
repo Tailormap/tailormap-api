@@ -12,12 +12,17 @@ public final class MarkdownUtils {
   /** Characters that have a special meaning in Markdown and are escaped with a backslash. */
   private static final String SPECIAL_CHARACTERS = "\\`*_[]<>#|~+=-";
 
+  /** "http://", "https://" or "www.", grouped because it is concatenated with the other parts. */
+  @SuppressWarnings("RegExpUnnecessaryNonCapturingGroup")
   private static final String URL_START = "(?:https?://|www\\.)";
 
+  /** Zero or more characters that are not whitespace, "<" or ">". */
   private static final String URL_BODY = "[^\\s<>]*";
 
+  /** A balanced pair of parentheses at the end, like "(b)" in "wiki/A_(b)". */
   private static final String URL_END_PARENTHESES = "\\([^\\s<>()]*\\)";
 
+  /** Otherwise the last character, which can't be a parenthesis or punctuation from the surrounding text. */
   private static final String URL_END_CHARACTER = "[^\\s<>()*_.,;:!?'\"~]";
 
   /**
