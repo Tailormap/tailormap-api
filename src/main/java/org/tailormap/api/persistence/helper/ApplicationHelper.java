@@ -61,6 +61,7 @@ import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.service.UploadsService;
+import org.tailormap.api.util.MarkdownUtils;
 import org.tailormap.api.viewer.model.AppLayer;
 import org.tailormap.api.viewer.model.LayerSearchIndex;
 import org.tailormap.api.viewer.model.LayerTreeNode;
@@ -395,8 +396,11 @@ public class ApplicationHelper {
       String description = ObjectUtils.firstNonNull(
           nullIfEmpty(appLayerSettings.getDescription()),
           nullIfEmpty(serviceLayerSettings.getDescription()),
-          nullIfEmpty(defaultLayerSettings.getDescription()),
-          nullIfEmpty(serviceLayer.getAbstractText()));
+          nullIfEmpty(defaultLayerSettings.getDescription()));
+      if (description == null) {
+        // Configured descriptions are Markdown, but the layer abstract from the capabilities is plain text
+        description = MarkdownUtils.escapeMarkdown(nullIfEmpty(serviceLayer.getAbstractText()));
+      }
       description = uploadsService.replaceUploadLinks(app, layerRef.getId(), description);
 
       @SuppressModernizer
