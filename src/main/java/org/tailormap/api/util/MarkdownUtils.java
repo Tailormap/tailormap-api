@@ -9,20 +9,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class MarkdownUtils {
-  /**
-   * Matches bare URLs which are rendered as links by GFM autolinking. Trailing punctuation is removed from the match
-   * afterwards, see {@link #urlEnd(String, int, int)}.
-   */
-  private static final Pattern URL_PATTERN = Pattern.compile("(?:https?://|www\\.)[^\\s<>\\[\\]]+");
+  /** Characters that have a special meaning in Markdown and are escaped with a backslash. */
+  private static final String SPECIAL_CHARACTERS = "\\`*_[]<>#|~+=-";
 
-  /** Trailing characters which GFM does not include in an autolink. */
-  private static final String URL_TRAILING_PUNCTUATION = "?!.,:;*_~'\"";
+  private static final String URL_START = "(?:https?://|www\\.)";
+
+  private static final String URL_BODY = "[^\\s<>]*";
+
+  private static final String URL_END_PARENTHESES = "\\([^\\s<>()]*\\)";
+
+  private static final String URL_END_CHARACTER = "[^\\s<>()*_.,;:!?'\"~]";
 
   /**
-   * Characters with a special meaning in Markdown. Same as {@code MarkdownHelper.markdownEscape()} in the viewer,
-   * plus {@code ~} (strikethrough) and {@code =} (setext heading underline).
+   * A bare URL. It may end with a balanced pair of parentheses (like https://en.wikipedia.org/wiki/A_(b)), but not
+   * with punctuation that is more likely to belong to the surrounding text.
    */
-  private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("[\\\\`*_{}\\[\\]<>()#+\\-.!|~=]");
+  private static final Pattern URL_PATTERN =
+      Pattern.compile(URL_START + URL_BODY + "(?:" + URL_END_PARENTHESES + "|" + URL_END_CHARACTER + ")");
+
+  /** An ordered list marker at the start of a line, such as "1." or "12)". */
+  private static final Pattern ORDERED_LIST_MARKER = Pattern.compile("^([ \\t]*\\d+)([.)])", Pattern.MULTILINE);
 
   private MarkdownUtils() {}
 
@@ -34,47 +40,30 @@ public final class MarkdownUtils {
    * @return the escaped text, or null if the text is null
    */
   public static String escapeMarkdown(String text) {
-    if (text == null || text.isEmpty()) {
-      return text;
+    if (text == null) {
+      return null;
     }
-    StringBuilder sb = new StringBuilder(text.length() + 16);
-    Matcher urlMatcher = URL_PATTERN.matcher(text);
+    StringBuilder result = new StringBuilder();
+    Matcher url = URL_PATTERN.matcher(text);
     int start = 0;
-    while (urlMatcher.find()) {
-      int end = urlEnd(text, urlMatcher.start(), urlMatcher.end());
-      sb.append(escapeSpecialChars(text.substring(start, urlMatcher.start())));
-      sb.append(text, urlMatcher.start(), end);
-      start = end;
+    while (url.find()) {
+      escapeSpecialCharacters(text.substring(start, url.start()), result);
+      result.append(url.group());
+      start = url.end();
     }
-    sb.append(escapeSpecialChars(text.substring(start)));
-    return sb.toString();
+    escapeSpecialCharacters(text.substring(start), result);
+
+    // URLs never start with a digit, so this does not change them
+    return ORDERED_LIST_MARKER.matcher(result).replaceAll("$1\\\\$2");
   }
 
-  /**
-   * Like GFM autolinking: strip trailing punctuation from a URL, and a trailing ')' only when it is unbalanced so a
-   * URL such as https://en.wikipedia.org/wiki/A_(b) is kept whole.
-   */
-  private static int urlEnd(String text, int start, int end) {
-    while (end > start) {
-      char c = text.charAt(end - 1);
-      if (URL_TRAILING_PUNCTUATION.indexOf(c) != -1) {
-        end--;
-      } else if (c == ')') {
-        String url = text.substring(start, end);
-        long open = url.chars().filter(ch -> ch == '(').count();
-        long close = url.chars().filter(ch -> ch == ')').count();
-        if (close <= open) {
-          break;
-        }
-        end--;
-      } else {
-        break;
+  private static void escapeSpecialCharacters(String text, StringBuilder result) {
+    for (int i = 0; i < text.length(); i++) {
+      char c = text.charAt(i);
+      if (SPECIAL_CHARACTERS.indexOf(c) != -1) {
+        result.append('\\');
       }
+      result.append(c);
     }
-    return end;
-  }
-
-  private static String escapeSpecialChars(String s) {
-    return SPECIAL_CHARS_PATTERN.matcher(s).replaceAll("\\\\$0");
   }
 }
