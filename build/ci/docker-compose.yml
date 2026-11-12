@@ -23,7 +23,7 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: postgis/postgis:18-3.6
+    image: postgis/postgis:18-3.7
     command:
      - "-c"
      - "max_connections=200"
