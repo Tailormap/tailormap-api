@@ -12,6 +12,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -56,6 +58,10 @@ public class Application extends AuditMetadata {
 
   @Column(unique = true)
   @NotNull private String name;
+
+  @NotNull @Enumerated(EnumType.STRING)
+  @Column(columnDefinition = "varchar(255) default 'application'")
+  private ApplicationType applicationType = ApplicationType.APPLICATION;
 
   private String title;
 
@@ -133,6 +139,15 @@ public class Application extends AuditMetadata {
 
   public Application setName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public ApplicationType getApplicationType() {
+    return applicationType;
+  }
+
+  public Application setApplicationType(ApplicationType applicationType) {
+    this.applicationType = applicationType;
     return this;
   }
 
