@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#getSolrClientForIndexing()" tabindex="0">getSolrClientForIndexing()</a></li>
 <li><a href="#getSolrClientForSearching()" tabindex="0">getSolrClientForSearching()</a></li>
+<li><a href="#getBaseUrlSolrClient()" tabindex="0">getBaseUrlSolrClient()</a></li>
 <li><a href="#setSolrUrl(java.lang.String)" tabindex="0">setSolrUrl(String)</a></li>
 <li><a href="#isSolrServiceAvailable()" tabindex="0">isSolrServiceAvailable()</a></li>
 </ol>
@@ -114,21 +115,26 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.solr.client.solrj.SolrClient</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSolrClientForIndexing()" class="member-name-link">getSolrClientForIndexing</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBaseUrlSolrClient()" class="member-name-link">getBaseUrlSolrClient</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get a concurrent update Solr client for bulk operations.</div>
+<div class="block">Get a Solr client without a core name or collection.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.solr.client.solrj.SolrClient</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSolrClientForSearching()" class="member-name-link">getSolrClientForSearching</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSolrClientForIndexing()" class="member-name-link">getSolrClientForIndexing</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Get a concurrent update Solr client for bulk operations.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.apache.solr.client.solrj.SolrClient</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSolrClientForSearching()" class="member-name-link">getSolrClientForSearching</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get a Solr client for searching.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSolrServiceAvailable()" class="member-name-link">isSolrServiceAvailable</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSolrUrl(java.lang.String)" class="member-name-link">setSolrUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrUrl)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSolrServiceAvailable()" class="member-name-link">isSolrServiceAvailable</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSolrUrl(java.lang.String)" class="member-name-link">setSolrUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrUrl)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -184,6 +190,20 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the Solr client</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getBaseUrlSolrClient()">
+<h3>getBaseUrlSolrClient</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.apache.solr.client.solrj.SolrClient</span>&nbsp;<span class="element-name">getBaseUrlSolrClient</span>()</div>
+<div class="block">Get a Solr client without a core name or collection. This can be used for e.g. getting the Solr status, health or
+creating a new core.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the Solr client configured for the base Solr URL without a core name or collection</dd>
 </dl>
 </div>
 </section>
