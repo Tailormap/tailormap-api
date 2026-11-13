@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SolrService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.solr</a> &gt; <span class="el_source">SolrService.java</span></div><h1>SolrService.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.solr;
+
+import io.micrometer.core.instrument.Metrics;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
+import org.apache.solr.client.solrj.request.HealthCheckRequest;
+import org.apache.solr.client.solrj.response.HealthCheckResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="nc" id="L20">public class SolrService {</span>
+  @Value(&quot;${tailormap-api.solr-url}&quot;)
+  private String solrUrl;
+
+  @Value(&quot;${tailormap-api.solr-core-name:tailormap}&quot;)
+  private String solrCoreName;
+
+  @Value(&quot;${tailormap-api.solr-connection-timeout-seconds:60}&quot;)
+  private int solrConnectionTimeout;
+
+  @Value(&quot;${tailormap-api.solr-request-timeout-seconds:240}&quot;)
+  private int solrRequestTimeout;
+
+  @Value(&quot;${tailormap-api.solr-idle-timeout-seconds:10}&quot;)
+  private int solrIdleTimeout;
+
+  /**
+   * Get a concurrent update Solr client for bulk operations.
+   *
+   * @return the Solr client
+   */
+  public SolrClient getSolrClientForIndexing() {
+<span class="nc" id="L42">    return new HttpJdkSolrClient.Builder(this.solrUrl + this.solrCoreName)</span>
+<span class="nc" id="L43">        .withFollowRedirects(true)</span>
+<span class="nc" id="L44">        .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L45">        .withRequestTimeout(solrRequestTimeout, TimeUnit.SECONDS)</span>
+        // Set maxConnectionsPerHost for http1 connections,
+        // maximum number http2 connections is limited to 4
+        // .withMaxConnectionsPerHost(10)
+<span class="nc" id="L49">        .withIdleTimeout(solrIdleTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L50">        .build();</span>
+  }
+
+  /**
+   * Get a Solr client for searching.
+   *
+   * @return the Solr client
+   */
+  public SolrClient getSolrClientForSearching() {
+<span class="nc" id="L59">    return new HttpJdkSolrClient.Builder()</span>
+<span class="nc" id="L60">        .withBaseSolrUrl(this.solrUrl)</span>
+<span class="nc" id="L61">        .withDefaultCollection(this.solrCoreName)</span>
+<span class="nc" id="L62">        .withConnectionTimeout(solrConnectionTimeout, TimeUnit.SECONDS)</span>
+<span class="nc" id="L63">        .withFollowRedirects(true)</span>
+<span class="nc" id="L64">        .build();</span>
+  }
+
+  /**
+   * Get a Solr client without a core name or collection. This can be used for e.g. getting the Solr status, health or
+   * creating a new core.
+   *
+   * @return the Solr client configured for the base Solr URL without a core name or collection
+   */
+  public SolrClient getBaseUrlSolrClient() {
+<span class="nc" id="L74">    return new HttpJdkSolrClient.Builder()</span>
+<span class="nc" id="L75">        .withConnectionTimeout(solrConnectionTimeout / 2, TimeUnit.SECONDS)</span>
+<span class="nc" id="L76">        .withFollowRedirects(false)</span>
+<span class="nc" id="L77">        .withBaseSolrUrl(this.solrUrl)</span>
+<span class="nc" id="L78">        .build();</span>
+  }
+
+  public void setSolrUrl(String solrUrl) {
+<span class="nc" id="L82">    this.solrUrl = solrUrl;</span>
+<span class="nc" id="L83">  }</span>
+
+  public boolean isSolrServiceAvailable() {
+<span class="nc" id="L86">    try (SolrClient client = getBaseUrlSolrClient()) {</span>
+<span class="nc" id="L87">      HealthCheckRequest request = new HealthCheckRequest();</span>
+<span class="nc" id="L88">      HealthCheckResponse response = request.process(client);</span>
+<span class="nc" id="L89">      Metrics.timer(&quot;tailormap_solr_ping&quot;).record(response.getElapsedTime(), TimeUnit.MILLISECONDS);</span>
+<span class="nc" id="L90">      return true;</span>
+<span class="nc" id="L91">    } catch (SolrServerException | IOException e) {</span>
+<span class="nc" id="L92">      return false;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.16.202610240946</span></div></body></html>
