@@ -109,8 +109,8 @@ class AttributeStatisticsAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.count").value(201))
-        .andExpect(jsonPath("$.min").value("2017-01-26T00:00:00.000Z"))
-        .andExpect(jsonPath("$.max").value("2022-02-23T00:00:00.000Z"));
+        .andExpect(jsonPath("$.min").value("2017-01-26"))
+        .andExpect(jsonPath("$.max").value("2022-02-23"));
   }
 
   @Test
