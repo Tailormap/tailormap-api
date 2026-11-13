@@ -479,10 +479,6 @@ components:
           description: 'description text for the form'
           type: string
           nullable: true
-        columns:
-          description: 'the number of columns (adjusts the width of the form)'
-          type: integer
-          format: int32
         tabs:
           description: 'list of tabs for a form'
           type: array
@@ -491,10 +487,10 @@ components:
             title: FormTab
             properties:
               id:
-                description: 'id of the tab'
+                description: 'id of the tab, referenced by the tab property of a form field'
                 type: string
-              name:
-                description: 'title of the tab'
+              label:
+                description: 'label of the tab shown in the edit form'
                 type: string
 
     FormField:
@@ -505,21 +501,21 @@ components:
           type: string
         label:
           type: string
-        type:
+        controlType:
+          description: |
+            The edit control used for this field in the edit form. This is not the data type of the attribute, although
+            the control must be suitable for it (for example a number control for a numeric attribute). Whether a number
+            must be a whole number follows from the attribute type.
           enum:
             - text
-            - number
-            - integer
-            - boolean
-            - select
             - textarea
+            - number
+            - checkbox
+            - select
             - date
-            - timestamp
+            - datetime
         tab:
           type: string
-          nullable: true
-        column:
-          type: number
           nullable: true
         uniqueValuesAsOptions:
           description: 'when true the unique values for the column are used when editing this field'
@@ -539,7 +535,10 @@ components:
         allowValueListOnly:
           type: boolean
           nullable: true
-        disabled:
+        readOnly:
+          description: |
+            When true the field is shown in the edit form but its value can't be changed. A field is also read-only when its
+            attribute is not editable.
           type: boolean
           nullable: true
         required:
