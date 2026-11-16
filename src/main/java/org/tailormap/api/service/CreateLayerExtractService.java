@@ -376,8 +376,7 @@ public class CreateLayerExtractService {
         return;
       }
 
-      outputDataStore = this.getExtractDataStore(
-          extractOutputFormat, outputFileName, clientId, inputTmFeatureType.getName());
+      outputDataStore = this.getExtractDataStore(extractOutputFormat, outputFileName, clientId);
       SimpleFeatureType fType =
           DataUtilities.createSubType(inputFeatureSource.getSchema(), attributes.toArray(new String[0]));
       outputDataStore.createSchema(fType);
@@ -449,16 +448,11 @@ public class CreateLayerExtractService {
    * @param extractOutputFormat the requested extract output format
    * @param outputFileName the target output filename
    * @param clientId the SSE client id, used for error reporting
-   * @param typeName the source feature type name, used to derive format-specific metadata (for example Excel sheet
-   *     name)
    * @return a newly created {@link FileDataStore} configured for the requested format
    * @throws IOException when the output file path is invalid or the datastore cannot be created
    */
   private FileDataStore getExtractDataStore(
-      LayerExtractController.ExtractOutputFormat extractOutputFormat,
-      String outputFileName,
-      String clientId,
-      String typeName)
+      LayerExtractController.ExtractOutputFormat extractOutputFormat, String outputFileName, String clientId)
       throws IOException {
 
     final File outputFile = getValidatedOutputFile(outputFileName);
@@ -480,18 +474,9 @@ public class CreateLayerExtractService {
                 false,
                 CSVDataStoreFactory.QUOTEALL.key,
                 true));
-      case XLSX -> {
-        String processedTypeName = typeName.contains(":")
-            ? typeName.substring(typeName.lastIndexOf(":") + 1).replaceAll("[\\\\/?*\\[\\]:]", "_")
-            : typeName.replaceAll("[\\\\/?*\\[\\]:]", "_");
-        processedTypeName = processedTypeName.substring(0, Math.min(processedTypeName.length(), 31));
-        yield (FileDataStore) new ExcelDataStoreFactory()
-            .createNewDataStore(Map.of(
-                ExcelDataStoreFactory.FILE_PARAM.key,
-                outputFile,
-                ExcelDataStoreFactory.SHEET_PARAM.key,
-                processedTypeName));
-      }
+      case XLSX ->
+        (FileDataStore) new ExcelDataStoreFactory()
+            .createNewDataStore(Map.of(ExcelDataStoreFactory.FILE_PARAM.key, outputFile));
       case GEOJSON ->
         (FileDataStore) new GeoJSONDataStoreFactory()
             .createNewDataStore(Map.of(GeoJSONDataStoreFactory.FILE_PARAM.key, outputFile));
