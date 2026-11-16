@@ -169,3 +169,20 @@ components:
           description: 'Error message if the task failed. Check the status field of the search index.'
           type: string
           nullable: true
+
+    CadastralMunicipality:
+      description: 'A kadastrale gemeente (cadastral municipality) code with its name, as found in the PDOK Locatieserver.
+        A kadastrale gemeente name can have multiple codes, e.g. Amsterdam has ASD02 to ASD43.'
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          description: 'The AKR code of the kadastrale gemeente (Locatieserver field `kadastrale_gemeentecode`).'
+          type: string
+          example: 'ATN02'
+        name:
+          description: 'The name of the kadastrale gemeente (Locatieserver field `kadastrale_gemeentenaam`).'
+          type: string
+          example: 'Aalten'
