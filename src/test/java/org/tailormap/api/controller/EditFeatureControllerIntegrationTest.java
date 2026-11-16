@@ -301,6 +301,8 @@ class EditFeatureControllerIntegrationTest {
         .andExpect(jsonPath("$.attributes.geom").value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
         .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"))
+        // a date column is serialized as a date without a time (HTM-2287)
+        .andExpect(jsonPath("$.attributes.creationdate").value("2020-12-23"))
         .andExpect(jsonPath("$.attachments").isEmpty());
   }
 
