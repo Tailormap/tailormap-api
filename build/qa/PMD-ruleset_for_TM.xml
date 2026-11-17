@@ -21,12 +21,11 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <rule ref="category/java/bestpractices.xml/UseTryWithResources"/>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
-    <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
+    <rule ref="category/java/bestpractices.xml/ReplaceJavaUtilVector"/>
     <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets"/>
     <rule ref="category/java/bestpractices.xml/UnnecessaryWarningSuppression"/>
-    <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
