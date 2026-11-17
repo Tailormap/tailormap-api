@@ -61,8 +61,13 @@ class LayerDescriptionControllerIntegrationTest {
             jsonPath("$.attributes[?(@.name == 'geom_kruinlijn')]").doesNotHaveJsonPath())
         .andExpect(
             jsonPath("$.attributes[?(@.name == 'gmlid')].nullable").value(false))
+        // the primary key is set to editable in the test data, which only applies when creating a feature
         .andExpect(
-            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(true))
+        .andExpect(jsonPath("$.attributes[?(@.name == 'gmlid')].primaryKey")
+            .value(true))
+        .andExpect(jsonPath("$.attributes[?(@.name == 'bronhouder')].primaryKey")
+            .value(false))
         .andExpect(jsonPath("$.editable").value(true))
         .andExpect(jsonPath("$.attachmentAttributes.length()").value(1))
         .andExpect(jsonPath("$.attachmentAttributes[0].attributeName").value("bijlage"));
@@ -84,8 +89,13 @@ class LayerDescriptionControllerIntegrationTest {
             .value("integer"))
         .andExpect(
             jsonPath("$.attributes[?(@.name == 'gmlid')].nullable").value(false))
+        // the primary key is set to editable in the test data, which only applies when creating a feature
         .andExpect(
-            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(true))
+        .andExpect(jsonPath("$.attributes[?(@.name == 'gmlid')].primaryKey")
+            .value(true))
+        .andExpect(jsonPath("$.attributes[?(@.name == 'bronhouder')].primaryKey")
+            .value(false))
         .andExpect(jsonPath("$.editable").value(false));
   }
 

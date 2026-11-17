@@ -283,7 +283,10 @@ components:
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
         editable:
-          description: 'Whether the attribute can be edited.'
+          description: 'Whether the attribute can be edited. For the primary key attribute this only applies when creating a feature.'
+          type: boolean
+        primaryKey:
+          description: 'Whether this is the primary key attribute. The primary key of an existing feature can not be changed.'
           type: boolean
         defaultValue:
           description: 'Default value for this attribute. The value may need to be coerced to the correct type.'

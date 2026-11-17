@@ -260,6 +260,28 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  void patch_primary_key_attribute() throws Exception {
+    final String url =
+        apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
+
+    final String body = json(Map.of("attributes", Map.of("gmlid", "something")));
+
+    mockMvc.perform(patch(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(jsonPath("$.message")
+            .value("Feature cannot be edited, the primary key attribute cannot be changed"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
   @Order(1)
   void post_pg_feature() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
