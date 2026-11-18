@@ -114,9 +114,10 @@ public class LayerDescriptionController {
               // handle different geometry types. For the default geometry
               // attribute there is a specific geometry type set
               .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
-              // primary key can never be edited
-              .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute())
-                  && editableAttributes.contains(a.getName()))
+              // An editable primary key can only be set when creating a feature, see
+              // EditFeatureController
+              .editable(editableAttributes.contains(a.getName()))
+              .primaryKey(a.getName().equals(tmft.getPrimaryKeyAttribute()))
               .defaultValue(a.getDefaultValue())
               .nullable(a.getNullable());
         })

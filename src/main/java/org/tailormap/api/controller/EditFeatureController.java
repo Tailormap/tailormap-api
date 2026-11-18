@@ -192,6 +192,15 @@ public class EditFeatureController implements Constants {
 
     checkFeatureHasOnlyValidAttributes(partialFeature, tmFeatureType, appLayerSettings);
 
+    // An editable primary key can only be set when creating a feature. Changing it would change the feature id and
+    // break
+    // references to the feature, such as attachments.
+    String primaryKeyAttribute = tmFeatureType.getPrimaryKeyAttribute();
+    if (primaryKeyAttribute != null && attributesMap.containsKey(primaryKeyAttribute)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Feature cannot be edited, the primary key attribute cannot be changed");
+    }
+
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
     try (Transaction transaction = new DefaultTransaction("edit")) {
