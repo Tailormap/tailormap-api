@@ -5,6 +5,8 @@
 --   'disabled' -> 'readOnly':    the field is shown but its value can't be changed.
 -- Renames the 'name' of a form tab to 'label', like the label of a form field.
 -- Also removes the unused field property 'column' and form option 'columns'.
+-- Renames the form option 'description' to 'adminComments': it is only shown in the admin, like the admin comments of an
+-- application.
 -- Replaces the choice list properties 'valueList', 'uniqueValuesAsOptions' and 'allowValueListOnly' of a field by a
 -- 'choiceList' object: { source: 'list' | 'uniqueValues', values: [{ value, label }], allowFreeInput }. A choice list is
 -- only created for a select field, or when choices were configured. 'allowValueListOnly' was only false when the admin
@@ -88,12 +90,12 @@ $$
 select case
            when jsonb_typeof(options) <> 'object' then options
            when jsonb_typeof(options -> 'tabs') = 'array' then
-               (options - 'columns') || jsonb_build_object('tabs',
+               (pg_temp.form_field_rename_key(options, 'description', 'adminComments') - 'columns') || jsonb_build_object('tabs',
                                                            (select coalesce(jsonb_agg(
                                                                                     pg_temp.form_field_rename_key(tab, 'name', 'label')
                                                                                     order by ordinality), '[]'::jsonb)
                                                             from jsonb_array_elements(options -> 'tabs') with ordinality as e(tab, ordinality)))
-           else options - 'columns'
+           else pg_temp.form_field_rename_key(options, 'description', 'adminComments') - 'columns'
            end
 $$;
 

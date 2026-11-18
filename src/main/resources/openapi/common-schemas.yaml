@@ -472,11 +472,11 @@ components:
           nullable: true
 
     FormOptions:
-      description: 'model with options for an form'
+      description: 'model with options for a form'
       type: object
       properties:
-        description:
-          description: 'description text for the form'
+        adminComments:
+          description: 'comments for administrators, not sent to the viewer'
           type: string
           nullable: true
         tabs:
@@ -496,6 +496,10 @@ components:
     FormField:
       description: 'model for a single form field'
       type: object
+      required:
+        - name
+        - label
+        - controlType
       properties:
         name:
           type: string
@@ -526,6 +530,9 @@ components:
           type: boolean
           nullable: true
         required:
+          description: |
+            When true the field must have a value. A form can only make a field stricter than its attribute: a field is also
+            required when its attribute is not nullable.
           type: boolean
           nullable: true
         autoFillUser:
