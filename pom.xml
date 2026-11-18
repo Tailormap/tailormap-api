@@ -1218,7 +1218,8 @@ SPDX-License-Identifier: MIT
                                 FormOptions=org.tailormap.api.persistence.json.FormOptions,
                                 FormTab=org.tailormap.api.persistence.json.FormTab,
                                 FormField=org.tailormap.api.persistence.json.FormField,
-                                FormFieldValue=org.tailormap.api.persistence.json.FormFieldValue,
+                                ChoiceList=org.tailormap.api.persistence.json.ChoiceList,
+                                ChoiceListValue=org.tailormap.api.persistence.json.ChoiceListValue,
                                 HiddenLayerFunctionalityEnum=org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum,
                                 AttachmentAttributeType=org.tailormap.api.persistence.json.AttachmentAttributeType,
                                 ExpandOnStartup=org.tailormap.api.persistence.json.ExpandOnStartup</importMappings>

@@ -517,24 +517,8 @@ components:
         tab:
           type: string
           nullable: true
-        uniqueValuesAsOptions:
-          description: 'when true the unique values for the column are used when editing this field'
-          type: boolean
-          nullable: true
-        valueList:
-          type: array
-          nullable: true
-          items:
-            type: object
-            title: FormFieldValue
-            properties:
-              value:
-                type: string
-              label:
-                type: string
-        allowValueListOnly:
-          type: boolean
-          nullable: true
+        choiceList:
+          $ref: '#/components/schemas/ChoiceList'
         readOnly:
           description: |
             When true the field is shown in the edit form but its value can't be changed. A field is also read-only when its
@@ -556,6 +540,45 @@ components:
         hint:
           type: string
           nullable: true
+
+    ChoiceList:
+      description: |
+        The choices for a field with a select control. Only used when the control type of the form field is 'select'.
+      type: object
+      required:
+        - source
+      properties:
+        source:
+          description: |
+            Where the choices come from:
+            - list: the configured values
+            - uniqueValues: the unique values of the attribute in the feature source
+          type: string
+          enum:
+            - list
+            - uniqueValues
+        values:
+          description: |
+            The configured choices, in the order to show them. Used when source is 'list'. Kept but ignored for other
+            sources, so they are not lost when the source is changed back.
+          type: array
+          items:
+            type: object
+            title: ChoiceListValue
+            required:
+              - value
+            properties:
+              value:
+                description: 'value to store in the attribute'
+                type: string
+              label:
+                description: 'label shown to the user instead of the value, the value is shown when not set'
+                type: string
+                nullable: true
+        allowFreeInput:
+          description: 'when true the user can also enter a value which is not one of the choices'
+          type: boolean
+          default: false
 
     HiddenLayerFunctionality:
       description: Functionality that should be hidden for a layer in the UI. The functionality is still available in the backend, so not a "security" setting.
