@@ -10,6 +10,7 @@
 **/FormOptions.java
 **/FormTab.java
 **/FormField.java
-**/FormFieldValue.java
+**/ChoiceList.java
+**/ChoiceListValue.java
 **/HiddenLayerFunctionalityEnum.java
 **/ExpandOnStartup.java

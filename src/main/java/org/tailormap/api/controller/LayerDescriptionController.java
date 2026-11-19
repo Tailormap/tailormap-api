@@ -28,6 +28,7 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.persistence.json.FormOptions;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.persistence.json.TMAttributeType;
@@ -98,7 +99,10 @@ public class LayerDescriptionController {
     if (appLayerSettings.getFormId() != null) {
       form = formRepository.findById(appLayerSettings.getFormId()).orElse(null);
       if (form != null) {
-        r.setForm(new LayerDetailsForm().options(form.getOptions()).fields(form.getFields()));
+        // Leave out the admin comments
+        r.setForm(new LayerDetailsForm()
+            .options(new FormOptions().tabs(form.getOptions().getTabs()))
+            .fields(form.getFields()));
       }
     }
 
