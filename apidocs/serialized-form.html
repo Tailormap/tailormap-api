@@ -897,6 +897,64 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.ChoiceList">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/ChoiceList.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.ChoiceList</a></h3>
+<div class="type-signature">class ChoiceList extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>allowFreeInput</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> allowFreeInput</pre>
+</li>
+<li class="block-list">
+<h5>source</h5>
+<pre><a href="org/tailormap/api/persistence/json/ChoiceList.SourceEnum.html" title="enum class in org.tailormap.api.persistence.json">ChoiceList.SourceEnum</a> source</pre>
+</li>
+<li class="block-list">
+<h5>values</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/ChoiceListValue.html" title="class in org.tailormap.api.persistence.json">ChoiceListValue</a>&gt; values</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.ChoiceListValue">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/ChoiceListValue.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.ChoiceListValue</a></h3>
+<div class="type-signature">class ChoiceListValue extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>label</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> label</pre>
+</li>
+<li class="block-list">
+<h5>value</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.persistence.json.DatePickerFilterConfiguration">
 <h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/DatePickerFilterConfiguration.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.DatePickerFilterConfiguration</a></h3>
 <div class="type-signature">class DatePickerFilterConfiguration extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -1243,10 +1301,6 @@ loadScripts(document, 'script');</script>
 <h4>Serialized Fields</h4>
 <ul class="block-list">
 <li class="block-list">
-<h5>allowValueListOnly</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> allowValueListOnly</pre>
-</li>
-<li class="block-list">
 <h5>autoFillDate</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> autoFillDate</pre>
 </li>
@@ -1255,12 +1309,12 @@ loadScripts(document, 'script');</script>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> autoFillUser</pre>
 </li>
 <li class="block-list">
-<h5>column</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a> column</pre>
+<h5>choiceList</h5>
+<pre><a href="org/tailormap/api/persistence/json/ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a> choiceList</pre>
 </li>
 <li class="block-list">
-<h5>disabled</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> disabled</pre>
+<h5>controlType</h5>
+<pre><a href="org/tailormap/api/persistence/json/FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a> controlType</pre>
 </li>
 <li class="block-list">
 <h5>hint</h5>
@@ -1279,51 +1333,16 @@ loadScripts(document, 'script');</script>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> placeholder</pre>
 </li>
 <li class="block-list">
+<h5>readOnly</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> readOnly</pre>
+</li>
+<li class="block-list">
 <h5>required</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> required</pre>
 </li>
 <li class="block-list">
 <h5>tab</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> tab</pre>
-</li>
-<li class="block-list">
-<h5>type</h5>
-<pre><a href="org/tailormap/api/persistence/json/FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a> type</pre>
-</li>
-<li class="block-list">
-<h5>uniqueValuesAsOptions</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> uniqueValuesAsOptions</pre>
-</li>
-<li class="block-list">
-<h5>valueList</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt; valueList</pre>
-</li>
-</ul>
-</section>
-</li>
-</ul>
-</section>
-</li>
-<li>
-<section class="serialized-class-details" id="org.tailormap.api.persistence.json.FormFieldValue">
-<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/FormFieldValue.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.FormFieldValue</a></h3>
-<div class="type-signature">class FormFieldValue extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
-<dl class="name-value">
-<dt>serialVersionUID:</dt>
-<dd>1L</dd>
-</dl>
-<ul class="block-list">
-<li>
-<section class="detail">
-<h4>Serialized Fields</h4>
-<ul class="block-list">
-<li class="block-list">
-<h5>label</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> label</pre>
-</li>
-<li class="block-list">
-<h5>value</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> value</pre>
 </li>
 </ul>
 </section>
@@ -1345,12 +1364,8 @@ loadScripts(document, 'script');</script>
 <h4>Serialized Fields</h4>
 <ul class="block-list">
 <li class="block-list">
-<h5>columns</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a> columns</pre>
-</li>
-<li class="block-list">
-<h5>description</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> description</pre>
+<h5>adminComments</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> adminComments</pre>
 </li>
 <li class="block-list">
 <h5>tabs</h5>
@@ -1380,8 +1395,8 @@ loadScripts(document, 'script');</script>
 <pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
 </li>
 <li class="block-list">
-<h5>name</h5>
-<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> name</pre>
+<h5>label</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> label</pre>
 </li>
 </ul>
 </section>

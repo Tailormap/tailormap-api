@@ -70,28 +70,18 @@ loadScripts(document, 'script');</script>
 <li><a href="#label(java.lang.String)" tabindex="0">label(String)</a></li>
 <li><a href="#getLabel()" tabindex="0">getLabel()</a></li>
 <li><a href="#setLabel(java.lang.String)" tabindex="0">setLabel(String)</a></li>
-<li><a href="#type(org.tailormap.api.persistence.json.FormField.TypeEnum)" tabindex="0">type(FormField.TypeEnum)</a></li>
-<li><a href="#getType()" tabindex="0">getType()</a></li>
-<li><a href="#setType(org.tailormap.api.persistence.json.FormField.TypeEnum)" tabindex="0">setType(FormField.TypeEnum)</a></li>
+<li><a href="#controlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)" tabindex="0">controlType(FormField.ControlTypeEnum)</a></li>
+<li><a href="#getControlType()" tabindex="0">getControlType()</a></li>
+<li><a href="#setControlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)" tabindex="0">setControlType(FormField.ControlTypeEnum)</a></li>
 <li><a href="#tab(java.lang.String)" tabindex="0">tab(String)</a></li>
 <li><a href="#getTab()" tabindex="0">getTab()</a></li>
 <li><a href="#setTab(java.lang.String)" tabindex="0">setTab(String)</a></li>
-<li><a href="#column(java.math.BigDecimal)" tabindex="0">column(BigDecimal)</a></li>
-<li><a href="#getColumn()" tabindex="0">getColumn()</a></li>
-<li><a href="#setColumn(java.math.BigDecimal)" tabindex="0">setColumn(BigDecimal)</a></li>
-<li><a href="#uniqueValuesAsOptions(java.lang.Boolean)" tabindex="0">uniqueValuesAsOptions(Boolean)</a></li>
-<li><a href="#getUniqueValuesAsOptions()" tabindex="0">getUniqueValuesAsOptions()</a></li>
-<li><a href="#setUniqueValuesAsOptions(java.lang.Boolean)" tabindex="0">setUniqueValuesAsOptions(Boolean)</a></li>
-<li><a href="#valueList(java.util.List)" tabindex="0">valueList(List)</a></li>
-<li><a href="#addValueListItem(org.tailormap.api.persistence.json.FormFieldValue)" tabindex="0">addValueListItem(FormFieldValue)</a></li>
-<li><a href="#getValueList()" tabindex="0">getValueList()</a></li>
-<li><a href="#setValueList(java.util.List)" tabindex="0">setValueList(List)</a></li>
-<li><a href="#allowValueListOnly(java.lang.Boolean)" tabindex="0">allowValueListOnly(Boolean)</a></li>
-<li><a href="#getAllowValueListOnly()" tabindex="0">getAllowValueListOnly()</a></li>
-<li><a href="#setAllowValueListOnly(java.lang.Boolean)" tabindex="0">setAllowValueListOnly(Boolean)</a></li>
-<li><a href="#disabled(java.lang.Boolean)" tabindex="0">disabled(Boolean)</a></li>
-<li><a href="#getDisabled()" tabindex="0">getDisabled()</a></li>
-<li><a href="#setDisabled(java.lang.Boolean)" tabindex="0">setDisabled(Boolean)</a></li>
+<li><a href="#choiceList(org.tailormap.api.persistence.json.ChoiceList)" tabindex="0">choiceList(ChoiceList)</a></li>
+<li><a href="#getChoiceList()" tabindex="0">getChoiceList()</a></li>
+<li><a href="#setChoiceList(org.tailormap.api.persistence.json.ChoiceList)" tabindex="0">setChoiceList(ChoiceList)</a></li>
+<li><a href="#readOnly(java.lang.Boolean)" tabindex="0">readOnly(Boolean)</a></li>
+<li><a href="#getReadOnly()" tabindex="0">getReadOnly()</a></li>
+<li><a href="#setReadOnly(java.lang.Boolean)" tabindex="0">setReadOnly(Boolean)</a></li>
 <li><a href="#required(java.lang.Boolean)" tabindex="0">required(Boolean)</a></li>
 <li><a href="#getRequired()" tabindex="0">getRequired()</a></li>
 <li><a href="#setRequired(java.lang.Boolean)" tabindex="0">setRequired(Boolean)</a></li>
@@ -157,9 +147,9 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static enum&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="FormField.TypeEnum.html" class="type-name-link" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a></code></div>
+<div class="col-second even-row-color"><code><a href="FormField.ControlTypeEnum.html" class="type-name-link" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Gets or Sets type</div>
+<div class="block">The edit control used for this field in the edit form.</div>
 </div>
 </div>
 </section>
@@ -189,140 +179,122 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addValueListItem(org.tailormap.api.persistence.json.FormFieldValue)" class="member-name-link">addValueListItem</a><wbr>(<a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&nbsp;valueListItem)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#allowValueListOnly(java.lang.Boolean)" class="member-name-link">allowValueListOnly</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowValueListOnly)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#autoFillDate(java.lang.Boolean)" class="member-name-link">autoFillDate</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillDate)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#autoFillUser(java.lang.Boolean)" class="member-name-link">autoFillUser</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillUser)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#column(java.math.BigDecimal)" class="member-name-link">column</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a>&nbsp;column)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#choiceList(org.tailormap.api.persistence.json.ChoiceList)" class="member-name-link">choiceList</a><wbr>(@Nullable <a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a>&nbsp;choiceList)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disabled(java.lang.Boolean)" class="member-name-link">disabled</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;disabled)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#controlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)" class="member-name-link">controlType</a><wbr>(<a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a>&nbsp;controlType)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllowValueListOnly()" class="member-name-link">getAllowValueListOnly</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutoFillDate()" class="member-name-link">getAutoFillDate</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get allowValueListOnly</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutoFillDate()" class="member-name-link">getAutoFillDate</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get autoFillDate</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutoFillUser()" class="member-name-link">getAutoFillUser</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAutoFillUser()" class="member-name-link">getAutoFillUser</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get autoFillUser</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getColumn()" class="member-name-link">getColumn</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get column</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDisabled()" class="member-name-link">getDisabled</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Valid <a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getChoiceList()" class="member-name-link">getChoiceList</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get disabled</div>
+<div class="block">Get choiceList</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHint()" class="member-name-link">getHint</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getControlType()" class="member-name-link">getControlType</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">The edit control used for this field in the edit form.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHint()" class="member-name-link">getHint</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get hint</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLabel()" class="member-name-link">getLabel</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLabel()" class="member-name-link">getLabel</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get label</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getName()" class="member-name-link">getName</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getName()" class="member-name-link">getName</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get name</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlaceholder()" class="member-name-link">getPlaceholder</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPlaceholder()" class="member-name-link">getPlaceholder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get placeholder</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getReadOnly()" class="member-name-link">getReadOnly</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">When true the field is shown in the edit form but its value can't be changed.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRequired()" class="member-name-link">getRequired</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get required</div>
+<div class="block">When true the field must have a value.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTab()" class="member-name-link">getTab</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get tab</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getType()" class="member-name-link">getType</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get type</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUniqueValuesAsOptions()" class="member-name-link">getUniqueValuesAsOptions</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">when true the unique values for the column are used when editing this field</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getValueList()" class="member-name-link">getValueList</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get valueList</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hint(java.lang.String)" class="member-name-link">hint</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;hint)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#label(java.lang.String)" class="member-name-link">label</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hint(java.lang.String)" class="member-name-link">hint</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;hint)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#name(java.lang.String)" class="member-name-link">name</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#label(java.lang.String)" class="member-name-link">label</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#placeholder(java.lang.String)" class="member-name-link">placeholder</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;placeholder)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#name(java.lang.String)" class="member-name-link">name</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#placeholder(java.lang.String)" class="member-name-link">placeholder</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;placeholder)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#readOnly(java.lang.Boolean)" class="member-name-link">readOnly</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readOnly)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#required(java.lang.Boolean)" class="member-name-link">required</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;required)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAllowValueListOnly(java.lang.Boolean)" class="member-name-link">setAllowValueListOnly</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowValueListOnly)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutoFillDate(java.lang.Boolean)" class="member-name-link">setAutoFillDate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillDate)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutoFillDate(java.lang.Boolean)" class="member-name-link">setAutoFillDate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillDate)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutoFillUser(java.lang.Boolean)" class="member-name-link">setAutoFillUser</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillUser)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAutoFillUser(java.lang.Boolean)" class="member-name-link">setAutoFillUser</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;autoFillUser)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setChoiceList(org.tailormap.api.persistence.json.ChoiceList)" class="member-name-link">setChoiceList</a><wbr>(<a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a>&nbsp;choiceList)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setColumn(java.math.BigDecimal)" class="member-name-link">setColumn</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a>&nbsp;column)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setControlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)" class="member-name-link">setControlType</a><wbr>(<a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a>&nbsp;controlType)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDisabled(java.lang.Boolean)" class="member-name-link">setDisabled</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;disabled)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setHint(java.lang.String)" class="member-name-link">setHint</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;hint)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setHint(java.lang.String)" class="member-name-link">setHint</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;hint)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLabel(java.lang.String)" class="member-name-link">setLabel</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLabel(java.lang.String)" class="member-name-link">setLabel</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPlaceholder(java.lang.String)" class="member-name-link">setPlaceholder</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;placeholder)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPlaceholder(java.lang.String)" class="member-name-link">setPlaceholder</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;placeholder)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setReadOnly(java.lang.Boolean)" class="member-name-link">setReadOnly</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readOnly)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRequired(java.lang.Boolean)" class="member-name-link">setRequired</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;required)</code></div>
@@ -330,29 +302,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setTab(java.lang.String)" class="member-name-link">setTab</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tab)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setType(org.tailormap.api.persistence.json.FormField.TypeEnum)" class="member-name-link">setType</a><wbr>(<a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a>&nbsp;type)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUniqueValuesAsOptions(java.lang.Boolean)" class="member-name-link">setUniqueValuesAsOptions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;uniqueValuesAsOptions)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setValueList(java.util.List)" class="member-name-link">setValueList</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;&nbsp;valueList)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tab(java.lang.String)" class="member-name-link">tab</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tab)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#type(org.tailormap.api.persistence.json.FormField.TypeEnum)" class="member-name-link">type</a><wbr>(@Nullable <a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a>&nbsp;type)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#uniqueValuesAsOptions(java.lang.Boolean)" class="member-name-link">uniqueValuesAsOptions</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;uniqueValuesAsOptions)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tab(java.lang.String)" class="member-name-link">tab</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tab)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#valueList(java.util.List)" class="member-name-link">valueList</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;&nbsp;valueList)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -391,7 +345,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="name(java.lang.String)">
 <h3>name</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">name</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">name</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
 </div>
 </section>
 </li>
@@ -399,7 +353,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="getName()">
 <h3>getName</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getName</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getName</span>()</div>
 <div class="block">Get name</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -420,7 +375,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="label(java.lang.String)">
 <h3>label</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">label</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">label</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;label)</span></div>
 </div>
 </section>
 </li>
@@ -428,7 +383,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <section class="detail" id="getLabel()">
 <h3>getLabel</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getLabel</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getLabel</span>()</div>
 <div class="block">Get label</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -446,31 +402,32 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="type(org.tailormap.api.persistence.json.FormField.TypeEnum)">
-<h3>type</h3>
+<section class="detail" id="controlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)">
+<h3>controlType</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">type</span><wbr><span class="parameters">(@Nullable <a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a>&nbsp;type)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">controlType</span><wbr><span class="parameters">(<a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a>&nbsp;controlType)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getType()">
-<h3>getType</h3>
+<section class="detail" id="getControlType()">
+<h3>getControlType</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a></span>&nbsp;<span class="element-name">getType</span>()</div>
-<div class="block">Get type</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a></span>&nbsp;<span class="element-name">getControlType</span>()</div>
+<div class="block">The edit control used for this field in the edit form. This is not the data type of the attribute, although the control must be suitable for it (for example a number control for a numeric attribute). Whether a number must be a whole number follows from the attribute type.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>type</dd>
+<dd>controlType</dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setType(org.tailormap.api.persistence.json.FormField.TypeEnum)">
-<h3>setType</h3>
+<section class="detail" id="setControlType(org.tailormap.api.persistence.json.FormField.ControlTypeEnum)">
+<h3>setControlType</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setType</span><wbr><span class="parameters">(<a href="FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a>&nbsp;type)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setControlType</span><wbr><span class="parameters">(<a href="FormField.ControlTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.ControlTypeEnum</a>&nbsp;controlType)</span></div>
 </div>
 </section>
 </li>
@@ -504,156 +461,61 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="column(java.math.BigDecimal)">
-<h3>column</h3>
+<section class="detail" id="choiceList(org.tailormap.api.persistence.json.ChoiceList)">
+<h3>choiceList</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">column</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a>&nbsp;column)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">choiceList</span><wbr><span class="parameters">(@Nullable <a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a>&nbsp;choiceList)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getColumn()">
-<h3>getColumn</h3>
+<section class="detail" id="getChoiceList()">
+<h3>getChoiceList</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Valid
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a></span>&nbsp;<span class="element-name">getColumn</span>()</div>
-<div class="block">Get column</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Valid <a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a></span>&nbsp;<span class="element-name">getChoiceList</span>()</div>
+<div class="block">Get choiceList</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>column</dd>
+<dd>choiceList</dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setColumn(java.math.BigDecimal)">
-<h3>setColumn</h3>
+<section class="detail" id="setChoiceList(org.tailormap.api.persistence.json.ChoiceList)">
+<h3>setChoiceList</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setColumn</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a>&nbsp;column)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setChoiceList</span><wbr><span class="parameters">(<a href="ChoiceList.html" title="class in org.tailormap.api.persistence.json">ChoiceList</a>&nbsp;choiceList)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="uniqueValuesAsOptions(java.lang.Boolean)">
-<h3>uniqueValuesAsOptions</h3>
+<section class="detail" id="readOnly(java.lang.Boolean)">
+<h3>readOnly</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">uniqueValuesAsOptions</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;uniqueValuesAsOptions)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">readOnly</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readOnly)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="getUniqueValuesAsOptions()">
-<h3>getUniqueValuesAsOptions</h3>
+<section class="detail" id="getReadOnly()">
+<h3>getReadOnly</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></span>&nbsp;<span class="element-name">getUniqueValuesAsOptions</span>()</div>
-<div class="block">when true the unique values for the column are used when editing this field</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></span>&nbsp;<span class="element-name">getReadOnly</span>()</div>
+<div class="block">When true the field is shown in the edit form but its value can't be changed. A field is also read-only when its attribute is not editable.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>uniqueValuesAsOptions</dd>
+<dd>readOnly</dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="setUniqueValuesAsOptions(java.lang.Boolean)">
-<h3>setUniqueValuesAsOptions</h3>
+<section class="detail" id="setReadOnly(java.lang.Boolean)">
+<h3>setReadOnly</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setUniqueValuesAsOptions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;uniqueValuesAsOptions)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="valueList(java.util.List)">
-<h3>valueList</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">valueList</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;&nbsp;valueList)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="addValueListItem(org.tailormap.api.persistence.json.FormFieldValue)">
-<h3>addValueListItem</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">addValueListItem</span><wbr><span class="parameters">(<a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&nbsp;valueListItem)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getValueList()">
-<h3>getValueList</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;</span>&nbsp;<span class="element-name">getValueList</span>()</div>
-<div class="block">Get valueList</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>valueList</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setValueList(java.util.List)">
-<h3>setValueList</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setValueList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="FormFieldValue.html" title="class in org.tailormap.api.persistence.json">FormFieldValue</a>&gt;&nbsp;valueList)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="allowValueListOnly(java.lang.Boolean)">
-<h3>allowValueListOnly</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">allowValueListOnly</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowValueListOnly)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getAllowValueListOnly()">
-<h3>getAllowValueListOnly</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></span>&nbsp;<span class="element-name">getAllowValueListOnly</span>()</div>
-<div class="block">Get allowValueListOnly</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>allowValueListOnly</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setAllowValueListOnly(java.lang.Boolean)">
-<h3>setAllowValueListOnly</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAllowValueListOnly</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;allowValueListOnly)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="disabled(java.lang.Boolean)">
-<h3>disabled</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></span>&nbsp;<span class="element-name">disabled</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;disabled)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getDisabled()">
-<h3>getDisabled</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></span>&nbsp;<span class="element-name">getDisabled</span>()</div>
-<div class="block">Get disabled</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>disabled</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setDisabled(java.lang.Boolean)">
-<h3>setDisabled</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setDisabled</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;disabled)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setReadOnly</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readOnly)</span></div>
 </div>
 </section>
 </li>
@@ -670,7 +532,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base
 <h3>getRequired</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></span>&nbsp;<span class="element-name">getRequired</span>()</div>
-<div class="block">Get required</div>
+<div class="block">When true the field must have a value. A form can only make a field stricter than its attribute: a field is also required when its attribute is not nullable.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>required</dd>
