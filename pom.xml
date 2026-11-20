@@ -310,8 +310,8 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-excel-writer</artifactId>
-            <!-- gt-excel-writer is not in the gt-bom, so we need to specify the version here -->
-            <version>${geotools.version}</version>
+            <!-- gt-excel-writer is not in the gt-bom, so we need to specify the version here, normally this would be ${geotools.version}-->
+            <version>35.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
