@@ -184,6 +184,7 @@ public class PopulateTestData {
   private int timeout;
 
   private static final String PROVINCIE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Provinciegebied";
+  private static final String GEMEENTE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Gemeentegebied";
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -823,6 +824,17 @@ public class PopulateTestData {
                           .getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS)"));
+      // For testing paging with an unknown total: more features than fit on one page, and the WFS 2.0.0
+      // server does not return numberMatched
+      geoService
+          .getSettings()
+          .getLayerSettings()
+          .get("Gemeentegebied")
+          .featureType(new FeatureTypeRef()
+              .featureSourceId(featureSources
+                  .get("pdok-kadaster-bestuurlijkegebieden")
+                  .getId())
+              .featureTypeName(GEMEENTE_FEATURE_TYPE_NAME));
       geoServiceRepository.save(geoService);
     });
 
