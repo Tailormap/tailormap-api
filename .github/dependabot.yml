@@ -21,11 +21,12 @@ updates:
     labels:
       - infrastructure
       - dependency
-    # stay on springboot 4.1.x / hibernate 7.4.x  for now
+    # stay on Spring Boot 4.2.x for now
     ignore:
       - dependency-name: org.springframework.boot:spring-boot-starter-parent
         versions:
-          - '>= 4.2'
+          - '>= 4.3'
+      # stay on Hibernate 7.4.x for now
       - dependency-name: org.hibernate.orm:hibernate-maven-plugin
         versions:
           - '>= 7.5'
