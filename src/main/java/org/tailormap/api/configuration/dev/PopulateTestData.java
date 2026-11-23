@@ -710,11 +710,12 @@ public class PopulateTestData {
               featureSource,
               timeout,
               (CapabilitiesLoadingProgressReporting) event -> {
-                logger.warn("WFS loading: {}", event);
+                logger.debug("WFS loading: {}", event);
               },
               new CapabilitiesLoadingEvent()
                   .id(featureSource.getId().toString())
                   .title(featureSource.getTitle())
+                  .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
                   .message("Loading capabilities for " + featureSource.getTitle()
                       + " feature source"));
       wfsFeatureSourceCatalogNode.addItemsItem(new TailormapObjectRef()
@@ -798,13 +799,14 @@ public class PopulateTestData {
             featureSources.get("pdok-kadaster-bestuurlijkegebieden"),
             timeout,
             (CapabilitiesLoadingProgressReporting) event -> {
-              logger.warn("WFS loading: {}", event);
+              logger.debug("WFS loading: {}", event);
             },
             new CapabilitiesLoadingEvent()
                 .id("pdok-kadaster-bestuurlijkegebieden")
                 .title(featureSources
                     .get("pdok-kadaster-bestuurlijkegebieden")
                     .getTitle())
+                .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
                 .message("Loading capabilities for pdok-kadaster-bestuurlijkegebieden feature source"));
     geoServiceRepository.findById("pdok-kadaster-bestuurlijkegebieden").ifPresent(geoService -> {
       geoService
@@ -883,11 +885,12 @@ public class PopulateTestData {
                     fs,
                     timeout,
                     (CapabilitiesLoadingProgressReporting) event -> {
-                      logger.warn("WFS loading: {}", event);
+                      logger.debug("WFS loading: {}", event);
                     },
                     new CapabilitiesLoadingEvent()
                         .id(fs.getId().toString())
                         .title(fs.getTitle())
+                        .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
                         .message("Loading WFS capabilities for " + fs.getTitle()
                             + " feature source"));
           }
