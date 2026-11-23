@@ -79,6 +79,7 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 - **Unit Tests**: Encourage the inclusion of unit tests for all new features and functions.
 - **Integration Tests**: Suggest integration tests to ensure that components work together as expected.
 - **Test-Driven Development**: Promote writing tests before implementing features to ensure requirements are met.
+- **HTTP servers in tests**: When a test needs an HTTP server (e.g. to check the requests an HTTP client sends), use OkHttp's `MockWebServer` (`mockwebserver3`, with the `@StartStop` JUnit extension) instead of `com.sun.net.httpserver.HttpServer` or a hand-written server. Enqueue responses with `MockResponse` and check requests with `takeRequest()`.
 
 ### Running tests
 - Use `mvn test` to run all unit tests.
