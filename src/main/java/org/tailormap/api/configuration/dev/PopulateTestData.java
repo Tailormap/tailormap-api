@@ -595,6 +595,25 @@ public class PopulateTestData {
                 .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
             .setPublished(true)
             .setTitle("PDOK RWS Nationaal Wegenbestand"),
+        // The same WMS services as above, with layers linked to a WFS feature source with an explicit
+        // VERSION=1.1.0 in the URL
+        new GeoService()
+            .setId("pdok-bestuurlijkegebieden-wfs11")
+            .setProtocol(WMS)
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings()
+                // No attribution required: service is CC0
+                .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+            .setPublished(true)
+            .setTitle("PDOK Kadaster bestuurlijke gebieden (WFS 1.1.0)"),
+        new GeoService()
+            .setId("geoserver-wfs11")
+            .setProtocol(WMS)
+            .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setPublished(true)
+            .setTitle("Test GeoServer (WFS 1.1.0)"),
         new GeoService()
             .setId("3dbag_utrecht")
             .setProtocol(TILES3D)
@@ -707,6 +726,15 @@ public class PopulateTestData {
         .setUrl("https://service.pdok.nl/rws/nwbwegen/wfs/v1_0?service=WFS")
         .setTitle("Nationaal Wegenbestand (NWB)");
 
+    TMFeatureSource bestuurlijkeGebiedenWfs11 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=1.1.0")
+        .setTitle("Bestuurlijke gebieden (WFS 1.1.0)");
+    TMFeatureSource geoServerWfs11 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?VERSION=1.1.0")
+        .setTitle("Test GeoServer (WFS 1.1.0)");
+
     List<TMFeatureSource> testWFS = List.of(
         //            "demo",
         new TMFeatureSource()
@@ -723,7 +751,9 @@ public class PopulateTestData {
                 .findById("snapshot-geoserver")
                 .orElseThrow()),
         bestuurlijkeGebiedenWfs,
-        nwbWfs);
+        nwbWfs,
+        bestuurlijkeGebiedenWfs11,
+        geoServerWfs11);
     featureSourceRepository.saveAll(testWFS);
 
     CatalogNode wfsFeatureSourceCatalogNode =
@@ -862,6 +892,32 @@ public class PopulateTestData {
                       .featureSourceId(nwbWfs.getId())
                       .featureTypeName(NWB_WEGVAKKEN_FEATURE_TYPE_NAME))
                   .title("Wegvakken (NWB, WFS)"));
+      geoServiceRepository.save(geoService);
+    });
+
+    // For testing basic functionality such as paging with WFS 1.1.0, with both MapServer and GeoServer
+    geoServiceRepository.findById("pdok-bestuurlijkegebieden-wfs11").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "Gemeentegebied",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(bestuurlijkeGebiedenWfs11.getId())
+                      .featureTypeName(GEMEENTE_FEATURE_TYPE_NAME))
+                  .title("Gemeentegebied (WFS 1.1.0)"));
+      geoServiceRepository.save(geoService);
+    });
+    geoServiceRepository.findById("geoserver-wfs11").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "postgis:begroeidterreindeel",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(geoServerWfs11.getId())
+                      .featureTypeName("postgis:begroeidterreindeel"))
+                  .title("begroeidterreindeel (WFS 1.1.0)"));
       geoServiceRepository.save(geoService);
     });
 
@@ -1275,7 +1331,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
                     "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
-                    "lyr:pdok-rws-nwbwegen:wegvakken",
+                    "lvl:wfs",
                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                     "lyr:snapshot-geoserver:postgis:bak",
                     "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
@@ -1306,11 +1362,32 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .serviceId("pdok-kadaster-bestuurlijkegebieden")
                 .layerName("Gemeentegebied")
                 .visible(true))
+            // WFS feature sources for testing paging and counting
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("lvl:wfs")
+                .title("WFS")
+                .childrenIds(List.of(
+                    "lyr:pdok-rws-nwbwegen:wegvakken",
+                    "lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied",
+                    "lyr:geoserver-wfs11:postgis:begroeidterreindeel")))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:pdok-rws-nwbwegen:wegvakken")
                 .serviceId("pdok-rws-nwbwegen")
                 .layerName("wegvakken")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied")
+                .serviceId("pdok-bestuurlijkegebieden-wfs11")
+                .layerName("Gemeentegebied")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:geoserver-wfs11:postgis:begroeidterreindeel")
+                .serviceId("geoserver-wfs11")
+                .layerName("postgis:begroeidterreindeel")
                 .visible(false))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
