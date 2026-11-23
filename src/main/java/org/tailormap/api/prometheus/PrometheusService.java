@@ -19,8 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
@@ -38,18 +38,21 @@ public class PrometheusService {
   @Value("${tailormap-api.prometheus-api-url}")
   private String prometheusUrl;
 
-  private final RestTemplate restTemplate;
+  private final RestClient restClient;
 
-  public PrometheusService(RestTemplate template) {
-    this.restTemplate = template;
+  public PrometheusService(RestClient.Builder restClientBuilder) {
+    this.restClient = restClientBuilder.build();
   }
 
   /** Check if the Prometheus server is available by sending a simple query. */
   public boolean isPrometheusAvailable() {
     try {
       long startTime = System.nanoTime();
-      ResponseEntity<String> response =
-          restTemplate.getForEntity(prometheusUrl + "/query?query=up", String.class);
+      ResponseEntity<String> response = restClient
+          .get()
+          .uri(prometheusUrl + "/query?query=up")
+          .retrieve()
+          .toEntity(String.class);
       Metrics.timer("tailormap_prometheus_ping").record(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
       if (response.getStatusCode() == HttpStatus.OK) {
         return true;
@@ -80,7 +83,7 @@ public class PrometheusService {
         .toUri();
     logger.trace("Executing Prometheus query (GET): {}", promUrl);
     try {
-      response = restTemplate.getForEntity(promUrl, String.class);
+      response = restClient.get().uri(promUrl).retrieve().toEntity(String.class);
       if (response.getStatusCode() != HttpStatus.OK) {
         logger.error("Failed to execute Prometheus query: {}", response.getStatusCode());
         throw new IOException("Failed to execute Prometheus query: " + response.getStatusCode());

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import org.tailormap.api.prometheus.PrometheusResultProcessor;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
@@ -48,6 +48,8 @@ public class PrometheusIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private static final RestClient restClient = RestClient.create();
+
   private final String prometheusUrl = "http://localhost:9090/api/v1/query?query=";
 
   // The number of applications we expect to have metrics for, CI setup has 2 apps
@@ -60,8 +62,11 @@ public class PrometheusIntegrationTest {
 
   @BeforeAll
   static void check_prometheus_is_up() {
-    ResponseEntity<String> response =
-        new RestTemplate().getForEntity("http://localhost:9090/query?query=up", String.class);
+    ResponseEntity<String> response = restClient
+        .get()
+        .uri("http://localhost:9090/query?query=up")
+        .retrieve()
+        .toEntity(String.class);
     assumeTrue(
         HttpStatus.OK.isSameCodeAs(response.getStatusCode()),
         "Prometheus is not running on localhost:9090, skipping Prometheus integration tests.");
@@ -70,8 +75,11 @@ public class PrometheusIntegrationTest {
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheus_app_counters_over_90days() throws Exception {
-    ResponseEntity<String> response = new RestTemplate()
-        .getForEntity(prometheusUrl + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"), String.class);
+    ResponseEntity<String> response = restClient
+        .get()
+        .uri(prometheusUrl + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"))
+        .retrieve()
+        .toEntity(String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
@@ -101,10 +109,11 @@ public class PrometheusIntegrationTest {
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheus_app_counters_last_updated() throws Exception {
-    ResponseEntity<String> response = new RestTemplate()
-        .getForEntity(
-            prometheusUrl + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
-            String.class);
+    ResponseEntity<String> response = restClient
+        .get()
+        .uri(prometheusUrl + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"))
+        .retrieve()
+        .toEntity(String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
         "application/json",
@@ -142,7 +151,8 @@ public class PrometheusIntegrationTest {
         + " or label_replace(" + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
         + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")";
 
-    ResponseEntity<String> response = new RestTemplate().getForEntity(prometheusUrl + completeQuery, String.class);
+    ResponseEntity<String> response =
+        restClient.get().uri(prometheusUrl + completeQuery).retrieve().toEntity(String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
         "application/json",
@@ -165,24 +175,26 @@ public class PrometheusIntegrationTest {
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheus_app_counters_separate_queried_combined_results() {
-    ResponseEntity<String> response = new RestTemplate()
-        .getForEntity(
-            prometheusUrl +
-                // we need to relabel so we can merge the results later
-                "label_replace("
-                + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
-                + ", \"type\", \"totalCount\", \"__name__\", \".*\")",
-            String.class);
+    ResponseEntity<String> response = restClient
+        .get()
+        .uri(prometheusUrl +
+            // we need to relabel so we can merge the results later
+            "label_replace("
+            + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
+            + ", \"type\", \"totalCount\", \"__name__\", \".*\")")
+        .retrieve()
+        .toEntity(String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    ResponseEntity<String> response2 = new RestTemplate()
-        .getForEntity(
-            prometheusUrl +
-                // we need to relabel so we can merge the results later
-                "label_replace("
-                + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
-                + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")",
-            String.class);
+    ResponseEntity<String> response2 = restClient
+        .get()
+        .uri(prometheusUrl +
+            // we need to relabel so we can merge the results later
+            "label_replace("
+            + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
+            + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")")
+        .retrieve()
+        .toEntity(String.class);
     assertEquals(HttpStatus.OK, response2.getStatusCode());
 
     try {
