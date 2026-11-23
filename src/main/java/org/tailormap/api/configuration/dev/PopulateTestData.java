@@ -185,6 +185,7 @@ public class PopulateTestData {
 
   private static final String PROVINCIE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Provinciegebied";
   private static final String GEMEENTE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Gemeentegebied";
+  private static final String NWB_WEGVAKKEN_FEATURE_TYPE_NAME = "nwbwegen:wegvakken";
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -585,6 +586,16 @@ public class PopulateTestData {
             .setPublished(true)
             .setTitle("Bestuurlijke gebieden (proxied met auth)"),
         new GeoService()
+            .setId("pdok-rws-nwbwegen")
+            .setProtocol(WMS)
+            .setUrl("https://service.pdok.nl/rws/nwbwegen/wms/v1_0?service=WMS")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings()
+                // No attribution required: service is CC0
+                .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+            .setPublished(true)
+            .setTitle("PDOK RWS Nationaal Wegenbestand"),
+        new GeoService()
             .setId("3dbag_utrecht")
             .setProtocol(TILES3D)
             .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/344.json")
@@ -683,6 +694,19 @@ public class PopulateTestData {
           .id(geoService.getId()));
     }
 
+    TMFeatureSource bestuurlijkeGebiedenWfs = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
+        .setTitle("Bestuurlijke gebieden")
+        .setNotes(
+            "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK).");
+    // A large WFS (wegvakken has over 1.6 million features) for testing paging and counting. No VERSION in the
+    // URL, as configured by a user who reported an empty attribute list
+    TMFeatureSource nwbWfs = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/rws/nwbwegen/wfs/v1_0?service=WFS")
+        .setTitle("Nationaal Wegenbestand (NWB)");
+
     List<TMFeatureSource> testWFS = List.of(
         //            "demo",
         new TMFeatureSource()
@@ -697,7 +721,9 @@ public class PopulateTestData {
             .setTitle("WFS for Test GeoServer")
             .setLinkedService(geoServiceRepository
                 .findById("snapshot-geoserver")
-                .orElseThrow()));
+                .orElseThrow()),
+        bestuurlijkeGebiedenWfs,
+        nwbWfs);
     featureSourceRepository.saveAll(testWFS);
 
     CatalogNode wfsFeatureSourceCatalogNode =
@@ -784,31 +810,9 @@ public class PopulateTestData {
             .setAuthentication(new ServiceAuthentication()
                 .method(ServiceAuthentication.MethodEnum.PASSWORD)
                 .username("geodata")
-                .password(geodataPassword)),
-        "pdok-kadaster-bestuurlijkegebieden",
-        new TMFeatureSource()
-            .setProtocol(TMFeatureSource.Protocol.WFS)
-            .setUrl(
-                "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
-            .setTitle("Bestuurlijke gebieden")
-            .setNotes(
-                "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
+                .password(geodataPassword)));
     featureSourceRepository.saveAll(featureSources.values());
 
-    new WFSFeatureSourceHelper()
-        .loadCapabilities(
-            featureSources.get("pdok-kadaster-bestuurlijkegebieden"),
-            timeout,
-            (CapabilitiesLoadingProgressReporting) event -> {
-              logger.debug("WFS loading: {}", event);
-            },
-            new CapabilitiesLoadingEvent()
-                .id("pdok-kadaster-bestuurlijkegebieden")
-                .title(featureSources
-                    .get("pdok-kadaster-bestuurlijkegebieden")
-                    .getTitle())
-                .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
-                .message("Loading capabilities for pdok-kadaster-bestuurlijkegebieden feature source"));
     geoServiceRepository.findById("pdok-kadaster-bestuurlijkegebieden").ifPresent(geoService -> {
       geoService
           .getSettings()
@@ -819,9 +823,7 @@ public class PopulateTestData {
                   .description("The administrative boundary of Dutch Provinces, connected to a WFS.")
                   .descriptionInPopup(true)
                   .featureType(new FeatureTypeRef()
-                      .featureSourceId(featureSources
-                          .get("pdok-kadaster-bestuurlijkegebieden")
-                          .getId())
+                      .featureSourceId(bestuurlijkeGebiedenWfs.getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS)"));
       // For testing paging with an unknown total: more features than fit on one page, and the WFS 2.0.0
@@ -831,9 +833,7 @@ public class PopulateTestData {
           .getLayerSettings()
           .get("Gemeentegebied")
           .featureType(new FeatureTypeRef()
-              .featureSourceId(featureSources
-                  .get("pdok-kadaster-bestuurlijkegebieden")
-                  .getId())
+              .featureSourceId(bestuurlijkeGebiedenWfs.getId())
               .featureTypeName(GEMEENTE_FEATURE_TYPE_NAME));
       geoServiceRepository.save(geoService);
     });
@@ -846,11 +846,22 @@ public class PopulateTestData {
               "Provinciegebied",
               new GeoServiceLayerSettings()
                   .featureType(new FeatureTypeRef()
-                      .featureSourceId(featureSources
-                          .get("pdok-kadaster-bestuurlijkegebieden")
-                          .getId())
+                      .featureSourceId(bestuurlijkeGebiedenWfs.getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS, proxied met auth)"));
+      geoServiceRepository.save(geoService);
+    });
+
+    geoServiceRepository.findById("pdok-rws-nwbwegen").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "wegvakken",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(nwbWfs.getId())
+                      .featureTypeName(NWB_WEGVAKKEN_FEATURE_TYPE_NAME))
+                  .title("Wegvakken (NWB, WFS)"));
       geoServiceRepository.save(geoService);
     });
 
@@ -890,20 +901,6 @@ public class PopulateTestData {
                         .id(fs.getId().toString())
                         .title(fs.getTitle())
                         .message("Loading JDBC capabilities for " + fs.getTitle()
-                            + " feature source"));
-          } else if (fs.getProtocol() == TMFeatureSource.Protocol.WFS) {
-            new WFSFeatureSourceHelper()
-                .loadCapabilities(
-                    fs,
-                    timeout,
-                    (CapabilitiesLoadingProgressReporting) event -> {
-                      logger.debug("WFS loading: {}", event);
-                    },
-                    new CapabilitiesLoadingEvent()
-                        .id(fs.getId().toString())
-                        .title(fs.getTitle())
-                        .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
-                        .message("Loading WFS capabilities for " + fs.getTitle()
                             + " feature source"));
           }
         } catch (Exception e) {
@@ -974,7 +971,7 @@ https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communit
                           .featureTypeName("osm_polygon")))));
     }
 
-    featureSources.get("pdok-kadaster-bestuurlijkegebieden").getFeatureTypes().stream()
+    bestuurlijkeGebiedenWfs.getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals(PROVINCIE_FEATURE_TYPE_NAME))
         .findFirst()
         .ifPresent(ft -> {
@@ -1278,6 +1275,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
                     "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
+                    "lyr:pdok-rws-nwbwegen:wegvakken",
                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                     "lyr:snapshot-geoserver:postgis:bak",
                     "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
@@ -1308,6 +1306,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .serviceId("pdok-kadaster-bestuurlijkegebieden")
                 .layerName("Gemeentegebied")
                 .visible(true))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:pdok-rws-nwbwegen:wegvakken")
+                .serviceId("pdok-rws-nwbwegen")
+                .layerName("wegvakken")
+                .visible(false))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")
