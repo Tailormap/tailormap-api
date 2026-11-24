@@ -6,6 +6,7 @@
 package org.tailormap.api.geotools.http;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
@@ -21,6 +23,9 @@ import mockwebserver3.junit5.StartStop;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPClientFinder;
 import org.geotools.http.HTTPConnectionPooling;
+import org.geotools.http.HTTPProxy;
+import org.geotools.http.LoggingHTTPClient;
+import org.geotools.http.SimpleHttpClient;
 import org.geotools.http.commons.MultithreadedHttpClient;
 import org.geotools.util.factory.Hints;
 import org.junit.jupiter.api.Test;
@@ -42,12 +47,41 @@ class NoExpectContinueHttpClientTest {
     return request;
   }
 
+  private static final Hints FACTORY_HINT =
+      new Hints(Hints.HTTP_CLIENT_FACTORY, NoExpectContinueHttpClientFactory.class);
+
+  /** Without the hint, GeoTools uses SimpleHttpClient when no behaviors are requested, keep doing that. */
   @Test
-  void factory_hint_creates_no_expect_continue_client() {
-    HTTPClient client = HTTPClientFinder.createClient(
-        new Hints(Hints.HTTP_CLIENT_FACTORY, NoExpectContinueHttpClientFactory.class));
-    assertInstanceOf(NoExpectContinueHttpClient.class, client);
-    assertInstanceOf(HTTPConnectionPooling.class, client);
+  void factory_hint_creates_simple_client() {
+    assertInstanceOf(SimpleHttpClient.class, HTTPClientFinder.createClient(FACTORY_HINT));
+  }
+
+  @Test
+  void factory_creates_client_for_behaviors() {
+    NoExpectContinueHttpClientFactory factory = new NoExpectContinueHttpClientFactory();
+    assertInstanceOf(SimpleHttpClient.class, factory.createClient(List.of()));
+    assertInstanceOf(SimpleHttpClient.class, factory.createClient(List.of(HTTPProxy.class)));
+    assertInstanceOf(NoExpectContinueHttpClient.class, factory.createClient(List.of(HTTPConnectionPooling.class)));
+    assertInstanceOf(
+        NoExpectContinueHttpClient.class,
+        factory.createClient(List.of(HTTPConnectionPooling.class, HTTPProxy.class)));
+  }
+
+  @Test
+  void logging_client_keeps_connection_pooling() {
+    NoExpectContinueHttpClientFactory factory = new NoExpectContinueHttpClientFactory();
+    Hints hints = new Hints(Hints.HTTP_LOGGING, "true");
+    assertInstanceOf(
+        HTTPConnectionPooling.class, factory.createClient(hints, List.of(HTTPConnectionPooling.class)));
+    HTTPClient simple = factory.createClient(hints, List.of());
+    assertInstanceOf(LoggingHTTPClient.class, simple);
+    assertFalse(simple instanceof HTTPConnectionPooling);
+  }
+
+  @Test
+  void simple_client_post_does_not_send_expect_header() throws Exception {
+    server.enqueue(new MockResponse.Builder().body("ok").build());
+    assertNull(post(new SimpleHttpClient()).getHeaders().get("Expect"));
   }
 
   @Test
