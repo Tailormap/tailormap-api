@@ -18,6 +18,7 @@ import org.geotools.util.PreventLocalEntityResolver;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
+import org.tailormap.api.geotools.wfs.SortingWFSDataStoreFactory;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -69,7 +70,8 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());
       params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());
     }
-    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key);
+    // Use a factory with a WFS client that lets a WFS 2.0.0 server sort, see SortingWFSClient
+    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key, new SortingWFSDataStoreFactory());
   }
 
   @Override

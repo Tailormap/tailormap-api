@@ -58,6 +58,7 @@ import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.geotools.wfs.CurvedGeometryErrorUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -224,7 +225,15 @@ public class FeaturesController implements Constants {
         if (tmft.getPrimaryKeyAttribute() != null && propNames.contains(tmft.getPrimaryKeyAttribute())) {
           // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
+        } else if (tmft.getFeatureSource().getProtocol() == TMFeatureSource.Protocol.WFS) {
+          // A WFS has no known primary key (only detected for JDBC) and the first attribute need not be
+          // unique,
+          // so use the natural order of the server, which is stable across pages in practice. Sorting on
+          // gml:id
+          // is not possible (PDOK and GeoServer reject it).
+          sortAttrName = null;
         } else {
+          // A database has no guaranteed order without ORDER BY
           sortAttrName = propNames.getFirst();
         }
 
