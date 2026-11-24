@@ -10,10 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import mockwebserver3.MockResponse;
@@ -108,6 +112,24 @@ class NoExpectContinueHttpClientTest {
         .build());
     try (MultithreadedHttpClient client = new MultithreadedHttpClient()) {
       assertEquals("100-continue", post(client).getHeaders().get("Expect"));
+    }
+  }
+
+  /**
+   * {@link MultithreadedHttpClient#setConnectTimeout(int)} doesn't change the timeout of the connection manager, so
+   * connecting to a non-routable address would take the initial 30 seconds. If the network rejects the address right
+   * away this passes without testing anything, but it doesn't fail.
+   */
+  @Test
+  void connect_timeout_is_applied() {
+    try (NoExpectContinueHttpClient client = new NoExpectContinueHttpClient()) {
+      client.setConnectTimeout(1);
+      assertEquals(1, client.getConnectTimeout());
+      assertTimeoutPreemptively(
+          Duration.ofSeconds(10),
+          () -> assertThrows(
+              IOException.class,
+              () -> client.get(URI.create("http://10.255.255.1/").toURL())));
     }
   }
 }

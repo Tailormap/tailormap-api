@@ -6,7 +6,9 @@
 package org.tailormap.api.geotools.http;
 
 import java.lang.reflect.Field;
+import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.geotools.http.commons.MultithreadedHttpClient;
 
 /**
@@ -20,27 +22,52 @@ import org.geotools.http.commons.MultithreadedHttpClient;
  * avoids sending a large body that the server rejects based on the headers alone, which doesn't matter for the small
  * XML request bodies GeoTools sends.
  *
- * <p>{@link MultithreadedHttpClient} doesn't allow changing its request configuration, so it is replaced using
- * reflection. If that fails because of a changed GeoTools implementation, the constructor throws an exception, so this
- * is caught by the unit test when upgrading GeoTools.
+ * <p>Also fixes {@link #setConnectTimeout(int)}: {@link MultithreadedHttpClient} (GeoTools 35.2) only replaces its
+ * connection config field, which the connection manager has already copied in the constructor, so the connect timeout
+ * always stays at the initial 30 seconds.
+ *
+ * <p>{@link MultithreadedHttpClient} doesn't allow changing its request configuration or accessing its connection
+ * manager, so this uses reflection. If that fails because of a changed GeoTools implementation, the constructor throws
+ * an exception, so this is caught by the unit test when upgrading GeoTools.
  */
 public class NoExpectContinueHttpClient extends MultithreadedHttpClient {
-  private static final String REQUEST_CONFIG_FIELD = "requestConfig";
+  private final Field connectionConfigField;
+  private final PoolingHttpClientConnectionManager connectionManager;
 
   public NoExpectContinueHttpClient() {
     super();
     try {
-      Field field = MultithreadedHttpClient.class.getDeclaredField(REQUEST_CONFIG_FIELD);
-      field.setAccessible(true);
-      RequestConfig requestConfig = (RequestConfig) field.get(this);
-      field.set(
+      Field requestConfigField = getField("requestConfig");
+      RequestConfig requestConfig = (RequestConfig) requestConfigField.get(this);
+      requestConfigField.set(
           this,
           RequestConfig.copy(requestConfig)
               .setExpectContinueEnabled(false)
               .build());
+
+      connectionConfigField = getField("connectionConfig");
+      connectionManager = (PoolingHttpClientConnectionManager)
+          getField("connectionManager").get(this);
     } catch (ReflectiveOperationException | ClassCastException e) {
       throw new IllegalStateException(
-          "Can't disable Expect: 100-continue for " + MultithreadedHttpClient.class.getName(), e);
+          "Can't change the configuration of " + MultithreadedHttpClient.class.getName(), e);
+    }
+  }
+
+  private static Field getField(String name) throws NoSuchFieldException {
+    Field field = MultithreadedHttpClient.class.getDeclaredField(name);
+    field.setAccessible(true);
+    return field;
+  }
+
+  /** Sets the connect timeout in seconds, also for new connections of the connection manager. */
+  @Override
+  public void setConnectTimeout(int connectTimeout) {
+    super.setConnectTimeout(connectTimeout);
+    try {
+      connectionManager.setDefaultConnectionConfig((ConnectionConfig) connectionConfigField.get(this));
+    } catch (IllegalAccessException e) {
+      throw new IllegalStateException(e);
     }
   }
 }
