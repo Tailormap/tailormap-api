@@ -43,13 +43,13 @@ class TMFeatureTypeHelperIntegrationTest {
 
   static Stream<Arguments> editables() {
     return Stream.of(
-        arguments("PostGIS", "begroeidterreindeel", "postgis:begroeidterreindeel", true),
-        arguments("PostGIS OSM", "osm_polygon", "postgis:osm_polygon", false));
+        arguments("PostGIS", "begroeidterreindeel", "lyr:snapshot-geoserver:postgis:begroeidterreindeel", true),
+        arguments("PostGIS OSM", "osm_polygon", "lyr:snapshot-geoserver:postgis:osm_polygon", false));
   }
 
   @ParameterizedTest
   @MethodSource("editables")
-  void is_editable(String featureSourceTitle, String featureTypeName, String layerName, boolean expectedEditable) {
+  void is_editable(String featureSourceTitle, String featureTypeName, String appLayerId, boolean expectedEditable) {
     TMFeatureType featureType = featureTypeRepository
         .getTMFeatureTypeByNameAndFeatureSource(
             featureTypeName,
@@ -62,7 +62,7 @@ class TMFeatureTypeHelperIntegrationTest {
 
     AppTreeLayerNode appTreeLayerNode = application
         .getAllAppTreeLayerNode()
-        .filter(node -> node.getLayerName().equals(layerName))
+        .filter(node -> node.getId().equals(appLayerId))
         .findFirst()
         .orElseThrow();
 
