@@ -58,6 +58,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Service;
@@ -687,7 +688,7 @@ class FeaturesControllerIntegrationTest {
 
   private List<String> getPageAttributeValues(String url, int page, String sortBy, String sortOrder, String attribute)
       throws Exception {
-    var request = get(url).accept(MediaType.APPLICATION_JSON)
+    MockHttpServletRequestBuilder request = get(url).accept(MediaType.APPLICATION_JSON)
         .with(setServletPath(url))
         .param("page", String.valueOf(page));
     if (sortBy != null) {
