@@ -30,8 +30,8 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
 
   /**
    * Get the WFS version to use for a feature source URL. This is {@link SimpleWFSHelper#DEFAULT_WFS_VERSION}, unless
-   * the URL has a VERSION parameter with a version GeoTools supports, for example to force WFS 1.1.0 for a server with
-   * a broken WFS 2.0.0 implementation.
+   * the URL has a VERSION parameter with a version GeoTools supports, for example to force WFS 1.1.0 for a server
+   * with a broken WFS 2.0.0 implementation.
    *
    * @param url the feature source URL
    * @return the WFS version
