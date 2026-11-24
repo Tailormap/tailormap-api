@@ -55,6 +55,7 @@ import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.geotools.wfs.CurvedGeometryErrorUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -490,6 +491,15 @@ public class FeaturesController implements Constants {
         }
         featuresResponse.addFeaturesItem(newFeat);
       }
+    } catch (UnsupportedOperationException e) {
+      if (CurvedGeometryErrorUtil.isCurvedGeometryError(e)) {
+        logger.error("Error reading features of feature type {}", tmFeatureType.getName(), e);
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            CurvedGeometryErrorUtil.getCurvedGeometryErrorMessage(tmFeatureType),
+            e);
+      }
+      throw e;
     } finally {
       featureSource.getDataStore().dispose();
     }

@@ -61,6 +61,7 @@ import org.tailormap.api.geotools.collection.ProgressReportingFeatureCollection;
 import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.data.excel.ExcelDataStoreFactory;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.wfs.CurvedGeometryErrorUtil;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.util.UUIDv7;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
@@ -130,6 +131,20 @@ public class CreateLayerExtractService {
 
   public String getExportFilesLocation() {
     return exportFilesLocation;
+  }
+
+  /**
+   * Get the error message to report to the client when creating an extract failed.
+   *
+   * @param e the exception
+   * @param featureType the feature type being extracted
+   * @return a clear message for a curved geometry GeoTools can't read, otherwise the exception message
+   */
+  private static String getExtractErrorMessage(Exception e, TMFeatureType featureType) {
+    if (CurvedGeometryErrorUtil.isCurvedGeometryError(e)) {
+      return CurvedGeometryErrorUtil.getCurvedGeometryErrorMessage(featureType);
+    }
+    return e.getMessage();
   }
 
   private void emitError(@NonNull String clientId, String details) {
@@ -326,8 +341,8 @@ public class CreateLayerExtractService {
       geopkg.createSpatialIndex(entry);
       geopkg.close();
       this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
-    } catch (SchemaException | IOException | IllegalArgumentException e) {
-      emitError(clientId, e.getMessage());
+    } catch (SchemaException | IOException | IllegalArgumentException | UnsupportedOperationException e) {
+      emitError(clientId, getExtractErrorMessage(e, inputTmFeatureType));
       logger.error("Creating extract failed", e);
     } finally {
       if (inputFeatureSource != null) {
@@ -408,8 +423,12 @@ public class CreateLayerExtractService {
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
-    } catch (IOException | SchemaException | IllegalArgumentException | NullPointerException e) {
-      emitError(clientId, e.getMessage());
+    } catch (IOException
+        | SchemaException
+        | IllegalArgumentException
+        | NullPointerException
+        | UnsupportedOperationException e) {
+      emitError(clientId, getExtractErrorMessage(e, inputTmFeatureType));
       logger.error("Creating extract failed", e);
     } finally {
       if (outputDataStore != null) {
@@ -561,8 +580,8 @@ public class CreateLayerExtractService {
 
       zipService.zipDirectory(outputDirectory.toPath(), outputFile.toPath());
       this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
-    } catch (IOException | IllegalArgumentException e) {
-      emitError(clientId, e.getMessage());
+    } catch (IOException | IllegalArgumentException | UnsupportedOperationException e) {
+      emitError(clientId, getExtractErrorMessage(e, inputTmFeatureType));
       logger.error("Creating extract failed", e);
     } finally {
       if (outputDirectory != null) {

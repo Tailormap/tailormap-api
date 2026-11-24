@@ -5,8 +5,11 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,6 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.IntegrationTestOrdering.FIRST_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs11;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs20;
 import static org.tailormap.api.controller.TestUrls.layerOsmPolygonPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
@@ -66,6 +71,8 @@ class FeaturesControllerIntegrationTest {
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
   private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
+  private static final String begroeidterreindeelUrlWfs11 = layerBegroeidTerreindeelWfs11 + controllerPath;
+  private static final String begroeidterreindeelUrlWfs20 = layerBegroeidTerreindeelWfs20 + controllerPath;
   private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
 
@@ -763,6 +770,55 @@ class FeaturesControllerIntegrationTest {
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(jsonPath("$.features[0].__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty());
+  }
+
+  static Stream<Arguments> curvedGeometryLayersProvider() {
+    return Stream.of(arguments(begroeidterreindeelUrlPostgis), arguments(begroeidterreindeelUrlWfs20));
+  }
+
+  /**
+   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs, check that a clear error is returned.
+   */
+  @Test
+  void should_return_clear_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlWfs11;
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(500))
+        .andExpect(jsonPath("$.message")
+            .value(allOf(
+                containsString("\"postgis:begroeidterreindeel\""),
+                containsString("circular arcs"),
+                containsString("VERSION=1.1.0"))));
+  }
+
+  /**
+   * The PostGIS BGT data contains circular arcs, which GeoServer outputs as {@code gml:ArcString} in GML 3. The
+   * feature used has 6 control points and is linearized to about 50 to 130 points depending on the tolerance, with an
+   * area of about 440 m2. A parser that connects the control points with straight lines gives a much smaller area.
+   * The feature (identificatie G0344.96db69933eb9484786910579fa11715f) has the same fid in JDBC and WFS.
+   */
+  @ParameterizedTest
+  @MethodSource("curvedGeometryLayersProvider")
+  void should_linearize_curved_geometry(String layerUrl) throws Exception {
+    final String url = apiBasePath + layerUrl;
+    MvcResult result = mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features.length()").value(1))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andReturn();
+
+    String wkt = JsonPath.read(result.getResponse().getContentAsString(), "$.features[0].geometry");
+    Geometry geometry = new WKTReader().read(wkt);
+    assertEquals("Polygon", geometry.getGeometryType());
+    assertTrue(
+        geometry.getNumPoints() > 6, "arcs should be linearized, got " + geometry.getNumPoints() + " points");
+    assertEquals(440, geometry.getArea(), 5, "area of linearized geometry");
   }
 
   @Test
