@@ -19,15 +19,20 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 
 /**
- * {@link WFSDataStoreFactory} that creates a {@link WFSDataStore} with a {@link SortingWFSClient}. This is a copy of
- * {@link WFSDataStoreFactory#createDataStore(Map)} (GeoTools 35.2) with only the client class changed, because the
- * client is created inline there. The HTTP client is wrapped in a {@link RecentResponsesHTTPClient} which keeps the
- * start of recent responses, for {@link WFSHitsCountUtil} to read {@code numberMatched} from a GetFeature response.
+ * {@link WFSDataStoreFactory} for the Tailormap fixes to the GeoTools WFS data store:
  *
- * <p>This is not registered as a {@code DataStoreFactorySpi}, use it directly. It can be removed when GeoTools supports
- * sorting for WFS 2.0.0 itself (but the response teeing is still needed to read {@code numberMatched}).
+ * <ul>
+ *   <li>a {@link SortingWFSClient}, which sorts on the server with WFS 2.0.0
+ *   <li>the HTTP client wrapped in a {@link RecentResponsesHTTPClient}, which keeps the start of recent responses for
+ *       {@link WFSHitsCountUtil} to read {@code numberMatched} from a GetFeature response
+ * </ul>
+ *
+ * <p>{@link #createDataStore(Map)} is a copy of {@link WFSDataStoreFactory#createDataStore(Map)} (GeoTools 35.2) with
+ * only these changes, because the clients are created inline there.
+ *
+ * <p>This is not registered as a {@code DataStoreFactorySpi}, use it directly.
  */
-public class SortingWFSDataStoreFactory extends WFSDataStoreFactory {
+public class TMWFSDataStoreFactory extends WFSDataStoreFactory {
   @Override
   public WFSDataStore createDataStore(final Map<String, ?> params) throws IOException {
     final WFSConfig config = WFSConfig.fromParams(params);

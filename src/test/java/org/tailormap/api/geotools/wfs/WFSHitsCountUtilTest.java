@@ -307,7 +307,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
               .toURL());
       params.put(WFSDataStoreFactory.PROTOCOL.key, false);
       // The factory used by WFSFeatureSourceHelper
-      DataStore ds = new SortingWFSDataStoreFactory().createDataStore(params);
+      DataStore ds = new TMWFSDataStoreFactory().createDataStore(params);
       try {
         SimpleFeatureSource fs = ds.getFeatureSource(ds.getTypeNames()[0]);
         if (!withPage) {

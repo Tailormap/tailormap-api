@@ -56,8 +56,8 @@ public final class WFSHitsCountUtil {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
-   * How much of the start of each WFS response {@link SortingWFSDataStoreFactory} keeps, enough for the root element
-   * with its attributes and namespace declarations.
+   * How much of the start of each WFS response {@link TMWFSDataStoreFactory} keeps, enough for the root element with
+   * its attributes and namespace declarations.
    */
   public static final int RESPONSE_HEAD_SIZE = 16 * 1024;
 
@@ -103,7 +103,7 @@ public final class WFSHitsCountUtil {
   /**
    * Mark the most recent response of a WFS which GeoTools can't count (WFS 2.0.0), to read {@code numberMatched} from
    * the response with the features of a page which is retrieved after this call. Only works for a data store created
-   * by {@link SortingWFSDataStoreFactory}, which keeps the start of the responses.
+   * by {@link TMWFSDataStoreFactory}, which keeps the start of the responses.
    *
    * @param fs the feature source, may be of any type
    * @return the capture to pass to {@link #getCount(SimpleFeatureSource, Query, PageResponseCapture)}, or
