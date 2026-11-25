@@ -43,6 +43,8 @@ import org.tailormap.api.scheduling.TaskType;
 @Execution(ExecutionMode.CONCURRENT)
 // Creates a one-time index task that TaskAdminControllerIntegrationTest would count
 @ResourceLock("scheduler-index-tasks")
+// Clears and reindexes Solr documents that SearchControllerIntegrationTest searches
+@ResourceLock("solr-search-index-documents")
 class SolrAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

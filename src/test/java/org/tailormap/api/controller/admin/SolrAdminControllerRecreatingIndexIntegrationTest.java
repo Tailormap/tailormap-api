@@ -41,6 +41,8 @@ import org.tailormap.api.persistence.Group;
 @Order(SOLR_REINDEXING_INTEGRATION_TEST_ORDER)
 // Creates one-time index tasks that TaskAdminControllerIntegrationTest would count
 @ResourceLock("scheduler-index-tasks")
+// Clears and reindexes Solr documents that SearchControllerIntegrationTest searches
+@ResourceLock("solr-search-index-documents")
 class SolrAdminControllerRecreatingIndexIntegrationTest {
   @Autowired
   private WebApplicationContext context;
