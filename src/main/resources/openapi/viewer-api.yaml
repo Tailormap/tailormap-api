@@ -1151,7 +1151,7 @@ paths:
               schema:
                 type: string
         '404':
-          description: 'Not Found. Application or application layer does not exist or protocol is unknown.'
+          description: 'Not Found. Application or application layer does not exist, protocol is unknown or no legend URL is available for the layer.'
           content:
             text/plain:
               schema:
@@ -1162,12 +1162,18 @@ paths:
             text/plain:
               schema:
                 type: string
-        '504':
-          description: 'Bad Gateway. Proxied service not reachable or responding.'
+        '502':
+          description: 'Bad Gateway. Proxied service not reachable or the connection failed.'
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '504':
+          description: 'Gateway Timeout. Proxied service did not respond in time.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
     post:
       operationId: 'proxyPOST'
       security:
@@ -1209,7 +1215,7 @@ paths:
               schema:
                 type: string
         '404':
-          description: 'Not Found. Application or application layer does not exist or protocol is unknown.'
+          description: 'Not Found. Application or application layer does not exist, protocol is unknown or no legend URL is available for the layer.'
           content:
             text/plain:
               schema:
@@ -1220,12 +1226,18 @@ paths:
             text/plain:
               schema:
                 type: string
-        '504':
-          description: 'Bad Gateway. Proxied service not reachable or responding.'
+        '502':
+          description: 'Bad Gateway. Proxied service not reachable or the connection failed.'
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '504':
+          description: 'Gateway Timeout. Proxied service did not respond in time.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /{viewerKind}/{name}/layer/{appLayerId}/bounds:
     summary: 'Determine the bounds of a layer.'
