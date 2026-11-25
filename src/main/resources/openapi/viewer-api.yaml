@@ -1163,7 +1163,7 @@ paths:
               schema:
                 type: string
         '502':
-          description: 'Bad Gateway. Proxied service not reachable or the connection failed.'
+          description: 'Bad Gateway. Proxied service not reachable, the connection failed or the service did not accept the configured credentials.'
           content:
             application/json:
               schema:
@@ -1227,7 +1227,7 @@ paths:
               schema:
                 type: string
         '502':
-          description: 'Bad Gateway. Proxied service not reachable or the connection failed.'
+          description: 'Bad Gateway. Proxied service not reachable, the connection failed or the service did not accept the configured credentials.'
           content:
             application/json:
               schema:

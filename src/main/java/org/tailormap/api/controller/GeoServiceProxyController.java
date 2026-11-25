@@ -455,12 +455,23 @@ public class GeoServiceProxyController {
           HttpStatus.SERVICE_UNAVAILABLE, "Interrupted while proxying request to", uri, service, e);
     }
 
-    // If the server does not accept our credentials, it might 'hide' the layer or even send a 401
-    // Unauthorized status. We do not send the WWW-Authenticate header back, so the client will
-    // get the error but not an authorization popup.
-    // It would be nice if proxy (auth) errors were logged and available in the admin interface.
-    // Currently, a layer will just stop working if the geo service credentials are changed
-    // without updating them in the geo service registry.
+    if (response.statusCode() == HttpStatus.UNAUTHORIZED.value()) {
+      // The proxied service does not accept the configured credentials (or none are configured). Do not pass the
+      // 401
+      // on to the client: that would look like the user is not logged in to Tailormap, while the user can do
+      // nothing
+      // about it. A server might also 'hide' the layer instead of sending a 401, which can't be detected here.
+      // It would be nice if these errors were available in the admin interface.
+      closeQuietly(response.body());
+      boolean hasCredentials = service.getAuthentication() != null
+          && service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD;
+      String reason = hasCredentials
+          ? "Proxied service %s did not accept the configured credentials"
+          : "Proxied service %s requires authentication but no credentials are configured";
+      logger.warn("{} (HTTP 401 from {})", reason.formatted(service.getId()), withoutUserInfoAndQuery(uri));
+      throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, reason.formatted(service.getId()));
+    }
+
     if (response.statusCode() == HttpStatus.OK.value()
         && GET.name().equals(request.getMethod())
         && isNotModified(request, response.headers())) {

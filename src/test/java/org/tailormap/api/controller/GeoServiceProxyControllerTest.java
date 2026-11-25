@@ -32,6 +32,7 @@ import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
+import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.security.AuthorisationService;
 
 class GeoServiceProxyControllerTest {
@@ -273,6 +274,29 @@ class GeoServiceProxyControllerTest {
 
       assertEquals(HttpStatus.OK, response.getStatusCode());
       assertEquals("a b+c", server.takeRequest().getUrl().queryParameter("vendor param"));
+    }
+  }
+
+  @Test
+  void upstream_unauthorized_is_bad_gateway() throws Exception {
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(new MockResponse.Builder()
+          .code(401)
+          .addHeader("WWW-Authenticate", "Basic realm=\"geoserver\"")
+          .body("Unauthorized")
+          .build());
+      server.start();
+
+      GeoService service = wmsService(server.url("/wms").toString())
+          .setAuthentication(new ServiceAuthentication()
+              .method(ServiceAuthentication.MethodEnum.PASSWORD)
+              .username("user")
+              .password("wrong"));
+      ResponseStatusException e =
+          proxyError(controller(Duration.ofSeconds(5)), service, GeoServiceProtocol.WMS, getMapRequest());
+      assertEquals(HttpStatus.BAD_GATEWAY, e.getStatusCode());
+      assertEquals("Proxied service test-wms did not accept the configured credentials", e.getReason());
+      assertNotNull(server.takeRequest().getHeaders().get("Authorization"));
     }
   }
 
