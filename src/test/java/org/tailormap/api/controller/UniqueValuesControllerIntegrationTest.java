@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -96,6 +97,22 @@ class UniqueValuesControllerIntegrationTest {
 
     assertEquals(values.size(), uniqueValues.size(), "Unique values should be unique");
     assertTrue(uniqueValues.containsAll(Set.of(expected)), "not all values are present");
+  }
+
+  /** An error reading the values should be reported, not result in an empty list of values. */
+  @Test
+  void error_getting_unique_values_should_be_reported() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelPostgisUrl;
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "does_not_exist IN ('1000')"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    containsString(
+                        "Error getting unique values for attribute \"bronhouder\" of feature type \"begroeidterreindeel\"")));
   }
 
   @Test

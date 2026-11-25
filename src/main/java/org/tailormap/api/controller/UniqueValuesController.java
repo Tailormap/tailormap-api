@@ -75,6 +75,10 @@ public class UniqueValuesController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute name is required");
     }
 
+    if (layer == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+    }
+
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     AppLayerSettings appLayerSettings = app.getAppLayerSettings(appTreeLayerNode);
     if (tmft == null) {
