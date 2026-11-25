@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,24 +58,12 @@ public class TailormapOidcUserService extends OidcUserService {
     if (roles != null) {
       String oidcRegistrationName = userRequest.getClientRegistration().getClientName();
       logger.debug("[{}] Roles from ID token: {}", oidcRegistrationName, roles);
-      Pattern rolesClaimFilterPattern = oidcConfiguration
-          .map(OIDCConfiguration::getRolesClaimFilterRegex)
-          .map(Pattern::compile)
-          .orElse(null);
-
-      if (rolesClaimFilterPattern != null) {
-        List<String> filteredOut = roles.stream()
-            .filter(role -> !rolesClaimFilterPattern.matcher(role).find())
-            .toList();
-        if (logger.isDebugEnabled() && !filteredOut.isEmpty()) {
-          logger.debug(
-              "[{}] Roles filtered out by pattern '{}': {}",
-              oidcRegistrationName,
-              rolesClaimFilterPattern,
-              filteredOut);
-        }
-        roles.removeAll(filteredOut);
-      }
+      roles = filterRoles(
+          roles,
+          oidcConfiguration
+              .map(OIDCConfiguration::getRolesClaimFilterRegex)
+              .orElse(null),
+          oidcRegistrationName);
       groups.addAll(roles);
     }
 
@@ -111,5 +101,50 @@ public class TailormapOidcUserService extends OidcUserService {
         userNameAttributeName,
         oidcRegistrationName,
         groupProperties);
+  }
+
+  /**
+   * Filter the roles from the ID token with the roles claim filter regex of an OIDC configuration. Only roles for
+   * which the regex finds a match are kept. If the regex is invalid, no roles are kept, so a misconfiguration does
+   * not grant more roles than intended and does not prevent logging in.
+   *
+   * @param roles the roles from the ID token
+   * @param rolesClaimFilterRegex the regex, if null all roles are kept
+   * @param oidcRegistrationName the name of the OIDC registration for logging
+   * @return the filtered roles, a new list
+   */
+  static List<String> filterRoles(
+      List<String> roles, @Nullable String rolesClaimFilterRegex, String oidcRegistrationName) {
+    if (rolesClaimFilterRegex == null) {
+      return new ArrayList<>(roles);
+    }
+    Pattern rolesClaimFilterPattern;
+    try {
+      rolesClaimFilterPattern = Pattern.compile(rolesClaimFilterRegex);
+    } catch (PatternSyntaxException e) {
+      logger.error(
+          "[{}] Invalid roles claim filter regex '{}', ignoring all roles from the ID token: {}",
+          oidcRegistrationName,
+          rolesClaimFilterRegex,
+          e.getMessage());
+      return new ArrayList<>();
+    }
+    List<String> filtered = new ArrayList<>();
+    List<String> filteredOut = new ArrayList<>();
+    for (String role : roles) {
+      if (rolesClaimFilterPattern.matcher(role).find()) {
+        filtered.add(role);
+      } else {
+        filteredOut.add(role);
+      }
+    }
+    if (logger.isDebugEnabled() && !filteredOut.isEmpty()) {
+      logger.debug(
+          "[{}] Roles filtered out by pattern '{}': {}",
+          oidcRegistrationName,
+          rolesClaimFilterPattern,
+          filteredOut);
+    }
+    return filtered;
   }
 }

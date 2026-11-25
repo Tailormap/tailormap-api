@@ -7,13 +7,17 @@ package org.tailormap.api.security;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import jakarta.annotation.PostConstruct;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,16 +69,23 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   @Value("${tailormap-api.oidc.show-for-viewer:false}")
   private boolean oidcShowForViewer;
 
-  private final Map<String, ClientRegistration> registrations;
+  /** Timeout for connecting to and getting the OpenID Provider metadata from an OIDC issuer. */
+  private static final Duration DISCOVERY_TIMEOUT = Duration.ofSeconds(10);
+
+  /**
+   * The client registrations. Replaced by a new immutable map by {@link #synchronize()}, so requests that read it
+   * while synchronizing see either the old or the new registrations.
+   */
+  private volatile Map<String, ClientRegistration> registrations = Map.of();
 
   public OIDCRepository(OIDCConfigurationRepository repository) {
     oidcConfigurationRepository = repository;
-    registrations = new HashMap<>();
   }
 
   @Override
   public ClientRegistration findByRegistrationId(String registrationId) {
-    return registrations.get(registrationId);
+    // The immutable map does not allow a null key
+    return registrationId == null ? null : registrations.get(registrationId);
   }
 
   @Override
@@ -103,13 +114,9 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
 
     for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {
       String id = "%d".formatted(configuration.getId());
-      try (HttpClient httpClient = HttpClient.newBuilder().build()) {
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-            .uri(new URI(configuration.getIssuerUrl() + "/.well-known/openid-configuration"));
-        HttpResponse<String> response =
-            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
-
-        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
+      try {
+        OIDCProviderMetadata metadata =
+            fetchProviderMetadata(configuration.getIssuerUrl() + "/.well-known/openid-configuration");
 
         newMap.put(
             id,
@@ -137,6 +144,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
           oidcConfigurationRepository.save(configuration);
         }
       } catch (Exception e) {
+        restoreInterruptedStatus(e);
         logger.error("Failed to create OIDC client registration for ID {}", id, e);
         configuration.setStatus(e.toString());
         oidcConfigurationRepository.save(configuration);
@@ -144,17 +152,13 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
     }
 
     if (isNotBlank(oidcName) && isNotBlank(oidcIssuerUri) && isNotBlank(oidcClientId)) {
-      try (HttpClient httpClient = HttpClient.newBuilder().build()) {
+      try {
         // When copying the URI from some IdP control panels into an .env file, this suffix won't be
         // stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
         if (!oidcIssuerUri.endsWith("/.well-known/openid-configuration")) {
           oidcIssuerUri = oidcIssuerUri + "/.well-known/openid-configuration";
         }
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(new URI(oidcIssuerUri));
-        HttpResponse<String> response =
-            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
-
-        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
+        OIDCProviderMetadata metadata = fetchProviderMetadata(oidcIssuerUri);
         String id = "static";
 
         newMap.put(
@@ -179,11 +183,34 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
                 .redirectUri("{baseUrl}/api/oauth2/callback")
                 .build());
       } catch (Exception e) {
+        restoreInterruptedStatus(e);
         logger.error("Failed to create static OIDC client registration", e);
       }
     }
 
-    registrations.clear();
-    registrations.putAll(newMap);
+    registrations = Map.copyOf(newMap);
+  }
+
+  private static OIDCProviderMetadata fetchProviderMetadata(String discoveryUrl)
+      throws URISyntaxException, IOException, InterruptedException, ParseException {
+    try (HttpClient httpClient =
+        HttpClient.newBuilder().connectTimeout(DISCOVERY_TIMEOUT).build()) {
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(new URI(discoveryUrl))
+          .timeout(DISCOVERY_TIMEOUT)
+          .build();
+      HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+      if (response.statusCode() != 200) {
+        throw new IOException("Unexpected HTTP status %d getting OpenID Provider metadata from %s"
+            .formatted(response.statusCode(), discoveryUrl));
+      }
+      return OIDCProviderMetadata.parse(response.body());
+    }
+  }
+
+  private static void restoreInterruptedStatus(Exception e) {
+    if (e instanceof InterruptedException) {
+      Thread.currentThread().interrupt();
+    }
   }
 }
