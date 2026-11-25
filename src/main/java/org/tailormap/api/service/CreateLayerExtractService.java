@@ -62,6 +62,7 @@ import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.data.excel.ExcelDataStoreFactory;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.wfs.CurvedGeometryErrorUtil;
+import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.util.UUIDv7;
 import org.tailormap.api.viewer.model.ServerSentEventResponse;
@@ -92,9 +93,6 @@ public class CreateLayerExtractService {
 
   @Value("#{T(java.lang.Math).max(1, ${tailormap-api.extract.progress-report-interval:100})}")
   private int progressReportInterval;
-
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
 
   @PostConstruct
   void initializeExtractDirectory() {
@@ -508,11 +506,8 @@ public class CreateLayerExtractService {
   }
 
   private int getFeatureCount(SimpleFeatureSource source, Query query) throws IOException {
-    int count = source.getCount(query);
+    int count = WFSHitsCountUtil.getCount(source, query);
     logger.debug("Filtered source counts {} features", count);
-    if (count < 0 && exactWfsCounts) {
-      count = source.getFeatures(query).size();
-    }
     return count;
   }
 
