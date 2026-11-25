@@ -213,12 +213,12 @@ public class LayerExtractController {
     }
 
     // check if filter has valid syntax (it could still be invalid wrt feature type)
-    Filter parsedCQL = null;
+    Filter parsedECQL = null;
     SimpleFeatureSource simpleFeatureSource = null;
     try {
       if (!StringUtils.isBlank(filter)) {
         simpleFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(sourceFT);
-        parsedCQL = FilterUtil.parseFilter(filter, application, simpleFeatureSource);
+        parsedECQL = FilterUtil.parseFilter(filter, application, simpleFeatureSource);
       }
     } catch (CQLException | FactoryException | UnsupportedOperationException e) {
       throw new ResponseStatusException(
@@ -236,7 +236,7 @@ public class LayerExtractController {
       }
     }
     if (ExtractOutputFormat.XLSX.equals(outputFormat)) {
-      validateExcelLimits(sourceFT, attributes, parsedCQL);
+      validateExcelLimits(sourceFT, attributes, parsedECQL);
     }
 
     SortOrder sortingOrder = SortOrder.ASCENDING;
@@ -250,7 +250,7 @@ public class LayerExtractController {
 
     //noinspection JvmTaintAnalysis Not a Path Traversal Sink because the clientId is validated
     this.createLayerExtractService.createLayerExtract(
-        clientId, sourceFT, attributes, parsedCQL, sortBy, sortingOrder, outputFormat, outputFileName);
+        clientId, sourceFT, attributes, parsedECQL, sortBy, sortingOrder, outputFormat, outputFileName);
 
     //noinspection JvmTaintAnalysis Not an XSS sink because the response is a json message
     return ResponseEntity.accepted()

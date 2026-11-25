@@ -135,7 +135,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
@@ -162,7 +162,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
