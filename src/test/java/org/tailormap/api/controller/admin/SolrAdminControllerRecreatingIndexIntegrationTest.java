@@ -21,6 +21,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.junitpioneer.jupiter.Stopwatch;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -52,9 +54,14 @@ class SolrAdminControllerRecreatingIndexIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
+  @Autowired
+  private Scheduler scheduler;
+
   @BeforeAll
-  void initialize() {
+  void initialize() throws SchedulerException {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+    // The scheduler is not started automatically in tests, start it to execute the index tasks
+    scheduler.start();
   }
 
   @Test
