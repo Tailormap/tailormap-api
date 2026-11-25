@@ -795,10 +795,11 @@ class FeaturesControllerIntegrationTest {
   }
 
   /**
-   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs, check that a clear error is returned.
+   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs and throws an
+   * UnsupportedOperationException, check that the error is reported.
    */
   @Test
-  void should_return_clear_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
+  void should_return_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlWfs11;
     mockMvc.perform(get(url).with(setServletPath(url))
             .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
@@ -808,9 +809,9 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(500))
         .andExpect(jsonPath("$.message")
             .value(allOf(
-                containsString("\"postgis:begroeidterreindeel\""),
-                containsString("circular arcs"),
-                containsString("VERSION=1.1.0"))));
+                containsString(
+                    "Error reading features of feature type \"postgis:begroeidterreindeel\""),
+                containsString("Curve segment ArcString is not supported"))));
   }
 
   /**
