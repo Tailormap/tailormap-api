@@ -864,7 +864,8 @@ public class PopulateTestData {
           .get("Gemeentegebied")
           .title("Gemeentegebied (WFS)")
           .description("The administrative boundary of Dutch Municipalities, connected to a WFS 2.0.0 which"
-              + " does not return the total number of features.")
+              + " does not return the total number of features.\n\n[logo]("
+              + UploadsService.UPLOAD_MARKDOWN_SCHEME + pdokLogo.getId() + ")")
           .descriptionInPopup(true)
           .featureType(new FeatureTypeRef()
               .featureSourceId(bestuurlijkeGebiedenWfs.getId())
