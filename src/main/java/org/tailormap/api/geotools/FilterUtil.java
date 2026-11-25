@@ -31,6 +31,20 @@ public class FilterUtil {
   }
 
   /**
+   * Parses a CQL filter string into a GeoTools Filter without an application context, so without transforming
+   * geometries. Only for admin usage, use {@link #parseFilter(String, Application, SimpleFeatureSource)} for viewer
+   * requests.
+   *
+   * @param filterCQL the CQL filter string
+   * @return the parsed filter
+   * @throws CQLException if the filter cannot be parsed
+   */
+  @SuppressWarnings("PMD.UseFilterUtil")
+  @NonNull public static Filter parseFilter(@NonNull String filterCQL) throws CQLException {
+    return ECQL.toFilter(filterCQL);
+  }
+
+  /**
    * Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
    * needed/possible.
    *

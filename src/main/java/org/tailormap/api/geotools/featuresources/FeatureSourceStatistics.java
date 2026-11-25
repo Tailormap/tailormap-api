@@ -22,7 +22,6 @@ import org.geotools.feature.visitor.MaxVisitor;
 import org.geotools.feature.visitor.MinVisitor;
 import org.geotools.feature.visitor.SumVisitor;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -90,7 +89,8 @@ public class FeatureSourceStatistics {
       try {
         Filter parsedFilter;
         if (application == null) {
-          parsedFilter = ECQL.toFilter(filterCQL); // NOPMD - admin usage does not have application context
+          // Admin usage does not have application context
+          parsedFilter = FilterUtil.parseFilter(filterCQL);
         } else {
           parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
         }
