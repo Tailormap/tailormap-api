@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
 import io.micrometer.core.annotation.Counted;
@@ -53,6 +54,7 @@ import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
@@ -191,6 +193,16 @@ public class LayerExtractController {
       // request parameter to request all propNames is less error-prone than specifying the ones
       // we have saved in the feature type
       attributes = new HashSet<>(nonHiddenAttributes);
+    }
+
+    // Only sort on a non-hidden, non-geometry attribute, like the FeaturesController
+    if (StringUtils.isNotBlank(sortBy)
+        && getConfiguredAttributes(sourceFT, appLayerSettings).values().stream()
+            .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)
+            .filter(a -> !isGeometry(a.getType()))
+            .noneMatch(a -> a.getName().equals(sortBy))) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Requested sortBy attribute is not available on the feature type");
     }
 
     // Empty attributes means we won't specify propNames in the GetFeature request. However, if we do select only
