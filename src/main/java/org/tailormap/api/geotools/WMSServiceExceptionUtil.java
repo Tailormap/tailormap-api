@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,6 +20,25 @@ import org.w3c.dom.NodeList;
 public class WMSServiceExceptionUtil {
 
   /**
+   * Create a {@link DocumentBuilderFactory} hardened against XXE for parsing a response from a (possibly malicious)
+   * WMS. A DOCTYPE is allowed because WMS 1.1.1 exception reports usually have one, but the external DTD and external
+   * entities are never loaded. Only the JDK parser is on the classpath, so no implementation-specific hardening is
+   * needed.
+   */
+  private static DocumentBuilderFactory newDocumentBuilderFactory() throws ParserConfigurationException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+    factory.setXIncludeAware(false);
+    factory.setExpandEntityReferences(false);
+    return factory;
+  }
+
+  /**
    * Tries to parse a WMS service exception XML response of any WMS version and extract an error message.
    *
    * @param body The response body from a text/xml WMS response
@@ -26,12 +46,7 @@ public class WMSServiceExceptionUtil {
    */
   public static String tryGetServiceExceptionMessage(byte[] body) {
     try {
-      DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-      documentBuilderFactory.setNamespaceAware(true);
-      documentBuilderFactory.setExpandEntityReferences(false);
-      documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      DocumentBuilder builder = newDocumentBuilderFactory().newDocumentBuilder();
       Document doc = builder.parse(new ByteArrayInputStream(body));
 
       String code = null;
