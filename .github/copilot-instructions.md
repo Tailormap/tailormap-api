@@ -56,6 +56,15 @@ Use a 2-space indentation for Java code and try to follow the `palantir/palantir
 Use meaningful names for variables, methods, and classes that accurately describe their purpose.
 Use snake case method names in test classes, e.g., `should_return_true_when_input_is_valid()`.
 
+## GeoTools
+
+These are enforced by custom PMD rules in `build/qa/PMD-ruleset_for_TM.xml`:
+
+- Parse CQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)`.
+- Count features with `WFSHitsCountUtil.getCount(...)`, not `FeatureSource.getCount(...)`. GeoTools returns -1 for a
+  WFS 2.0.0 without asking the server; `WFSHitsCountUtil` does a `resultType=hits` request. A count can still be -1
+  (unknown), handle that.
+
 ## Modularity
 
 - **Single Responsibility Principle**: Write classes and methods that have a single responsibility, unless these are
