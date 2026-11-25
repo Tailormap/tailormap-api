@@ -21,10 +21,11 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 /**
  * {@link WFSDataStoreFactory} that creates a {@link WFSDataStore} with a {@link SortingWFSClient}. This is a copy of
  * {@link WFSDataStoreFactory#createDataStore(Map)} (GeoTools 35.2) with only the client class changed, because the
- * client is created inline there.
+ * client is created inline there. The HTTP client is wrapped in a {@link RecentResponsesHTTPClient} which keeps the
+ * start of recent responses, for {@link WFSHitsCountUtil} to read {@code numberMatched} from a GetFeature response.
  *
  * <p>This is not registered as a {@code DataStoreFactorySpi}, use it directly. It can be removed when GeoTools supports
- * sorting for WFS 2.0.0 itself.
+ * sorting for WFS 2.0.0 itself (but the response teeing is still needed to read {@code numberMatched}).
  */
 public class SortingWFSDataStoreFactory extends WFSDataStoreFactory {
   @Override
@@ -39,7 +40,9 @@ public class SortingWFSDataStoreFactory extends WFSDataStoreFactory {
 
     final URL capabilitiesURL = URL.lookUp(params);
 
-    final HTTPClient http = getHttpClient(params);
+    // Keep the start of the responses to read numberMatched from a GetFeature response, see WFSHitsCountUtil
+    final HTTPClient http =
+        new RecentResponsesHTTPClient(getHttpClient(params), WFSHitsCountUtil.RESPONSE_HEAD_SIZE);
     http.setTryGzip(config.isTryGZIP());
     http.setUser(user);
     http.setPassword(password);

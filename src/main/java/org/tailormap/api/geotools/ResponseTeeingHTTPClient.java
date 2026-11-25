@@ -8,6 +8,7 @@ package org.tailormap.api.geotools;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,34 @@ import org.geotools.http.HTTPResponse;
  * after disposal.
  */
 public class ResponseTeeingHTTPClient implements HTTPClient {
+
+  /** Writes at most a maximum number of bytes to the wrapped stream and ignores the rest. */
+  private static class LimitedOutputStream extends OutputStream {
+    private final OutputStream out;
+    private int remaining;
+
+    LimitedOutputStream(OutputStream out, int limit) {
+      this.out = out;
+      this.remaining = limit;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      if (remaining > 0) {
+        out.write(b);
+        remaining--;
+      }
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      int n = Math.min(len, remaining);
+      if (n > 0) {
+        out.write(b, off, n);
+        remaining -= n;
+      }
+    }
+  }
 
   public class TeeHTTPResponseWrapper implements HTTPResponse {
     private final HTTPResponse wrapped;
@@ -81,7 +110,8 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
       for (String header : responseHeadersToCache) {
         cachedResponseHeaders.put(header, wrapped.getResponseHeader(header));
       }
-      return new TeeInputStream(wrapped.getResponseStream(), copy);
+      return new TeeInputStream(
+          wrapped.getResponseStream(), maxCopySize < 0 ? copy : new LimitedOutputStream(copy, maxCopySize));
     }
 
     @Override
@@ -98,6 +128,8 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
   private final BiConsumer<URL, TeeHTTPResponseWrapper> requestConsumer;
 
   private final Set<String> responseHeadersToCache;
+
+  private final int maxCopySize;
 
   /**
    * Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been consumed by handing the
@@ -124,7 +156,25 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
       HTTPClient wrapped,
       BiConsumer<URL, TeeHTTPResponseWrapper> requestConsumer,
       Set<String> responseHeadersToCache) {
+    this(wrapped, requestConsumer, responseHeadersToCache, -1);
+  }
+
+  /**
+   * Same as {@link #ResponseTeeingHTTPClient(HTTPClient, BiConsumer, Set)}, but only keeps the first bytes of each
+   * response body, for when only the start of a possibly large response is needed.
+   *
+   * @param wrapped The GeoTools HTTPClient to wrap
+   * @param requestConsumer Consumer for each request so not only the latest response can be accessed, may be null
+   * @param responseHeadersToCache Which response headers to cache, may be null
+   * @param maxCopySize The maximum number of bytes of each response body to keep, or -1 to keep the entire body
+   */
+  public ResponseTeeingHTTPClient(
+      HTTPClient wrapped,
+      BiConsumer<URL, TeeHTTPResponseWrapper> requestConsumer,
+      Set<String> responseHeadersToCache,
+      int maxCopySize) {
     this.wrapped = wrapped;
+    this.maxCopySize = maxCopySize;
     this.requestConsumer = requestConsumer == null ? (url, response) -> {} : requestConsumer;
     this.responseHeadersToCache = responseHeadersToCache == null ? Set.of() : responseHeadersToCache;
   }
@@ -139,6 +189,14 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
   @Override
   public HTTPResponse post(URL url, InputStream inputStream, String s) throws IOException {
     this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.post(url, inputStream, s));
+    requestConsumer.accept(url, this.responseWrapper);
+    return responseWrapper;
+  }
+
+  @Override
+  public HTTPResponse post(URL url, InputStream inputStream, String s, Map<String, String> headers)
+      throws IOException {
+    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.post(url, inputStream, s, headers));
     requestConsumer.accept(url, this.responseWrapper);
     return responseWrapper;
   }

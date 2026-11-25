@@ -6,10 +6,13 @@
 package org.tailormap.api.geotools.wfs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +29,11 @@ import org.geotools.api.data.DataStore;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.FilterFactory;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.http.HTTPClient;
+import org.geotools.http.HTTPResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -159,6 +165,15 @@ schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
 numberMatched="%s" numberReturned="0" timeStamp="2026-11-25T12:00:00Z"/>
 """;
 
+  /** A GetFeature response with a single feature. */
+  private static final String PAGE_2_0_0 = """
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:test="http://test" numberMatched="%s" numberReturned="1" timeStamp="2026-11-25T12:00:00Z">
+<wfs:member><test:roads gml:id="roads.1"><test:name>A1</test:name></test:roads></wfs:member>
+</wfs:FeatureCollection>
+""";
+
   private static final String HITS_1_1_0 = """
 <?xml version="1.0" encoding="UTF-8"?>
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" numberOfFeatures="%s"
@@ -269,6 +284,17 @@ timeStamp="2026-11-25T12:00:00Z"/>
   private static CountResult countWithServer(
       String capabilities, Function<String, MockResponse> getFeatureResponse, String version, Query query)
       throws IOException {
+    return countWithServer(capabilities, getFeatureResponse, version, query, false);
+  }
+
+  /** @param withPage whether to retrieve a page of features before counting, like the FeaturesController */
+  private static CountResult countWithServer(
+      String capabilities,
+      Function<String, MockResponse> getFeatureResponse,
+      String version,
+      Query query,
+      boolean withPage)
+      throws IOException {
     try (WFSDispatcher dispatcher = new WFSDispatcher(capabilities, getFeatureResponse);
         MockWebServer server = new MockWebServer()) {
       server.setDispatcher(dispatcher);
@@ -280,13 +306,38 @@ timeStamp="2026-11-25T12:00:00Z"/>
           SimpleWFSHelper.getWFSRequestURL(dispatcher.url, "GetCapabilities", version, null)
               .toURL());
       params.put(WFSDataStoreFactory.PROTOCOL.key, false);
-      DataStore ds = new WFSDataStoreFactory().createDataStore(params);
+      // The factory used by WFSFeatureSourceHelper
+      DataStore ds = new SortingWFSDataStoreFactory().createDataStore(params);
       try {
         SimpleFeatureSource fs = ds.getFeatureSource(ds.getTypeNames()[0]);
-        return new CountResult(WFSHitsCountUtil.getCount(fs, query), dispatcher.getFeatureRequests);
+        if (!withPage) {
+          return new CountResult(WFSHitsCountUtil.getCount(fs, query), dispatcher.getFeatureRequests);
+        }
+        WFSHitsCountUtil.PageResponseCapture capture = WFSHitsCountUtil.capturePageResponses(fs);
+        // Request a page through the HTTP client of the data store, as GeoTools does when reading features
+        HTTPClient http = ((WFSDataStore) ds).getWfsClient().getHTTPClient();
+        read(
+            http,
+            dispatcher.url + "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=" + TYPE_NAME
+                + "&COUNT=1");
+        // While parsing the features GeoTools requests the schema from the xsi:schemaLocation
+        read(
+            http,
+            dispatcher.url + "?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAMES="
+                + TYPE_NAME);
+        return new CountResult(WFSHitsCountUtil.getCount(fs, query, capture), dispatcher.getFeatureRequests);
       } finally {
         ds.dispose();
       }
+    }
+  }
+
+  private static void read(HTTPClient http, String url) throws IOException {
+    HTTPResponse response = http.get(URI.create(url).toURL());
+    try (InputStream in = response.getResponseStream()) {
+      in.readAllBytes();
+    } finally {
+      response.dispose();
     }
   }
 
@@ -317,6 +368,40 @@ timeStamp="2026-11-25T12:00:00Z"/>
     assertEquals(1, result.getFeatureRequests().size());
     String filter = result.getFeatureRequests().getFirst().get("FILTER");
     assertTrue(filter.contains("PropertyIsEqualTo") && filter.contains("A1"), filter);
+  }
+
+  @Test
+  void number_matched_from_page() throws Exception {
+    CountResult result = countWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> response(
+            "application/gml+xml; version=3.2",
+            ("HITS".equalsIgnoreCase(resultType) ? HITS_2_0_0 : PAGE_2_0_0).formatted("342")),
+        "2.0.0",
+        Query.ALL,
+        true);
+    assertEquals(342, result.count());
+    // Only the request for the page, no hits request
+    assertEquals(1, result.getFeatureRequests().size());
+    assertNotEquals("HITS", result.getFeatureRequests().getFirst().getOrDefault("RESULTTYPE", ""));
+  }
+
+  @Test
+  void hits_request_when_page_number_matched_unknown() throws Exception {
+    CountResult result = countWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> response(
+            "application/gml+xml; version=3.2",
+            "HITS".equalsIgnoreCase(resultType)
+                ? HITS_2_0_0.formatted("342")
+                : PAGE_2_0_0.formatted("unknown")),
+        "2.0.0",
+        Query.ALL,
+        true);
+    assertEquals(342, result.count());
+    assertEquals(2, result.getFeatureRequests().size());
+    assertEquals(
+        "HITS", result.getFeatureRequests().getLast().get("RESULTTYPE").toUpperCase(Locale.ROOT));
   }
 
   @Test

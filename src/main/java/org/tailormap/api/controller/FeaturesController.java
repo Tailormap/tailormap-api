@@ -266,16 +266,17 @@ public class FeaturesController implements Constants {
       }
       q.setPropertyNames(propNames);
 
-      // count can be -1 if too costly or unknown, eg. some WFS
-      int featureCount;
+      Query countQuery;
       if (null != filterCQL) {
         Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
         q.setFilter(filter);
-        featureCount = WFSHitsCountUtil.getCount(fs, q);
+        countQuery = new Query(q);
       } else {
-        featureCount = WFSHitsCountUtil.getCount(fs, Query.ALL);
+        countQuery = Query.ALL;
       }
-      featuresResponse.setTotal(featureCount);
+
+      // Count after retrieving the page, a WFS 2.0.0 may return the count in the response with the features
+      WFSHitsCountUtil.PageResponseCapture pageResponseCapture = WFSHitsCountUtil.capturePageResponses(fs);
 
       // setup page query
       if (sortAttrName != null) {
@@ -285,7 +286,7 @@ public class FeaturesController implements Constants {
       q.setStartIndex((page - 1) * requestPageSize);
       logger.debug("Attribute query: {}", q);
 
-      executeQueryOnFeatureSourceAndClose(
+      executeQueryOnFeatureSource(
           simplifyGeometry,
           featuresResponse,
           tmft,
@@ -296,6 +297,9 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
+
+      // count can be -1 if too costly or unknown, eg. some WFS
+      featuresResponse.setTotal(WFSHitsCountUtil.getCount(fs, countQuery, pageResponseCapture));
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException | FactoryException | UnsupportedOperationException e) {
@@ -327,7 +331,7 @@ public class FeaturesController implements Constants {
       q.setMaxFeatures(1);
       logger.debug("FID query: {}", q);
 
-      executeQueryOnFeatureSourceAndClose(
+      executeQueryOnFeatureSource(
           false,
           featuresResponse,
           tmFeatureType,
@@ -405,7 +409,7 @@ public class FeaturesController implements Constants {
       q.setFilter(finalFilter);
       q.setMaxFeatures(maxFeatures);
 
-      executeQueryOnFeatureSourceAndClose(
+      executeQueryOnFeatureSource(
           simplifyGeometry,
           featuresResponse,
           tmFeatureType,
@@ -423,15 +427,13 @@ public class FeaturesController implements Constants {
           HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
     } finally {
       if (fs != null) {
-        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is
-        // invalid the datastore will be left open, so close here to make sure (disposing twice won't hurt)
         fs.getDataStore().dispose();
       }
     }
     return featuresResponse;
   }
 
-  private void executeQueryOnFeatureSourceAndClose(
+  private void executeQueryOnFeatureSource(
       boolean simplifyGeometry,
       @NotNull FeaturesResponse featuresResponse,
       @NotNull TMFeatureType tmFeatureType,
@@ -503,8 +505,6 @@ public class FeaturesController implements Constants {
             e);
       }
       throw e;
-    } finally {
-      featureSource.getDataStore().dispose();
     }
     FeatureTypeTemplate ftt = tmFeatureType.getSettings().getTemplate();
     if (ftt != null) {
