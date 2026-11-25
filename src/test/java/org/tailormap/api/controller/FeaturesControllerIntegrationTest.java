@@ -280,6 +280,24 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(400));
   }
 
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void error_reading_features_should_be_reported() throws Exception {
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis;
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "does_not_exist IN ('1000')")
+            .param("page", "1"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(500))
+        .andExpect(jsonPath("$.message")
+            .value(containsString("Error reading features of feature type \"begroeidterreindeel\"")))
+        .andExpect(jsonPath("$.message").value(containsString("does_not_exist")));
+  }
+
   private static ResultMatcher[] provinciesWFSResultMatchers() {
     return new ResultMatcher[] {
       jsonPath("$.features[0].attributes.identificatie").doesNotHaveJsonPath(),

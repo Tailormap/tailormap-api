@@ -965,8 +965,6 @@ SPDX-License-Identifier: MIT
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <classifier>exec</classifier>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <jvmArguments>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
                     <!-- wait between attempts, default 500 ms -->
                     <wait>1000</wait>
                     <!-- max attempts to check if application is up, default 60 -->

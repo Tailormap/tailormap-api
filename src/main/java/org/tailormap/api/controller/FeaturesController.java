@@ -258,7 +258,7 @@ public class FeaturesController implements Constants {
       // count can be -1 if too costly eg. some WFS
       int featureCount;
       if (null != filterCQL) {
-        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
+        Filter filter = parseFilter(filterCQL, application, fs);
         q.setFilter(filter);
         featureCount = fs.getCount(q);
         // this will execute the query twice, once to get the count and once to get the data
@@ -293,11 +293,10 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data.", e);
-    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmft, e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -305,6 +304,37 @@ public class FeaturesController implements Constants {
     }
 
     return featuresResponse;
+  }
+
+  /**
+   * Parse a CQL filter from the request.
+   *
+   * @throws ResponseStatusException with status 400 if the filter is invalid
+   */
+  private static Filter parseFilter(String filterCQL, Application application, SimpleFeatureSource fs) {
+    try {
+      return FilterUtil.parseFilter(filterCQL, application, fs);
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Log an error that occurred while reading features and create an exception to report it to the client, instead of
+   * returning an empty response or a server error without a message.
+   */
+  private static ResponseStatusException featuresReadError(TMFeatureType tmFeatureType, Exception e) {
+    logger.error("Error reading features of feature type {}", tmFeatureType.getName(), e);
+    return new ResponseStatusException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Error reading features of feature type \"%s\": %s"
+            .formatted(
+                tmFeatureType.getName(),
+                e.getMessage() != null
+                    ? e.getMessage()
+                    : e.getClass().getName()),
+        e);
   }
 
   @NotNull private FeaturesResponse getFeatureByFID(
@@ -335,8 +365,10 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data", e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmFeatureType, e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -395,7 +427,7 @@ public class FeaturesController implements Constants {
 
       Filter finalFilter = spatialFilter;
       if (null != filterCQL) {
-        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
+        Filter filter = parseFilter(filterCQL, application, fs);
         finalFilter = ff.and(spatialFilter, filter);
       }
       Query q = new Query(fs.getName().toString());
@@ -413,11 +445,10 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data", e);
-    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmFeatureType, e);
     } finally {
       if (fs != null) {
         // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is
