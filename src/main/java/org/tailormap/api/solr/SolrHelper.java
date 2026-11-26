@@ -53,6 +53,7 @@ import org.tailormap.api.admin.model.TaskProgressEvent;
 import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -294,7 +295,8 @@ public class SolrHelper implements AutoCloseable, Constants {
     logger.info("Indexing started for index: {}, feature type: {}", searchIndex.getName(), tmFeatureType.getName());
     searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
-    final int total;
+    // null if unknown
+    final Integer total;
     List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
     UpdateResponse updateResponse;
     int indexCounter = 0;
@@ -323,7 +325,9 @@ public class SolrHelper implements AutoCloseable, Constants {
       // q.setMaxFeatures(Integer.MAX_VALUE);
       logger.trace("Indexing query: {}", q);
       SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
-      total = simpleFeatureCollection.size();
+      // Not simpleFeatureCollection.size(), which reads all features when the count is unknown (WFS)
+      int count = WFSHitsCountUtil.getCount(fs, q);
+      total = count >= 0 ? count : null;
       // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
       //   issue for now but could be if the feature source is very, very large or slow
       try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
@@ -418,7 +422,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     return searchIndexRepository.save(searchIndex
         .setLastIndexed(finishedAtOffset)
         .setStatus(SearchIndex.Status.INDEXED)
-        .setSummary(summary.total(total)
+        .setSummary(summary.total(total != null ? total : indexCounter)
             .skippedCounter(indexSkippedCounter)
             .duration(BigDecimal.valueOf(processTime.getSeconds())
                 .add(BigDecimal.valueOf(processTime.getNano(), 9))

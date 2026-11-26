@@ -61,7 +61,8 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 These are enforced by custom PMD rules in `build/qa/PMD-ruleset_for_TM.xml`:
 
 - Parse CQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)`.
-- Count features with `WFSHitsCountUtil.getCount(...)`, not `FeatureSource.getCount(...)`. GeoTools returns -1 for a
+- Count features with `WFSHitsCountUtil.getCount(...)`, not `FeatureSource.getCount(...)` or
+  `FeatureCollection.size()` (which reads all features when the count is unknown). GeoTools returns -1 for a
   WFS 2.0.0 without asking the server; `WFSHitsCountUtil` does a `resultType=hits` request. A count can still be -1
   (unknown), handle that.
 

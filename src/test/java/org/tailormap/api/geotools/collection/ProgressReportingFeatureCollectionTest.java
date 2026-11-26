@@ -44,6 +44,8 @@ class ProgressReportingFeatureCollectionTest {
   }
 
   @Test
+  // Tests that size() is delegated to the wrapped collection
+  @SuppressWarnings("PMD.UseWFSHitsCountUtil")
   void test_progress_works() throws IOException, SchemaException {
     SimpleFeatureCollection source = randomFeatureSource.getFeatures();
     AtomicInteger progressCount = new AtomicInteger(0);
@@ -59,6 +61,8 @@ class ProgressReportingFeatureCollectionTest {
   }
 
   @Test
+  // Tests that size() is delegated to the wrapped collection
+  @SuppressWarnings("PMD.UseWFSHitsCountUtil")
   void allows_null_progress() throws IOException {
     SimpleFeatureCollection source = randomFeatureSource.getFeatures();
     ProgressReportingFeatureCollection collection = new ProgressReportingFeatureCollection(source, 10, null);
