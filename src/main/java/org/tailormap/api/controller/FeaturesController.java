@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -97,6 +98,12 @@ public class FeaturesController implements Constants {
 
   @Value("${tailormap-api.feature.info.maxitems:30}")
   private int maxFeatures;
+
+  @Value("${tailormap-api.features.wfs-hits-timeout:3s}")
+  private Duration wfsHitsTimeout;
+
+  @Value("${tailormap-api.features.wfs-slow-hits-ttl:4h}")
+  private Duration wfsSlowHitsTtl;
 
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
@@ -265,14 +272,14 @@ public class FeaturesController implements Constants {
       }
       q.setPropertyNames(propNames);
 
-      // count can be -1 if too costly or unknown, eg. some WFS
+      // count can be -1 if too costly or unknown, eg. some WFS, or a WFS which counts slowly
       int featureCount;
       if (null != filterCQL) {
         Filter filter = parseFilter(filterCQL, application, fs);
         q.setFilter(filter);
-        featureCount = WFSHitsCountUtil.getCount(fs, q);
+        featureCount = WFSHitsCountUtil.getCount(fs, q, wfsHitsTimeout, wfsSlowHitsTtl);
       } else {
-        featureCount = WFSHitsCountUtil.getCount(fs, Query.ALL);
+        featureCount = WFSHitsCountUtil.getCount(fs, Query.ALL, wfsHitsTimeout, wfsSlowHitsTtl);
       }
       featuresResponse.setTotal(featureCount);
 

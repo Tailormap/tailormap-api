@@ -11,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
@@ -28,11 +30,17 @@ import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.filter.FilterFactory;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class WFSHitsCountUtilTest {
+  @AfterEach
+  void clearSlowHits() {
+    WFSHitsCountUtil.clearSlowHits();
+  }
+
   private static final String TYPE_NAME = "test:roads";
   private static final FilterFactory FF = CommonFactoryFinder.getFilterFactory();
 
@@ -266,8 +274,24 @@ timeStamp="2026-11-25T12:00:00Z"/>
 
   private record CountResult(int count, List<Map<String, String>> getFeatureRequests) {}
 
+  private record CountsResult(List<Integer> counts, List<Map<String, String>> getFeatureRequests) {}
+
   private static CountResult countWithServer(
       String capabilities, Function<String, MockResponse> getFeatureResponse, String version, Query query)
+      throws IOException {
+    CountsResult result = countsWithServer(capabilities, getFeatureResponse, version, query, null, null, 1);
+    return new CountResult(result.counts().getFirst(), result.getFeatureRequests());
+  }
+
+  /** Count {@code times} times with the same server, each time with a new data store like the API does. */
+  private static CountsResult countsWithServer(
+      String capabilities,
+      Function<String, MockResponse> getFeatureResponse,
+      String version,
+      Query query,
+      Duration hitsTimeout,
+      Duration slowHitsTtl,
+      int times)
       throws IOException {
     try (WFSDispatcher dispatcher = new WFSDispatcher(capabilities, getFeatureResponse);
         MockWebServer server = new MockWebServer()) {
@@ -280,13 +304,20 @@ timeStamp="2026-11-25T12:00:00Z"/>
           SimpleWFSHelper.getWFSRequestURL(dispatcher.url, "GetCapabilities", version, null)
               .toURL());
       params.put(WFSDataStoreFactory.PROTOCOL.key, false);
-      DataStore ds = new WFSDataStoreFactory().createDataStore(params);
-      try {
-        SimpleFeatureSource fs = ds.getFeatureSource(ds.getTypeNames()[0]);
-        return new CountResult(WFSHitsCountUtil.getCount(fs, query), dispatcher.getFeatureRequests);
-      } finally {
-        ds.dispose();
+      List<Integer> counts = new ArrayList<>();
+      for (int i = 0; i < times; i++) {
+        DataStore ds = new WFSDataStoreFactory().createDataStore(params);
+        try {
+          SimpleFeatureSource fs = ds.getFeatureSource(ds.getTypeNames()[0]);
+          counts.add(
+              hitsTimeout == null
+                  ? WFSHitsCountUtil.getCount(fs, query)
+                  : WFSHitsCountUtil.getCount(fs, query, hitsTimeout, slowHitsTtl));
+        } finally {
+          ds.dispose();
+        }
       }
+      return new CountsResult(counts, dispatcher.getFeatureRequests);
     }
   }
 
@@ -347,6 +378,72 @@ timeStamp="2026-11-25T12:00:00Z"/>
         "2.0.0",
         Query.ALL);
     assertEquals(-1, result.count());
+  }
+
+  @Test
+  void hits_request_within_timeout() throws Exception {
+    CountsResult result = countsWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
+        "2.0.0",
+        Query.ALL,
+        Duration.ofSeconds(2),
+        Duration.ofHours(1),
+        2);
+    assertEquals(List.of(342, 342), result.counts());
+    // Not remembered as slow, counted again
+    assertEquals(2, result.getFeatureRequests().size());
+  }
+
+  private static MockResponse slowHitsResponse() {
+    return new MockResponse.Builder()
+        .headers(new Headers(new String[] {"Content-Type", "application/gml+xml; version=3.2"}))
+        .body(HITS_2_0_0.formatted("342"))
+        .headersDelay(3, TimeUnit.SECONDS)
+        .build();
+  }
+
+  @Test
+  void slow_hits_request_times_out_and_is_not_repeated() throws Exception {
+    CountsResult result = countsWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> slowHitsResponse(),
+        "2.0.0",
+        Query.ALL,
+        Duration.ofSeconds(1),
+        Duration.ofHours(1),
+        2);
+    assertEquals(List.of(-1, -1), result.counts());
+    // The second time no hits request is done
+    assertEquals(1, result.getFeatureRequests().size());
+  }
+
+  @Test
+  void slow_hits_request_repeated_after_ttl() throws Exception {
+    CountsResult result = countsWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> slowHitsResponse(),
+        "2.0.0",
+        Query.ALL,
+        Duration.ofSeconds(1),
+        Duration.ZERO,
+        2);
+    assertEquals(List.of(-1, -1), result.counts());
+    assertEquals(2, result.getFeatureRequests().size());
+  }
+
+  @Test
+  void slow_hits_request_without_timeout() throws Exception {
+    CountResult result = countWithServer(
+        CAPABILITIES_2_0_0,
+        resultType -> new MockResponse.Builder()
+            .headers(new Headers(new String[] {"Content-Type", "application/gml+xml; version=3.2"}))
+            .body(HITS_2_0_0.formatted("342"))
+            .headersDelay(1500, TimeUnit.MILLISECONDS)
+            .build(),
+        "2.0.0",
+        Query.ALL);
+    assertEquals(342, result.count());
   }
 
   @Test
