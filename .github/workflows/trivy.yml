@@ -2,7 +2,6 @@ name: 'Trivy Security Scan'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.16'
 
 on: # use pull request so this workflow dos not fail when triggered by dependabot PR's
   pull_request:
@@ -28,13 +27,8 @@ jobs:
           java-version: 25
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Build'
-        run: mvn -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
+        run: ./mvnw -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
 
       - name: 'Run Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@v0.36.0

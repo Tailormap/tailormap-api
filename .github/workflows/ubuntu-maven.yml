@@ -6,7 +6,6 @@ permissions:
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.16'
   JAVA_VERSION: '25'
 
 concurrency:
@@ -38,13 +37,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Download Maven dependencies' 
-        run: mvn dependency:go-offline dependency:resolve-plugins
+        run: ./mvnw dependency:go-offline dependency:resolve-plugins
 
 
   build:
@@ -64,14 +58,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Test with Maven'
         run: |
-          mvn -B -fae -e test
+          ./mvnw -B -fae -e test
 
       - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v7
@@ -89,7 +78,7 @@ jobs:
           report_type: test_results
 
       - name: 'Build javadoc'
-        run: mvn javadoc:javadoc
+        run: ./mvnw javadoc:javadoc
 
 
   postgresql-test:
@@ -111,11 +100,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Login to b3p.nl'
         uses: docker/login-action@v4
         with:
@@ -127,7 +111,7 @@ jobs:
         run: ./build/ci/testdata-setup.sh
 
       - name: 'Test PostgreSQL with Maven'
-        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
+        run: ./mvnw -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: 'Upload test results'
         uses: actions/upload-artifact@v7
@@ -184,11 +168,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - uses: actions/cache/restore@v6
         # restore-only, no saving of this cache
         with:
@@ -200,7 +179,7 @@ jobs:
       - name: 'Build Maven site'
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: mvn site
+        run: ./mvnw site
 
       - name: 'Deploy gh-pages'
         uses: JamesIves/github-pages-deploy-action@v4
@@ -227,11 +206,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Log in to GitHub container registry'
         uses: docker/login-action@v4
         with:
@@ -248,7 +222,7 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy -Ddocker.publish=true --settings .github/maven-settings.xml
+          ./mvnw -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy -Ddocker.publish=true --settings .github/maven-settings.xml
 
 
   deploy:
@@ -297,13 +271,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Build docker image'
-        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
+        run: ./mvnw -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
 
       - name: 'Try Created Docker image'
         run: |

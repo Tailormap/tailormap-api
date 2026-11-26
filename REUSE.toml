@@ -11,3 +11,9 @@ path = [".github/**", ".mvn/**", "README.md", ".git*", "src/site/**", "SECURITY.
 precedence = "aggregate"
 SPDX-FileCopyrightText = "none"
 SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["mvnw", "mvnw.cmd"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Apache Software Foundation"
+SPDX-License-Identifier = "Apache-2.0"

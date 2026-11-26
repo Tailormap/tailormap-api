@@ -6,7 +6,6 @@ concurrency:
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.16'
 
 on:
   push:
@@ -51,13 +50,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Generate sources with Maven'
-        run: mvn generate-sources
+        run: ./mvnw generate-sources
 
       - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v4

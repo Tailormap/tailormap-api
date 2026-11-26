@@ -2,7 +2,6 @@ name: 'OWASP'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.16'
 
 concurrency: # More info: https://stackoverflow.com/a/68422069/253468
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -43,11 +42,6 @@ jobs:
           java-version: 25
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Restore OWASP cache'
         uses: actions/cache/restore@v6
         with:
@@ -59,7 +53,7 @@ jobs:
       - name: 'Update OWASP Dependency Check Database'
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: mvn -U org.owasp:dependency-check-maven:update-only -DnvdApiKeyEnvironmentVariable=NVD_API_KEY
+        run: ./mvnw -U org.owasp:dependency-check-maven:update-only -DnvdApiKeyEnvironmentVariable=NVD_API_KEY
 
       - name: 'Save OWASP cache'
         uses: actions/cache/save@v6
@@ -71,7 +65,7 @@ jobs:
         continue-on-error: true
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: mvn package -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -fae -B -DfailBuildOnCVSS=5
+        run: ./mvnw package -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -fae -B -DfailBuildOnCVSS=5
 
       - name: 'Check sarif file existence'
         id: check_files

@@ -2,7 +2,6 @@ name: 'Ubuntu QA Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.16'
 
 concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -39,15 +38,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        if: always()
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'QA build with Maven'
         if: always()
-        run: mvn -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
+        run: ./mvnw -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
       - uses: lcollins/pmd-github-action@v4.0.0
         if: always()
