@@ -30,6 +30,7 @@ import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.JTS;
@@ -202,6 +203,17 @@ public class FeaturesController implements Constants {
     SimpleFeatureSource fs = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
+
+      // A WFS 1.x has no offset: GeoTools only sends MAXFEATURES and skips the start index in memory, so a
+      // next page would silently be empty. Use WFS 2.0.0 for paging.
+      if (page > 1
+          && fs.getDataStore() instanceof WFSDataStore wfsDataStore
+          && !wfsDataStore.getWfsClient().canOffset()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Paging is not supported for this WFS version, only the first page can be retrieved. Use WFS 2.0.0 or"
+                + " a filter.");
+      }
 
       // Property names for sorting: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
