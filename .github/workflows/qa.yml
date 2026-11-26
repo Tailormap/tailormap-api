@@ -40,7 +40,7 @@ jobs:
 
       - name: 'QA build with Maven'
         if: always()
-        run: ./mvnw -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
+        run: mvn -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
       - uses: lcollins/pmd-github-action@v4.0.0
         if: always()

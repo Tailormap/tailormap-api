@@ -51,7 +51,7 @@ jobs:
           cache: 'maven'
 
       - name: 'Generate sources with Maven'
-        run: ./mvnw generate-sources
+        run: mvn generate-sources
 
       - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v4

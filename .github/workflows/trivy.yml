@@ -28,7 +28,7 @@ jobs:
           cache: 'maven'
 
       - name: 'Build'
-        run: ./mvnw -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
+        run: mvn -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
 
       - name: 'Run Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@v0.36.0

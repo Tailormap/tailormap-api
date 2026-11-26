@@ -38,7 +38,7 @@ jobs:
           cache: 'maven'
 
       - name: 'Download Maven dependencies' 
-        run: ./mvnw dependency:go-offline dependency:resolve-plugins
+        run: mvn dependency:go-offline dependency:resolve-plugins
 
 
   build:
@@ -60,7 +60,7 @@ jobs:
 
       - name: 'Test with Maven'
         run: |
-          ./mvnw -B -fae -e test
+          mvn -B -fae -e test
 
       - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v7
@@ -78,7 +78,7 @@ jobs:
           report_type: test_results
 
       - name: 'Build javadoc'
-        run: ./mvnw javadoc:javadoc
+        run: mvn javadoc:javadoc
 
 
   postgresql-test:
@@ -111,7 +111,7 @@ jobs:
         run: ./build/ci/testdata-setup.sh
 
       - name: 'Test PostgreSQL with Maven'
-        run: ./mvnw -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
+        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Dspotless.apply.skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: 'Upload test results'
         uses: actions/upload-artifact@v7
@@ -179,7 +179,7 @@ jobs:
       - name: 'Build Maven site'
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: ./mvnw site
+        run: mvn site
 
       - name: 'Deploy gh-pages'
         uses: JamesIves/github-pages-deploy-action@v4
@@ -222,7 +222,7 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./mvnw -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy -Ddocker.publish=true --settings .github/maven-settings.xml
+          mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy -Ddocker.publish=true --settings .github/maven-settings.xml
 
 
   deploy:
@@ -272,7 +272,7 @@ jobs:
           cache: 'maven'
 
       - name: 'Build docker image'
-        run: ./mvnw -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
+        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
 
       - name: 'Try Created Docker image'
         run: |
