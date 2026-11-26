@@ -1005,10 +1005,8 @@ SPDX-License-Identifier: MIT
 
                              - Enable native access for GeoPackage support which uses a native driver
 
-                             - Disable the Base64 intrinsics as mitigation for CVE-2026-114938 (Java4Shell), memory corruption in
-                               the AVX-512 Base64 decoder on x86-64. Only makes Base64 decoding a bit slower, also fine on arm64.
-                               See https://calif.io/java4shell -->
-                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M --enable-native-access=ALL-UNNAMED -XX:-UseBASE64Intrinsics</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                            -->
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS xml:space="preserve"> -XX:MaxDirectMemorySize=256M --enable-native-access=ALL-UNNAMED</BPE_APPEND_JAVA_TOOL_OPTIONS>
                             <!-- Headroom is used by the memory calculator to reduce the max total memory limit. The default is 0%,
                              but since Tailormap is usually run with unconstrained container memory, set it to 10% to prevent taking
                              too much host memory. Although Tailormap should not exhaust heap memory, reduce it as a preventive safety
