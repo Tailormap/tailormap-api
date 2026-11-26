@@ -280,6 +280,24 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(400));
   }
 
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void error_reading_features_should_be_reported() throws Exception {
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis;
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "does_not_exist IN ('1000')")
+            .param("page", "1"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(500))
+        .andExpect(jsonPath("$.message")
+            .value(containsString("Error reading features of feature type \"begroeidterreindeel\"")))
+        .andExpect(jsonPath("$.message").value(containsString("does_not_exist")));
+  }
+
   private static ResultMatcher[] provinciesWFSResultMatchers() {
     return new ResultMatcher[] {
       jsonPath("$.features[0].attributes.identificatie").doesNotHaveJsonPath(),
@@ -863,10 +881,11 @@ class FeaturesControllerIntegrationTest {
   }
 
   /**
-   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs, check that a clear error is returned.
+   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs and throws an
+   * UnsupportedOperationException, check that the error is reported.
    */
   @Test
-  void should_return_clear_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
+  void should_return_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlWfs11;
     mockMvc.perform(get(url).with(setServletPath(url))
             .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
@@ -876,9 +895,9 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(500))
         .andExpect(jsonPath("$.message")
             .value(allOf(
-                containsString("\"postgis:begroeidterreindeel\""),
-                containsString("circular arcs"),
-                containsString("VERSION=1.1.0"))));
+                containsString(
+                    "Error reading features of feature type \"postgis:begroeidterreindeel\""),
+                containsString("Curve segment ArcString is not supported"))));
   }
 
   /**
