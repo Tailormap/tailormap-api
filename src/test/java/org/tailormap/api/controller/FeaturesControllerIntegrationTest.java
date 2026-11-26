@@ -285,7 +285,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void error_reading_features_should_be_reported() throws Exception {
-    final String url = apiBasePath + layerBegroeidTerreindeelPostgis;
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .param("filter", "does_not_exist IN ('1000')")
