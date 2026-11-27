@@ -22,6 +22,7 @@ import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junitpioneer.jupiter.Stopwatch;
@@ -37,6 +38,8 @@ import org.tailormap.api.util.Constants;
 @PostgresIntegrationTest
 @Execution(ExecutionMode.SAME_THREAD)
 @Stopwatch
+// Searches the Solr indexes that other tests clear and reindex
+@ResourceLock("solr-search-index-documents")
 class SearchControllerIntegrationTest implements Constants, TestUrls {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
