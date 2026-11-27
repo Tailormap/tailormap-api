@@ -32,9 +32,11 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.geometry.jts.WKTReader2;
 import org.geotools.util.factory.GeoTools;
 import org.geotools.util.factory.Hints;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -148,10 +150,18 @@ public class EditFeatureController implements Constants {
         transaction.commit();
         // find the created feature to return
         newFeature = getFeature(fs, ff.id(newFids.getFirst()), application, tmFeatureType);
+        if (newFeature == null) {
+          throw new ResponseStatusException(
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              "Feature was created with fid %s, but could not be found to return it"
+                  .formatted(newFids.getFirst().getID()));
+        }
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Feature cannot be added, datasource is not editable");
       }
+    } catch (ResponseStatusException e) {
+      throw e;
     } catch (RuntimeException | IOException | FactoryException e) {
       // either opening datastore, modify or transaction failed
       logger.error("Error creating new feature {}", completeFeature, e);
@@ -207,22 +217,31 @@ public class EditFeatureController implements Constants {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       // find feature to update
       final Filter filter = ff.id(ff.featureId(fid));
-      if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore simpleFeatureStore) {
-        handleGeometryAttributesInput(
-            tmFeatureType, appLayerSettings, partialFeature, attributesMap, application, fs);
-        // NOTE geotools does not report back that the feature was updated, no error === success
-        simpleFeatureStore.setTransaction(transaction);
-        simpleFeatureStore.modifyFeatures(
-            attributesMap.keySet().toArray(new String[] {}),
-            attributesMap.values().toArray(),
-            filter);
-        transaction.commit();
-        // find the updated feature to return
-        patchedFeature = getFeature(fs, filter, application, tmFeatureType);
-      } else {
+      if (!(fs instanceof SimpleFeatureStore simpleFeatureStore)) {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Feature cannot be edited, it does not exist or is not editable");
+            HttpStatus.BAD_REQUEST, "Feature cannot be edited, datasource is not editable");
       }
+      if (fs.getFeatures(filter).isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature with fid %s not found".formatted(fid));
+      }
+      handleGeometryAttributesInput(
+          tmFeatureType, appLayerSettings, partialFeature, attributesMap, application, fs);
+      // NOTE geotools does not report back that the feature was updated, no error === success
+      simpleFeatureStore.setTransaction(transaction);
+      simpleFeatureStore.modifyFeatures(
+          attributesMap.keySet().toArray(new String[] {}),
+          attributesMap.values().toArray(),
+          filter);
+      transaction.commit();
+      // find the updated feature to return
+      patchedFeature = getFeature(fs, filter, application, tmFeatureType);
+      if (patchedFeature == null) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Feature with fid %s was updated, but could not be found to return it".formatted(fid));
+      }
+    } catch (ResponseStatusException e) {
+      throw e;
     } catch (RuntimeException | IOException | FactoryException e) {
       // either opening datastore, modify or transaction failed
       logger.error("Error patching feature {}", partialFeature, e);
@@ -267,8 +286,10 @@ public class EditFeatureController implements Constants {
       } else {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer cannot be edited");
       }
-    } catch (IOException e) {
-      // either opening datastore or commit failed
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (RuntimeException | IOException e) {
+      // either opening datastore, removing or commit failed
       logger.error("Error deleting feature {}", fid, e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     } finally {
@@ -337,8 +358,8 @@ public class EditFeatureController implements Constants {
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
         .forEach(attr -> {
-          Geometry geometry = GeometryProcessor.wktToGeometry(
-              (String) modelFeature.getAttributes().get(attr.getName()));
+          Geometry geometry = parseGeometryAttribute(
+              attr.getName(), modelFeature.getAttributes().get(attr.getName()));
           if (transform != null && geometry != null) {
             geometry.setSRID(Integer.parseInt(application.getCrs().substring("EPSG:".length())));
             if (logger.isTraceEnabled()) {
@@ -354,5 +375,35 @@ public class EditFeatureController implements Constants {
           }
           attributesMap.put(attr.getName(), geometry);
         });
+  }
+
+  /**
+   * Parse the WKT value of a geometry attribute from the request.
+   *
+   * @param attributeName the name of the attribute
+   * @param value the value from the request
+   * @return the geometry, or null if the value is null or blank to clear the geometry
+   * @throws ResponseStatusException with status 400 if the value is not a string or not valid WKT, instead of
+   *     clearing the geometry
+   */
+  private static Geometry parseGeometryAttribute(String attributeName, Object value) {
+    if (value == null) {
+      return null;
+    }
+    if (!(value instanceof String wkt)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Value of geometry attribute \"%s\" must be WKT".formatted(attributeName));
+    }
+    if (wkt.isBlank()) {
+      return null;
+    }
+    try {
+      return new WKTReader2().read(wkt);
+    } catch (ParseException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Invalid WKT for geometry attribute \"%s\": %s".formatted(attributeName, e.getMessage()),
+          e);
+    }
   }
 }

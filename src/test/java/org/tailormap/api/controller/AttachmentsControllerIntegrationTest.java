@@ -43,6 +43,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -155,6 +156,47 @@ class AttachmentsControllerIntegrationTest {
             .with(setServletPath(url))
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized());
+  }
+
+  private ResultActions addAttachmentWithMetadata(String metadataJson) throws Exception {
+    String url =
+        apiBasePath + layerBegroeidTerreindeelPostgis + "/feature/21f95499702e3a5d05230d2ae596ea1c/attachments";
+    byte[] svgBytes = new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray();
+    return mockMvc.perform(MockMvcRequestBuilders.multipart(url)
+        .file(new MockMultipartFile(
+            "attachmentMetadata",
+            "metadata.json",
+            "application/json",
+            metadataJson.getBytes(StandardCharsets.UTF_8)))
+        .file(new MockMultipartFile("attachment", "lichtpunt.svg", "image/svg+xml", svgBytes))
+        .with(request -> {
+          request.setMethod("POST");
+          return request;
+        })
+        .with(setServletPath(url))
+        .accept(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void add_attachment_without_required_metadata() throws Exception {
+    addAttachmentWithMetadata("""
+{"attributeName":"bijlage"}
+""").andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void add_attachment_with_invalid_mime_type() throws Exception {
+    addAttachmentWithMetadata("""
+{"attributeName":"bijlage","mimeType":"not a mime type","fileName":"lichtpunt.png"}
+""")
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Invalid MIME type \"not a mime type\""));
   }
 
   @Order(1)

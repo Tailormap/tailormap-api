@@ -46,12 +46,7 @@ public class UniqueValuesHelper {
       Filter existingFilter = null;
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       if (null != filter) {
-        if (application == null) {
-          // Admin usage does not have application context
-          existingFilter = FilterUtil.parseFilter(filter);
-        } else {
-          existingFilter = FilterUtil.parseFilter(filter, application, fs);
-        }
+        existingFilter = parseFilter(filter, application, fs);
       }
       logger.trace("existingFilter: {}", existingFilter);
 
@@ -90,12 +85,25 @@ public class UniqueValuesHelper {
           uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
         }
       }
-    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-      logger.error("Could not parse requested filter", e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      // Report the error instead of returning an empty list of values
+      logger.error(
+          "Error getting unique values for attribute {} of feature type {}",
+          attributeName,
+          tmft.getName(),
+          e);
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data", e);
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "Error getting unique values for attribute \"%s\" of feature type \"%s\": %s"
+              .formatted(
+                  attributeName,
+                  tmft.getName(),
+                  e.getMessage() != null
+                      ? e.getMessage()
+                      : e.getClass().getName()),
+          e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -103,5 +111,25 @@ public class UniqueValuesHelper {
     }
 
     return uniqueValuesResponse;
+  }
+
+  /**
+   * Parse an ECQL filter from the request.
+   *
+   * @throws ResponseStatusException with status 400 if the filter is invalid
+   */
+  private static Filter parseFilter(String filter, Application application, SimpleFeatureSource fs) {
+    try {
+      if (application == null) {
+        // Admin usage does not have application context
+        return FilterUtil.parseFilter(filter);
+      } else {
+        return FilterUtil.parseFilter(filter, application, fs);
+      }
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      logger.error("Could not parse requested filter", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    }
   }
 }

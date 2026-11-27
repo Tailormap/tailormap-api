@@ -73,6 +73,10 @@ public class LayerAttachedUploadsController {
       return uploadsController.getUpload(request, category, id, filename);
     }
 
+    if (layer == null) {
+      throw new ResponseStatusException(NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+    }
+
     switch (category) {
       case LAYER_ATTACHED_FILE ->
         validateUploadIsInDescription(id, service, layer, application, appTreeLayerNode);
@@ -84,7 +88,7 @@ public class LayerAttachedUploadsController {
             BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
     }
 
-    if (!uploadsService.checkIfModifiedSince(id, request.getDateHeader("If-Modified-Since"))) {
+    if (!uploadsService.checkIfModifiedSince(id, UploadsService.getIfModifiedSince(request))) {
       return ResponseEntity.status(NOT_MODIFIED).build();
     }
     // TODO this would fail when we have added a LEGEND upload to a layer description, because the category would be
