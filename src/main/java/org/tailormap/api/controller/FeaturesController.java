@@ -211,8 +211,7 @@ public class FeaturesController implements Constants {
           && !wfsDataStore.getWfsClient().canOffset()) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Paging is not supported for this WFS version, only the first page can be retrieved. Use WFS 2.0.0 or"
-                + " a filter.");
+            "Paging is not supported for this WFS version, only the first page can be retrieved. Use WFS 2.0.0");
       }
 
       // Property names for sorting: only non-geometry attributes that aren't hidden
