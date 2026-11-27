@@ -876,8 +876,8 @@
 <a class="jxr_linenumber" name="L868" href="#L868">868</a>                       .featureSourceId(bestuurlijkeGebiedenWfs.getId())
 <a class="jxr_linenumber" name="L869" href="#L869">869</a>                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
 <a class="jxr_linenumber" name="L870" href="#L870">870</a>                   .title(<span class="jxr_string">"Provinciegebied (WFS)"</span>));
-<a class="jxr_linenumber" name="L871" href="#L871">871</a>       <em class="jxr_comment">// For testing paging with an unknown total: more features than fit on one page, and the WFS 2.0.0</em>
-<a class="jxr_linenumber" name="L872" href="#L872">872</a>       <em class="jxr_comment">// server does not return numberMatched</em>
+<a class="jxr_linenumber" name="L871" href="#L871">871</a>       <em class="jxr_comment">// For testing paging: more features than fit on one page, and the WFS 2.0.0 server (MapServer) does not</em>
+<a class="jxr_linenumber" name="L872" href="#L872">872</a>       <em class="jxr_comment">// return numberMatched in a page, so the total comes from a separate hits request</em>
 <a class="jxr_linenumber" name="L873" href="#L873">873</a>       geoService
 <a class="jxr_linenumber" name="L874" href="#L874">874</a>           .getSettings()
 <a class="jxr_linenumber" name="L875" href="#L875">875</a>           .getLayerSettings()

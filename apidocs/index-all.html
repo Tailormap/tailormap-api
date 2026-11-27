@@ -3046,6 +3046,10 @@ configured settings, taking into account the configured attribute order and hidd
 <dd>
 <div class="block">number of values</div>
 </dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSHitsCountUtil.html#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query)" class="member-name-link">getCount(SimpleFeatureSource, Query)</a> - Static method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/WFSHitsCountUtil.html" title="class in org.tailormap.api.geotools.wfs">WFSHitsCountUtil</a></dt>
+<dd>
+<div class="block">Count the features of a feature source.</div>
+</dd>
 <dt><a href="org/tailormap/api/geotools/wfs/WFSCountDefaultUtil.html#getCountDefault(org.geotools.api.data.DataAccess)" class="member-name-link">getCountDefault(DataAccess)</a> - Static method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/WFSCountDefaultUtil.html" title="class in org.tailormap.api.geotools.wfs">WFSCountDefaultUtil</a></dt>
 <dd>
 <div class="block">Get the <code>CountDefault</code> of a WFS from the capabilities GeoTools already retrieved when opening the data
@@ -7351,6 +7355,11 @@ geometries.</div>
 <div class="block">Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
 needed/possible.</div>
 </dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSHitsCountUtil.html#parseNumberMatched(java.io.InputStream)" class="member-name-link">parseNumberMatched(InputStream)</a> - Static method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/WFSHitsCountUtil.html" title="class in org.tailormap.api.geotools.wfs">WFSHitsCountUtil</a></dt>
+<dd>
+<div class="block">Read the number of features from a GetFeature hits response: the <code>numberMatched</code> attribute (WFS 2.0.0) or
+the <code>numberOfFeatures</code> attribute (WFS 1.x) of the root <code>FeatureCollection</code> element.</div>
+</dd>
 <dt><a href="org/tailormap/api/util/HttpProxyUtil.html#passthroughRequestHeaders(java.net.http.HttpRequest.Builder,jakarta.servlet.http.HttpServletRequest,java.util.Set)" class="member-name-link">passthroughRequestHeaders(HttpRequest.Builder, HttpServletRequest, Set)</a> - Static method in class org.tailormap.api.util.<a href="org/tailormap/api/util/HttpProxyUtil.html" title="class in org.tailormap.api.util">HttpProxyUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/HttpProxyUtil.html#passthroughResponseHeaders(java.net.http.HttpHeaders,java.util.Set)" class="member-name-link">passthroughResponseHeaders(HttpHeaders, Set)</a> - Static method in class org.tailormap.api.util.<a href="org/tailormap/api/util/HttpProxyUtil.html" title="class in org.tailormap.api.util">HttpProxyUtil</a></dt>
@@ -11326,6 +11335,10 @@ wfs_maxfeatures setting).</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#%3Cinit%3E()" class="member-name-link">WFSFeatureSourceHelper()</a> - Constructor for class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html" title="class in org.tailormap.api.geotools.featuresources">WFSFeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSHitsCountUtil.html" class="type-name-link" title="class in org.tailormap.api.geotools.wfs">WFSHitsCountUtil</a> - Class in <a href="org/tailormap/api/geotools/wfs/package-summary.html">org.tailormap.api.geotools.wfs</a></dt>
+<dd>
+<div class="block">Counts features with a WFS <code>resultType=hits</code> GetFeature request when GeoTools does not.</div>
+</dd>
 <dt><a href="org/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#wfsUrl()" class="member-name-link">wfsUrl()</a> - Method in record class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html" title="class in org.tailormap.api.geotools.wfs">SimpleWFSLayerDescription</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>wfsUrl</code> record component.</div>
