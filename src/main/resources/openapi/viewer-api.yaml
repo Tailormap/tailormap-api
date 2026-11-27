@@ -252,7 +252,7 @@ components:
           nullable: true
           minimum: 1
         pageSize:
-          description: 'number of features in a page, this will allow calculating the offset (page * pagesize)'
+          description: 'number of features in a page, this will allow calculating the offset (page * pagesize). This can be lower than the requested page size, when it exceeds the maximum page size or the maximum number of features a WFS returns (CountDefault). The client should use this page size for requesting other pages.'
           type: integer
           nullable: true
           readOnly: true
@@ -859,7 +859,7 @@ paths:
         schema:
           type: integer
           minimum: 1
-      - description: 'Page size to retrieve. Default value is 100. Default maximum value is 500.'
+      - description: 'Page size to retrieve. Default value is 100. Default maximum value is 500. The page size used can be lower, see pageSize in the response.'
         in: query
         name: pageSize
         required: false

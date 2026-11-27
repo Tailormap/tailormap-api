@@ -5,9 +5,11 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -16,7 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.IntegrationTestOrdering.FIRST_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs11;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs20;
+import static org.tailormap.api.controller.TestUrls.layerGemeentegebiedWfs;
 import static org.tailormap.api.controller.TestUrls.layerGemeentegebiedWfs11;
+import static org.tailormap.api.controller.TestUrls.layerNwbWegvakkenWfs;
 import static org.tailormap.api.controller.TestUrls.layerOsmPolygonPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
@@ -25,6 +31,8 @@ import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Disabled;
@@ -51,6 +59,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Service;
@@ -68,14 +77,14 @@ class FeaturesControllerIntegrationTest {
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
   private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
+  private static final String begroeidterreindeelUrlWfs11 = layerBegroeidTerreindeelWfs11 + controllerPath;
+  private static final String begroeidterreindeelUrlWfs20 = layerBegroeidTerreindeelWfs20 + controllerPath;
+  private static final String gemeentegebiedUrlWfs = layerGemeentegebiedWfs + controllerPath;
+  private static final String nwbWegvakkenUrlWfs = layerNwbWegvakkenWfs + controllerPath;
   private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
   private static final String gemeentegebiedUrlWfs11 = layerGemeentegebiedWfs11 + controllerPath;
 
-  /**
-   * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
-   * {@link #exactWfsCounts}.
-   */
   private static final int provinciesWFSTotalCount = 12;
 
   private static final int begroeidterreindeelTotalCount = 3662;
@@ -88,9 +97,6 @@ class FeaturesControllerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
-
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
 
   @Value("${tailormap-api.default-page-size}")
   private int pageSize;
@@ -388,7 +394,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -420,7 +426,7 @@ class FeaturesControllerIntegrationTest {
                 .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+            .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
             .andExpect(jsonPath("$.page").value(2))
             .andExpect(jsonPath("$.pageSize").value(pageSize))
             .andExpect(jsonPath("$.features").isArray())
@@ -465,7 +471,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "3"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(3))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -559,7 +565,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortBy", "naam"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -574,8 +580,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
@@ -586,7 +592,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "invalid"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -601,8 +607,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
@@ -621,7 +627,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "asc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -636,8 +642,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zuid-Holland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("28"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
@@ -648,7 +654,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -663,8 +669,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[8].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[8].attributes.naam").value("Flevoland"))
-        .andExpect(jsonPath("$.features[8].attributes.code").value("24"))
+        .andExpect(jsonPath("$.features[8].attributes.naam").value("Gelderland"))
+        .andExpect(jsonPath("$.features[8].attributes.code").value("25"))
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
@@ -691,6 +697,92 @@ class FeaturesControllerIntegrationTest {
       jsonPath("$.columnMetadata[12].name").value("plus_fysiekvoorkomen"),
       jsonPath("$.columnMetadata[13].name").value("geom"),
     };
+  }
+
+  private List<String> getPageAttributeValues(String url, int page, String sortBy, String sortOrder, String attribute)
+      throws Exception {
+    MockHttpServletRequestBuilder request = get(url).accept(MediaType.APPLICATION_JSON)
+        .with(setServletPath(url))
+        .param("page", String.valueOf(page));
+    if (sortBy != null) {
+      request = request.param("sortBy", sortBy);
+    }
+    if (sortOrder != null) {
+      request = request.param("sortOrder", sortOrder);
+    }
+    MvcResult result = mockMvc.perform(request)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.page").value(page))
+        .andExpect(jsonPath("$.features.length()").value(pageSize))
+        .andReturn();
+    List<Object> values =
+        JsonPath.parse(result.getResponse().getContentAsString()).read("$.features[*].attributes." + attribute);
+    return values.stream().map(String::valueOf).toList();
+  }
+
+  private static void assertSortedAcrossPages(List<String> page1, List<String> page2, boolean ascending) {
+    List<String> both = new ArrayList<>(page1);
+    both.addAll(page2);
+    List<String> expected = new ArrayList<>(both);
+    expected.sort(ascending ? Comparator.naturalOrder() : Comparator.reverseOrder());
+    assertEquals(expected, both, "features should be sorted across pages, not per page");
+  }
+
+  /**
+   * GeoTools does not send a sort order to a WFS 2.0.0 server and sorts each page in memory, see
+   * {@link org.tailormap.api.geotools.wfs.SortingWFSClient}. Test both a MapServer (PDOK) and a GeoServer WFS.
+   */
+  @ParameterizedTest
+  @MethodSource("wfs20SortArgumentsProvider")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_sort_across_pages_with_wfs_2_0_0(String url, String attribute, String sortOrder) throws Exception {
+    url = apiBasePath + url;
+    boolean ascending = "asc".equals(sortOrder);
+    List<String> page1 = getPageAttributeValues(url, 1, attribute, sortOrder, attribute);
+    List<String> page2 = getPageAttributeValues(url, 2, attribute, sortOrder, attribute);
+    assertSortedAcrossPages(page1, page2, ascending);
+  }
+
+  static Stream<Arguments> wfs20SortArgumentsProvider() {
+    return Stream.of(
+        arguments(gemeentegebiedUrlWfs, "code", "asc"),
+        arguments(gemeentegebiedUrlWfs, "code", "desc"),
+        arguments(begroeidterreindeelUrlWfs20, "identificatie", "asc"),
+        arguments(begroeidterreindeelUrlWfs20, "identificatie", "desc"));
+  }
+
+  /**
+   * Without a sort order a WFS uses the natural order of the server, which in practice is stable across pages. Pages
+   * must not overlap.
+   */
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_page_in_natural_order_without_sorting_with_wfs_2_0_0() throws Exception {
+    final String url = apiBasePath + gemeentegebiedUrlWfs;
+    List<String> page1 = getPageAttributeValues(url, 1, null, null, "code");
+    List<String> page2 = getPageAttributeValues(url, 2, null, null, "code");
+    assertTrue(page1.stream().noneMatch(page2::contains), "pages should not overlap");
+    // The same page again gives the same features
+    assertEquals(page2, getPageAttributeValues(url, 2, null, null, "code"));
+  }
+
+  /**
+   * NWB wegvakken has a date attribute which GeoTools parses as a non-serializable {@code Instant} with WFS 2.0.0.
+   * Sorting a page in memory then fails, which happened for every page even without a sort order.
+   */
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_page_wfs_with_non_serializable_attributes() throws Exception {
+    final String url = apiBasePath + nwbWegvakkenUrlWfs;
+    List<String> page1 = getPageAttributeValues(url, 1, null, null, "wvkId");
+    List<String> page2 = getPageAttributeValues(url, 2, null, null, "wvkId");
+    assertTrue(page1.stream().noneMatch(page2::contains), "pages should not overlap");
   }
 
   @Test
@@ -784,6 +876,56 @@ class FeaturesControllerIntegrationTest {
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(jsonPath("$.features[0].__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty());
+  }
+
+  static Stream<Arguments> curvedGeometryLayersProvider() {
+    return Stream.of(arguments(begroeidterreindeelUrlPostgis), arguments(begroeidterreindeelUrlWfs20));
+  }
+
+  /**
+   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs and throws an
+   * UnsupportedOperationException, check that the error is reported.
+   */
+  @Test
+  void should_return_error_for_curved_geometry_with_wfs_1_1_0() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlWfs11;
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(500))
+        .andExpect(jsonPath("$.message")
+            .value(allOf(
+                containsString(
+                    "Error reading features of feature type \"postgis:begroeidterreindeel\""),
+                containsString("Curve segment ArcString is not supported"))));
+  }
+
+  /**
+   * The PostGIS BGT data contains circular arcs, which GeoServer outputs as {@code gml:ArcString} in GML 3. The
+   * feature used has 6 control points and is linearized to about 50 to 130 points depending on the tolerance, with an
+   * area of about 440 m2. A parser that connects the control points with straight lines gives a much smaller area.
+   * The feature (identificatie G0344.96db69933eb9484786910579fa11715f) has the same fid in JDBC and WFS.
+   */
+  @ParameterizedTest
+  @MethodSource("curvedGeometryLayersProvider")
+  void should_linearize_curved_geometry(String layerUrl) throws Exception {
+    final String url = apiBasePath + layerUrl;
+    MvcResult result = mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", "begroeidterreindeel.79a12591fe5d76bbc61588f37237d203")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features.length()").value(1))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andReturn();
+
+    String wkt = JsonPath.read(result.getResponse().getContentAsString(), "$.features[0].geometry");
+    Geometry geometry = new WKTReader().read(wkt);
+    assertEquals("Polygon", geometry.getGeometryType());
+    assertTrue(
+        geometry.getNumPoints() > 6, "arcs should be linearized, got " + geometry.getNumPoints() + " points");
+    assertEquals(440, geometry.getArea(), 5, "area of linearized geometry");
   }
 
   @Test
@@ -1190,10 +1332,6 @@ class FeaturesControllerIntegrationTest {
   @DefaultTimeZone("Europe/Amsterdam")
   void filter_test(String appLayerUrl, String filterECQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
-    if (!exactWfsCounts && appLayerUrl.equals(provinciesWfs)) {
-      // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
-      totalCount = -1;
-    }
 
     appLayerUrl = apiBasePath + appLayerUrl;
 

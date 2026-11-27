@@ -64,12 +64,14 @@ public class UniqueValuesHelper {
 
       Query q = new Query(tmft.getName(), f);
       q.setPropertyNames(attributeName);
-      q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));
-      logger.trace("Unique values query: {}", q);
 
       // and then there are 2 scenarios:
       // there might be a performance benefit for one or the other
       if (!useGeotoolsUniqueFunction) {
+        // Only sort here: the unique function result is sorted in a TreeSet below, and a WFS 2.0.0 that doesn't
+        // implement sorting gives an error when sorting (see SortingWFS_2_0_Strategy)
+        q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));
+        logger.trace("Unique values query: {}", q);
         // #1 use a feature visitor to get the unique values
         // not recommended, as it may not be performant
         logger.trace("Using feature visitor to get unique values");
