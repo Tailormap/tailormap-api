@@ -39,6 +39,7 @@ class CreateLayerExtractServiceTest {
    */
   @ParameterizedTest
   @EnumSource(ExtractOutputFormat.class)
+  @SuppressWarnings("PMD.DisposeDataStore") // openGeoToolsFeatureSource() is only stubbed, nothing to dispose
   void should_emit_error_for_any_exception(ExtractOutputFormat outputFormat) throws Exception {
     SseEventBus eventBus = mock(SseEventBus.class);
     FeatureSourceFactoryHelper featureSourceFactoryHelper = mock(FeatureSourceFactoryHelper.class);

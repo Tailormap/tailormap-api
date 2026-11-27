@@ -257,7 +257,7 @@ public class FeaturesController implements Constants {
       // count can be -1 if too costly eg. some WFS
       int featureCount;
       if (null != filterECQL) {
-        Filter filter = FilterUtil.parseFilter(filterECQL, application, fs);
+        Filter filter = parseFilter(filterECQL, application, fs);
         q.setFilter(filter);
         featureCount = fs.getCount(q);
         // this will execute the query twice, once to get the count and once to get the data
@@ -311,13 +311,13 @@ public class FeaturesController implements Constants {
   }
 
   /**
-   * Parse a CQL filter from the request.
+   * Parse an ECQL filter from the request.
    *
    * @throws ResponseStatusException with status 400 if the filter is invalid
    */
-  private static Filter parseFilter(String filterCQL, Application application, SimpleFeatureSource fs) {
+  private static Filter parseFilter(String filterECQL, Application application, SimpleFeatureSource fs) {
     try {
-      return FilterUtil.parseFilter(filterCQL, application, fs);
+      return FilterUtil.parseFilter(filterECQL, application, fs);
     } catch (CQLException | FactoryException | UnsupportedOperationException e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
@@ -431,7 +431,7 @@ public class FeaturesController implements Constants {
 
       Filter finalFilter = spatialFilter;
       if (null != filterECQL) {
-        Filter filter = FilterUtil.parseFilter(filterECQL, application, fs);
+        Filter filter = parseFilter(filterECQL, application, fs);
         finalFilter = ff.and(spatialFilter, filter);
       }
       Query q = new Query(fs.getName().toString());
