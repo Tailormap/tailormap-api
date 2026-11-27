@@ -273,4 +273,36 @@ SPDX-License-Identifier: MIT
             </property>
         </properties>
     </rule>
+    <rule name="UseWFSHitsCountUtil" language="java"
+          message="Use WFSHitsCountUtil.getCount instead of FeatureSource.getCount or FeatureCollection.size"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Don't use FeatureSource.getCount(...) or FeatureCollection.size(), use WFSHitsCountUtil.getCount(...)
+            instead. GeoTools returns -1 for a WFS 2.0.0 without asking the server, WFSHitsCountUtil does a
+            resultType=hits request. FeatureCollection.size() reads all features when the count is -1.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.api.data.FeatureSource#getCount(org.geotools.api.data.Query)')
+                  or pmd-java:matchesSig('org.geotools.feature.FeatureCollection#size()')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseWFSHitsCountUtil" language="java"
+          message="Use WFSHitsCountUtil.getCount instead of FeatureSource.getCount or FeatureCollection.size"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Don't use FeatureSource.getCount(...) or FeatureCollection.size(), use WFSHitsCountUtil.getCount(...)
+            instead. GeoTools returns -1 for a WFS 2.0.0 without asking the server, WFSHitsCountUtil does a
+            resultType=hits request. FeatureCollection.size() reads all features when the count is -1.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.api.data.FeatureSource#getCount(org.geotools.api.data.Query)')
+                  or pmd-java:matchesSig('org.geotools.feature.FeatureCollection#size()')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

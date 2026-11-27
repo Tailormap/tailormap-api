@@ -6,6 +6,7 @@
 package org.tailormap.api.controller;
 
 import static java.util.Map.entry;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -513,6 +514,67 @@ class EditFeatureControllerIntegrationTest {
         .andExpect(jsonPath("$.attributes.INONDERZOEK").value("true"))
         .andExpect(jsonPath("$.attributes.GEOM").value(StaticTestData.get("waterdeel__edit_geom")))
         .andExpect(jsonPath("$.attributes.CLASS").value("waterloop"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void patch_invalid_wkt_should_not_clear_geometry() throws Exception {
+    final String url =
+        apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
+    mockMvc.perform(patch(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json(Map.of(
+                "__fid",
+                StaticTestData.get("begroeidterreindeel__fid_edit"),
+                "attributes",
+                Map.of("geom", "POLYGON((1 2, 3 4"))))) // missing closing parentheses
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value(containsString("Invalid WKT for geometry attribute \"geom\"")));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void patch_geometry_that_is_not_a_string() throws Exception {
+    final String url =
+        apiBasePath + begroeidterreindeelUrlPostgis + "/" + StaticTestData.get("begroeidterreindeel__fid_edit");
+    mockMvc.perform(patch(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json(Map.of(
+                "__fid",
+                StaticTestData.get("begroeidterreindeel__fid_edit"),
+                "attributes",
+                Map.of("geom", 42)))))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Value of geometry attribute \"geom\" must be WKT"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void patch_non_existent_feature() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis + "/begroeidterreindeel.does-not-exist";
+    mockMvc.perform(patch(url)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json(Map.of(
+                "__fid",
+                "begroeidterreindeel.does-not-exist",
+                "attributes",
+                Map.of("inonderzoek", true)))))
+        .andExpect(status().isNotFound())
+        .andExpect(
+            jsonPath("$.message").value("Feature with fid begroeidterreindeel.does-not-exist not found"));
   }
 
   @Test
