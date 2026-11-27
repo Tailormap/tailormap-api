@@ -56,6 +56,16 @@ Use a 2-space indentation for Java code and try to follow the `palantir/palantir
 Use meaningful names for variables, methods, and classes that accurately describe their purpose.
 Use snake case method names in test classes, e.g., `should_return_true_when_input_is_valid()`.
 
+## GeoTools
+
+These are enforced by custom PMD rules in `build/qa/PMD-ruleset_for_TM.xml`:
+
+- Parse CQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)`.
+- Count features with `WFSHitsCountUtil.getCount(...)`, not `FeatureSource.getCount(...)` or
+  `FeatureCollection.size()` (which reads all features when the count is unknown). GeoTools returns -1 for a
+  WFS 2.0.0 without asking the server; `WFSHitsCountUtil` does a `resultType=hits` request. A count can still be -1
+  (unknown), handle that.
+
 ## Modularity
 
 - **Single Responsibility Principle**: Write classes and methods that have a single responsibility, unless these are
@@ -79,6 +89,7 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 - **Unit Tests**: Encourage the inclusion of unit tests for all new features and functions.
 - **Integration Tests**: Suggest integration tests to ensure that components work together as expected.
 - **Test-Driven Development**: Promote writing tests before implementing features to ensure requirements are met.
+- **HTTP servers in tests**: When a test needs an HTTP server (e.g. to check the requests an HTTP client sends), use OkHttp's `MockWebServer` (`mockwebserver3`, with the `@StartStop` JUnit extension) instead of `com.sun.net.httpserver.HttpServer` or a hand-written server. Enqueue responses with `MockResponse` and check requests with `takeRequest()`.
 
 ### Running tests
 - Use `mvn test` to run all unit tests.
@@ -89,12 +100,21 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 - **Efficiency**: Suggest efficient algorithms and data structures to optimize performance.
 - **Resource Management**: Close resources properly to avoid memory leaks and improve performance, this can be achieved
   using `try-with-resources` constructs.
+- **GeoTools data stores**: Dispose a data store opened with `openGeoToolsFeatureSource()` in a `finally` block with
+  `featureSource.getDataStore().dispose()` (PMD rule `DisposeDataStore`).
 - **Scalability**: Consider scalability when designing features to ensure the system can handle increased load.
 - **Caching**: Recommend caching strategies to reduce latency and improve performance.
 
 ## Security Best Practices
 
 - **Input Validation**: Always validate user inputs to prevent security vulnerabilities.
+- **Access checks**: Controllers using the `Application`, `AppTreeLayerNode`, `GeoService` or `GeoServiceLayer` model
+  attributes must be annotated with `@AppRestController`, `AppRestControllerAdvice` resolves these and checks access
+  (PMD rule `UseAppRestController`).
+- **Filters**: Parse ECQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)` (PMD rule
+  `UseFilterUtil`). Don't use the GeoTools `CQL` class at all, ECQL is a superset (PMD rule `NoCQL`).
+- **XML parsing**: Create XML parsers with `SecureXmlFactories`, not the JAXP `newInstance()` methods, to prevent XXE
+  (PMD rule `UseSecureXmlFactories`).
 - **Secure Coding**: Follow secure coding practices to protect against common threats like SQL injection and cross-site
   scripting (XSS).
 

@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +31,7 @@ import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.JTS;
@@ -54,9 +56,13 @@ import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.geotools.wfs.WFSCountDefaultUtil;
+import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -95,8 +101,11 @@ public class FeaturesController implements Constants {
   @Value("${tailormap-api.feature.info.maxitems:30}")
   private int maxFeatures;
 
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
+  @Value("${tailormap-api.features.wfs-hits-timeout:3s}")
+  private Duration wfsHitsTimeout;
+
+  @Value("${tailormap-api.features.wfs-slow-hits-ttl:4h}")
+  private Duration wfsSlowHitsTtl;
 
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
@@ -187,7 +196,7 @@ public class FeaturesController implements Constants {
       @NotNull AppLayerSettings appLayerSettings,
       Integer page,
       Integer pageSize,
-      String filterCQL,
+      String filterECQL,
       String sortBy,
       String sortOrder,
       boolean simplifyGeometry,
@@ -202,6 +211,25 @@ public class FeaturesController implements Constants {
     SimpleFeatureSource fs = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
+
+      // A WFS 1.x has no offset: GeoTools only sends MAXFEATURES and skips the start index in memory, so a
+      // next page would silently be empty. Use WFS 2.0.0 for paging.
+      if (page > 1
+          && fs.getDataStore() instanceof WFSDataStore wfsDataStore
+          && !wfsDataStore.getWfsClient().canOffset()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Paging is not supported for this WFS version, only the first page can be retrieved. Use WFS 2.0.0");
+      }
+
+      // A WFS returns at most its CountDefault features. Use that as the page size (returned in the response so
+      // the client uses it too), otherwise the start index of the next page would skip features, and a client
+      // that does not know the total would think a page with fewer features than the page size is the last page.
+      Integer wfsCountDefault = WFSCountDefaultUtil.getCountDefault(fs.getDataStore());
+      if (wfsCountDefault != null && wfsCountDefault < requestPageSize) {
+        requestPageSize = wfsCountDefault;
+        featuresResponse.setPageSize(requestPageSize);
+      }
 
       // Property names for sorting: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
@@ -223,7 +251,20 @@ public class FeaturesController implements Constants {
         if (tmft.getPrimaryKeyAttribute() != null && propNames.contains(tmft.getPrimaryKeyAttribute())) {
           // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
+        } else if (tmft.getFeatureSource().getProtocol() == TMFeatureSource.Protocol.WFS
+            && "2.0.0"
+                .equals(WFSFeatureSourceHelper.getWFSVersion(
+                    tmft.getFeatureSource().getUrl()))) {
+          // A WFS has no known primary key (only detected for JDBC) and the first attribute need not be
+          // unique, so use the natural order of the server. WFS 2.0 (ISO 19142) 7.9.2.5.4.4 requires a server
+          // to keep the order of a query without a sorting clause the same across executions, so it is stable
+          // across pages (MapServer with PostGIS doesn't strictly do this: no ORDER BY with LIMIT/OFFSET).
+          // Sorting on gml:id is not possible (PDOK and GeoServer reject it).
+          // Not for WFS 1.x: GeoTools then sends the NATURAL_ORDER it adds when paging as a SortProperty
+          // without a PropertyName, which GeoServer rejects.
+          sortAttrName = null;
         } else {
+          // A database has no guaranteed order without ORDER BY. For WFS 1.x, sort on the first attribute
           sortAttrName = propNames.getFirst();
         }
 
@@ -254,22 +295,14 @@ public class FeaturesController implements Constants {
       }
       q.setPropertyNames(propNames);
 
-      // count can be -1 if too costly eg. some WFS
+      // count can be -1 if too costly or unknown, eg. some WFS, or a WFS which counts slowly
       int featureCount;
-      if (null != filterCQL) {
-        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
+      if (null != filterECQL) {
+        Filter filter = parseFilter(filterECQL, application, fs);
         q.setFilter(filter);
-        featureCount = fs.getCount(q);
-        // this will execute the query twice, once to get the count and once to get the data
-        if (featureCount == -1 && exactWfsCounts) {
-          featureCount = fs.getFeatures(q).size();
-        }
+        featureCount = WFSHitsCountUtil.getCount(fs, q, wfsHitsTimeout, wfsSlowHitsTtl);
       } else {
-        featureCount = fs.getCount(Query.ALL);
-        // this will execute the query twice, once to get the count and once to get the data
-        if (featureCount == -1 && exactWfsCounts) {
-          featureCount = fs.getFeatures(Query.ALL).size();
-        }
+        featureCount = WFSHitsCountUtil.getCount(fs, Query.ALL, wfsHitsTimeout, wfsSlowHitsTtl);
       }
       featuresResponse.setTotal(featureCount);
 
@@ -278,7 +311,12 @@ public class FeaturesController implements Constants {
         q.setSortBy(ff.sort(sortAttrName, _sortOrder));
       }
       q.setMaxFeatures(requestPageSize);
-      q.setStartIndex((page - 1) * requestPageSize);
+      // Only set a start index for pages after the first. With a start index and no sort order, GeoTools adds
+      // SortBy.NATURAL_ORDER, which a WFS 1.1.0 client sends to the server as a SortProperty without a
+      // PropertyName that GeoServer and MapServer reject. Without a sort order this happens for onlyGeometries.
+      if (page > 1) {
+        q.setStartIndex((page - 1) * requestPageSize);
+      }
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
@@ -292,11 +330,10 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data.", e);
-    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmft, e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -304,6 +341,37 @@ public class FeaturesController implements Constants {
     }
 
     return featuresResponse;
+  }
+
+  /**
+   * Parse an ECQL filter from the request.
+   *
+   * @throws ResponseStatusException with status 400 if the filter is invalid
+   */
+  private static Filter parseFilter(String filterECQL, Application application, SimpleFeatureSource fs) {
+    try {
+      return FilterUtil.parseFilter(filterECQL, application, fs);
+    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Log an error that occurred while reading features and create an exception to report it to the client, instead of
+   * returning an empty response or a server error without a message.
+   */
+  private static ResponseStatusException featuresReadError(TMFeatureType tmFeatureType, Exception e) {
+    logger.error("Error reading features of feature type {}", tmFeatureType.getName(), e);
+    return new ResponseStatusException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Error reading features of feature type \"%s\": %s"
+            .formatted(
+                tmFeatureType.getName(),
+                e.getMessage() != null
+                    ? e.getMessage()
+                    : e.getClass().getName()),
+        e);
   }
 
   @NotNull private FeaturesResponse getFeatureByFID(
@@ -334,8 +402,10 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data", e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmFeatureType, e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -348,7 +418,7 @@ public class FeaturesController implements Constants {
   @NotNull private FeaturesResponse getFeaturesByXY(
       @NotNull TMFeatureType tmFeatureType,
       @NotNull AppLayerSettings appLayerSettings,
-      String filterCQL,
+      String filterECQL,
       @NotNull Double x,
       @NotNull Double y,
       @NotNull Application application,
@@ -393,8 +463,8 @@ public class FeaturesController implements Constants {
           ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 
       Filter finalFilter = spatialFilter;
-      if (null != filterCQL) {
-        Filter filter = FilterUtil.parseFilter(filterCQL, application, fs);
+      if (null != filterECQL) {
+        Filter filter = parseFilter(filterECQL, application, fs);
         finalFilter = ff.and(spatialFilter, filter);
       }
       Query q = new Query(fs.getName().toString());
@@ -412,14 +482,13 @@ public class FeaturesController implements Constants {
           application,
           skipGeometryOutput,
           withAttachments);
-    } catch (IOException e) {
-      logger.error("Could not retrieve attribute data", e);
-    } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter: " + e.getMessage(), e);
+    } catch (ResponseStatusException e) {
+      throw e;
+    } catch (IOException | RuntimeException e) {
+      throw featuresReadError(tmFeatureType, e);
     } finally {
       if (fs != null) {
-        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is
+        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterECQL is
         // invalid the datastore will be left open, so close here to make sure (disposing twice won't hurt)
         fs.getDataStore().dispose();
       }

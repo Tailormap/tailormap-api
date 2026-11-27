@@ -182,7 +182,125 @@ SPDX-License-Identifier: MIT
 //MethodCall[@MethodName='toFilter'] and //Name[pmd-java:typeIs('org.geotools.filter.text.ecql.ECQL')]
 -->
                 <value><![CDATA[
-                //MethodCall[pmd-java:matchesSig('org.geotools.filter.text.ecql.ECQL#toFilter(java.lang.String)')]
+                //MethodCall[pmd-java:matchesSig('org.geotools.filter.text.ecql.ECQL#toFilter(_*)')
+                  or pmd-java:matchesSig('org.geotools.filter.text.ecql.ECQL#toFilterList(_*)')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="NoCQL" language="java" message="Use ECQL instead of CQL (parse filters with FilterUtil.parseFilter)"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>The GeoTools CQL class implements OGC CQL, ECQL is a superset of it and is what the viewer uses.
+            Parse filters with FilterUtil.parseFilter(...). CQLException (thrown by ECQL too) is allowed.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.filter.text.cql2.CQL#_(_*)')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="DisposeDataStore" language="java"
+          message="Dispose the data store in a finally block (featureSource.getDataStore().dispose())"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>A method which opens a GeoTools data store or feature source must dispose the data store in a
+            finally block, unless it returns the data store or feature source for the caller to dispose. Not disposing
+            leaks database connections (JDBC) or HTTP connections (WFS). This only checks that dispose() is called in
+            a finally block, not on which object.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodDeclaration
+                  [not(pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeEach'))]
+                  [not(ClassType[pmd-java:typeIs('org.geotools.api.data.DataAccess') or pmd-java:typeIs('org.geotools.api.data.FeatureSource')])]
+                  [.//MethodCall[@MethodName='openGeoToolsFeatureSource' or @MethodName='createDataStore'
+                    or @MethodName='createNewDataStore' or @MethodName='openDatastore']]
+                  [not(.//FinallyClause//MethodCall[@MethodName='dispose'])]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseAppRestController" language="java"
+          message="Annotate the controller with @AppRestController, otherwise AppRestControllerAdvice does not check access"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>The Application, AppTreeLayerNode, GeoService and GeoServiceLayer model attributes are resolved
+            and checked for access by AppRestControllerAdvice, which only applies to classes annotated with
+            @AppRestController.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //ClassDeclaration[not(pmd-java:hasAnnotation('org.tailormap.api.annotation.AppRestController'))
+                  and not(pmd-java:hasAnnotation('org.springframework.web.bind.annotation.RestControllerAdvice'))]
+                //MethodDeclaration//FormalParameter
+                  [pmd-java:hasAnnotation('org.springframework.web.bind.annotation.ModelAttribute')]
+                  [pmd-java:typeIs('org.tailormap.api.persistence.Application')
+                    or pmd-java:typeIs('org.tailormap.api.persistence.GeoService')
+                    or pmd-java:typeIs('org.tailormap.api.persistence.json.AppTreeLayerNode')
+                    or pmd-java:typeIs('org.tailormap.api.persistence.json.GeoServiceLayer')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseSecureXmlFactories" language="java"
+          message="Use SecureXmlFactories instead of the JAXP newInstance() methods to prevent XXE"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>XML parsers created with the JAXP newInstance() methods load external DTDs and entities, which
+            allows XXE attacks with XML from external sources. Use the hardened factories from SecureXmlFactories, or
+            add hardening there for a new kind of factory.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newNSInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newDefaultNSInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newNSInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newDefaultNSInstance()')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newFactory(_*)')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newDefaultFactory()')
+                  or pmd-java:matchesSig('javax.xml.transform.TransformerFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.transform.TransformerFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.validation.SchemaFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.validation.SchemaFactory#newDefaultInstance()')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseWFSHitsCountUtil" language="java"
+          message="Use WFSHitsCountUtil.getCount instead of FeatureSource.getCount or FeatureCollection.size"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Don't use FeatureSource.getCount(...) or FeatureCollection.size(), use WFSHitsCountUtil.getCount(...)
+            instead. GeoTools returns -1 for a WFS 2.0.0 without asking the server, WFSHitsCountUtil does a
+            resultType=hits request. FeatureCollection.size() reads all features when the count is -1.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.api.data.FeatureSource#getCount(org.geotools.api.data.Query)')
+                  or pmd-java:matchesSig('org.geotools.feature.FeatureCollection#size()')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule name="UseWFSHitsCountUtil" language="java"
+          message="Use WFSHitsCountUtil.getCount instead of FeatureSource.getCount or FeatureCollection.size"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>Don't use FeatureSource.getCount(...) or FeatureCollection.size(), use WFSHitsCountUtil.getCount(...)
+            instead. GeoTools returns -1 for a WFS 2.0.0 without asking the server, WFSHitsCountUtil does a
+            resultType=hits request. FeatureCollection.size() reads all features when the count is -1.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('org.geotools.api.data.FeatureSource#getCount(org.geotools.api.data.Query)')
+                  or pmd-java:matchesSig('org.geotools.feature.FeatureCollection#size()')]
           ]]></value>
             </property>
         </properties>

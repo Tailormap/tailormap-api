@@ -27,6 +27,7 @@ import org.geotools.util.factory.GeoTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +92,7 @@ public class AttachmentsController {
       @ModelAttribute GeoServiceLayer layer,
       @ModelAttribute Application application,
       @PathVariable String featureId,
-      @RequestPart("attachmentMetadata") AttachmentMetadata attachment,
+      @RequestPart("attachmentMetadata") @Valid AttachmentMetadata attachment,
       @RequestPart("attachment") byte[] fileData) {
 
     editUtil.checkEditAuthorisation();
@@ -121,6 +122,13 @@ public class AttachmentsController {
               .formatted(fileData.length, attachmentAttribute.getMaxAttachmentSize()));
     }
 
+    try {
+      MediaType.parseMediaType(attachment.getMimeType());
+    } catch (InvalidMediaTypeException e) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid MIME type \"%s\"".formatted(attachment.getMimeType()));
+    }
+
     if (!validateMimeTypeAccept(
         attachmentAttribute.getMimeType(), attachment.getFileName(), attachment.getMimeType())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type or extension not allowed");
@@ -136,6 +144,21 @@ public class AttachmentsController {
     }
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  /**
+   * Parse a stored MIME type of an attachment. An invalid MIME type should not prevent downloading the attachment.
+   *
+   * @param mimeType the MIME type
+   * @return the media type, or application/octet-stream if it is invalid
+   */
+  private static MediaType parseMediaTypeOrDefault(String mimeType) {
+    try {
+      return MediaType.parseMediaType(mimeType);
+    } catch (InvalidMediaTypeException e) {
+      logger.warn("Invalid MIME type \"{}\" for attachment, using application/octet-stream", mimeType);
+      return MediaType.APPLICATION_OCTET_STREAM;
+    }
   }
 
   /**
@@ -270,7 +293,7 @@ public class AttachmentsController {
               "Content-Disposition",
               "inline; filename=\""
                   + attachmentWithBinary.attachmentMetadata().getFileName() + "\"")
-          .contentType(MediaType.parseMediaType(
+          .contentType(parseMediaTypeOrDefault(
               attachmentWithBinary.attachmentMetadata().getMimeType()))
           .body(attachmentData);
     } catch (SQLException | IOException e) {

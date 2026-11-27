@@ -8,6 +8,7 @@ package org.tailormap.api.service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.temporal.ChronoField;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -34,6 +35,21 @@ public class UploadsService {
 
   public UploadsService(UploadRepository uploadRepository) {
     this.uploadRepository = uploadRepository;
+  }
+
+  /**
+   * Get the value of the If-Modified-Since header of a request.
+   *
+   * @param request the request
+   * @return the date in milliseconds, or -1 if the header is missing or can't be parsed (a client error that should
+   *     not cause a server error)
+   */
+  public static long getIfModifiedSince(HttpServletRequest request) {
+    try {
+      return request.getDateHeader("If-Modified-Since");
+    } catch (IllegalArgumentException e) {
+      return -1;
+    }
   }
 
   /**

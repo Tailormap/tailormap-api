@@ -18,6 +18,7 @@ import org.geotools.util.PreventLocalEntityResolver;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
+import org.tailormap.api.geotools.wfs.SortingWFSDataStoreFactory;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -25,6 +26,28 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TMFeatureTypeInfo;
 
 public class WFSFeatureSourceHelper extends FeatureSourceHelper {
+  /** WFS versions that can be forced with a VERSION parameter in the feature source URL. */
+  private static final Set<String> SUPPORTED_WFS_VERSIONS = Set.of("1.0.0", "1.1.0", "2.0.0");
+
+  /**
+   * Get the WFS version to use for a feature source URL. This is {@link SimpleWFSHelper#DEFAULT_WFS_VERSION}, unless
+   * the URL has a VERSION parameter with a version GeoTools supports, for example to force WFS 1.1.0 for a server
+   * with a broken WFS 2.0.0 implementation.
+   *
+   * @param url the feature source URL
+   * @return the WFS version
+   */
+  public static String getWFSVersion(String url) {
+    LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
+    wfsUrlParams.putAll(
+        UriComponentsBuilder.fromUriString(url).build().getQueryParams().toSingleValueMap());
+    String version = wfsUrlParams.get("VERSION");
+    // Set.of() throws a NullPointerException for contains(null)
+    return version != null && SUPPORTED_WFS_VERSIONS.contains(version)
+        ? version
+        : SimpleWFSHelper.DEFAULT_WFS_VERSION;
+  }
+
   @Override
   public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
     Map<String, Object> params = new HashMap<>();
@@ -34,18 +57,9 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
     }
 
-    LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
-    wfsUrlParams.putAll(UriComponentsBuilder.fromUriString(tmfs.getUrl())
-        .build()
-        .getQueryParams()
-        .toSingleValueMap());
-    String version = wfsUrlParams.get("VERSION");
-    if (!"2.0.0".equals(version)) {
-      version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
-    }
     params.put(
         WFSDataStoreFactory.URL.key,
-        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", version, null)
+        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", getWFSVersion(tmfs.getUrl()), null)
             .toURL());
 
     ServiceAuthentication authentication = tmfs.getAuthentication();
@@ -56,7 +70,8 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());
       params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());
     }
-    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key);
+    // Use a factory with a WFS client that lets a WFS 2.0.0 server sort, see SortingWFSClient
+    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key, new SortingWFSDataStoreFactory());
   }
 
   @Override

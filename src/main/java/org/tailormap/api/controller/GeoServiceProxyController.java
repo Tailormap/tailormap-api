@@ -34,6 +34,7 @@ import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHea
 
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -41,7 +42,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +68,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
@@ -96,6 +100,7 @@ public class GeoServiceProxyController {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final AuthorisationService authorisationService;
   private final HttpClient httpClient;
+  private final Duration requestTimeout;
 
   public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
@@ -131,10 +136,16 @@ public class GeoServiceProxyController {
   /** Parameters from a request to the legend proxy which are not copied to the legend URL. */
   private static final Set<String> LEGEND_IGNORED_PARAMS = Set.of("SERVICE", "REQUEST");
 
-  public GeoServiceProxyController(AuthorisationService authorisationService) {
+  public GeoServiceProxyController(
+      AuthorisationService authorisationService,
+      @Value("${tailormap-api.proxy.connect-timeout:10s}") Duration connectTimeout,
+      @Value("${tailormap-api.proxy.request-timeout:60s}") Duration requestTimeout) {
     this.authorisationService = authorisationService;
+    this.requestTimeout = requestTimeout;
 
-    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
+    final HttpClient.Builder builder = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.NORMAL)
+        .connectTimeout(connectTimeout);
     this.httpClient = builder.build();
   }
 
@@ -149,7 +160,13 @@ public class GeoServiceProxyController {
 
     checkRequestValidity(application, service, layer, GeoServiceProtocol.TILES3D, request);
 
-    return doProxy(build3DTilesUrl(service, request), service, request);
+    final URI uri;
+    try {
+      uri = build3DTilesUrl(service, request);
+    } catch (IllegalArgumentException e) {
+      throw invalidServiceUrl(service, layer, e);
+    }
+    return doProxy(uri, service, request);
   }
 
   @RequestMapping(
@@ -166,12 +183,26 @@ public class GeoServiceProxyController {
     checkRequestValidity(application, service, layer, protocol, request);
 
     return switch (protocol) {
-      case WMS, WMTS -> doProxy(buildWMSUrl(service, request), service, request);
+      case WMS, WMTS -> {
+        final URI uri;
+        try {
+          uri = buildWMSUrl(service, request);
+        } catch (IllegalArgumentException e) {
+          throw invalidServiceUrl(service, layer, e);
+        }
+        yield doProxy(uri, service, request);
+      }
       case LEGEND -> {
-        URI legendURI = buildLegendURI(service, layer, request);
+        final URI legendURI;
+        try {
+          legendURI = buildLegendURI(service, layer, request);
+        } catch (IllegalArgumentException e) {
+          throw invalidServiceUrl(service, layer, e);
+        }
         if (legendURI == null) {
-          logger.warn("No legend URL found for layer {}", layer.getName());
-          yield null;
+          logger.debug("No legend URL found for layer {} of service {}", layer.getName(), service.getId());
+          throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "No legend URL for layer \"%s\"".formatted(layer.getName()));
         }
         yield doProxy(legendURI, service, request);
       }
@@ -347,6 +378,25 @@ public class GeoServiceProxyController {
     return values.isEmpty() ? null : values.getFirst();
   }
 
+  /**
+   * Log and create an exception for a (legend) URL from the service configuration or capabilities that cannot be
+   * parsed or built, for instance because it contains unencoded characters. Without this a bare server error without
+   * a message would be returned.
+   */
+  private static ResponseStatusException invalidServiceUrl(
+      GeoService service, GeoServiceLayer layer, IllegalArgumentException e) {
+    logger.error(
+        "Invalid URL for proxying layer \"{}\" of service {}: {}",
+        layer.getName(),
+        service.getId(),
+        e.getMessage());
+    return new ResponseStatusException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "Invalid URL for proxying layer \"%s\" of service %s: %s"
+            .formatted(layer.getName(), service.getId(), e.getMessage()),
+        e);
+  }
+
   private @Nullable URI buildLegendURI(GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
     URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(service, layer);
     if (legendURI == null) {
@@ -379,8 +429,9 @@ public class GeoServiceProxyController {
           return;
         }
         // Replace the parameter case-insensitively, so it is not sent twice with different values
-        legendParams.keySet().removeIf(key::equalsIgnoreCase);
-        legendParams.add(key, UriUtils.encode(values[values.length - 1], StandardCharsets.UTF_8));
+        String encodedKey = UriUtils.encode(key, StandardCharsets.UTF_8);
+        legendParams.keySet().removeIf(encodedKey::equalsIgnoreCase);
+        legendParams.add(encodedKey, UriUtils.encode(values[values.length - 1], StandardCharsets.UTF_8));
       });
     }
     uriComponentsBuilder.replaceQueryParams(legendParams);
@@ -393,7 +444,7 @@ public class GeoServiceProxyController {
     // body
     final MultiValueMap<String, String> requestParams = request.getParameterMap().entrySet().stream()
         .map(entry -> new AbstractMap.SimpleEntry<>(
-            entry.getKey(),
+            UriUtils.encode(entry.getKey(), StandardCharsets.UTF_8),
             Arrays.stream(entry.getValue())
                 .map(value -> UriUtils.encode(value, StandardCharsets.UTF_8))
                 .collect(Collectors.toList())))
@@ -459,25 +510,40 @@ public class GeoServiceProxyController {
   }
 
   private ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().timeout(requestTimeout);
 
-    configureProxyRequestBuilderForUri(requestBuilder, uri, request);
+    try {
+      configureProxyRequestBuilderForUri(requestBuilder, uri, request);
+    } catch (IllegalArgumentException e) {
+      // For instance an unsupported URI scheme in the service URL
+      logger.error("Invalid URL for proxying service {}: {}", service.getId(), e.getMessage());
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "Invalid URL for proxying service %s: %s".formatted(service.getId(), e.getMessage()),
+          e);
+    }
 
     addForwardedForRequestHeaders(requestBuilder, request);
 
-    passthroughRequestHeaders(
-        requestBuilder,
-        request,
-        Set.of(
-            ACCEPT,
-            IF_MODIFIED_SINCE,
-            IF_UNMODIFIED_SINCE,
-            IF_MATCH,
-            IF_NONE_MATCH,
-            IF_RANGE,
-            RANGE,
-            REFERER,
-            USER_AGENT));
+    try {
+      passthroughRequestHeaders(
+          requestBuilder,
+          request,
+          Set.of(
+              ACCEPT,
+              IF_MODIFIED_SINCE,
+              IF_UNMODIFIED_SINCE,
+              IF_MATCH,
+              IF_NONE_MATCH,
+              IF_RANGE,
+              RANGE,
+              REFERER,
+              USER_AGENT));
+    } catch (IllegalArgumentException e) {
+      // HttpRequest.Builder.header() rejects header values with illegal characters
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid request header for proxying: " + e.getMessage(), e);
+    }
 
     if (service.getAuthentication() != null
         && service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
@@ -487,33 +553,121 @@ public class GeoServiceProxyController {
           service.getAuthentication().getPassword());
     }
 
+    final HttpResponse<InputStream> response;
     try {
       // TODO: close JPA connection before proxying
-      HttpResponse<InputStream> response =
-          this.httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+      response = this.httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+    } catch (HttpTimeoutException e) {
+      // Also handles HttpConnectTimeoutException
+      throw upstreamError(HttpStatus.GATEWAY_TIMEOUT, "Timeout proxying request to", uri, service, e);
+    } catch (IOException | RuntimeException e) {
+      throw upstreamError(HttpStatus.BAD_GATEWAY, "Error proxying request to", uri, service, e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw upstreamError(
+          HttpStatus.SERVICE_UNAVAILABLE, "Interrupted while proxying request to", uri, service, e);
+    }
 
-      // If the server does not accept our credentials, it might 'hide' the layer or even send a 401
-      // Unauthorized status. We do not send the WWW-Authenticate header back, so the client will
-      // get the error but not an authorization popup.
-      // It would be nice if proxy (auth) errors were logged and available in the admin interface.
-      // Currently, a layer will just stop working if the geo service credentials are changed
-      // without updating them in the geo service registry.
-      InputStreamResource body = new InputStreamResource(response.body());
-      HttpHeaders headers = passthroughResponseHeaders(
-          response.headers(),
-          Set.of(
-              CONTENT_TYPE,
-              CONTENT_LENGTH,
-              CONTENT_RANGE,
-              CONTENT_DISPOSITION,
-              CACHE_CONTROL,
-              EXPIRES,
-              LAST_MODIFIED,
-              ETAG,
-              PRAGMA));
-      return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
+    if (response.statusCode() == HttpStatus.UNAUTHORIZED.value()) {
+      // The proxied service does not accept the configured credentials (or none are configured). Do not pass the
+      // 401
+      // on to the client: that would look like the user is not logged in to Tailormap, while the user can do
+      // nothing
+      // about it. A server might also 'hide' the layer instead of sending a 401, which can't be detected here.
+      // It would be nice if these errors were available in the admin interface.
+      closeQuietly(response.body());
+      boolean hasCredentials = service.getAuthentication() != null
+          && service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD;
+      String reason = hasCredentials
+          ? "Proxied service %s did not accept the configured credentials"
+          : "Proxied service %s requires authentication but no credentials are configured";
+      logger.warn("{} (HTTP 401 from {})", reason.formatted(service.getId()), withoutUserInfoAndQuery(uri));
+      throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, reason.formatted(service.getId()));
+    }
+
+    if (response.statusCode() == HttpStatus.OK.value()
+        && GET.name().equals(request.getMethod())
+        && isNotModified(request, response.headers())) {
+      // Spring would turn the 200 response into a 304 Not Modified response itself when the passed through ETag
+      // or
+      // Last-Modified header matches the conditional request headers (when the proxied service ignores them), but
+      // without closing the response body. That would keep the connection to the proxied service open, so handle
+      // this here.
+      closeQuietly(response.body());
+      return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+          .headers(passthroughResponseHeaders(
+              response.headers(), Set.of(CACHE_CONTROL, EXPIRES, LAST_MODIFIED, ETAG)))
+          .build();
+    }
+
+    InputStreamResource body = new InputStreamResource(response.body());
+    HttpHeaders headers = passthroughResponseHeaders(
+        response.headers(),
+        Set.of(
+            CONTENT_TYPE,
+            CONTENT_LENGTH,
+            CONTENT_RANGE,
+            CONTENT_DISPOSITION,
+            CACHE_CONTROL,
+            EXPIRES,
+            LAST_MODIFIED,
+            ETAG,
+            PRAGMA));
+    return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
+  }
+
+  private static boolean isNotModified(HttpServletRequest request, java.net.http.HttpHeaders upstreamHeaders) {
+    HttpHeaders headers = passthroughResponseHeaders(upstreamHeaders, Set.of(ETAG, LAST_MODIFIED));
+    // getLastModified() returns -1 when the header is missing or invalid
+    long lastModified = headers.getLastModified();
+    if (headers.getETag() == null && lastModified < 0) {
+      return false;
+    }
+    return new ServletWebRequest(request).checkNotModified(headers.getETag(), lastModified);
+  }
+
+  private static void closeQuietly(InputStream in) {
+    try {
+      in.close();
+    } catch (IOException e) {
+      logger.debug("Error closing proxied response body", e);
+    }
+  }
+
+  /**
+   * Log a failed request to the proxied service and create an exception to report it to the client. Only the scheme,
+   * host, port and path of the URI are logged and reported, because the user info and query may contain credentials.
+   * The request may also have a Basic authentication header, which is never logged.
+   */
+  private static ResponseStatusException upstreamError(
+      HttpStatus status, String what, URI uri, GeoService service, Exception e) {
+    String safeUri = withoutUserInfoAndQuery(uri);
+    String reason = describeException(e);
+    logger.warn("{} service {} at {}: {}", what, service.getId(), safeUri, reason);
+    return new ResponseStatusException(status, "%s service at %s: %s".formatted(what, safeUri, reason), e);
+  }
+
+  /**
+   * Describe an exception from the HTTP client. Some exceptions such as {@link java.net.ConnectException} have no
+   * message but have a cause with a message, such as "Connection refused".
+   */
+  private static String describeException(Exception e) {
+    if (e.getMessage() != null && !e.getMessage().isBlank()) {
+      return e.getMessage();
+    }
+    for (Throwable t = e.getCause(); t != null; t = t.getCause()) {
+      if (t.getMessage() != null && !t.getMessage().isBlank()) {
+        return "%s: %s".formatted(e.getClass().getSimpleName(), t.getMessage());
+      }
+    }
+    return e.getClass().getSimpleName();
+  }
+
+  static String withoutUserInfoAndQuery(URI uri) {
+    try {
+      return new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), uri.getPath(), null, null).toString();
+    } catch (URISyntaxException e) {
+      return "(invalid URI)";
     }
   }
 }

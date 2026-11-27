@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -98,6 +99,22 @@ class UniqueValuesControllerIntegrationTest {
     assertTrue(uniqueValues.containsAll(Set.of(expected)), "not all values are present");
   }
 
+  /** An error reading the values should be reported, not result in an empty list of values. */
+  @Test
+  void error_getting_unique_values_should_be_reported() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelPostgisUrl;
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "does_not_exist IN ('1000')"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    containsString(
+                        "Error getting unique values for attribute \"bronhouder\" of feature type \"begroeidterreindeel\"")));
+  }
+
   @Test
   void get_hidden_attribute() throws Exception {
     final String url = apiBasePath
@@ -110,8 +127,7 @@ class UniqueValuesControllerIntegrationTest {
 
   @Test
   void layer_without_featuretype() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
+    final String url = apiBasePath + "/app/default/layer/lyr:openbasiskaart:osm/unique/naam";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -135,7 +151,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
@@ -162,7 +178,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 

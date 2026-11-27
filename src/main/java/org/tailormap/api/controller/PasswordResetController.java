@@ -98,7 +98,8 @@ public class PasswordResetController {
   @Counted(value = "tailormap_api_password_reset_request", description = "number of password reset requests by email")
   public ResponseEntity<Serializable> requestPasswordReset(
       @RequestParam @Email String email, HttpServletRequest request) throws ConstraintViolationException {
-    if (passwordResetEnabled && !passwordResetDisabledFor.contains(email)) {
+    // The usernames for which password reset is disabled are checked after looking up the user by email
+    if (passwordResetEnabled) {
       this.sendPasswordResetEmail(email, request);
     }
 
@@ -134,7 +135,8 @@ public class PasswordResetController {
     // check if token is valid (not expired, correct type and username matches)
     if (temporaryToken.getExpirationTime().isAfter(Instant.now().atZone(ZoneId.of("UTC")))
         && temporaryToken.getTokenType() == TemporaryToken.TokenType.PASSWORD_RESET
-        && temporaryToken.getUsername().equals(username)) {
+        && temporaryToken.getUsername().equals(username)
+        && !passwordResetDisabledFor.contains(username)) {
       // only reset password and return an OK response if user exists, is enabled and account has not expired
       // even here we don't want to reveal if the user exists or not
       final User user = userRepository.findById(username).orElse(null);
