@@ -57,6 +57,7 @@ import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.geotools.wfs.WFSCountDefaultUtil;
+import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureSource;
@@ -97,9 +98,6 @@ public class FeaturesController implements Constants {
 
   @Value("${tailormap-api.feature.info.maxitems:30}")
   private int maxFeatures;
-
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
 
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
@@ -279,22 +277,14 @@ public class FeaturesController implements Constants {
       }
       q.setPropertyNames(propNames);
 
-      // count can be -1 if too costly eg. some WFS
+      // count can be -1 if too costly or unknown, eg. some WFS
       int featureCount;
       if (null != filterECQL) {
         Filter filter = parseFilter(filterECQL, application, fs);
         q.setFilter(filter);
-        featureCount = fs.getCount(q);
-        // this will execute the query twice, once to get the count and once to get the data
-        if (featureCount == -1 && exactWfsCounts) {
-          featureCount = fs.getFeatures(q).size();
-        }
+        featureCount = WFSHitsCountUtil.getCount(fs, q);
       } else {
-        featureCount = fs.getCount(Query.ALL);
-        // this will execute the query twice, once to get the count and once to get the data
-        if (featureCount == -1 && exactWfsCounts) {
-          featureCount = fs.getFeatures(Query.ALL).size();
-        }
+        featureCount = WFSHitsCountUtil.getCount(fs, Query.ALL);
       }
       featuresResponse.setTotal(featureCount);
 

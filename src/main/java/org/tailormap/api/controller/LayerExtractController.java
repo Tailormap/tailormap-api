@@ -51,6 +51,7 @@ import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.data.excel.ExcelDataStore;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -285,7 +286,7 @@ public class LayerExtractController {
       if (filter != null) {
         q.setFilter(filter);
       }
-      final int featCount = inputFeatureSource.getCount(q);
+      final int featCount = WFSHitsCountUtil.getCount(inputFeatureSource, q);
       if (featCount >= ExcelDataStore.getMaxRows()) {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,

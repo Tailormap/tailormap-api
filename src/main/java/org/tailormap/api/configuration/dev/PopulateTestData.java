@@ -868,8 +868,8 @@ public class PopulateTestData {
                       .featureSourceId(bestuurlijkeGebiedenWfs.getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS)"));
-      // For testing paging with an unknown total: more features than fit on one page, and the WFS 2.0.0
-      // server does not return numberMatched
+      // For testing paging: more features than fit on one page, and the WFS 2.0.0 server (MapServer) does not
+      // return numberMatched in a page, so the total comes from a separate hits request
       geoService
           .getSettings()
           .getLayerSettings()

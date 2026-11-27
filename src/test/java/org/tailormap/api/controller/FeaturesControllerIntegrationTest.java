@@ -85,10 +85,6 @@ class FeaturesControllerIntegrationTest {
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
   private static final String gemeentegebiedUrlWfs11 = layerGemeentegebiedWfs11 + controllerPath;
 
-  /**
-   * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
-   * {@link #exactWfsCounts}.
-   */
   private static final int provinciesWFSTotalCount = 12;
 
   private static final int begroeidterreindeelTotalCount = 3662;
@@ -101,9 +97,6 @@ class FeaturesControllerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
-
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
 
   @Value("${tailormap-api.default-page-size}")
   private int pageSize;
@@ -401,7 +394,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -433,7 +426,7 @@ class FeaturesControllerIntegrationTest {
                 .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+            .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
             .andExpect(jsonPath("$.page").value(2))
             .andExpect(jsonPath("$.pageSize").value(pageSize))
             .andExpect(jsonPath("$.features").isArray())
@@ -478,7 +471,7 @@ class FeaturesControllerIntegrationTest {
             .param("page", "3"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(3))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -572,7 +565,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortBy", "naam"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -599,7 +592,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "invalid"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -634,7 +627,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "asc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -661,7 +654,7 @@ class FeaturesControllerIntegrationTest {
             .param("sortOrder", "desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.pageSize").value(pageSize))
         .andExpect(jsonPath("$.features").isArray())
@@ -1339,10 +1332,6 @@ class FeaturesControllerIntegrationTest {
   @DefaultTimeZone("Europe/Amsterdam")
   void filter_test(String appLayerUrl, String filterECQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
-    if (!exactWfsCounts && appLayerUrl.equals(provinciesWfs)) {
-      // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
-      totalCount = -1;
-    }
 
     appLayerUrl = apiBasePath + appLayerUrl;
 
