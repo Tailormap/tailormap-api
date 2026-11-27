@@ -5,7 +5,10 @@ registries:
     url: https://repo.b3p.nl/nexus/repository/public/
 updates:
   - package-ecosystem: maven
-    directory: "/"
+    directories:
+      - "/"
+      # Maven version installed in CI, see .github/actions/setup-maven/pom.xml
+      - "/.github/actions/setup-maven"
     registries: "*"
     schedule:
       interval: weekly
@@ -32,6 +35,10 @@ updates:
       - dependency-name: tools.jackson.core:jackson-core
         versions:
           - '>= 3.2'
+      # the maven-enforcer-plugin in the root pom requires Maven [3.9.11, 4)
+      - dependency-name: org.apache.maven:apache-maven
+        versions:
+          - '>= 4'
 
   - package-ecosystem: github-actions
     directory: "/"
