@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -41,6 +42,8 @@ import org.tailormap.api.repository.CatalogRepository;
 
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
+// Counts the tables in the PostGIS public schema, in which other tests create and drop <featuretype>_attachments tables
+@ResourceLock("feature-type-attachment-tables")
 class FeatureSourceAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

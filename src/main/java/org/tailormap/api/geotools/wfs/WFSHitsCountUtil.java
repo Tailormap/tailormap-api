@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,6 +31,7 @@ import org.geotools.http.HTTPResponse;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tailormap.api.util.SecureXmlFactories;
 
 /**
  * Counts features with a WFS {@code resultType=hits} GetFeature request when GeoTools does not.
@@ -146,10 +146,7 @@ public final class WFSHitsCountUtil {
    * @throws XMLStreamException if the response is not XML
    */
   public static int parseNumberMatched(InputStream in) throws XMLStreamException {
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-    XMLStreamReader reader = factory.createXMLStreamReader(in);
+    XMLStreamReader reader = SecureXmlFactories.newXMLInputFactory().createXMLStreamReader(in);
     try {
       while (reader.hasNext()) {
         if (reader.next() == XMLStreamConstants.START_ELEMENT) {
