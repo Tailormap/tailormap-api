@@ -293,7 +293,12 @@ public class FeaturesController implements Constants {
         q.setSortBy(ff.sort(sortAttrName, _sortOrder));
       }
       q.setMaxFeatures(requestPageSize);
-      q.setStartIndex((page - 1) * requestPageSize);
+      // Only set a start index for pages after the first. With a start index and no sort order, GeoTools adds
+      // SortBy.NATURAL_ORDER, which a WFS 1.1.0 client sends to the server as a SortProperty without a
+      // PropertyName that GeoServer and MapServer reject. Without a sort order this happens for onlyGeometries.
+      if (page > 1) {
+        q.setStartIndex((page - 1) * requestPageSize);
+      }
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
