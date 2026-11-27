@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -321,14 +320,12 @@ class PasswordResetControllerIntegrationTest {
     // ignore first warmup request
     responseTimes.removeFirst();
 
-    // Verify response times are reasonably consistent
+    // Verify response times are reasonably consistent. Don't assert a minimum response time: the email is sent
+    // asynchronously, so on a fast machine every request can complete in less than 1 ms.
     final long minTime =
         responseTimes.stream().mapToLong(Long::longValue).min().orElse(0);
-    assertThat("Minimum response time should be at least 1ms", minTime, greaterThanOrEqualTo(0L));
-
     final long maxTime =
         responseTimes.stream().mapToLong(Long::longValue).max().orElse(0);
-    assertThat("Maximum response time should be at least 1ms", maxTime, greaterThanOrEqualTo(1L));
     final long timeDifference = maxTime - minTime;
 
     assertThat(
