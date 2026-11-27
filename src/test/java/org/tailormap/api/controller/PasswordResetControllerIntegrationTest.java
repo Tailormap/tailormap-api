@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -253,6 +252,54 @@ class PasswordResetControllerIntegrationTest {
             0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
   }
 
+  /**
+   * Password reset is disabled for the username "user" in the test properties
+   * (tailormap-api.password-reset.disabled-for).
+   */
+  @Test
+  void request_reset_password_for_user_with_password_reset_disabled() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("email=user@example.com")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isAccepted())
+        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+    Awaitility.await()
+        .pollDelay(5, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0,
+            temporaryTokenRepository.countByUsername("user"),
+            "There should be no tokens for this request"));
+    Awaitility.await()
+        .pollDelay(3, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
+  }
+
+  @Test
+  void confirm_password_reset_for_user_with_password_reset_disabled() throws Exception {
+    // A token that was created before password reset was disabled for the user
+    final TemporaryToken token =
+        temporaryTokenRepository.save(new TemporaryToken(TemporaryToken.TokenType.PASSWORD_RESET, "user", 5));
+    final String confirmUrl = apiBasePath + "/user/reset-password";
+    try {
+      mockMvc.perform(post(confirmUrl)
+              .param("token", token.getToken().toString())
+              .param("newPassword", "8fd106f1-3408-43bd-a961-12b20079bb17")
+              .param("username", "user")
+              .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+              .accept(MediaType.APPLICATION_JSON)
+              .with(setServletPath(confirmUrl))
+              .with(csrf()))
+          .andExpect(status().isBadRequest());
+    } finally {
+      temporaryTokenRepository.delete(token);
+    }
+  }
+
   @Test
   void request_reset_password_disabled_user() throws Exception {
     final String url = apiBasePath + "/password-reset";
@@ -321,14 +368,12 @@ class PasswordResetControllerIntegrationTest {
     // ignore first warmup request
     responseTimes.removeFirst();
 
-    // Verify response times are reasonably consistent
+    // Verify response times are reasonably consistent. Don't assert a minimum response time: the email is sent
+    // asynchronously, so on a fast machine every request can complete in less than 1 ms.
     final long minTime =
         responseTimes.stream().mapToLong(Long::longValue).min().orElse(0);
-    assertThat("Minimum response time should be at least 1ms", minTime, greaterThanOrEqualTo(0L));
-
     final long maxTime =
         responseTimes.stream().mapToLong(Long::longValue).max().orElse(0);
-    assertThat("Maximum response time should be at least 1ms", maxTime, greaterThanOrEqualTo(1L));
     final long timeDifference = maxTime - minTime;
 
     assertThat(
