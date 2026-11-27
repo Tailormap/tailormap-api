@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import static org.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static org.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
 import io.micrometer.core.annotation.Counted;
@@ -53,6 +54,7 @@ import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
@@ -193,6 +195,16 @@ public class LayerExtractController {
       attributes = new HashSet<>(nonHiddenAttributes);
     }
 
+    // Only sort on a non-hidden, non-geometry attribute, like the FeaturesController
+    if (StringUtils.isNotBlank(sortBy)
+        && getConfiguredAttributes(sourceFT, appLayerSettings).values().stream()
+            .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)
+            .filter(a -> !isGeometry(a.getType()))
+            .noneMatch(a -> a.getName().equals(sortBy))) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Requested sortBy attribute is not available on the feature type");
+    }
+
     // Empty attributes means we won't specify propNames in the GetFeature request. However, if we do select only
     // some property names, we need the geometry attribute which is not in the 'attributes' request param so spatial
     // export formats don't have the geometry missing.
@@ -201,12 +213,12 @@ public class LayerExtractController {
     }
 
     // check if filter has valid syntax (it could still be invalid wrt feature type)
-    Filter parsedCQL = null;
+    Filter parsedECQL = null;
     SimpleFeatureSource simpleFeatureSource = null;
     try {
       if (!StringUtils.isBlank(filter)) {
         simpleFeatureSource = featureSourceFactoryHelper.openGeoToolsFeatureSource(sourceFT);
-        parsedCQL = FilterUtil.parseFilter(filter, application, simpleFeatureSource);
+        parsedECQL = FilterUtil.parseFilter(filter, application, simpleFeatureSource);
       }
     } catch (CQLException | FactoryException | UnsupportedOperationException e) {
       throw new ResponseStatusException(
@@ -224,7 +236,7 @@ public class LayerExtractController {
       }
     }
     if (ExtractOutputFormat.XLSX.equals(outputFormat)) {
-      validateExcelLimits(sourceFT, attributes, parsedCQL);
+      validateExcelLimits(sourceFT, attributes, parsedECQL);
     }
 
     SortOrder sortingOrder = SortOrder.ASCENDING;
@@ -238,7 +250,7 @@ public class LayerExtractController {
 
     //noinspection JvmTaintAnalysis Not a Path Traversal Sink because the clientId is validated
     this.createLayerExtractService.createLayerExtract(
-        clientId, sourceFT, attributes, parsedCQL, sortBy, sortingOrder, outputFormat, outputFileName);
+        clientId, sourceFT, attributes, parsedECQL, sortBy, sortingOrder, outputFormat, outputFileName);
 
     //noinspection JvmTaintAnalysis Not an XSS sink because the response is a json message
     return ResponseEntity.accepted()
