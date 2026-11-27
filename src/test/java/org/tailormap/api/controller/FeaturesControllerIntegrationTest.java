@@ -1519,4 +1519,25 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features.length()").value(pageSize))
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty());
   }
+
+  /**
+   * A WFS 1.x has no offset, GeoTools only sends MAXFEATURES, so a next page would be empty. Return an error instead
+   * (HTM-2330).
+   */
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_not_return_next_page_with_wfs_1_1_0() throws Exception {
+    final String url = apiBasePath + gemeentegebiedUrlWfs11;
+    mockMvc.perform(get(url).with(setServletPath(url)).param("page", "1").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features.length()").value(pageSize));
+    mockMvc.perform(get(url).with(setServletPath(url)).param("page", "2").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Paging is not supported for this WFS version, only the first page can be retrieved. Use WFS 2.0.0"));
+  }
 }
