@@ -22,7 +22,6 @@ import org.geotools.feature.visitor.MaxVisitor;
 import org.geotools.feature.visitor.MinVisitor;
 import org.geotools.feature.visitor.SumVisitor;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -43,14 +42,14 @@ public class FeatureSourceStatistics {
   }
 
   /**
-   * Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter. The
+   * Determine statistics for a given attribute of a feature source, optionally filtered by an ECQL filter. The
    * statistics include min, max, average, sum (for numeric attributes), and count. The method also supports progress
    * reporting via a callback. Don't forget to dispose of the datastore, using e.g.
    * {@code featureSource.getDataStore().dispose();}
    *
    * @param featureSource the feature source to calculate statistics for
    * @param attributeName the name of the attribute to calculate statistics for
-   * @param filterCQL an optional CQL filter to apply to the feature source
+   * @param filterECQL an optional ECQL filter to apply to the feature source
    * @param progressInterval the interval at which to report progress, must be greater than 0
    * @param progressCallback an optional callback to report progress
    * @return a map containing the calculated statistics, the map may be empty
@@ -60,7 +59,7 @@ public class FeatureSourceStatistics {
       @Nullable Application application,
       @NonNull SimpleFeatureSource featureSource,
       @NonNull String attributeName,
-      @Nullable String filterCQL,
+      @Nullable String filterECQL,
       int progressInterval,
       @Nullable IntConsumer progressCallback) {
 
@@ -86,18 +85,19 @@ public class FeatureSourceStatistics {
     query.setHandle("calculateAttributeStatistics");
     query.setPropertyNames(attributeName);
 
-    if (filterCQL != null && !filterCQL.isEmpty()) {
+    if (filterECQL != null && !filterECQL.isEmpty()) {
       try {
         Filter parsedFilter;
         if (application == null) {
-          parsedFilter = ECQL.toFilter(filterCQL); // NOPMD - admin usage does not have application context
+          // Admin usage does not have application context
+          parsedFilter = FilterUtil.parseFilter(filterECQL);
         } else {
-          parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
+          parsedFilter = FilterUtil.parseFilter(filterECQL, application, featureSource);
         }
         query.setFilter(parsedFilter);
         featureSourceStatistics.filterApplied(true);
       } catch (CQLException | FactoryException | UnsupportedOperationException e) {
-        logger.error("Invalid filter cql: {} ", filterCQL);
+        logger.error("Invalid ECQL filter: {} ", filterECQL);
         throw new IllegalArgumentException("Could not parse requested filter", e);
       }
     }

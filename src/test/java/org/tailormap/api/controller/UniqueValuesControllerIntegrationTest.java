@@ -110,8 +110,7 @@ class UniqueValuesControllerIntegrationTest {
 
   @Test
   void layer_without_featuretype() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
+    final String url = apiBasePath + "/app/default/layer/lyr:openbasiskaart:osm/unique/naam";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -135,7 +134,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
@@ -162,7 +161,7 @@ class UniqueValuesControllerIntegrationTest {
     url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
-      // uppercase oracle cql filter
+      // uppercase oracle ECQL filter
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 

@@ -114,9 +114,8 @@ class LayerDescriptionControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void wms_secured_app_granted_but_no_feature_type() throws Exception {
-    final String path =
-        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/describe";
+  void secured_app_granted_but_no_feature_type() throws Exception {
+    final String path = apiBasePath + "/app/secured/layer/lyr:openbasiskaart-proxied:osm/describe";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value("Layer does not have feature type"));

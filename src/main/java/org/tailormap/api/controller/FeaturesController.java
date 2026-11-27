@@ -187,7 +187,7 @@ public class FeaturesController implements Constants {
       @NotNull AppLayerSettings appLayerSettings,
       Integer page,
       Integer pageSize,
-      String filterCQL,
+      String filterECQL,
       String sortBy,
       String sortOrder,
       boolean simplifyGeometry,
@@ -256,8 +256,8 @@ public class FeaturesController implements Constants {
 
       // count can be -1 if too costly eg. some WFS
       int featureCount;
-      if (null != filterCQL) {
-        Filter filter = parseFilter(filterCQL, application, fs);
+      if (null != filterECQL) {
+        Filter filter = FilterUtil.parseFilter(filterECQL, application, fs);
         q.setFilter(filter);
         featureCount = fs.getCount(q);
         // this will execute the query twice, once to get the count and once to get the data
@@ -278,7 +278,12 @@ public class FeaturesController implements Constants {
         q.setSortBy(ff.sort(sortAttrName, _sortOrder));
       }
       q.setMaxFeatures(requestPageSize);
-      q.setStartIndex((page - 1) * requestPageSize);
+      // Only set a start index for pages after the first. With a start index and no sort order, GeoTools adds
+      // SortBy.NATURAL_ORDER, which a WFS 1.1.0 client sends to the server as a SortProperty without a
+      // PropertyName that GeoServer and MapServer reject. Without a sort order this happens for onlyGeometries.
+      if (page > 1) {
+        q.setStartIndex((page - 1) * requestPageSize);
+      }
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
@@ -380,7 +385,7 @@ public class FeaturesController implements Constants {
   @NotNull private FeaturesResponse getFeaturesByXY(
       @NotNull TMFeatureType tmFeatureType,
       @NotNull AppLayerSettings appLayerSettings,
-      String filterCQL,
+      String filterECQL,
       @NotNull Double x,
       @NotNull Double y,
       @NotNull Application application,
@@ -425,8 +430,8 @@ public class FeaturesController implements Constants {
           ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 
       Filter finalFilter = spatialFilter;
-      if (null != filterCQL) {
-        Filter filter = parseFilter(filterCQL, application, fs);
+      if (null != filterECQL) {
+        Filter filter = FilterUtil.parseFilter(filterECQL, application, fs);
         finalFilter = ff.and(spatialFilter, filter);
       }
       Query q = new Query(fs.getName().toString());
@@ -450,7 +455,7 @@ public class FeaturesController implements Constants {
       throw featuresReadError(tmFeatureType, e);
     } finally {
       if (fs != null) {
-        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterCQL is
+        // Normally executeQueryOnFeatureSourceAndClose() will close the datastore, but when filterECQL is
         // invalid the datastore will be left open, so close here to make sure (disposing twice won't hurt)
         fs.getDataStore().dispose();
       }

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +51,8 @@ import org.tailormap.api.scheduling.TaskType;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
 @Order(SECOND_INTEGRATION_TEST_ORDER)
+// Counts the scheduled tasks, so must not run while other tests create (one-time) index tasks
+@ResourceLock("scheduler-index-tasks")
 class TaskAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

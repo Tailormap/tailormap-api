@@ -74,7 +74,7 @@ public class LayerBoundsController {
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
       @ModelAttribute Application application,
-      @RequestParam(required = false, name = "filter") String filterCQL) {
+      @RequestParam(required = false, name = "filter") String filterECQL) {
 
     if (layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
@@ -91,9 +91,9 @@ public class LayerBoundsController {
       Query query = new Query(tmft.getName());
       query.setHandle("calculateLayerBounds");
 
-      if (filterCQL != null && !filterCQL.isEmpty()) {
+      if (filterECQL != null && !filterECQL.isEmpty()) {
         try {
-          Filter parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
+          Filter parsedFilter = FilterUtil.parseFilter(filterECQL, application, featureSource);
           query.setFilter(parsedFilter);
         } catch (CQLException | FactoryException | UnsupportedOperationException e) {
           throw new ResponseStatusException(
@@ -101,7 +101,7 @@ public class LayerBoundsController {
         }
       }
 
-      if ((filterCQL == null || filterCQL.isBlank())
+      if ((filterECQL == null || filterECQL.isBlank())
           && featureSource.getDataStore() instanceof JDBCDataStore jdbcDataStore) {
         // turn off getting optimised/inaccurate bounds
         logger.debug(
@@ -131,7 +131,7 @@ public class LayerBoundsController {
             "No features found for layer "
                 + appTreeLayerNode.getLayerName()
                 + " and filter '"
-                + filterCQL
+                + filterECQL
                 + "'");
       }
 
@@ -141,7 +141,7 @@ public class LayerBoundsController {
 
       return ResponseEntity.ok(GeoToolsHelper.fromEnvelope(envelope));
     } catch (FactoryException | IOException e) {
-      logger.error("Error calculating bounds for layer {} and filter '{}'", appTreeLayerNode, filterCQL, e);
+      logger.error("Error calculating bounds for layer {} and filter '{}'", appTreeLayerNode, filterECQL, e);
       throw new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR,
           "Error calculating layer bounds for: " + appTreeLayerNode.getLayerName() + ". " + e.getMessage(),
