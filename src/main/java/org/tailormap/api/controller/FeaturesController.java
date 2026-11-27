@@ -54,9 +54,11 @@ import org.tailormap.api.geotools.FilterUtil;
 import org.tailormap.api.geotools.TransformationUtil;
 import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -223,7 +225,20 @@ public class FeaturesController implements Constants {
         if (tmft.getPrimaryKeyAttribute() != null && propNames.contains(tmft.getPrimaryKeyAttribute())) {
           // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
+        } else if (tmft.getFeatureSource().getProtocol() == TMFeatureSource.Protocol.WFS
+            && "2.0.0"
+                .equals(WFSFeatureSourceHelper.getWFSVersion(
+                    tmft.getFeatureSource().getUrl()))) {
+          // A WFS has no known primary key (only detected for JDBC) and the first attribute need not be
+          // unique, so use the natural order of the server. WFS 2.0 (ISO 19142) 7.9.2.5.4.4 requires a server
+          // to keep the order of a query without a sorting clause the same across executions, so it is stable
+          // across pages (MapServer with PostGIS doesn't strictly do this: no ORDER BY with LIMIT/OFFSET).
+          // Sorting on gml:id is not possible (PDOK and GeoServer reject it).
+          // Not for WFS 1.x: GeoTools then sends the NATURAL_ORDER it adds when paging as a SortProperty
+          // without a PropertyName, which GeoServer rejects.
+          sortAttrName = null;
         } else {
+          // A database has no guaranteed order without ORDER BY. For WFS 1.x, sort on the first attribute
           sortAttrName = propNames.getFirst();
         }
 
