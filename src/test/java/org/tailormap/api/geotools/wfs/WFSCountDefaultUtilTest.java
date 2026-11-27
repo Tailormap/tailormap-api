@@ -20,6 +20,7 @@ import org.geotools.data.wfs.internal.WFSGetCapabilities;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.tailormap.api.util.SecureXmlFactories;
 import org.w3c.dom.Document;
 
 class WFSCountDefaultUtilTest {
@@ -30,7 +31,7 @@ xmlns:ows="http://www.opengis.net/ows/1.1">
 <ows:OperationsMetadata>%s</ows:OperationsMetadata>
 </wfs:WFS_Capabilities>
 """.formatted(operationsMetadata);
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = SecureXmlFactories.newDocumentBuilderFactory();
     factory.setNamespaceAware(namespaceAware);
     return factory.newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
   }
