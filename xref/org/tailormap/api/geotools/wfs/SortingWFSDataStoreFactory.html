@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>SortingWFSDataStoreFactory xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../apidocs/org/tailormap/api/geotools/wfs/SortingWFSDataStoreFactory.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright (C) 2026 B3Partners B.V.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.geotools.wfs;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.net.URL;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.WFSDataStore;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.WFSDataStoreFactory;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.internal.WFSConfig;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.geotools.factory.CommonFactoryFinder;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.geotools.feature.type.FeatureTypeFactoryImpl;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.geotools.http.HTTPClient;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.ServiceException;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.locationtech.jts.geom.GeometryFactory;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * {@link WFSDataStoreFactory} that creates a {@link WFSDataStore} with a {@link SortingWFSClient}. This is a copy of</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * {@link WFSDataStoreFactory#createDataStore(Map)} (GeoTools 35.2) with only the client class changed, because the</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * client is created inline there.</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This is not registered as a {@code DataStoreFactorySpi}, use it directly. It can be removed when GeoTools supports</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * sorting for WFS 2.0.0 itself.</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SortingWFSDataStoreFactory" href="../../../../../org/tailormap/api/geotools/wfs/SortingWFSDataStoreFactory.html#SortingWFSDataStoreFactory">SortingWFSDataStoreFactory</a> <strong class="jxr_keyword">extends</strong> WFSDataStoreFactory {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    @Override
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">public</strong> WFSDataStore createDataStore(<strong class="jxr_keyword">final</strong> Map&lt;String, ?&gt; params) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">final</strong> WFSConfig config = WFSConfig.fromParams(params);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      String user = config.getUser();
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      String password = config.getPassword();
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">if</strong> ((user == <strong class="jxr_keyword">null</strong>) != (password == <strong class="jxr_keyword">null</strong>)) {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Cannot define only one of USERNAME or PASSWORD, must define both or neither"</span>);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">final</strong> URL capabilitiesURL = URL.lookUp(params);
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">final</strong> HTTPClient http = getHttpClient(params);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      http.setTryGzip(config.isTryGZIP());
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      http.setUser(user);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      http.setPassword(password);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">int</strong> timeoutMillis = config.getTimeoutMillis();
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      http.setConnectTimeout(timeoutMillis / 1000);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      http.setReadTimeout(timeoutMillis / 1000);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <a name="SortingWFSClient" href="../../../../../org/tailormap/api/geotools/wfs/SortingWFSClient.html#SortingWFSClient">SortingWFSClient</a> wfsClient;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>        wfsClient = <strong class="jxr_keyword">new</strong> <a name="SortingWFSClient" href="../../../../../org/tailormap/api/geotools/wfs/SortingWFSClient.html#SortingWFSClient">SortingWFSClient</a>(capabilitiesURL, http, config);
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      } <strong class="jxr_keyword">catch</strong> (ServiceException e) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(e);
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      WFSDataStore dataStore = <strong class="jxr_keyword">new</strong> WFSDataStore(wfsClient);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      dataStore.setFilterFactory(CommonFactoryFinder.getFilterFactory(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      dataStore.setGeometryFactory(<strong class="jxr_keyword">new</strong> GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      dataStore.setFeatureTypeFactory(<strong class="jxr_keyword">new</strong> FeatureTypeFactoryImpl());
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      dataStore.setFeatureFactory(CommonFactoryFinder.getFeatureFactory(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      dataStore.setDataStoreFactory(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      dataStore.setNamespaceURI(config.getNamespaceOverride());
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">return</strong> dataStore;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    }
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2021–2026 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+</body>
+</html>

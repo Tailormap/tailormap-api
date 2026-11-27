@@ -196,8 +196,7 @@ minimum: 1</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Min(1L) <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPageSize()" class="member-name-link">getPageSize</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize)
-minimum: 1</div>
+<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTemplate()" class="member-name-link">getTemplate</a>()</code></div>
@@ -355,7 +354,7 @@ minimum: 1</div>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Min(1L)
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Min(1L) <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a></span>&nbsp;<span class="element-name">getPageSize</span>()</div>
-<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize)
+<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize). This can be lower than the requested page size, when it exceeds the maximum page size or the maximum number of features a WFS returns (CountDefault). The client should use this page size for requesting other pages.
 minimum: 1</div>
 <dl class="notes">
 <dt>Returns:</dt>

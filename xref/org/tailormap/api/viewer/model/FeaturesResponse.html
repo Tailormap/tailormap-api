@@ -109,12 +109,12 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">   * number of features in a page, this will allow calculating the offset (page * pagesize)</em>
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">   * number of features in a page, this will allow calculating the offset (page * pagesize). This can be lower than the requested page size, when it exceeds the maximum page size or the maximum number of features a WFS returns (CountDefault). The client should use this page size for requesting other pages.</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">   * minimum: 1</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment">   * @return pageSize</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>   @Min(value = 1) 
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Schema(name = <span class="jxr_string">"pageSize"</span>, accessMode = Schema.AccessMode.READ_ONLY, description = <span class="jxr_string">"number of features in a page, this will allow calculating the offset (page * pagesize)"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Schema(name = <span class="jxr_string">"pageSize"</span>, accessMode = Schema.AccessMode.READ_ONLY, description = <span class="jxr_string">"number of features in a page, this will allow calculating the offset (page * pagesize). This can be lower than the requested page size, when it exceeds the maximum page size or the maximum number of features a WFS returns (CountDefault). The client should use this page size for requesting other pages."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>   @JsonProperty(<span class="jxr_string">"pageSize"</span>)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">public</strong> Integer getPageSize() {
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">return</strong> pageSize;
