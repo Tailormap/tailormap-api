@@ -95,11 +95,11 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics</a><wbr>(@Nullable <a href="../../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
  int&nbsp;progressInterval,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/IntConsumer.html" title="class or interface in java.util.function" class="external-link">IntConsumer</a>&nbsp;progressCallback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by an ECQL filter.</div>
 </div>
 </div>
 </div>
@@ -125,10 +125,10 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull <a href="../../viewer/model/AttributeStatisticsResponse.html" title="class in org.tailormap.api.viewer.model">AttributeStatisticsResponse</a></span>&nbsp;<span class="element-name">getFeatureSourceStatistics</span><wbr><span class="parameters">(@Nullable <a href="../../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
  int&nbsp;progressInterval,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/IntConsumer.html" title="class or interface in java.util.function" class="external-link">IntConsumer</a>&nbsp;progressCallback)</span></div>
-<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter. The
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by an ECQL filter. The
 statistics include min, max, average, sum (for numeric attributes), and count. The method also supports progress
 reporting via a callback. Don't forget to dispose of the datastore, using e.g.
 <code>featureSource.getDataStore().dispose();</code></div>
@@ -136,7 +136,7 @@ reporting via a callback. Don't forget to dispose of the datastore, using e.g.
 <dt>Parameters:</dt>
 <dd><code>featureSource</code> - the feature source to calculate statistics for</dd>
 <dd><code>attributeName</code> - the name of the attribute to calculate statistics for</dd>
-<dd><code>filterCQL</code> - an optional CQL filter to apply to the feature source</dd>
+<dd><code>filterECQL</code> - an optional ECQL filter to apply to the feature source</dd>
 <dd><code>progressInterval</code> - the interval at which to report progress, must be greater than 0</dd>
 <dd><code>progressCallback</code> - an optional callback to report progress</dd>
 <dt>Returns:</dt>
