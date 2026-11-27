@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.IntegrationTestOrdering.FIRST_INTEGRATION_TEST_ORDER;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerGemeentegebiedWfs11;
 import static org.tailormap.api.controller.TestUrls.layerOsmPolygonPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
@@ -68,6 +69,7 @@ class FeaturesControllerIntegrationTest {
   private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
   private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
+  private static final String gemeentegebiedUrlWfs11 = layerGemeentegebiedWfs11 + controllerPath;
 
   /**
    * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
@@ -1338,5 +1340,26 @@ class FeaturesControllerIntegrationTest {
             .with(setServletPath(url))
             .param("page", "1"))
         .andExpect(status().isForbidden());
+  }
+
+  /**
+   * Only geometries has no sort order. GeoTools then adds {@code NATURAL_ORDER} when paging, which a WFS 1.1.0 client
+   * sends to the server as a {@code SortProperty} without a {@code PropertyName}, which MapServer (and GeoServer)
+   * reject (HTM-2405). This is used by snapping and the spatial filter.
+   */
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_return_only_geometries_with_wfs_1_1_0() throws Exception {
+    final String url = apiBasePath + gemeentegebiedUrlWfs11;
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("page", "1")
+            .param("onlyGeometries", "true")
+            .param("simplify", "false")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features.length()").value(pageSize))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty());
   }
 }
