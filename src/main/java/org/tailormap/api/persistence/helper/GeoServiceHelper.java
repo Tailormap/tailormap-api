@@ -151,8 +151,10 @@ public class GeoServiceHelper implements CapabilitiesLoadingProgressReporting {
       client.setPassword(auth.getPassword());
     }
 
-    client.setReadTimeout(this.tailormapConfig.getTimeout());
-    client.setConnectTimeout(this.tailormapConfig.getTimeout());
+    // tailormap-api.timeout is in milliseconds, the GeoTools HTTPClient timeouts are in seconds
+    int timeoutSeconds = Math.max(1, Math.round(this.tailormapConfig.getTimeout() / 1000f));
+    client.setReadTimeout(timeoutSeconds);
+    client.setConnectTimeout(timeoutSeconds);
     client.setTryGzip(true);
 
     logger.info(
