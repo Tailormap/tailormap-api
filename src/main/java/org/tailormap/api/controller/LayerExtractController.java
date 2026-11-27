@@ -168,6 +168,10 @@ public class LayerExtractController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid output format");
     }
 
+    if (layer == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+    }
+
     TMFeatureType sourceFT = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     if (sourceFT == null) {
       logger.debug("Layer export requested for layer without feature type");
