@@ -58,6 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query)" tabindex="0">getCount(SimpleFeatureSource, Query)</a></li>
+<li><a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query,java.time.Duration,java.time.Duration)" tabindex="0">getCount(SimpleFeatureSource, Query, Duration, Duration)</a></li>
 <li><a href="#parseNumberMatched(java.io.InputStream)" tabindex="0">parseNumberMatched(InputStream)</a></li>
 </ol>
 </li>
@@ -84,7 +85,8 @@ asking the server. This class does the hits request itself, using the GeoTools r
 same way as for the GetFeature request for the features, and reads the <code>numberMatched</code> attribute.
 
 <p>A hits request always counts, also on MapServer which returns <code>numberMatched="unknown"</code> in a GetFeature
-response with features (unless <code>wfs_compute_number_matched</code> is set). Counting can be slow for large layers.</div>
+response with features (unless <code>wfs_compute_number_matched</code> is set). Counting can be slow for large layers. See
+<a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query,java.time.Duration,java.time.Duration)"><code>getCount(SimpleFeatureSource, Query, Duration, Duration)</code></a> for not waiting long for a slow count.</div>
 </div>
 </section>
 <section class="summary">
@@ -107,8 +109,17 @@ response with features (unless <code>wfs_compute_number_matched</code> is set). 
 <div class="block">Count the features of a feature source.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#parseNumberMatched(java.io.InputStream)" class="member-name-link">parseNumberMatched</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html" title="class or interface in java.io" class="external-link">InputStream</a>&nbsp;in)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query,java.time.Duration,java.time.Duration)" class="member-name-link">getCount</a><wbr>(org.geotools.api.data.SimpleFeatureSource&nbsp;fs,
+ org.geotools.api.data.Query&nbsp;query,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;hitsTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;slowHitsTtl)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Count the features of a feature source like <a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query)"><code>getCount(SimpleFeatureSource, Query)</code></a>, but without waiting
+long for a slow hits request.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#parseNumberMatched(java.io.InputStream)" class="member-name-link">parseNumberMatched</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html" title="class or interface in java.io" class="external-link">InputStream</a>&nbsp;in)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Read the number of features from a GetFeature hits response: the <code>numberMatched</code> attribute (WFS 2.0.0) or
 the <code>numberOfFeatures</code> attribute (WFS 1.x) of the root <code>FeatureCollection</code> element.</div>
 </div>
@@ -144,6 +155,36 @@ for a WFS which GeoTools does not count with a hits request (WFS 2.0.0), does a 
 <dd><code>query</code> - the query</dd>
 <dt>Returns:</dt>
 <dd>the number of features, or -1 if unknown</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - when <code>FeatureSource.getCount(Query)</code> fails; a failing hits request returns -1</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query,java.time.Duration,java.time.Duration)">
+<h3>getCount</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getCount</span><wbr><span class="parameters">(org.geotools.api.data.SimpleFeatureSource&nbsp;fs,
+ org.geotools.api.data.Query&nbsp;query,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;hitsTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;slowHitsTtl)</span>
+                    throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Count the features of a feature source like <a href="#getCount(org.geotools.api.data.SimpleFeatureSource,org.geotools.api.data.Query)"><code>getCount(SimpleFeatureSource, Query)</code></a>, but without waiting
+long for a slow hits request. For when the count is nice to have, such as the total for a page of features.
+
+<p>A hits request which takes longer than <code>hitsTimeout</code> is aborted and the feature type is remembered as
+slow, so it isn't counted with a hits request for <code>slowHitsTtl</code> and the count is -1 without waiting. Some
+servers count very slowly for large layers (PDOK NWB wegvakken: ~18 s for a hits request versus 0.1 s for a page
+of features), while counting is quick for most.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fs</code> - the feature source, may be of any type</dd>
+<dd><code>query</code> - the query</dd>
+<dd><code>hitsTimeout</code> - how long to wait for a hits request, in whole seconds (at least 1 s, the HTTP read timeout)</dd>
+<dd><code>slowHitsTtl</code> - how long not to count a feature type after its hits request timed out</dd>
+<dt>Returns:</dt>
+<dd>the number of features, or -1 if unknown or too slow to count</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - when <code>FeatureSource.getCount(Query)</code> fails; a failing hits request returns -1</dd>
 </dl>

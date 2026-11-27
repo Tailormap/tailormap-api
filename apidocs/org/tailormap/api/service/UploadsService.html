@@ -70,6 +70,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#getIfModifiedSince(jakarta.servlet.http.HttpServletRequest)" tabindex="0">getIfModifiedSince(HttpServletRequest)</a></li>
 <li><a href="#checkIfModifiedSince(java.util.UUID,long)" tabindex="0">checkIfModifiedSince(UUID, long)</a></li>
 <li><a href="#getUrlForImage(java.lang.String,org.tailormap.api.persistence.UploadCategory)" tabindex="0">getUrlForImage(String, UploadCategory)</a></li>
 <li><a href="#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" tabindex="0">getUrlForImage(UUID, UploadCategory)</a></li>
@@ -151,27 +152,32 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.springframework.http.ResponseEntity<wbr>&lt;byte[]&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createUploadResponseEntity(org.tailormap.api.persistence.Upload)" class="member-name-link">createUploadResponseEntity</a><wbr>(<a href="../persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a>&nbsp;upload)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static long</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getIfModifiedSince(jakarta.servlet.http.HttpServletRequest)" class="member-name-link">getIfModifiedSince</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Get the value of the If-Modified-Since header of a request.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForImage(java.lang.String,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;imageId,
+ <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForImage(java.lang.String,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;imageId,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
  <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory)" class="member-name-link">getUrlForImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
- <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">getUrlForLayerAttachedImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUrlForLayerAttachedImage(java.util.UUID,org.tailormap.api.persistence.UploadCategory,org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">getUrlForLayerAttachedImage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;imageId,
  <a href="../persistence/UploadCategory.html" title="enum class in org.tailormap.api.persistence">UploadCategory</a>&nbsp;category,
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;layerId)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the URL for a layer-attached image e.g. a legend image, or null if the imageId is null or not found.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#replaceUploadLinks(org.tailormap.api.persistence.Application,java.lang.String,java.lang.String)" class="member-name-link">replaceUploadLinks</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#replaceUploadLinks(org.tailormap.api.persistence.Application,java.lang.String,java.lang.String)" class="member-name-link">replaceUploadLinks</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appLayerId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -246,6 +252,22 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="getIfModifiedSince(jakarta.servlet.http.HttpServletRequest)">
+<h3>getIfModifiedSince</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">getIfModifiedSince</span><wbr><span class="parameters">(jakarta.servlet.http.HttpServletRequest&nbsp;request)</span></div>
+<div class="block">Get the value of the If-Modified-Since header of a request.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>request</code> - the request</dd>
+<dt>Returns:</dt>
+<dd>the date in milliseconds, or -1 if the header is missing or can't be parsed (a client error that should
+    not cause a server error)</dd>
+</dl>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="checkIfModifiedSince(java.util.UUID,long)">
 <h3>checkIfModifiedSince</h3>
