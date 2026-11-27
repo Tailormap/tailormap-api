@@ -57,7 +57,7 @@ public class AttributeStatisticsAdminController {
    *
    * @param featureTypeId the feature type id for which to retrieve statistics
    * @param attributeName the name of the attribute
-   * @param filter an optional CQL filter to apply to the features before calculating statistics
+   * @param filter an optional ECQL filter to apply to the features before calculating statistics
    * @return @return the calculated statistics; fields may be null when not applicable or when no features match
    * @throws ResponseStatusException if the feature type or attribute does not exist, or if a bad request was
    *     submitted
@@ -65,7 +65,7 @@ public class AttributeStatisticsAdminController {
   @Operation(
       summary = "Retrieve attribute statistics for a feature type",
       description = "Retrieve statistics (min, max, average, sum, count) for a given attribute of a feature type."
-          + " Optionally, a CQL filter can be applied to filter the features before calculating the"
+          + " Optionally, an ECQL filter can be applied to filter the features before calculating the"
           + " statistics.")
   @GetMapping(
       path = "${tailormap-api.admin.base-path}/statistics/{featureTypeId}/{attributeName}",

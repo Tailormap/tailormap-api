@@ -21,6 +21,7 @@ import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPost
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs11;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs20;
 import static org.tailormap.api.controller.TestUrls.layerGemeentegebiedWfs;
+import static org.tailormap.api.controller.TestUrls.layerGemeentegebiedWfs11;
 import static org.tailormap.api.controller.TestUrls.layerNwbWegvakkenWfs;
 import static org.tailormap.api.controller.TestUrls.layerOsmPolygonPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
@@ -82,6 +83,7 @@ class FeaturesControllerIntegrationTest {
   private static final String nwbWegvakkenUrlWfs = layerNwbWegvakkenWfs + controllerPath;
   private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
+  private static final String gemeentegebiedUrlWfs11 = layerGemeentegebiedWfs11 + controllerPath;
 
   private static final int provinciesWFSTotalCount = 12;
 
@@ -124,7 +126,7 @@ class FeaturesControllerIntegrationTest {
    * some test queries for the applayers (database/wfs featuretypes).
    *
    * @return a list of arguments for the test methods
-   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">CQL</a>
+   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">ECQL</a>
    */
   static Stream<Arguments> filtersProvider() {
     return Stream.of(
@@ -1328,7 +1330,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   @DefaultTimeZone("Europe/Amsterdam")
-  void filter_test(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
+  void filter_test(String appLayerUrl, String filterECQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
 
     appLayerUrl = apiBasePath + appLayerUrl;
@@ -1336,7 +1338,7 @@ class FeaturesControllerIntegrationTest {
     MvcResult result = mockMvc.perform(get(appLayerUrl)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(appLayerUrl))
-            .param("filter", filterCQL)
+            .param("filter", filterECQL)
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -1495,5 +1497,26 @@ class FeaturesControllerIntegrationTest {
             .with(setServletPath(url))
             .param("page", "1"))
         .andExpect(status().isForbidden());
+  }
+
+  /**
+   * Only geometries has no sort order. GeoTools then adds {@code NATURAL_ORDER} when paging, which a WFS 1.1.0 client
+   * sends to the server as a {@code SortProperty} without a {@code PropertyName}, which MapServer (and GeoServer)
+   * reject (HTM-2405). This is used by snapping and the spatial filter.
+   */
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_return_only_geometries_with_wfs_1_1_0() throws Exception {
+    final String url = apiBasePath + gemeentegebiedUrlWfs11;
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("page", "1")
+            .param("onlyGeometries", "true")
+            .param("simplify", "false")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features.length()").value(pageSize))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty());
   }
 }

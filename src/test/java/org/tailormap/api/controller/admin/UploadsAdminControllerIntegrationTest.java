@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +64,8 @@ import org.tailormap.api.repository.UploadRepository;
 @Stopwatch
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 @Order(UPLOADS_CONTROLLER_INTEGRATION_TEST_ORDER)
+// Deletes uploads that other tests read, so it must not run concurrently with them
+@Isolated
 class UploadsAdminControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;

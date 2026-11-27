@@ -18,5 +18,6 @@ public interface TestUrls {
   String layerBegroeidTerreindeelWfs20 = "/app/default/layer/lyr:geoserver-wfs20:postgis:begroeidterreindeel";
   String layerGemeentegebiedWfs = "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied";
   String layerNwbWegvakkenWfs = "/app/default/layer/lyr:pdok-rws-nwbwegen:wegvakken";
+  String layerGemeentegebiedWfs11 = "/app/default/layer/lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied";
   String layerKadastraalPerceel = "/app/default/layer/lyr:snapshot-geoserver:postgis:kadastraal_perceel";
 }

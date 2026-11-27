@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.geotools.jdbc.JDBCDataStore;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -29,6 +30,8 @@ import org.tailormap.api.repository.FeatureTypeRepository;
 
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
+// Creates and drops the same <featuretype>_attachments tables as AttachmentsHelperIntegrationTest
+@ResourceLock("feature-type-attachment-tables")
 class FeatureTypeEventHandlerIntegrationTest {
   @Autowired
   private FeatureSourceRepository featureSourceRepository;

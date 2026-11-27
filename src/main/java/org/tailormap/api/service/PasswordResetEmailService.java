@@ -8,6 +8,7 @@ package org.tailormap.api.service;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,9 @@ public class PasswordResetEmailService {
 
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
+
+  @Value("${tailormap-api.password-reset.disabled-for:}")
+  private Set<String> passwordResetDisabledFor = Set.of();
 
   public PasswordResetEmailService() {
     this.emailSender = Optional.empty();
@@ -68,6 +72,13 @@ public class PasswordResetEmailService {
 
       User user = userRepository.findByEmail(email).orElse(null);
       if (user == null || !user.isEnabledAndValidUntil()) {
+        return;
+      }
+
+      if (passwordResetDisabledFor.contains(user.getUsername())) {
+        logger.info(
+            "Password reset requested for user {}, but password reset is disabled for this user",
+            user.getUsername());
         return;
       }
 

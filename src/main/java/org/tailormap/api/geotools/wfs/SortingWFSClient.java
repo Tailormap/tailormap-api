@@ -29,8 +29,19 @@ import org.geotools.ows.ServiceException;
  * {@code NATURAL_ORDER} when paging.
  *
  * <p>For WFS 2.0.0 the {@link StrictWFS_2_0_Strategy} GeoTools picks is replaced with {@link SortingWFS_2_0_Strategy},
- * which sends the sort order to the server. Other strategies (such as for ArcGIS) are left alone and don't sort on the
- * server.
+ * which sends the sort order to the server. The client then always says it can sort, so GeoTools never sorts in memory:
+ * in memory sorting is wrong with paging, and paging is always used for the attribute list. Instead:
+ *
+ * <ul>
+ *   <li>Natural order (also the one {@code ContentFeatureSource} adds when paging) is not sent, so the server uses its
+ *       own order. WFS 2.0 (ISO 19142) 7.9.2.5.4.4 requires that order to be the same across executions of the same
+ *       query, so it is stable across pages.
+ *   <li>Sorting on an attribute when the capabilities don't have the {@code ImplementsSorting} constraint is an error,
+ *       see {@link SortingWFS_2_0_Strategy}.
+ * </ul>
+ *
+ * <p>Other strategies, such as {@code ArcGisStrategy_2_0}, are left to GeoTools: no sorting on the server, and each
+ * page sorted in memory.
  *
  * <p>This can be removed when GeoTools supports sorting for WFS 2.0.0 itself.
  */
@@ -47,8 +58,9 @@ public class SortingWFSClient extends WFSClient {
       SortingWFS_2_0_Strategy strategy = new SortingWFS_2_0_Strategy();
       strategy.setConfig(config);
       strategy.setCapabilities(getCapabilities());
+      strategy.setImplementsSorting(implementsSorting(getCapabilities()));
       super.specification = strategy;
-      canSort = implementsSorting(getCapabilities());
+      canSort = true;
     } else {
       canSort = super.canSort();
     }
