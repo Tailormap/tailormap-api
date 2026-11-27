@@ -72,17 +72,18 @@ class FeatureTypeEventHandlerIntegrationTest {
 
       if (Objects.equals(ftName, "osm_polygon")) ftName = ds.getDatabaseSchema() + "." + ftName;
       try (Connection conn = ds.getDataSource().getConnection();
-          Statement stmt = conn.createStatement();
-          ResultSet rs = stmt.executeQuery("select count(*) from " + ftName + "_attachments")) {
-        if (rs.next()) {
-          int count = rs.getInt(1);
-          assertEquals(0, count, "Attachments table exists but is not empty.");
-        } else {
-          fail("Attachments table does not exist.");
+          Statement stmt = conn.createStatement()) {
+        try (ResultSet rs = stmt.executeQuery("select count(*) from " + ftName + "_attachments")) {
+          if (rs.next()) {
+            int count = rs.getInt(1);
+            assertEquals(0, count, "Attachments table exists but is not empty.");
+          } else {
+            fail("Attachments table does not exist.");
+          }
+        } finally {
+          // cleanup, also when the assertions fail so the next test run starts with the original test data
+          stmt.execute("drop table " + ftName + "_attachments");
         }
-
-        // cleanup
-        stmt.execute("drop table " + ftName + "_attachments");
       }
     } finally {
       if (ds != null) {

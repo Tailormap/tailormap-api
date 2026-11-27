@@ -22,8 +22,10 @@ import static org.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.tailormap.api.persistence.Group.ADMIN;
 
 import com.jayway.jsonpath.JsonPath;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.MethodOrderer;
@@ -46,9 +48,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.tailormap.api.SpatialTestDataRestorer;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.repository.FeatureSourceRepository;
+import org.tailormap.api.repository.FeatureTypeRepository;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -79,8 +85,32 @@ class EditFeatureControllerIntegrationTest {
   private static final String wegdeelUrlSqlserver =
       "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/edit/feature";
 
+  /** Primary keys of the features inserted by the tests, to delete them afterwards. */
+  private static final String pgInsertedGmlid = "aaa"
+      + StaticTestData.get("begroeidterreindeel__fid_edit")
+          .substring(
+              StaticTestData.get("begroeidterreindeel__fid_edit").indexOf('.') + 4);
+
+  private static final String mssqlInsertedGmlid = "b3p"
+      + StaticTestData.get("wegdeel__fid_edit")
+          .substring(StaticTestData.get("wegdeel__fid_edit").indexOf('.') + 4);
+
+  private static final String oracleInsertedGmlid = "b3p"
+      + StaticTestData.get("waterdeel__fid_edit")
+          .substring(StaticTestData.get("waterdeel__fid_edit").indexOf('.') + 4);
+
+  private static final String osmInsertedFid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
+
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
+
+  @Autowired
+  private FeatureSourceRepository featureSourceRepository;
+
+  @Autowired
+  private FeatureTypeRepository featureTypeRepository;
+
+  private final SpatialTestDataRestorer spatialTestDataRestorer = new SpatialTestDataRestorer();
 
   @Autowired
   private WebApplicationContext context;
@@ -88,8 +118,44 @@ class EditFeatureControllerIntegrationTest {
   private MockMvc mockMvc;
 
   @BeforeAll
-  void initialize() {
+  void initialize() throws IOException {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+    // Save the features the tests modify or delete and remove the features the tests insert afterwards, so the test
+    // data in the spatial databases is unchanged after the tests
+    final TMFeatureType begroeidterreindeel = featureType("PostGIS", "begroeidterreindeel");
+    spatialTestDataRestorer.save(
+        begroeidterreindeel,
+        StaticTestData.get("begroeidterreindeel__fid_edit"),
+        StaticTestData.get("begroeidterreindeel__fid_delete"));
+    spatialTestDataRestorer.removeOnRestore(begroeidterreindeel, "begroeidterreindeel." + pgInsertedGmlid);
+
+    final TMFeatureType wegdeel = featureType("MS SQL Server", "wegdeel");
+    spatialTestDataRestorer.save(
+        wegdeel, StaticTestData.get("wegdeel__fid_edit"), StaticTestData.get("wegdeel__fid_delete"));
+    spatialTestDataRestorer.removeOnRestore(wegdeel, "wegdeel." + mssqlInsertedGmlid);
+
+    final TMFeatureType waterdeel = featureType("Oracle", "WATERDEEL");
+    spatialTestDataRestorer.save(
+        waterdeel, StaticTestData.get("waterdeel__fid_edit"), StaticTestData.get("waterdeel__fid_delete"));
+    spatialTestDataRestorer.removeOnRestore(waterdeel, "WATERDEEL." + oracleInsertedGmlid);
+
+    final TMFeatureType osmPolygon = featureType("PostGIS OSM", "osm_polygon");
+    spatialTestDataRestorer.save(osmPolygon, StaticTestData.get("osm_polygon__fid_edit"));
+    spatialTestDataRestorer.removeOnRestore(osmPolygon, osmInsertedFid);
+  }
+
+  @AfterAll
+  void restoreSpatialTestData() throws IOException {
+    spatialTestDataRestorer.restore();
+  }
+
+  private TMFeatureType featureType(String featureSourceTitle, String featureTypeName) {
+    return featureTypeRepository
+        .getTMFeatureTypeByNameAndFeatureSource(
+            featureTypeName,
+            featureSourceRepository.getByTitle(featureSourceTitle).orElseThrow())
+        .orElseThrow();
   }
 
   @Test
@@ -290,11 +356,7 @@ class EditFeatureControllerIntegrationTest {
   @Order(1)
   void post_pg_feature() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
-    final String gmlid = "aaa"
-        + StaticTestData.get("begroeidterreindeel__fid_edit")
-            .substring(StaticTestData.get("begroeidterreindeel__fid_edit")
-                    .indexOf('.')
-                + 4);
+    final String gmlid = pgInsertedGmlid;
     final String fid = "begroeidterreindeel." + gmlid;
     final String content = json(Map.of(
         "__fid",
@@ -340,11 +402,7 @@ class EditFeatureControllerIntegrationTest {
   @Order(10)
   void post_duplicate_primary_key_pg() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
-    final String gmlid = "aaa"
-        + StaticTestData.get("begroeidterreindeel__fid_edit")
-            .substring(StaticTestData.get("begroeidterreindeel__fid_edit")
-                    .indexOf('.')
-                + 4);
+    final String gmlid = pgInsertedGmlid;
     final String fid = "begroeidterreindeel." + gmlid;
     final String content = json(Map.of(
         "__fid",
@@ -379,9 +437,7 @@ class EditFeatureControllerIntegrationTest {
       authorities = {ADMIN})
   void post_mssql_feature() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver;
-    final String gmlid = "b3p"
-        + StaticTestData.get("wegdeel__fid_edit")
-            .substring(StaticTestData.get("wegdeel__fid_edit").indexOf('.') + 4);
+    final String gmlid = mssqlInsertedGmlid;
     final String fid = "wegdeel." + gmlid;
     // A mutable map, because Map.of() does not allow the null value for geom_kruinlijn
     final Map<String, Object> attributes = new HashMap<>(Map.ofEntries(
@@ -425,9 +481,7 @@ class EditFeatureControllerIntegrationTest {
       authorities = {ADMIN})
   void post_oracle_feature() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle;
-    final String gmlid = "b3p"
-        + StaticTestData.get("waterdeel__fid_edit")
-            .substring(StaticTestData.get("waterdeel__fid_edit").indexOf('.') + 4);
+    final String gmlid = oracleInsertedGmlid;
     final String fid = "WATERDEEL." + gmlid;
     final String content = json(Map.of(
         "__fid",
@@ -602,7 +656,7 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   void post_foreign_crs_pg_feature() throws Exception {
-    final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
+    final String __fid = osmInsertedFid;
     final String osm_id = __fid.replace("osm_polygon.", "");
     final String url = apiBasePath + osm_polygonUrlPostgis;
     final String content = json(Map.of(
