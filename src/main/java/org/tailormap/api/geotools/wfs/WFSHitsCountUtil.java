@@ -24,6 +24,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.GeometryDescriptor;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.data.wfs.InvertAxisFilterVisitor;
@@ -33,6 +34,7 @@ import org.geotools.data.wfs.internal.GetFeatureRequest.ResultType;
 import org.geotools.data.wfs.internal.WFSClient;
 import org.geotools.data.wfs.internal.WFSConfig;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterAttributeExtractor;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPResponse;
 import org.jspecify.annotations.Nullable;
@@ -60,8 +62,20 @@ public final class WFSHitsCountUtil {
    * WFS feature types (capabilities URL and type name) for which a hits request timed out, with the time until which
    * no hits request is done. In memory only: a slow count is a property of the server and the size of the layer,
    * which rarely changes, and after a restart it is only one hits request to find out again.
+   *
+   * <p>Remembered separately per kind of filter ({@link FilterKind}): counting can be quick without a filter and slow
+   * with one, or the other way around. For example a spatial filter on GeoServer/PostGIS which doesn't use the
+   * spatial index, or a slow total for a large layer with a quick filter on an indexed column.
    */
   private static final Map<String, Instant> slowHits = new ConcurrentHashMap<>();
+
+  /** The kind of filter of a count, to remember slow hits requests separately per kind. */
+  enum FilterKind {
+    NONE,
+    ATTRIBUTE,
+    /** A filter with a spatial part, also when it has attribute parts: the spatial part is the likely slow one. */
+    SPATIAL
+  }
 
   private WFSHitsCountUtil() {}
 
@@ -113,7 +127,11 @@ public final class WFSHitsCountUtil {
     }
     String slowHitsKey = null;
     if (hitsTimeout != null && slowHitsTtl != null) {
-      slowHitsKey = wfsDataStore.getInfo().getSource() + "|" + wfsDataStore.getRemoteTypeName(fs.getName());
+      slowHitsKey = wfsDataStore.getInfo().getSource()
+          + "|"
+          + wfsDataStore.getRemoteTypeName(fs.getName())
+          + "|"
+          + getFilterKind(query.getFilter(), fs.getSchema());
       if (isSlowHits(slowHitsKey)) {
         logger.debug("Not counting features of {}, an earlier hits request timed out", slowHitsKey);
         return -1;
@@ -135,6 +153,22 @@ public final class WFSHitsCountUtil {
       logger.debug("WFS hits request exception", e);
       return -1;
     }
+  }
+
+  /**
+   * The kind of filter. A filter is spatial when it uses a geometry attribute of the feature type, normally with a
+   * spatial operator. Checks the attributes instead of the operators, so that all spatial operators are covered.
+   */
+  static FilterKind getFilterKind(@Nullable Filter filter, SimpleFeatureType schema) {
+    if (filter == null || Filter.INCLUDE.equals(filter)) {
+      return FilterKind.NONE;
+    }
+    FilterAttributeExtractor extractor = new FilterAttributeExtractor(schema);
+    filter.accept(extractor, null);
+    return extractor.getAttributeNameSet().stream()
+            .anyMatch(name -> schema.getDescriptor(name) instanceof GeometryDescriptor)
+        ? FilterKind.SPATIAL
+        : FilterKind.ATTRIBUTE;
   }
 
   private static boolean isSlowHits(String slowHitsKey) {

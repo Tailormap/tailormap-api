@@ -13,12 +13,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import mockwebserver3.Dispatcher;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
@@ -27,7 +29,10 @@ import okhttp3.Headers;
 import org.geotools.api.data.DataStore;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.junit.jupiter.api.AfterEach;
@@ -237,11 +242,11 @@ timeStamp="2026-11-25T12:00:00Z"/>
   /** Serves a WFS and records the GetFeature requests. */
   private static class WFSDispatcher extends Dispatcher {
     private final String capabilities;
-    private final Function<String, MockResponse> getFeatureResponse;
+    private final Function<Map<String, String>, MockResponse> getFeatureResponse;
     private final List<Map<String, String>> getFeatureRequests = new ArrayList<>();
     private String url;
 
-    WFSDispatcher(String capabilities, Function<String, MockResponse> getFeatureResponse) {
+    WFSDispatcher(String capabilities, Function<Map<String, String>, MockResponse> getFeatureResponse) {
       this.capabilities = capabilities;
       this.getFeatureResponse = getFeatureResponse;
     }
@@ -258,7 +263,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
         case "DescribeFeatureType" -> response(xml, DESCRIBE_FEATURE_TYPE);
         case "GetFeature" -> {
           getFeatureRequests.add(params);
-          yield getFeatureResponse.apply(params.get("RESULTTYPE"));
+          yield getFeatureResponse.apply(params);
         }
         default -> new MockResponse.Builder().code(400).build();
       };
@@ -277,7 +282,10 @@ timeStamp="2026-11-25T12:00:00Z"/>
   private record CountsResult(List<Integer> counts, List<Map<String, String>> getFeatureRequests) {}
 
   private static CountResult countWithServer(
-      String capabilities, Function<String, MockResponse> getFeatureResponse, String version, Query query)
+      String capabilities,
+      Function<Map<String, String>, MockResponse> getFeatureResponse,
+      String version,
+      Query query)
       throws IOException {
     CountsResult result = countsWithServer(capabilities, getFeatureResponse, version, query, null, null, 1);
     return new CountResult(result.counts().getFirst(), result.getFeatureRequests());
@@ -286,12 +294,25 @@ timeStamp="2026-11-25T12:00:00Z"/>
   /** Count {@code times} times with the same server, each time with a new data store like the API does. */
   private static CountsResult countsWithServer(
       String capabilities,
-      Function<String, MockResponse> getFeatureResponse,
+      Function<Map<String, String>, MockResponse> getFeatureResponse,
       String version,
       Query query,
       Duration hitsTimeout,
       Duration slowHitsTtl,
       int times)
+      throws IOException {
+    return countsWithServer(
+        capabilities, getFeatureResponse, version, Collections.nCopies(times, query), hitsTimeout, slowHitsTtl);
+  }
+
+  /** Count once per query with the same server, each time with a new data store like the API does. */
+  private static CountsResult countsWithServer(
+      String capabilities,
+      Function<Map<String, String>, MockResponse> getFeatureResponse,
+      String version,
+      List<Query> queries,
+      Duration hitsTimeout,
+      Duration slowHitsTtl)
       throws IOException {
     try (WFSDispatcher dispatcher = new WFSDispatcher(capabilities, getFeatureResponse);
         MockWebServer server = new MockWebServer()) {
@@ -305,7 +326,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
               .toURL());
       params.put(WFSDataStoreFactory.PROTOCOL.key, false);
       List<Integer> counts = new ArrayList<>();
-      for (int i = 0; i < times; i++) {
+      for (Query query : queries) {
         DataStore ds = new WFSDataStoreFactory().createDataStore(params);
         try {
           SimpleFeatureSource fs = ds.getFeatureSource(ds.getTypeNames()[0]);
@@ -326,7 +347,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
 
     CountResult result = countWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
+        params -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
         "2.0.0",
         Query.ALL);
     assertEquals(342, result.count());
@@ -341,7 +362,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
     Query query = new Query(TYPE_NAME, FF.equals(FF.property("name"), FF.literal("A1")));
     CountResult result = countWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("12")),
+        params -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("12")),
         "2.0.0",
         query);
     assertEquals(12, result.count());
@@ -355,7 +376,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
 
     CountResult result = countWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("unknown")),
+        params -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("unknown")),
         "2.0.0",
         Query.ALL);
     assertEquals(-1, result.count());
@@ -365,7 +386,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
   void hits_request_exception_report() throws Exception {
 
     CountResult result = countWithServer(
-        CAPABILITIES_2_0_0, resultType -> response("application/xml", EXCEPTION_REPORT), "2.0.0", Query.ALL);
+        CAPABILITIES_2_0_0, params -> response("application/xml", EXCEPTION_REPORT), "2.0.0", Query.ALL);
     assertEquals(-1, result.count());
   }
 
@@ -374,7 +395,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
 
     CountResult result = countWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> new MockResponse.Builder().code(500).build(),
+        params -> new MockResponse.Builder().code(500).build(),
         "2.0.0",
         Query.ALL);
     assertEquals(-1, result.count());
@@ -384,7 +405,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
   void hits_request_within_timeout() throws Exception {
     CountsResult result = countsWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
+        params -> response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
         "2.0.0",
         Query.ALL,
         Duration.ofSeconds(2),
@@ -407,7 +428,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
   void slow_hits_request_times_out_and_is_not_repeated() throws Exception {
     CountsResult result = countsWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> slowHitsResponse(),
+        params -> slowHitsResponse(),
         "2.0.0",
         Query.ALL,
         Duration.ofSeconds(1),
@@ -418,11 +439,89 @@ timeStamp="2026-11-25T12:00:00Z"/>
     assertEquals(1, result.getFeatureRequests().size());
   }
 
+  private static final Query SPATIAL_QUERY =
+      new Query(TYPE_NAME, FF.bbox("geom", 100000, 400000, 200000, 500000, "EPSG:28992"));
+
+  private static final Query ATTRIBUTE_QUERY = new Query(TYPE_NAME, FF.equals(FF.property("name"), FF.literal("A1")));
+
+  /** Both an attribute and a spatial filter, remembered as spatial. */
+  private static final Query ATTRIBUTE_AND_SPATIAL_QUERY =
+      new Query(TYPE_NAME, FF.and(ATTRIBUTE_QUERY.getFilter(), SPATIAL_QUERY.getFilter()));
+
+  /**
+   * Counts with a server for which only the hits requests matching {@code slow} are slow. The delay (3 s) is well
+   * over the timeout (1 s), the other requests are answered immediately, so the result doesn't depend on timing.
+   */
+  private static CountsResult countsWithSlowFilter(Predicate<String> slow, Query... queries) throws IOException {
+    return countsWithServer(
+        CAPABILITIES_2_0_0,
+        params -> slow.test(params.getOrDefault("FILTER", ""))
+            ? slowHitsResponse()
+            : response("application/gml+xml; version=3.2", HITS_2_0_0.formatted("342")),
+        "2.0.0",
+        List.of(queries),
+        Duration.ofSeconds(1),
+        Duration.ofHours(1));
+  }
+
+  @Test
+  void filter_kind() throws Exception {
+    SimpleFeatureType schema = DataUtilities.createType(TYPE_NAME, "name:String,geom:Geometry");
+    assertEquals(WFSHitsCountUtil.FilterKind.NONE, WFSHitsCountUtil.getFilterKind(null, schema));
+    assertEquals(WFSHitsCountUtil.FilterKind.NONE, WFSHitsCountUtil.getFilterKind(Filter.INCLUDE, schema));
+    assertEquals(
+        WFSHitsCountUtil.FilterKind.ATTRIBUTE,
+        WFSHitsCountUtil.getFilterKind(ATTRIBUTE_QUERY.getFilter(), schema));
+    assertEquals(
+        WFSHitsCountUtil.FilterKind.SPATIAL, WFSHitsCountUtil.getFilterKind(SPATIAL_QUERY.getFilter(), schema));
+    assertEquals(
+        WFSHitsCountUtil.FilterKind.SPATIAL,
+        WFSHitsCountUtil.getFilterKind(ATTRIBUTE_AND_SPATIAL_QUERY.getFilter(), schema));
+  }
+
+  @Test
+  void slow_spatial_hits_request_does_not_prevent_other_counts() throws Exception {
+    // Like GeoServer on PostGIS with an untyped geometry column: only counting with a spatial filter is slow
+    CountsResult result = countsWithSlowFilter(
+        filter -> filter.contains("BBOX"),
+        SPATIAL_QUERY,
+        Query.ALL,
+        ATTRIBUTE_QUERY,
+        SPATIAL_QUERY,
+        ATTRIBUTE_AND_SPATIAL_QUERY);
+    assertEquals(List.of(-1, 342, 342, -1, -1), result.counts());
+    // No hits request for the second spatial count and the attribute and spatial count
+    assertEquals(3, result.getFeatureRequests().size());
+  }
+
+  @Test
+  void slow_hits_request_without_filter_does_not_prevent_filtered_counts() throws Exception {
+    // Like a large layer for which counting all features is slow, but filtering on an indexed column is quick
+    CountsResult result =
+        countsWithSlowFilter(String::isEmpty, Query.ALL, ATTRIBUTE_QUERY, SPATIAL_QUERY, Query.ALL);
+    assertEquals(List.of(-1, 342, 342, -1), result.counts());
+    assertEquals(3, result.getFeatureRequests().size());
+  }
+
+  @Test
+  void slow_attribute_hits_request_does_not_prevent_other_counts() throws Exception {
+    // Like a shapefile: the total is quick, but filtering on an attribute reads all records
+    CountsResult result = countsWithSlowFilter(
+        filter -> filter.contains("PropertyIsEqualTo") && !filter.contains("BBOX"),
+        ATTRIBUTE_QUERY,
+        Query.ALL,
+        SPATIAL_QUERY,
+        ATTRIBUTE_AND_SPATIAL_QUERY,
+        ATTRIBUTE_QUERY);
+    assertEquals(List.of(-1, 342, 342, 342, -1), result.counts());
+    assertEquals(4, result.getFeatureRequests().size());
+  }
+
   @Test
   void slow_hits_request_repeated_after_ttl() throws Exception {
     CountsResult result = countsWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> slowHitsResponse(),
+        params -> slowHitsResponse(),
         "2.0.0",
         Query.ALL,
         Duration.ofSeconds(1),
@@ -436,7 +535,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
   void slow_hits_request_without_timeout() throws Exception {
     CountResult result = countWithServer(
         CAPABILITIES_2_0_0,
-        resultType -> new MockResponse.Builder()
+        params -> new MockResponse.Builder()
             .headers(new Headers(new String[] {"Content-Type", "application/gml+xml; version=3.2"}))
             .body(HITS_2_0_0.formatted("342"))
             .headersDelay(1500, TimeUnit.MILLISECONDS)
@@ -451,7 +550,7 @@ timeStamp="2026-11-25T12:00:00Z"/>
 
     CountResult result = countWithServer(
         CAPABILITIES_1_1_0,
-        resultType -> response("text/xml; subtype=gml/3.1.1", HITS_1_1_0.formatted("342")),
+        params -> response("text/xml; subtype=gml/3.1.1", HITS_1_1_0.formatted("342")),
         "1.1.0",
         Query.ALL);
     assertEquals(342, result.count());
