@@ -72,8 +72,8 @@ class FilterUtilTest {
   @Test
   void spatial_filter_same_crs_everywhere_no_transform() throws CQLException, FactoryException {
     // filter SRID = app CRS = data source CRS → no transformation should occur
-    String cql = "INTERSECTS(geometry, SRID=28992;" + RD_NL_POLYGON + ")";
-    Filter filter = FilterUtil.parseFilter(cql, RD_NL_APPLICATION, RDFeatureSource);
+    String ecql = "INTERSECTS(geometry, SRID=28992;" + RD_NL_POLYGON + ")";
+    Filter filter = FilterUtil.parseFilter(ecql, RD_NL_APPLICATION, RDFeatureSource);
 
     assertNotNull(filter);
     assertInstanceOf(Intersects.class, filter);
@@ -89,8 +89,8 @@ class FilterUtilTest {
     // filter SRID = app CRS = EPSG:28992, data source = EPSG:3857 → geometry transformed to WGS84
     SimpleFeatureSource featureSource = mockFeatureSource("EPSG:3857");
 
-    String cql = "INTERSECTS(geometry, SRID=28992;" + RD_NL_POLYGON + ")";
-    Filter filter = FilterUtil.parseFilter(cql, RD_NL_APPLICATION, featureSource);
+    String ecql = "INTERSECTS(geometry, SRID=28992;" + RD_NL_POLYGON + ")";
+    Filter filter = FilterUtil.parseFilter(ecql, RD_NL_APPLICATION, featureSource);
 
     assertNotNull(filter);
     assertInstanceOf(Intersects.class, filter);
@@ -116,28 +116,28 @@ class FilterUtilTest {
   @Test
   void spatial_filter_srid_does_not_match_app_crs_throws() {
     // filter SRID = EPSG:3857, app CRS = EPSG:28992 → must throw
-    String cql = "INTERSECTS(geometry, SRID=3857;POLYGON((3.3 51.5, 7.2 51.5, 7.2 53.5, 3.3 53.5, 3.3 51.5)))";
+    String ecql = "INTERSECTS(geometry, SRID=3857;POLYGON((3.3 51.5, 7.2 51.5, 7.2 53.5, 3.3 53.5, 3.3 51.5)))";
     assertThrows(
         UnsupportedOperationException.class,
-        () -> FilterUtil.parseFilter(cql, RD_NL_APPLICATION, RDFeatureSource));
+        () -> FilterUtil.parseFilter(ecql, RD_NL_APPLICATION, RDFeatureSource));
   }
 
   @Test
   void multiple_different_srids_in_filter_throws() {
-    String cql =
+    String ecql =
         "INTERSECTS(geometry, SRID=28992;POINT(100000 400000)) OR INTERSECTS(geometry, SRID=3857;POINT(624339 6822408))";
     assertThrows(
         UnsupportedOperationException.class,
-        () -> FilterUtil.parseFilter(cql, RD_NL_APPLICATION, RDFeatureSource));
+        () -> FilterUtil.parseFilter(ecql, RD_NL_APPLICATION, RDFeatureSource));
   }
 
   @Test
   void multiple_same_srids_in_filter_succeeds() throws CQLException, FactoryException {
     // Two INTERSECTS with identical SRIDs → no exception
-    String cql =
+    String ecql =
         "INTERSECTS(geometry, SRID=28992;POINT(100000 400000)) OR INTERSECTS(geometry, SRID=28992;POINT(200000 500000))";
 
-    Filter filter = FilterUtil.parseFilter(cql, RD_NL_APPLICATION, RDFeatureSource);
+    Filter filter = FilterUtil.parseFilter(ecql, RD_NL_APPLICATION, RDFeatureSource);
     assertNotNull(filter);
     assertInstanceOf(Or.class, filter, "Filter should be an Or filter");
   }
@@ -146,6 +146,6 @@ class FilterUtilTest {
   void invalid_cql_throws_cql_exception() {
     assertThrows(
         CQLException.class,
-        () -> FilterUtil.parseFilter("NOT VALID CQL !!!", RD_NL_APPLICATION, RDFeatureSource));
+        () -> FilterUtil.parseFilter("NOT VALID ECQL !!!", RD_NL_APPLICATION, RDFeatureSource));
   }
 }

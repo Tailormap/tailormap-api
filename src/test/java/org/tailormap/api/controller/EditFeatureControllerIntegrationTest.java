@@ -34,6 +34,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ import org.tailormap.api.geotools.processing.GeometryProcessor;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(value = ExecutionMode.SAME_THREAD, reason = "we need specific ordering of tests")
+// Inserts and deletes features in the spatial test databases, so it must not run concurrently with tests that
+// count or export those features
+@Isolated
 class EditFeatureControllerIntegrationTest {
   /** bestuurlijke gebieden WFS; provincies. */
   private static final String provinciesWFS =

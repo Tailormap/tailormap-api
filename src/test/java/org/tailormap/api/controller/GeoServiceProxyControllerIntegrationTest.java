@@ -493,7 +493,14 @@ class GeoServiceProxyControllerIntegrationTest {
         + "/"
         + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
     try {
-      mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isUnauthorized());
+      // An upstream 401 must not be passed on, it would look like the user is not logged in to Tailormap
+      mockMvc.perform(get(path).with(setServletPath(path)))
+          .andExpect(status().isBadGateway())
+          .andExpect(jsonPath("$.code").value(502))
+          .andExpect(
+              jsonPath("$.message")
+                  .value(
+                      "Proxied service 3d_utrecht_proxied_auth did not accept the configured credentials"));
     } finally {
       geoService.getAuthentication().setPassword(originalPassword);
     }

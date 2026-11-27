@@ -184,6 +184,8 @@ public class PopulateTestData {
   private int timeout;
 
   private static final String PROVINCIE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Provinciegebied";
+  private static final String GEMEENTE_FEATURE_TYPE_NAME = "bestuurlijkegebieden:Gemeentegebied";
+  private static final String NWB_WEGVAKKEN_FEATURE_TYPE_NAME = "nwbwegen:wegvakken";
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -584,6 +586,42 @@ public class PopulateTestData {
             .setPublished(true)
             .setTitle("Bestuurlijke gebieden (proxied met auth)"),
         new GeoService()
+            .setId("pdok-rws-nwbwegen")
+            .setProtocol(WMS)
+            .setUrl("https://service.pdok.nl/rws/nwbwegen/wms/v1_0?service=WMS")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings()
+                // No attribution required: service is CC0
+                .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+            .setPublished(true)
+            .setTitle("PDOK RWS Nationaal Wegenbestand"),
+        // The same WMS services as above, with layers linked to a WFS feature source with an explicit
+        // VERSION=1.1.0 in the URL
+        new GeoService()
+            .setId("pdok-bestuurlijkegebieden-wfs11")
+            .setProtocol(WMS)
+            .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wms/v1_0?service=WMS")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings()
+                // No attribution required: service is CC0
+                .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+            .setPublished(true)
+            .setTitle("PDOK Kadaster bestuurlijke gebieden (WFS 1.1.0)"),
+        new GeoService()
+            .setId("geoserver-wfs11")
+            .setProtocol(WMS)
+            .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setPublished(true)
+            .setTitle("Test GeoServer (WFS 1.1.0)"),
+        new GeoService()
+            .setId("geoserver-wfs20")
+            .setProtocol(WMS)
+            .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setPublished(true)
+            .setTitle("Test GeoServer (WFS 2.0.0)"),
+        new GeoService()
             .setId("3dbag_utrecht")
             .setProtocol(TILES3D)
             .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/344.json")
@@ -682,6 +720,32 @@ public class PopulateTestData {
           .id(geoService.getId()));
     }
 
+    TMFeatureSource bestuurlijkeGebiedenWfs = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
+        .setTitle("Bestuurlijke gebieden")
+        .setNotes(
+            "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK).");
+    // A large WFS (wegvakken has over 1.6 million features) for testing paging and counting. No VERSION in the
+    // URL, as configured by a user who reported an empty attribute list
+    TMFeatureSource nwbWfs = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/rws/nwbwegen/wfs/v1_0?service=WFS")
+        .setTitle("Nationaal Wegenbestand (NWB)");
+
+    TMFeatureSource bestuurlijkeGebiedenWfs11 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=1.1.0")
+        .setTitle("Bestuurlijke gebieden (WFS 1.1.0)");
+    TMFeatureSource geoServerWfs11 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?VERSION=1.1.0")
+        .setTitle("Test GeoServer (WFS 1.1.0)");
+    TMFeatureSource geoServerWfs20 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?VERSION=2.0.0")
+        .setTitle("Test GeoServer (WFS 2.0.0)");
+
     List<TMFeatureSource> testWFS = List.of(
         //            "demo",
         new TMFeatureSource()
@@ -696,7 +760,12 @@ public class PopulateTestData {
             .setTitle("WFS for Test GeoServer")
             .setLinkedService(geoServiceRepository
                 .findById("snapshot-geoserver")
-                .orElseThrow()));
+                .orElseThrow()),
+        bestuurlijkeGebiedenWfs,
+        nwbWfs,
+        bestuurlijkeGebiedenWfs11,
+        geoServerWfs11,
+        geoServerWfs20);
     featureSourceRepository.saveAll(testWFS);
 
     CatalogNode wfsFeatureSourceCatalogNode =
@@ -783,31 +852,9 @@ public class PopulateTestData {
             .setAuthentication(new ServiceAuthentication()
                 .method(ServiceAuthentication.MethodEnum.PASSWORD)
                 .username("geodata")
-                .password(geodataPassword)),
-        "pdok-kadaster-bestuurlijkegebieden",
-        new TMFeatureSource()
-            .setProtocol(TMFeatureSource.Protocol.WFS)
-            .setUrl(
-                "https://service.pdok.nl/kadaster/brk-bestuurlijke-gebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
-            .setTitle("Bestuurlijke gebieden")
-            .setNotes(
-                "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
+                .password(geodataPassword)));
     featureSourceRepository.saveAll(featureSources.values());
 
-    new WFSFeatureSourceHelper()
-        .loadCapabilities(
-            featureSources.get("pdok-kadaster-bestuurlijkegebieden"),
-            timeout,
-            (CapabilitiesLoadingProgressReporting) event -> {
-              logger.debug("WFS loading: {}", event);
-            },
-            new CapabilitiesLoadingEvent()
-                .id("pdok-kadaster-bestuurlijkegebieden")
-                .title(featureSources
-                    .get("pdok-kadaster-bestuurlijkegebieden")
-                    .getTitle())
-                .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
-                .message("Loading capabilities for pdok-kadaster-bestuurlijkegebieden feature source"));
     geoServiceRepository.findById("pdok-kadaster-bestuurlijkegebieden").ifPresent(geoService -> {
       geoService
           .getSettings()
@@ -818,11 +865,23 @@ public class PopulateTestData {
                   .description("The administrative boundary of Dutch Provinces, connected to a WFS.")
                   .descriptionInPopup(true)
                   .featureType(new FeatureTypeRef()
-                      .featureSourceId(featureSources
-                          .get("pdok-kadaster-bestuurlijkegebieden")
-                          .getId())
+                      .featureSourceId(bestuurlijkeGebiedenWfs.getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS)"));
+      // For testing paging: more features than fit on one page, and the WFS 2.0.0 server (MapServer) does not
+      // return numberMatched in a page, so the total comes from a separate hits request
+      geoService
+          .getSettings()
+          .getLayerSettings()
+          .get("Gemeentegebied")
+          .title("Gemeentegebied (WFS)")
+          .description("The administrative boundary of Dutch Municipalities, connected to a WFS 2.0.0 which"
+              + " does not return the total number of features.\n\n[logo]("
+              + UploadsService.UPLOAD_MARKDOWN_SCHEME + pdokLogo.getId() + ")")
+          .descriptionInPopup(true)
+          .featureType(new FeatureTypeRef()
+              .featureSourceId(bestuurlijkeGebiedenWfs.getId())
+              .featureTypeName(GEMEENTE_FEATURE_TYPE_NAME));
       geoServiceRepository.save(geoService);
     });
 
@@ -834,11 +893,61 @@ public class PopulateTestData {
               "Provinciegebied",
               new GeoServiceLayerSettings()
                   .featureType(new FeatureTypeRef()
-                      .featureSourceId(featureSources
-                          .get("pdok-kadaster-bestuurlijkegebieden")
-                          .getId())
+                      .featureSourceId(bestuurlijkeGebiedenWfs.getId())
                       .featureTypeName(PROVINCIE_FEATURE_TYPE_NAME))
                   .title("Provinciegebied (WFS, proxied met auth)"));
+      geoServiceRepository.save(geoService);
+    });
+
+    geoServiceRepository.findById("pdok-rws-nwbwegen").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "wegvakken",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(nwbWfs.getId())
+                      .featureTypeName(NWB_WEGVAKKEN_FEATURE_TYPE_NAME))
+                  .title("Wegvakken (NWB, WFS)"));
+      geoServiceRepository.save(geoService);
+    });
+
+    // For testing basic functionality such as paging with WFS 1.1.0, with both MapServer and GeoServer
+    geoServiceRepository.findById("pdok-bestuurlijkegebieden-wfs11").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "Gemeentegebied",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(bestuurlijkeGebiedenWfs11.getId())
+                      .featureTypeName(GEMEENTE_FEATURE_TYPE_NAME))
+                  .title("Gemeentegebied (WFS 1.1.0)"));
+      geoServiceRepository.save(geoService);
+    });
+    geoServiceRepository.findById("geoserver-wfs11").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "postgis:begroeidterreindeel",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(geoServerWfs11.getId())
+                      .featureTypeName("postgis:begroeidterreindeel"))
+                  .title("begroeidterreindeel (WFS 1.1.0)"));
+      geoServiceRepository.save(geoService);
+    });
+    // GeoServer outputs circular arcs from the PostGIS BGT data as gml:ArcString in GML 3 (WFS 1.1.0 and 2.0.0)
+    geoServiceRepository.findById("geoserver-wfs20").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "postgis:begroeidterreindeel",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(geoServerWfs20.getId())
+                      .featureTypeName("postgis:begroeidterreindeel"))
+                  .title("begroeidterreindeel (WFS 2.0.0)"));
       geoServiceRepository.save(geoService);
     });
 
@@ -878,20 +987,6 @@ public class PopulateTestData {
                         .id(fs.getId().toString())
                         .title(fs.getTitle())
                         .message("Loading JDBC capabilities for " + fs.getTitle()
-                            + " feature source"));
-          } else if (fs.getProtocol() == TMFeatureSource.Protocol.WFS) {
-            new WFSFeatureSourceHelper()
-                .loadCapabilities(
-                    fs,
-                    timeout,
-                    (CapabilitiesLoadingProgressReporting) event -> {
-                      logger.debug("WFS loading: {}", event);
-                    },
-                    new CapabilitiesLoadingEvent()
-                        .id(fs.getId().toString())
-                        .title(fs.getTitle())
-                        .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
-                        .message("Loading WFS capabilities for " + fs.getTitle()
                             + " feature source"));
           }
         } catch (Exception e) {
@@ -938,7 +1033,7 @@ https://postgis.net/brand.svg""")
                       .description("""
 This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).
 
-https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png""")
+https://upload.wikimedia.org/wikipedia/commons/6/69/Microsoft_SQL_Server_Logo.png""")
                       .featureType(new FeatureTypeRef()
                           .featureSourceId(featureSources
                               .get("sqlserver")
@@ -962,7 +1057,7 @@ https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communit
                           .featureTypeName("osm_polygon")))));
     }
 
-    featureSources.get("pdok-kadaster-bestuurlijkegebieden").getFeatureTypes().stream()
+    bestuurlijkeGebiedenWfs.getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals(PROVINCIE_FEATURE_TYPE_NAME))
         .findFirst()
         .ifPresent(ft -> {
@@ -1262,34 +1357,31 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .id("root")
                 .root(true)
                 .title("Layers")
+                .childrenIds(List.of("lvl:wfs", "lvl:jdbc", "lvl:proxied", "lvl:archeo")))
+            // WFS feature sources for testing paging, counting and sorting
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("lvl:wfs")
+                .title("WFS")
+                .description(
+                    "Layers with a WFS feature source, from MapServer (PDOK) and GeoServer, with WFS 1.1.0 and 2.0.0.")
                 .childrenIds(List.of(
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
-                    "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
-                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
-                    "lyr:snapshot-geoserver:postgis:bak",
-                    "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
-                    "lyr:snapshot-geoserver:sqlserver:wegdeel",
-                    "lyr:snapshot-geoserver:oracle:WATERDEEL",
-                    "lyr:snapshot-geoserver:BGT",
-                    "lvl:proxied",
-                    "lvl:osm",
-                    "lvl:archeo")))
+                    "lyr:pdok-rws-nwbwegen:wegvakken",
+                    "lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied",
+                    "lyr:geoserver-wfs11:postgis:begroeidterreindeel",
+                    "lyr:geoserver-wfs20:postgis:begroeidterreindeel")))
+            // WFS 2.0.0 (MapServer), for testing hidden functionality: feature info, attribute list and
+            // export are hidden in this app (see the app layer settings)
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied")
                 .serviceId("pdok-kadaster-bestuurlijkegebieden")
                 .layerName("Provinciegebied")
                 .visible(true))
-            // This is a layer from proxied service with auth that should also not be
-            // visible, but it has a feature source attached, should also be denied for
-            // features access and not be included in TOC
-            .addLayerNodesItem(new AppTreeLayerNode()
-                .objectType("AppTreeLayerNode")
-                .id("lyr:bestuurlijkegebieden-proxied:Provinciegebied")
-                .serviceId("bestuurlijkegebieden-proxied")
-                .layerName("Provinciegebied")
-                .visible(false))
+            // WFS 2.0.0 (MapServer) which does not return numberMatched, for testing paging with an
+            // unknown total
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied")
@@ -1298,34 +1390,88 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .visible(true))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
+                .id("lyr:pdok-rws-nwbwegen:wegvakken")
+                .serviceId("pdok-rws-nwbwegen")
+                .layerName("wegvakken")
+                .visible(false))
+            // WFS 1.1.0 (MapServer)
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied")
+                .serviceId("pdok-bestuurlijkegebieden-wfs11")
+                .layerName("Gemeentegebied")
+                .visible(false))
+            // WFS 1.1.0 (GeoServer)
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:geoserver-wfs11:postgis:begroeidterreindeel")
+                .serviceId("geoserver-wfs11")
+                .layerName("postgis:begroeidterreindeel")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:geoserver-wfs20:postgis:begroeidterreindeel")
+                .serviceId("geoserver-wfs20")
+                .layerName("postgis:begroeidterreindeel")
+                .visible(false))
+            // JDBC feature sources for testing the different spatial databases
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("lvl:jdbc")
+                .title("JDBC")
+                .description("Layers with a JDBC feature source, from PostGIS, SQL Server and Oracle.")
+                .childrenIds(List.of(
+                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
+                    "lyr:snapshot-geoserver:postgis:bak",
+                    "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
+                    "lyr:snapshot-geoserver:postgis:osm_polygon",
+                    "lyr:snapshot-geoserver:sqlserver:wegdeel",
+                    "lyr:snapshot-geoserver:oracle:WATERDEEL",
+                    "lyr:snapshot-geoserver:BGT")))
+            // PostGIS: editing, preset filters, selected styles, hidden and read-only attributes, search
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")
                 .serviceId("snapshot-geoserver")
                 .layerName("postgis:begroeidterreindeel")
                 .visible(true))
+            // PostGIS: description from the WMS layer abstract, attributes hidden in the feature type
+            // settings, not editable
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:bak")
                 .serviceId("snapshot-geoserver")
                 .layerName("postgis:bak")
                 .visible(false))
+            // PostGIS points: attachments, read-only attribute, slider filter, search
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:kadastraal_perceel")
                 .serviceId("snapshot-geoserver")
                 .layerName("postgis:kadastraal_perceel")
                 .visible(false))
+            // PostGIS in EPSG:3857: layer bounds reprojection, editable without attachment attributes
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:snapshot-geoserver:postgis:osm_polygon")
+                .serviceId("snapshot-geoserver")
+                .layerName("postgis:osm_polygon")
+                .visible(false))
+            // SQL Server: editing, search
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:sqlserver:wegdeel")
                 .serviceId("snapshot-geoserver")
                 .layerName("sqlserver:wegdeel")
                 .visible(true))
+            // Oracle: editing, title, description, opacity and attribution from the app layer settings
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:oracle:WATERDEEL")
                 .serviceId("snapshot-geoserver")
                 .layerName("oracle:WATERDEEL")
                 .visible(true))
+            // WMS layer group combining the layers above, with authorization rules
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:BGT")
@@ -1336,23 +1482,24 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .objectType("AppTreeLevelNode")
                 .id("lvl:proxied")
                 .title("Proxied")
-                .childrenIds(List.of("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")))
+                .description("Layers from services which are proxied by Tailormap.")
+                .childrenIds(List.of(
+                    "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel",
+                    "lyr:bestuurlijkegebieden-proxied:Provinciegebied")))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
                 .serviceId("snapshot-geoserver-proxied")
                 .layerName("postgis:begroeidterreindeel")
                 .visible(false))
-            .addLayerNodesItem(new AppTreeLevelNode()
-                .objectType("AppTreeLevelNode")
-                .id("lvl:osm")
-                .title("OSM")
-                .childrenIds(List.of("lyr:snapshot-geoserver:postgis:osm_polygon")))
+            // This is a layer from proxied service with auth that should also not be
+            // visible, but it has a feature source attached, should also be denied for
+            // features access and not be included in TOC
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
-                .id("lyr:snapshot-geoserver:postgis:osm_polygon")
-                .serviceId("snapshot-geoserver")
-                .layerName("postgis:osm_polygon")
+                .id("lyr:bestuurlijkegebieden-proxied:Provinciegebied")
+                .serviceId("bestuurlijkegebieden-proxied")
+                .layerName("Provinciegebied")
                 .visible(false))
             .addLayerNodesItem(new AppTreeLevelNode()
                 .objectType("AppTreeLevelNode")
@@ -1424,7 +1571,15 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 new AppLayerSettings().editable(false))
             .putLayerSettingsItem(
                 "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
+                // Overrides the WFS title and description of the service layer settings, because WFS
+                // functionality is hidden in this app
                 new AppLayerSettings()
+                    .title("Provinciegebied (reference layer)")
+                    .description(
+                        "The administrative boundary of Dutch Provinces, connected to a WFS. Feature"
+                            + " info, the attribute list and export are hidden for this layer, but it can still be"
+                            + " used as reference layer for spatial filtering, for snapping and for copying"
+                            + " geometries when drawing or editing.")
                     .hiddenFunctionality(Set.of(FEATURE_INFO, ATTRIBUTE_LIST, EXPORT)))
             .addFilterGroupsItem(new FilterGroup()
                 .id("filtergroup1")

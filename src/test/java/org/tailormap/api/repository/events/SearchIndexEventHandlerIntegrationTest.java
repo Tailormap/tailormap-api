@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.Issue;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.tailormap.api.repository.SearchIndexRepository;
 
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
+// Validates the index task of a search index, which TaskAdminControllerIntegrationTest deletes
+@ResourceLock("scheduler-index-tasks")
 class SearchIndexEventHandlerIntegrationTest {
   @Autowired
   SearchIndexEventHandler searchIndexEventHandler;
