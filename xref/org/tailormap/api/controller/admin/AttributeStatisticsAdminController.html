@@ -65,7 +65,7 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * @param featureTypeId the feature type id for which to retrieve statistics</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @param attributeName the name of the attribute</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   * @param filter an optional CQL filter to apply to the features before calculating statistics</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   * @param filter an optional ECQL filter to apply to the features before calculating statistics</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   * @return @return the calculated statistics; fields may be null when not applicable or when no features match</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   * @throws ResponseStatusException if the feature type or attribute does not exist, or if a bad request was</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   *     submitted</em>
@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>    @Operation(
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>        summary = <span class="jxr_string">"Retrieve attribute statistics for a feature type"</span>,
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>        description = <span class="jxr_string">"Retrieve statistics (min, max, average, sum, count) for a given attribute of a feature type."</span>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>            + <span class="jxr_string">" Optionally, a CQL filter can be applied to filter the features before calculating the"</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            + <span class="jxr_string">" Optionally, an ECQL filter can be applied to filter the features before calculating the"</span>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>            + <span class="jxr_string">" statistics."</span>)
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @GetMapping(
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>        path = <span class="jxr_string">"${tailormap-api.admin.base-path}/statistics/{featureTypeId}/{attributeName}"</span>,

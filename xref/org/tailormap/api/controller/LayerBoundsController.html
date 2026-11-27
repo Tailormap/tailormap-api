@@ -82,7 +82,7 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>        @ModelAttribute GeoService service,
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>        @ModelAttribute GeoServiceLayer layer,
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>        @ModelAttribute Application application,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>        @RequestParam(required = false, name = <span class="jxr_string">"filter"</span>) String filterCQL) {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        @RequestParam(required = false, name = <span class="jxr_string">"filter"</span>) String filterECQL) {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">if</strong> (layer == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Can't find layer "</span> + appTreeLayerNode);
@@ -99,9 +99,9 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>        Query query = <strong class="jxr_keyword">new</strong> Query(tmft.getName());
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>        query.setHandle(<span class="jxr_string">"calculateLayerBounds"</span>);
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">if</strong> (filterCQL != <strong class="jxr_keyword">null</strong> &amp;&amp; !filterCQL.isEmpty()) {
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">if</strong> (filterECQL != <strong class="jxr_keyword">null</strong> &amp;&amp; !filterECQL.isEmpty()) {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>            Filter parsedFilter = FilterUtil.parseFilter(filterCQL, application, featureSource);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>            Filter parsedFilter = FilterUtil.parseFilter(filterECQL, application, featureSource);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>            query.setFilter(parsedFilter);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          } <strong class="jxr_keyword">catch</strong> (CQLException | FactoryException | UnsupportedOperationException e) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>            <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
@@ -109,7 +109,7 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>       }
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>       <strong class="jxr_keyword">if</strong> ((filterCQL == <strong class="jxr_keyword">null</strong> || filterCQL.isBlank())
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>       <strong class="jxr_keyword">if</strong> ((filterECQL == <strong class="jxr_keyword">null</strong> || filterECQL.isBlank())
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>           &amp;&amp; featureSource.getDataStore() instanceof JDBCDataStore jdbcDataStore) {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         <em class="jxr_comment">// turn off getting optimised/inaccurate bounds</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         logger.debug(
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             <span class="jxr_string">"No features found for layer "</span>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>                 + appTreeLayerNode.getLayerName()
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>                 + <span class="jxr_string">" and filter '"</span>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>                 + filterCQL
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                 + filterECQL
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 + <span class="jxr_string">"'"</span>);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>       }
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> 
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.ok(GeoToolsHelper.fromEnvelope(envelope));
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     } <strong class="jxr_keyword">catch</strong> (FactoryException | IOException e) {
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>       logger.error(<span class="jxr_string">"Error calculating bounds for layer {} and filter '{}'"</span>, appTreeLayerNode, filterCQL, e);
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>       logger.error(<span class="jxr_string">"Error calculating bounds for layer {} and filter '{}'"</span>, appTreeLayerNode, filterECQL, e);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>           HttpStatus.INTERNAL_SERVER_ERROR,
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>           <span class="jxr_string">"Error calculating layer bounds for: "</span> + appTreeLayerNode.getLayerName() + <span class="jxr_string">". "</span> + e.getMessage(),
