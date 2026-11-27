@@ -18,8 +18,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.junitpioneer.jupiter.Stopwatch;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -38,6 +41,10 @@ import org.tailormap.api.persistence.Group;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.SAME_THREAD)
 @Order(SOLR_REINDEXING_INTEGRATION_TEST_ORDER)
+// Creates one-time index tasks that TaskAdminControllerIntegrationTest would count
+@ResourceLock("scheduler-index-tasks")
+// Clears and reindexes Solr documents that SearchControllerIntegrationTest searches
+@ResourceLock("solr-search-index-documents")
 class SolrAdminControllerRecreatingIndexIntegrationTest {
   @Autowired
   private WebApplicationContext context;
@@ -47,9 +54,14 @@ class SolrAdminControllerRecreatingIndexIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
+  @Autowired
+  private Scheduler scheduler;
+
   @BeforeAll
-  void initialize() {
+  void initialize() throws SchedulerException {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+    // The scheduler is not started automatically in tests, start it to execute the index tasks
+    scheduler.start();
   }
 
   @Test
