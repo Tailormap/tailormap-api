@@ -615,6 +615,13 @@ public class PopulateTestData {
             .setPublished(true)
             .setTitle("Test GeoServer (WFS 1.1.0)"),
         new GeoService()
+            .setId("geoserver-wfs20")
+            .setProtocol(WMS)
+            .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setPublished(true)
+            .setTitle("Test GeoServer (WFS 2.0.0)"),
+        new GeoService()
             .setId("3dbag_utrecht")
             .setProtocol(TILES3D)
             .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/344.json")
@@ -734,6 +741,10 @@ public class PopulateTestData {
         .setProtocol(TMFeatureSource.Protocol.WFS)
         .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?VERSION=1.1.0")
         .setTitle("Test GeoServer (WFS 1.1.0)");
+    TMFeatureSource geoServerWfs20 = new TMFeatureSource()
+        .setProtocol(TMFeatureSource.Protocol.WFS)
+        .setUrl("https://snapshot.tailormap.nl/geoserver/wfs?VERSION=2.0.0")
+        .setTitle("Test GeoServer (WFS 2.0.0)");
 
     List<TMFeatureSource> testWFS = List.of(
         //            "demo",
@@ -753,7 +764,8 @@ public class PopulateTestData {
         bestuurlijkeGebiedenWfs,
         nwbWfs,
         bestuurlijkeGebiedenWfs11,
-        geoServerWfs11);
+        geoServerWfs11,
+        geoServerWfs20);
     featureSourceRepository.saveAll(testWFS);
 
     CatalogNode wfsFeatureSourceCatalogNode =
@@ -923,6 +935,19 @@ public class PopulateTestData {
                       .featureSourceId(geoServerWfs11.getId())
                       .featureTypeName("postgis:begroeidterreindeel"))
                   .title("begroeidterreindeel (WFS 1.1.0)"));
+      geoServiceRepository.save(geoService);
+    });
+    // GeoServer outputs circular arcs from the PostGIS BGT data as gml:ArcString in GML 3 (WFS 1.1.0 and 2.0.0)
+    geoServiceRepository.findById("geoserver-wfs20").ifPresent(geoService -> {
+      geoService
+          .getSettings()
+          .putLayerSettingsItem(
+              "postgis:begroeidterreindeel",
+              new GeoServiceLayerSettings()
+                  .featureType(new FeatureTypeRef()
+                      .featureSourceId(geoServerWfs20.getId())
+                      .featureTypeName("postgis:begroeidterreindeel"))
+                  .title("begroeidterreindeel (WFS 2.0.0)"));
       geoServiceRepository.save(geoService);
     });
 
@@ -1345,7 +1370,8 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                     "lyr:pdok-rws-nwbwegen:wegvakken",
                     "lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied",
-                    "lyr:geoserver-wfs11:postgis:begroeidterreindeel")))
+                    "lyr:geoserver-wfs11:postgis:begroeidterreindeel",
+                    "lyr:geoserver-wfs20:postgis:begroeidterreindeel")))
             // WFS 2.0.0 (MapServer), for testing hidden functionality: feature info, attribute list and
             // export are hidden in this app (see the app layer settings)
             .addLayerNodesItem(new AppTreeLayerNode()
@@ -1380,6 +1406,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .objectType("AppTreeLayerNode")
                 .id("lyr:geoserver-wfs11:postgis:begroeidterreindeel")
                 .serviceId("geoserver-wfs11")
+                .layerName("postgis:begroeidterreindeel")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:geoserver-wfs20:postgis:begroeidterreindeel")
+                .serviceId("geoserver-wfs20")
                 .layerName("postgis:begroeidterreindeel")
                 .visible(false))
             // JDBC feature sources for testing the different spatial databases

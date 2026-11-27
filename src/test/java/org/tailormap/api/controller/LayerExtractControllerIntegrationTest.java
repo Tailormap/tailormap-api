@@ -28,6 +28,7 @@ import static org.tailormap.api.controller.LayerExtractController.ExtractOutputF
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.GEOPACKAGE;
 import static org.tailormap.api.controller.LayerExtractController.ExtractOutputFormat.SHAPE;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelWfs11;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 import java.io.ByteArrayInputStream;
@@ -278,6 +279,33 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
       assertThat(
           sseResult.getResponse().getContentAsString(),
           containsString("Property 'does_not_exist' could not be found in begroeidterreindeel"));
+    });
+  }
+
+  /**
+   * The GML 3.1.1 parser GeoTools uses for WFS 1.1.0 can't read circular arcs and throws an
+   * UnsupportedOperationException, check that the extract fails with an error event.
+   */
+  @Test
+  void curved_geometry_with_wfs_1_1_0_should_fail_on_extract() throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelWfs11 + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", "csv")
+            // A feature with circular arcs in its geometry
+            .param("filter", "identificatie = 'G0344.96db69933eb9484786910579fa11715f'")
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isAccepted());
+
+    Awaitility.await().atMost(30, SECONDS).untilAsserted(() -> {
+      final String stream = sseResult.getResponse().getContentAsString();
+      assertThat(stream, containsString("An error occurred during extract creation"));
+      assertThat(stream, containsString("Curve segment ArcString is not supported"));
     });
   }
 

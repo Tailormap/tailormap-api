@@ -14,6 +14,8 @@ public interface TestUrls {
   String layerWegdeelSqlServer = "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel";
   String layerOsmPolygonPostgis = "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon";
   String layerProxiedWithAuthInPublicApp = "/app/default/layer/lyr:bestuurlijkegebieden-proxied:Provinciegebied";
+  String layerBegroeidTerreindeelWfs11 = "/app/default/layer/lyr:geoserver-wfs11:postgis:begroeidterreindeel";
+  String layerBegroeidTerreindeelWfs20 = "/app/default/layer/lyr:geoserver-wfs20:postgis:begroeidterreindeel";
   String layerGemeentegebiedWfs11 = "/app/default/layer/lyr:pdok-bestuurlijkegebieden-wfs11:Gemeentegebied";
   String layerKadastraalPerceel = "/app/default/layer/lyr:snapshot-geoserver:postgis:kadastraal_perceel";
 }

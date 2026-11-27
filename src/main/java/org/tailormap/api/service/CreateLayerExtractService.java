@@ -42,7 +42,6 @@ import org.geotools.data.csv.CSVDataStoreFactory;
 import org.geotools.data.geojson.store.GeoJSONDataStoreFactory;
 import org.geotools.data.shapefile.ShapefileDumper;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.SchemaException;
 import org.geotools.geopkg.FeatureEntry;
 import org.geotools.geopkg.GeoPackage;
 import org.geotools.util.factory.GeoTools;
@@ -130,6 +129,16 @@ public class CreateLayerExtractService {
 
   public String getExportFilesLocation() {
     return exportFilesLocation;
+  }
+
+  /**
+   * Log an exception that occurred while creating an extract and report it to the client. Any exception must be
+   * reported, because the extract is created asynchronously and the client would otherwise wait indefinitely.
+   */
+  private void emitExtractError(@NonNull String clientId, @NonNull TMFeatureType featureType, Exception e) {
+    logger.error("Creating extract of feature type {} failed", featureType.getName(), e);
+    emitError(
+        clientId, e.getMessage() != null ? e.getMessage() : e.getClass().getName());
   }
 
   private void emitError(@NonNull String clientId, String details) {
@@ -326,9 +335,8 @@ public class CreateLayerExtractService {
       geopkg.createSpatialIndex(entry);
       geopkg.close();
       this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
-    } catch (SchemaException | IOException | IllegalArgumentException e) {
-      emitError(clientId, e.getMessage());
-      logger.error("Creating extract failed", e);
+    } catch (Exception e) {
+      emitExtractError(clientId, inputTmFeatureType, e);
     } finally {
       if (inputFeatureSource != null) {
         try {
@@ -408,9 +416,8 @@ public class CreateLayerExtractService {
         this.emitError(clientId, "Output datastore is not a SimpleFeatureStore, cannot write features");
         logger.error("Output datastore is not a SimpleFeatureStore, cannot write features");
       }
-    } catch (IOException | SchemaException | IllegalArgumentException | NullPointerException e) {
-      emitError(clientId, e.getMessage());
-      logger.error("Creating extract failed", e);
+    } catch (Exception e) {
+      emitExtractError(clientId, inputTmFeatureType, e);
     } finally {
       if (outputDataStore != null) {
         outputDataStore.dispose();
@@ -561,9 +568,8 @@ public class CreateLayerExtractService {
 
       zipService.zipDirectory(outputDirectory.toPath(), outputFile.toPath());
       this.emitProgress(clientId, outputFileName, 100, true, "Extract completed successfully");
-    } catch (IOException | IllegalArgumentException e) {
-      emitError(clientId, e.getMessage());
-      logger.error("Creating extract failed", e);
+    } catch (Exception e) {
+      emitExtractError(clientId, inputTmFeatureType, e);
     } finally {
       if (outputDirectory != null) {
         try {
