@@ -27,9 +27,7 @@ jobs:
           cache: 'maven'
 
       - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5.1
-        with:
-          maven-version: '3.9.16'
+        uses: ./.github/actions/setup-maven
 
       - name: 'Login to b3p.nl'
         uses: docker/login-action@v4
