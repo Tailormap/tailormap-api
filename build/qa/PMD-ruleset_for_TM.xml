@@ -244,4 +244,33 @@ SPDX-License-Identifier: MIT
             </property>
         </properties>
     </rule>
+    <rule name="UseSecureXmlFactories" language="java"
+          message="Use SecureXmlFactories instead of the JAXP newInstance() methods to prevent XXE"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>XML parsers created with the JAXP newInstance() methods load external DTDs and entities, which
+            allows XXE attacks with XML from external sources. Use the hardened factories from SecureXmlFactories, or
+            add hardening there for a new kind of factory.</description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //MethodCall[pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newNSInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.DocumentBuilderFactory#newDefaultNSInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newNSInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.parsers.SAXParserFactory#newDefaultNSInstance()')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newFactory(_*)')
+                  or pmd-java:matchesSig('javax.xml.stream.XMLInputFactory#newDefaultFactory()')
+                  or pmd-java:matchesSig('javax.xml.transform.TransformerFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.transform.TransformerFactory#newDefaultInstance()')
+                  or pmd-java:matchesSig('javax.xml.validation.SchemaFactory#newInstance(_*)')
+                  or pmd-java:matchesSig('javax.xml.validation.SchemaFactory#newDefaultInstance()')]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

@@ -103,6 +103,8 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
   (PMD rule `UseAppRestController`).
 - **Filters**: Parse ECQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)` (PMD rule
   `UseFilterUtil`). Don't use the GeoTools `CQL` class at all, ECQL is a superset (PMD rule `NoCQL`).
+- **XML parsing**: Create XML parsers with `SecureXmlFactories`, not the JAXP `newInstance()` methods, to prevent XXE
+  (PMD rule `UseSecureXmlFactories`).
 - **Secure Coding**: Follow secure coding practices to protect against common threats like SQL injection and cross-site
   scripting (XSS).
 
