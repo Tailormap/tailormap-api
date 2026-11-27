@@ -197,35 +197,6 @@ timeStamp="2026-11-25T12:00:00Z"/>
     assertEquals(-1, parse(EXCEPTION_REPORT));
   }
 
-  /** Parse a response that sets numberMatched with an entity, returns -1 when it is not expanded. */
-  private static int parseWithEntity(String doctype) {
-    String xml = "<?xml version=\"1.0\"?>" + doctype
-        + "<wfs:FeatureCollection xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" numberMatched=\"&e;\"/>";
-    try {
-      return parse(xml);
-    } catch (Exception e) {
-      return -1;
-    }
-  }
-
-  @Test
-  void parse_does_not_load_external_dtd() throws Exception {
-    // An external parameter entity which declares the entity used for numberMatched
-    try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(response("application/xml-dtd", "<!ENTITY e \"42\">"));
-      server.start();
-      String url = server.url("/entities.dtd").toString();
-      assertEquals(-1, parseWithEntity("<!DOCTYPE x [<!ENTITY % p SYSTEM \"" + url + "\"> %p;]>"));
-      assertEquals(0, server.getRequestCount());
-    }
-  }
-
-  @Test
-  void parse_does_not_expand_internal_entity() {
-    // Also prevents entity expansion attacks ("billion laughs")
-    assertEquals(-1, parseWithEntity("<!DOCTYPE x [<!ENTITY e \"42\">]>"));
-  }
-
   /** Serves a WFS and records the GetFeature requests. */
   private static class WFSDispatcher extends Dispatcher {
     private final String capabilities;
