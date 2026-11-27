@@ -17,7 +17,6 @@ import org.geotools.api.filter.expression.Function;
 import org.geotools.api.filter.sort.SortOrder;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,8 @@ public class UniqueValuesHelper {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       if (null != filter) {
         if (application == null) {
-          existingFilter = ECQL.toFilter(filter); // NOPMD - admin usage does not have application context
+          // Admin usage does not have application context
+          existingFilter = FilterUtil.parseFilter(filter);
         } else {
           existingFilter = FilterUtil.parseFilter(filter, application, fs);
         }

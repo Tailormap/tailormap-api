@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.Arguments;
@@ -68,6 +69,8 @@ import org.tailormap.api.viewer.model.AttachmentMetadata;
 @MethodSource("titlesAndNamesForFeatureSourcesAndFeatureTypes")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ContextConfiguration
+// Creates, fills and drops the same <featuretype>_attachments tables as FeatureTypeEventHandlerIntegrationTest
+@ResourceLock("feature-type-attachment-tables")
 class AttachmentsHelperIntegrationTest {
 
   @Autowired

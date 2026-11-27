@@ -31,10 +31,24 @@ public class FilterUtil {
   }
 
   /**
-   * Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+   * Parses an ECQL filter string into a GeoTools Filter without an application context, so without transforming
+   * geometries. Only for admin usage, use {@link #parseFilter(String, Application, SimpleFeatureSource)} for viewer
+   * requests.
+   *
+   * @param filterECQL the ECQL filter string
+   * @return the parsed filter
+   * @throws CQLException if the filter cannot be parsed
+   */
+  @SuppressWarnings("PMD.UseFilterUtil")
+  @NonNull public static Filter parseFilter(@NonNull String filterECQL) throws CQLException {
+    return ECQL.toFilter(filterECQL);
+  }
+
+  /**
+   * Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
    * needed/possible.
    *
-   * @param filterCQL the CQL filter string
+   * @param filterECQL the ECQL filter string
    * @param application the application context
    * @param featureSource the feature source
    * @return the parsed filter, with geometries transformed to the data source CRS if needed
@@ -44,14 +58,14 @@ public class FilterUtil {
    *     appear in the filter
    */
   @NonNull public static Filter parseFilter(
-      @NonNull String filterCQL, @NonNull Application application, @NonNull SimpleFeatureSource featureSource)
+      @NonNull String filterECQL, @NonNull Application application, @NonNull SimpleFeatureSource featureSource)
       throws CQLException, FactoryException, UnsupportedOperationException {
     @SuppressWarnings("PMD.UseFilterUtil")
-    Filter filter = ECQL.toFilter(filterCQL);
+    Filter filter = ECQL.toFilter(filterECQL);
     // if the filter is spatial/has EWKT geometries and the SRID is different from the data source
     // we need to transform the geometries to the data source CRS
     String foundSrid = null;
-    final Matcher sridMatcher = sridPattern.matcher(filterCQL);
+    final Matcher sridMatcher = sridPattern.matcher(filterECQL);
     while (sridMatcher.find()) {
       // only support the EPSG authority for now, so we replace the SRID= with EPSG: and remove the trailing ;
       String srid = sridMatcher.group().replaceAll("(?i)SRID=", "EPSG:").replace(";", "");

@@ -55,6 +55,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -230,6 +232,27 @@ class LayerExtractControllerIntegrationTest extends SseParsingUtils {
         .andExpect(status().isBadRequest())
         .andExpect(result -> assertThat(
             result.getResponse().getContentAsString(), containsString("Could not parse requested filter")));
+  }
+
+  /** Sorting on a hidden attribute (terminationdate), a non-existent attribute or the geometry is not allowed. */
+  @ParameterizedTest
+  @ValueSource(strings = {"terminationdate", "does_not_exist", "geom"})
+  void invalid_sort_by_should_return_bad_request_on_extract_request(String sortBy) throws Exception {
+    final String extractUrl = apiBasePath + layerBegroeidTerreindeelPostgis + extractPath + sseClientId;
+    mockMvc.perform(post(extractUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(extractUrl))
+            .with(csrf())
+            .param("attributes", "")
+            .param("outputFormat", "csv")
+            .param("sortBy", sortBy)
+            .acceptCharset(StandardCharsets.UTF_8)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+        .andExpect(status().isBadRequest())
+        .andExpect(result -> assertThat(
+            result.getResponse().getContentAsString(),
+            containsString("Requested sortBy attribute is not available")));
   }
 
   @Test

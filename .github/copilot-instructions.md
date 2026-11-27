@@ -90,12 +90,21 @@ Use snake case method names in test classes, e.g., `should_return_true_when_inpu
 - **Efficiency**: Suggest efficient algorithms and data structures to optimize performance.
 - **Resource Management**: Close resources properly to avoid memory leaks and improve performance, this can be achieved
   using `try-with-resources` constructs.
+- **GeoTools data stores**: Dispose a data store opened with `openGeoToolsFeatureSource()` in a `finally` block with
+  `featureSource.getDataStore().dispose()` (PMD rule `DisposeDataStore`).
 - **Scalability**: Consider scalability when designing features to ensure the system can handle increased load.
 - **Caching**: Recommend caching strategies to reduce latency and improve performance.
 
 ## Security Best Practices
 
 - **Input Validation**: Always validate user inputs to prevent security vulnerabilities.
+- **Access checks**: Controllers using the `Application`, `AppTreeLayerNode`, `GeoService` or `GeoServiceLayer` model
+  attributes must be annotated with `@AppRestController`, `AppRestControllerAdvice` resolves these and checks access
+  (PMD rule `UseAppRestController`).
+- **Filters**: Parse ECQL filters with `FilterUtil.parseFilter(...)`, not `ECQL.toFilter(...)` (PMD rule
+  `UseFilterUtil`). Don't use the GeoTools `CQL` class at all, ECQL is a superset (PMD rule `NoCQL`).
+- **XML parsing**: Create XML parsers with `SecureXmlFactories`, not the JAXP `newInstance()` methods, to prevent XXE
+  (PMD rule `UseSecureXmlFactories`).
 - **Secure Coding**: Follow secure coding practices to protect against common threats like SQL injection and cross-site
   scripting (XSS).
 
