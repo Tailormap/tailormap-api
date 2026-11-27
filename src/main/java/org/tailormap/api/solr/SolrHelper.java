@@ -325,7 +325,6 @@ public class SolrHelper implements AutoCloseable, Constants {
       // q.setMaxFeatures(Integer.MAX_VALUE);
       logger.trace("Indexing query: {}", q);
       SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
-      // Not simpleFeatureCollection.size(), which reads all features when the count is unknown (WFS)
       int count = WFSHitsCountUtil.getCount(fs, q);
       total = count >= 0 ? count : null;
       // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
