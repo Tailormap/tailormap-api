@@ -57,7 +57,6 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#parseFilter(java.lang.String)" tabindex="0">parseFilter(String)</a></li>
 <li><a href="#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" tabindex="0">parseFilter(String, Application, SimpleFeatureSource)</a></li>
 </ol>
 </li>
@@ -92,17 +91,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NonNull org.geotools.api.filter.Filter</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#parseFilter(java.lang.String)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Parses an ECQL filter string into a GeoTools Filter without an application context, so without transforming
-geometries.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NonNull org.geotools.api.filter.Filter</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  @NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
 needed/possible.</div>
 </div>
 </div>
@@ -123,40 +116,20 @@ needed/possible.</div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="parseFilter(java.lang.String)">
-<h3>parseFilter</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull org.geotools.api.filter.Filter</span>&nbsp;<span class="element-name">parseFilter</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL)</span>
-                                                           throws <span class="exceptions">org.geotools.filter.text.cql2.CQLException</span></div>
-<div class="block">Parses an ECQL filter string into a GeoTools Filter without an application context, so without transforming
-geometries. Only for admin usage, use <a href="#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)"><code>parseFilter(String, Application, SimpleFeatureSource)</code></a> for viewer
-requests.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>filterECQL</code> - the ECQL filter string</dd>
-<dt>Returns:</dt>
-<dd>the parsed filter</dd>
-<dt>Throws:</dt>
-<dd><code>org.geotools.filter.text.cql2.CQLException</code> - if the filter cannot be parsed</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
 <section class="detail" id="parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)">
 <h3>parseFilter</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull org.geotools.api.filter.Filter</span>&nbsp;<span class="element-name">parseFilter</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NonNull org.geotools.api.filter.Filter</span>&nbsp;<span class="element-name">parseFilter</span><wbr><span class="parameters">(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  @NonNull <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource)</span>
                                                            throws <span class="exceptions">org.geotools.filter.text.cql2.CQLException,
 org.geotools.api.referencing.FactoryException,
 <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></span></div>
-<div class="block">Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
 needed/possible.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>filterECQL</code> - the ECQL filter string</dd>
+<dd><code>filterCQL</code> - the CQL filter string</dd>
 <dd><code>application</code> - the application context</dd>
 <dd><code>featureSource</code> - the feature source</dd>
 <dt>Returns:</dt>

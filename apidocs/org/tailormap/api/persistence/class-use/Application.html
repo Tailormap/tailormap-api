@@ -117,7 +117,7 @@ loadScripts(document, 'script');</script>
  <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">EditFeatureController.</span><code><a href="../../controller/EditFeatureController.html#createFeature(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.Feature)" class="member-name-link">createFeature</a><wbr>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
@@ -312,11 +312,11 @@ loadScripts(document, 'script');</script>
 <div class="block">Determine whether we need to transform geometry to data source crs.</div>
 </div>
 <div class="col-first even-row-color"><code>static @NonNull org.geotools.api.filter.Filter</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">FilterUtil.</span><code><a href="../../geotools/FilterUtil.html#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
+<div class="col-second even-row-color"><span class="type-name-label">FilterUtil.</span><code><a href="../../geotools/FilterUtil.html#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter</a><wbr>(@NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  @NonNull <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
 needed/possible.</div>
 </div>
 </div>
@@ -334,11 +334,11 @@ needed/possible.</div>
 <div class="col-second even-row-color"><span class="type-name-label">FeatureSourceStatistics.</span><code><a href="../../geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics</a><wbr>(@Nullable <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  @NonNull org.geotools.api.data.SimpleFeatureSource&nbsp;featureSource,
  @NonNull <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterECQL,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filterCQL,
  int&nbsp;progressInterval,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/IntConsumer.html" title="class or interface in java.util.function" class="external-link">IntConsumer</a>&nbsp;progressCallback)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by an ECQL filter.</div>
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
 </div>
 </div>
 </section>

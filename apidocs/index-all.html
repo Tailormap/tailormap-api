@@ -3502,7 +3502,7 @@ configured settings, taking into account the configured attribute order and hidd
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html#getFeatureSourceStatistics(org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource,java.lang.String,java.lang.String,int,java.util.function.IntConsumer)" class="member-name-link">getFeatureSourceStatistics(Application, SimpleFeatureSource, String, String, int, IntConsumer)</a> - Static method in class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/FeatureSourceStatistics.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceStatistics</a></dt>
 <dd>
-<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by an ECQL filter.</div>
+<div class="block">Determine statistics for a given attribute of a feature source, optionally filtered by a CQL filter.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#getFeatureType()" class="member-name-link">getFeatureType()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in org.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
 <dd>
@@ -7317,14 +7317,9 @@ is not logged in.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FilterGroup.html#parentGroup(java.lang.String)" class="member-name-link">parentGroup(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FilterGroup.html" title="class in org.tailormap.api.viewer.model">FilterGroup</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/geotools/FilterUtil.html#parseFilter(java.lang.String)" class="member-name-link">parseFilter(String)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/FilterUtil.html" title="class in org.tailormap.api.geotools">FilterUtil</a></dt>
-<dd>
-<div class="block">Parses an ECQL filter string into a GeoTools Filter without an application context, so without transforming
-geometries.</div>
-</dd>
 <dt><a href="org/tailormap/api/geotools/FilterUtil.html#parseFilter(java.lang.String,org.tailormap.api.persistence.Application,org.geotools.api.data.SimpleFeatureSource)" class="member-name-link">parseFilter(String, Application, SimpleFeatureSource)</a> - Static method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/FilterUtil.html" title="class in org.tailormap.api.geotools">FilterUtil</a></dt>
 <dd>
-<div class="block">Parses an ECQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
+<div class="block">Parses a CQL filter string into a GeoTools Filter, transforming geometries to the data source CRS if
 needed/possible.</div>
 </dd>
 <dt><a href="org/tailormap/api/util/HttpProxyUtil.html#passthroughRequestHeaders(java.net.http.HttpRequest.Builder,jakarta.servlet.http.HttpServletRequest,java.util.Set)" class="member-name-link">passthroughRequestHeaders(HttpRequest.Builder, HttpServletRequest, Set)</a> - Static method in class org.tailormap.api.util.<a href="org/tailormap/api/util/HttpProxyUtil.html" title="class in org.tailormap.api.util">HttpProxyUtil</a></dt>
@@ -7502,6 +7497,8 @@ the specified interval.</div>
 <dt><a href="org/tailormap/api/controller/GeoServiceProxyController.html#proxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy(Application, GeoService, GeoServiceLayer, GeoServiceProtocol, HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/GeoServiceProxyController.html" title="class in org.tailormap.api.controller">GeoServiceProxyController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/GeoServiceProxyController.html#proxy3dtiles(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy3dtiles(Application, GeoService, GeoServiceLayer, HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/GeoServiceProxyController.html" title="class in org.tailormap.api.controller">GeoServiceProxyController</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSProxy.html#proxyWfsRequest(java.net.URI,java.lang.String,java.lang.String,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxyWfsRequest(URI, String, String, HttpServletRequest)</a> - Method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/WFSProxy.html" title="class in org.tailormap.api.geotools.wfs">WFSProxy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#publisher(java.net.URI)" class="member-name-link">publisher(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -11271,6 +11268,10 @@ the order they are declared.</div>
 <dt><a href="org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html" class="type-name-link" title="class in org.tailormap.api.geotools.featuresources">WFSFeatureSourceHelper</a> - Class in <a href="org/tailormap/api/geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#%3Cinit%3E()" class="member-name-link">WFSFeatureSourceHelper()</a> - Constructor for class org.tailormap.api.geotools.featuresources.<a href="org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html" title="class in org.tailormap.api.geotools.featuresources">WFSFeatureSourceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSProxy.html" class="type-name-link" title="class in org.tailormap.api.geotools.wfs">WFSProxy</a> - Class in <a href="org/tailormap/api/geotools/wfs/package-summary.html">org.tailormap.api.geotools.wfs</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/wfs/WFSProxy.html#%3Cinit%3E()" class="member-name-link">WFSProxy()</a> - Constructor for class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/WFSProxy.html" title="class in org.tailormap.api.geotools.wfs">WFSProxy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#wfsUrl()" class="member-name-link">wfsUrl()</a> - Method in record class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html" title="class in org.tailormap.api.geotools.wfs">SimpleWFSLayerDescription</a></dt>
 <dd>
