@@ -1,26 +1,27 @@
 name: 'Set up Maven'
 description: >-
-  Installs a pinned Maven version. The distribution is kept in the Actions cache so it is downloaded from
-  repo.maven.apache.org only once per version instead of in every job, which got us rate-limited (HTTP 429).
-
-inputs:
-  maven-version:
-    description: 'Maven version to install'
-    required: false
-    default: '3.9.16'
+  Installs the Maven version pinned in pom.xml next to this file (kept up to date by Dependabot). The distribution
+  is kept in the Actions cache so it is downloaded from repo.maven.apache.org only once per version instead of in
+  every job, which got us rate-limited (HTTP 429).
 
 runs:
   using: 'composite'
   steps:
+    - name: 'Read Maven version'
+      id: version
+      shell: bash
+      # yq (with XML support) is preinstalled on the GitHub runner images
+      run: echo "maven-version=$(yq -p xml -o yaml '.project.dependencies.dependency.version' '${{ github.action_path }}/pom.xml')" >> "$GITHUB_OUTPUT"
+
     # setup-maven looks in the runner tool cache first (tc.find('maven', version)) and only downloads on a miss,
     # so restoring the tool cache directory for this version is enough to skip the download.
     - name: 'Cache Maven distribution'
       uses: actions/cache@v6
       with:
-        path: ${{ runner.tool_cache }}/maven/${{ inputs.maven-version }}
-        key: maven-dist-${{ runner.os }}-${{ runner.arch }}-${{ inputs.maven-version }}
+        path: ${{ runner.tool_cache }}/maven/${{ steps.version.outputs.maven-version }}
+        key: maven-dist-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.maven-version }}
 
     - name: 'Set up Maven'
       uses: stCarolas/setup-maven@v5.1
       with:
-        maven-version: ${{ inputs.maven-version }}
+        maven-version: ${{ steps.version.outputs.maven-version }}

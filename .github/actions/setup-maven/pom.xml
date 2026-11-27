@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Not a build file. This pom only exists so Dependabot (maven ecosystem, see .github/dependabot.yml)
+  opens PRs to bump the Maven version CI installs. action.yml reads the apache-maven version from here.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.tailormap.ci</groupId>
+  <artifactId>setup-maven-version</artifactId>
+  <version>0</version>
+  <packaging>pom</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>apache-maven</artifactId>
+      <version>3.9.16</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</project>
