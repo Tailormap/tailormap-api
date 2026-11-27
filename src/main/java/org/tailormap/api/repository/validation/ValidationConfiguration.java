@@ -20,13 +20,17 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
 
   private final SearchIndexValidator searchIndexValidator;
 
+  private final OIDCConfigurationValidator oidcConfigurationValidator;
+
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
       ApplicationValidator applicationValidator,
-      SearchIndexValidator searchIndexValidator) {
+      SearchIndexValidator searchIndexValidator,
+      OIDCConfigurationValidator oidcConfigurationValidator) {
     this.localValidatorFactoryBean = localValidatorFactoryBean;
     this.applicationValidator = applicationValidator;
     this.searchIndexValidator = searchIndexValidator;
+    this.oidcConfigurationValidator = oidcConfigurationValidator;
   }
 
   @Override
@@ -37,6 +41,8 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
         .addValidator("beforeCreate", applicationValidator)
         .addValidator("beforeSave", applicationValidator)
         .addValidator("beforeCreate", searchIndexValidator)
-        .addValidator("beforeSave", searchIndexValidator);
+        .addValidator("beforeSave", searchIndexValidator)
+        .addValidator("beforeCreate", oidcConfigurationValidator)
+        .addValidator("beforeSave", oidcConfigurationValidator);
   }
 }
