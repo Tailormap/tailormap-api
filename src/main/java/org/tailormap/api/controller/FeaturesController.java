@@ -56,6 +56,7 @@ import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.geotools.wfs.WFSCountDefaultUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureSource;
@@ -204,6 +205,15 @@ public class FeaturesController implements Constants {
     SimpleFeatureSource fs = null;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
+
+      // A WFS returns at most its CountDefault features. Use that as the page size (returned in the response so
+      // the client uses it too), otherwise the start index of the next page would skip features, and a client
+      // that does not know the total would think a page with fewer features than the page size is the last page.
+      Integer wfsCountDefault = WFSCountDefaultUtil.getCountDefault(fs.getDataStore());
+      if (wfsCountDefault != null && wfsCountDefault < requestPageSize) {
+        requestPageSize = wfsCountDefault;
+        featuresResponse.setPageSize(requestPageSize);
+      }
 
       // Property names for sorting: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
