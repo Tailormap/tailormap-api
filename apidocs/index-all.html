@@ -931,6 +931,8 @@ RepositoryConstraintViolationException gets converted to JSON.</div>
 </dd>
 <dt><a href="org/tailormap/api/security/InternalAdminAuthentication.html#clearSecurityContextAuthentication()" class="member-name-link">clearSecurityContextAuthentication()</a> - Static method in class org.tailormap.api.security.<a href="org/tailormap/api/security/InternalAdminAuthentication.html" title="class in org.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html#clientClasses()" class="member-name-link">clientClasses()</a> - Method in class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GroupOidcInfo.html#clientIds(java.util.Set)" class="member-name-link">clientIds(Set)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GroupOidcInfo.html" title="class in org.tailormap.api.persistence.json">GroupOidcInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/ApiSecurityConfiguration.html#clientRegistrationRepository(org.tailormap.api.repository.OIDCConfigurationRepository)" class="member-name-link">clientRegistrationRepository(OIDCConfigurationRepository)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/ApiSecurityConfiguration.html" title="class in org.tailormap.api.security">ApiSecurityConfiguration</a></dt>
@@ -1038,6 +1040,8 @@ request to do a POST request with all parameters in the body to handle large POS
 <dd>
 <div class="block">Create attachment table and index for the given FeatureType.</div>
 </dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html#createClient(java.util.List)" class="member-name-link">createClient(List)</a> - Method in class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AttachmentMetadata.html#createdAt(java.time.OffsetDateTime)" class="member-name-link">createdAt(OffsetDateTime)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AttachmentMetadata.html" title="class in org.tailormap.api.viewer.model">AttachmentMetadata</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Drawing.html#createdAt(java.time.OffsetDateTime)" class="member-name-link">createdAt(OffsetDateTime)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Drawing.html" title="class in org.tailormap.api.viewer.model">Drawing</a></dt>
@@ -1089,6 +1093,8 @@ request to do a POST request with all parameters in the body to handle large POS
 <dt><a href="org/tailormap/api/service/CreateLayerExtractService.html" class="type-name-link" title="class in org.tailormap.api.service">CreateLayerExtractService</a> - Class in <a href="org/tailormap/api/service/package-summary.html">org.tailormap.api.service</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/service/CreateLayerExtractService.html#%3Cinit%3E(ch.rasc.sse.eventbus.SseEventBus,tools.jackson.databind.json.JsonMapper,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.service.ZipService)" class="member-name-link">CreateLayerExtractService(SseEventBus, JsonMapper, FeatureSourceFactoryHelper, ZipService)</a> - Constructor for class org.tailormap.api.service.<a href="org/tailormap/api/service/CreateLayerExtractService.html" title="class in org.tailormap.api.service">CreateLayerExtractService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html#createLogging(org.geotools.http.HTTPClient)" class="member-name-link">createLogging(HTTPClient)</a> - Method in class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/DrawingController.html#createOrUpdateDrawing(org.tailormap.api.viewer.model.Drawing,org.tailormap.api.persistence.Application)" class="member-name-link">createOrUpdateDrawing(Drawing, Application)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/DrawingController.html" title="class in org.tailormap.api.controller">DrawingController</a></dt>
 <dd>
@@ -7052,6 +7058,19 @@ is not logged in.</div>
 <dd>
 <div class="block">Returns the value of the <code>node</code> record component.</div>
 </dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html" class="type-name-link" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClient</a> - Class in <a href="org/tailormap/api/geotools/http/package-summary.html">org.tailormap.api.geotools.http</a></dt>
+<dd>
+<div class="block">GeoTools <code>MultithreadedHttpClient</code> that doesn't send an <code>Expect: 100-continue</code> header with POST requests.</div>
+</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html#%3Cinit%3E()" class="member-name-link">NoExpectContinueHttpClient()</a> - Constructor for class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClient</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" class="type-name-link" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a> - Class in <a href="org/tailormap/api/geotools/http/package-summary.html">org.tailormap.api.geotools.http</a></dt>
+<dd>
+<div class="block">GeoTools HTTP client factory that uses <a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html" title="class in org.tailormap.api.geotools.http"><code>NoExpectContinueHttpClient</code></a> instead of
+<code>MultithreadedHttpClient</code>.</div>
+</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html#%3Cinit%3E()" class="member-name-link">NoExpectContinueHttpClientFactory()</a> - Constructor for class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/Filter.ConditionEnum.html#NOT_EQUAL" class="member-name-link">NOT_EQUAL</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.ConditionEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Filter.ConditionEnum.html#NOT_EQUAL" class="member-name-link">NOT_EQUAL</a> - Enum constant in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.viewer.model">Filter.ConditionEnum</a></dt>
@@ -7182,6 +7201,8 @@ is not logged in.</div>
 <dt><a href="org/tailormap/api/geotools/collection/package-summary.html">org.tailormap.api.geotools.collection</a> - package org.tailormap.api.geotools.collection</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/featuresources/package-summary.html">org.tailormap.api.geotools.featuresources</a> - package org.tailormap.api.geotools.featuresources</dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/http/package-summary.html">org.tailormap.api.geotools.http</a> - package org.tailormap.api.geotools.http</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/processing/package-summary.html">org.tailormap.api.geotools.processing</a> - package org.tailormap.api.geotools.processing</dt>
 <dd>&nbsp;</dd>
@@ -8021,6 +8042,10 @@ Actuator configprops endpoint, which can include passwords and other confidentia
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Component.html#setConfig(org.tailormap.api.viewer.model.ComponentConfig)" class="member-name-link">setConfig(ComponentConfig)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Component.html" title="class in org.tailormap.api.viewer.model">Component</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html#setConnectTimeout(int)" class="member-name-link">setConnectTimeout(int)</a> - Method in class org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClient</a></dt>
+<dd>
+<div class="block">Sets the connect timeout in seconds, also for new connections of the connection manager.</div>
+</dd>
 <dt><a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.html#setConnectTimeout(int)" class="member-name-link">setConnectTimeout(int)</a> - Method in class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.html" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#setContent(byte%5B%5D)" class="member-name-link">setContent(byte[])</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>

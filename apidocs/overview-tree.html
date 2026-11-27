@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/tailormap/api/geotools/package-tree.html">org.tailormap.api.geotools</a>, </li>
 <li><a href="org/tailormap/api/geotools/collection/package-tree.html">org.tailormap.api.geotools.collection</a>, </li>
 <li><a href="org/tailormap/api/geotools/featuresources/package-tree.html">org.tailormap.api.geotools.featuresources</a>, </li>
+<li><a href="org/tailormap/api/geotools/http/package-tree.html">org.tailormap.api.geotools.http</a>, </li>
 <li><a href="org/tailormap/api/geotools/processing/package-tree.html">org.tailormap.api.geotools.processing</a>, </li>
 <li><a href="org/tailormap/api/geotools/wfs/package-tree.html">org.tailormap.api.geotools.wfs</a>, </li>
 <li><a href="org/tailormap/api/persistence/package-tree.html">org.tailormap.api.persistence</a>, </li>
@@ -90,6 +91,20 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" class="type-name-link external-link" title="class or interface in java.lang">Object</a>
 <ul>
+<li class="circle">org.geotools.http.AbstractHttpClient (implements org.geotools.http.HTTPClient)
+<ul>
+<li class="circle">org.geotools.http.commons.MultithreadedHttpClient (implements org.geotools.http.HTTPConnectionPooling, org.geotools.http.HTTPProxy)
+<ul>
+<li class="circle">org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClient.html" class="type-name-link" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClient</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">org.geotools.http.AbstractHTTPClientFactory (implements org.geotools.http.HTTPClientFactory)
+<ul>
+<li class="circle">org.tailormap.api.geotools.http.<a href="org/tailormap/api/geotools/http/NoExpectContinueHttpClientFactory.html" class="type-name-link" title="class in org.tailormap.api.geotools.http">NoExpectContinueHttpClientFactory</a></li>
+</ul>
+</li>
 <li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/AbstractMap.html" class="type-name-link external-link" title="class or interface in java.util">AbstractMap</a>&lt;K,<wbr>V&gt; (implements java.util.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;K,<wbr>V&gt;)
 <ul>
 <li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html" class="type-name-link external-link" title="class or interface in java.util">HashMap</a>&lt;K,<wbr>V&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Cloneable.html" title="class or interface in java.lang" class="external-link">Cloneable</a>, java.util.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;K,<wbr>V&gt;, java.io.<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)

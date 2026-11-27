@@ -12,6 +12,7 @@ org.tailormap.api.drawing
 org.tailormap.api.geotools
 org.tailormap.api.geotools.collection
 org.tailormap.api.geotools.featuresources
+org.tailormap.api.geotools.http
 org.tailormap.api.geotools.processing
 org.tailormap.api.geotools.wfs
 org.tailormap.api.persistence
