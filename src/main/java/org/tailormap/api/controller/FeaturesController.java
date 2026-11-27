@@ -56,6 +56,7 @@ import org.tailormap.api.geotools.featuresources.AttachmentsHelper;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
+import org.tailormap.api.geotools.wfs.WFSCountDefaultUtil;
 import org.tailormap.api.geotools.wfs.WFSHitsCountUtil;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
@@ -203,6 +204,15 @@ public class FeaturesController implements Constants {
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
 
+      // A WFS returns at most its CountDefault features. Use that as the page size (returned in the response so
+      // the client uses it too), otherwise the start index of the next page would skip features, and a client
+      // that does not know the total would think a page with fewer features than the page size is the last page.
+      Integer wfsCountDefault = WFSCountDefaultUtil.getCountDefault(fs.getDataStore());
+      if (wfsCountDefault != null && wfsCountDefault < requestPageSize) {
+        requestPageSize = wfsCountDefault;
+        featuresResponse.setPageSize(requestPageSize);
+      }
+
       // Property names for sorting: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
           .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)
@@ -228,7 +238,9 @@ public class FeaturesController implements Constants {
                 .equals(WFSFeatureSourceHelper.getWFSVersion(
                     tmft.getFeatureSource().getUrl()))) {
           // A WFS has no known primary key (only detected for JDBC) and the first attribute need not be
-          // unique, so use the natural order of the server, which is stable across pages in practice.
+          // unique, so use the natural order of the server. WFS 2.0 (ISO 19142) 7.9.2.5.4.4 requires a server
+          // to keep the order of a query without a sorting clause the same across executions, so it is stable
+          // across pages (MapServer with PostGIS doesn't strictly do this: no ORDER BY with LIMIT/OFFSET).
           // Sorting on gml:id is not possible (PDOK and GeoServer reject it).
           // Not for WFS 1.x: GeoTools then sends the NATURAL_ORDER it adds when paging as a SortProperty
           // without a PropertyName, which GeoServer rejects.
