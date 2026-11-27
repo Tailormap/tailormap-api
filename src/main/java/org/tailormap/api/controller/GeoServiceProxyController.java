@@ -110,6 +110,32 @@ public class GeoServiceProxyController {
   @Value("${tailormap-api.proxy.passthrough.hostnames:}")
   private Set<String> proxyPassthroughHostNames = Set.of();
 
+  /** Parameters (case-insensitive) which name the layer(s) to request from a WMS or WMTS. */
+  private static final List<String> LAYER_PARAMS = List.of("LAYERS", "QUERY_LAYERS", "LAYER");
+
+  /** Parameters (case-insensitive) with an SLD, which can name any layer of a WMS. */
+  private static final List<String> SLD_PARAMS = List.of("SLD", "SLD_BODY", "SLD_URL");
+
+  /** Allowed WMS operations (lowercase) and the layer parameters each requires. */
+  private static final Map<String, Set<String>> WMS_REQUEST_LAYER_PARAMS = Map.of(
+      "getcapabilities", Set.of(),
+      "getmap", Set.of("LAYERS"),
+      "getfeatureinfo", Set.of("LAYERS", "QUERY_LAYERS"),
+      "getlegendgraphic", Set.of("LAYER"));
+
+  /** Allowed WMTS (KVP) operations (lowercase) and the layer parameters each requires. */
+  private static final Map<String, Set<String>> WMTS_REQUEST_LAYER_PARAMS = Map.of(
+      "getcapabilities", Set.of(),
+      "gettile", Set.of("LAYER"),
+      "getfeatureinfo", Set.of("LAYER"));
+
+  /** Parameters a request to the legend proxy may not set, so the legend is always for the app layer. */
+  private static final List<String> LEGEND_FORBIDDEN_PARAMS =
+      List.of("LAYER", "LAYERS", "QUERY_LAYERS", "SLD", "SLD_BODY", "SLD_URL");
+
+  /** Parameters from a request to the legend proxy which are not copied to the legend URL. */
+  private static final Set<String> LEGEND_IGNORED_PARAMS = Set.of("SERVICE", "REQUEST");
+
   public GeoServiceProxyController(
       AuthorisationService authorisationService,
       @Value("${tailormap-api.proxy.connect-timeout:10s}") Duration connectTimeout,
@@ -210,58 +236,10 @@ public class GeoServiceProxyController {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
     }
 
-    // check if there are multiple LAYERS parameters or multiple values for the LAYERS parameter,
-    // which is not supported by this proxy and can be a sign of an attempt to bypass the layer name check below
-    long wmsLayerParamCount = request.getParameterMap().entrySet().stream()
-        .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
-        .count();
-    boolean hasMultipleLayerValues = request.getParameterMap().entrySet().stream()
-        .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
-        .anyMatch(entry -> entry.getValue().length > 1
-            || (entry.getValue().length == 1 && entry.getValue()[0].indexOf(',') >= 0));
-    if (wmsLayerParamCount > 1 || hasMultipleLayerValues) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Multiple layers in LAYERS parameter not supported");
-    }
-
-    // this can be null in case of requests that do not have a LAYERS parameter, such as GetCapabilities requests.
-    String layerNameParamValue = request.getParameterMap().entrySet().stream()
-        .filter(entry -> "LAYERS".equalsIgnoreCase(entry.getKey()))
-        .findFirst()
-        .map(entry -> entry.getValue()[0])
-        .orElse(null);
-
-    if (layerNameParamValue != null && !layer.getName().equals(layerNameParamValue)) {
-      // check if layer matches any passthrough pattern, if not throw bad request
-      if (proxyLayerPassthroughPatterns.stream().noneMatch(pattern -> {
-        return Pattern.compile(pattern.formatted(Pattern.quote(layer.getName())))
-            .matcher(layerNameParamValue)
-            .matches();
-      })) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Requested layer name does not match expected layer");
-      }
-
-      if (!proxyPassthroughHostNames.isEmpty()) {
-        // check if host matches any passthrough hostname, if not throw bad request
-        try {
-          String geoServiceHostName = new URI(service.getUrl()).getHost();
-          if (proxyPassthroughHostNames.stream()
-              .noneMatch(hostname -> hostname.equalsIgnoreCase(geoServiceHostName))) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Requested service hostname does not match allowed hostnames for layer passthrough");
-          }
-        } catch (URISyntaxException e) {
-          logger.error(
-              "Invalid service URL \"{}\" for layer id {}: {}",
-              service.getUrl(),
-              layer.getId(),
-              e.getMessage());
-          throw new ResponseStatusException(
-              HttpStatus.INTERNAL_SERVER_ERROR, "Invalid service URL in configuration");
-        }
-      }
+    if (GeoServiceProtocol.WMS.equals(protocol) || GeoServiceProtocol.WMTS.equals(protocol)) {
+      checkOgcRequestParams(service, layer, protocol, request.getParameterMap());
+    } else if (GeoServiceProtocol.LEGEND.equals(protocol)) {
+      checkLegendRequestParams(request.getParameterMap());
     }
 
     if (authorisationService.mustDenyAccessForSecuredProxy(service)) {
@@ -274,6 +252,130 @@ public class GeoServiceProxyController {
           service.getUrl());
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
+  }
+
+  /**
+   * Checks the parameters of a WMS or WMTS request so that only the app layer (or a layer allowed by the passthrough
+   * configuration) can be requested from the proxied service. Only the operations needed by the viewer are allowed,
+   * and the parameters which name the layer(s) to request are required for operations which return layer content.
+   */
+  void checkOgcRequestParams(
+      GeoService service, GeoServiceLayer layer, GeoServiceProtocol protocol, Map<String, String[]> params) {
+    String serviceParam = getSingleParam(params, "SERVICE");
+    if (serviceParam != null && !protocol.getValue().equalsIgnoreCase(serviceParam)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid SERVICE parameter for proxy protocol");
+    }
+
+    String requestParam = getSingleParam(params, "REQUEST");
+    Map<String, Set<String>> allowedRequests =
+        GeoServiceProtocol.WMS.equals(protocol) ? WMS_REQUEST_LAYER_PARAMS : WMTS_REQUEST_LAYER_PARAMS;
+    Set<String> requiredLayerParams =
+        requestParam == null ? null : allowedRequests.get(requestParam.toLowerCase(Locale.ROOT));
+    if (requiredLayerParams == null) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Missing or unsupported REQUEST parameter for proxy protocol");
+    }
+
+    for (String requiredParam : requiredLayerParams) {
+      if (getSingleParam(params, requiredParam) == null) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing " + requiredParam + " parameter");
+      }
+    }
+
+    // Check all parameters naming layers, also when they are not required for the requested operation
+    for (String layerParam : LAYER_PARAMS) {
+      String value = getSingleParam(params, layerParam);
+      if (value == null) {
+        continue;
+      }
+      if (value.indexOf(',') >= 0) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Multiple layers in " + layerParam + " parameter not supported");
+      }
+      checkLayerName(service, layer, value);
+    }
+
+    // An SLD can reference any layer of the service, so it would bypass the layer name checks above
+    for (String sldParam : SLD_PARAMS) {
+      if (hasParam(params, sldParam)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, sldParam + " parameter not allowed for proxied services");
+      }
+    }
+  }
+
+  /**
+   * The legend proxy uses the legend URL from the capabilities for the app layer. The request may add parameters to
+   * enhance the legend image, but may not change which layer the legend is for.
+   */
+  static void checkLegendRequestParams(Map<String, String[]> params) {
+    for (String param : LEGEND_FORBIDDEN_PARAMS) {
+      if (hasParam(params, param)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, param + " parameter not allowed for proxied legend");
+      }
+    }
+  }
+
+  private void checkLayerName(GeoService service, GeoServiceLayer layer, String layerNameParamValue) {
+    if (layer.getName().equals(layerNameParamValue)) {
+      return;
+    }
+
+    // check if layer matches any passthrough pattern, if not throw bad request
+    if (proxyLayerPassthroughPatterns.stream().noneMatch(pattern -> {
+      return Pattern.compile(pattern.formatted(Pattern.quote(layer.getName())))
+          .matcher(layerNameParamValue)
+          .matches();
+    })) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Requested layer name does not match expected layer");
+    }
+
+    if (!proxyPassthroughHostNames.isEmpty()) {
+      // check if host matches any passthrough hostname, if not throw bad request
+      try {
+        String geoServiceHostName = new URI(service.getUrl()).getHost();
+        if (proxyPassthroughHostNames.stream()
+            .noneMatch(hostname -> hostname.equalsIgnoreCase(geoServiceHostName))) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "Requested service hostname does not match allowed hostnames for layer passthrough");
+        }
+      } catch (URISyntaxException e) {
+        logger.error(
+            "Invalid service URL \"{}\" for layer id {}: {}",
+            service.getUrl(),
+            layer.getId(),
+            e.getMessage());
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "Invalid service URL in configuration");
+      }
+    }
+  }
+
+  private static boolean hasParam(Map<String, String[]> params, String name) {
+    return params.keySet().stream().anyMatch(name::equalsIgnoreCase);
+  }
+
+  /**
+   * Returns the value of a parameter (case-insensitive name), or null if not present. Multiple parameters with the
+   * same name (in any case) or multiple values are rejected, because the proxied service may use another one than the
+   * value checked here.
+   */
+  private static @Nullable String getSingleParam(Map<String, String[]> params, String name) {
+    List<String> values = params.entrySet().stream()
+        .filter(entry -> name.equalsIgnoreCase(entry.getKey()))
+        .flatMap(entry -> Arrays.stream(entry.getValue()))
+        .toList();
+    if (values.size() > 1) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          LAYER_PARAMS.contains(name)
+              ? "Multiple layers in " + name + " parameter not supported"
+              : "Multiple " + name + " parameters not supported");
+    }
+    return values.isEmpty() ? null : values.getFirst();
   }
 
   /**
@@ -308,22 +410,31 @@ public class GeoServiceProxyController {
       return legendURI;
     }
 
-    // Add all parameters from the incoming request to allow for vendor-specific parameters to enhance the legend
-    // image, such as font antialiasing, hi-DPI, label margins, and so on
+    return addLegendRequestParams(legendURI, request.getParameterMap());
+  }
+
+  /**
+   * Adds the parameters from the incoming request to a GetLegendGraphic URL to allow for vendor-specific parameters
+   * to enhance the legend image, such as font antialiasing, hi-DPI, label margins, and so on. Parameters which would
+   * change the layer of the legend are rejected by {@link #checkLegendRequestParams(Map)}. The SERVICE and REQUEST
+   * parameters of the legend URL are kept.
+   */
+  static URI addLegendRequestParams(URI legendURI, @Nullable Map<String, String[]> requestParams) {
     UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
-    if (request.getParameterMap() != null) {
-      request.getParameterMap().forEach((key, values) -> {
-        for (String value : values) {
-          uriComponentsBuilder.replaceQueryParam(
-              UriUtils.encode(key, StandardCharsets.UTF_8),
-              UriUtils.encode(value, StandardCharsets.UTF_8));
+    MultiValueMap<String, String> legendParams =
+        new LinkedMultiValueMap<>(uriComponentsBuilder.build(true).getQueryParams());
+    if (requestParams != null) {
+      requestParams.forEach((key, values) -> {
+        if (values.length == 0 || LEGEND_IGNORED_PARAMS.contains(key.toUpperCase(Locale.ROOT))) {
+          return;
         }
+        // Replace the parameter case-insensitively, so it is not sent twice with different values
+        String encodedKey = UriUtils.encode(key, StandardCharsets.UTF_8);
+        legendParams.keySet().removeIf(encodedKey::equalsIgnoreCase);
+        legendParams.add(encodedKey, UriUtils.encode(values[values.length - 1], StandardCharsets.UTF_8));
       });
     }
-    // Make sure the REQUEST parameter is set to GetLegendGraphic. No SSRF risk as WMSes should not do anything with
-    // other parameters other than returning a legend image
-    uriComponentsBuilder.replaceQueryParam("REQUEST", "GetLegendGraphic");
-
+    uriComponentsBuilder.replaceQueryParams(legendParams);
     return uriComponentsBuilder.build(true).toUri();
   }
 
@@ -350,13 +461,15 @@ public class GeoServiceProxyController {
     // Start with all the parameters from the request
     final MultiValueMap<String, String> params = new LinkedMultiValueMap<>(requestParams);
 
-    // Add original service URL parameters if they are not required OGC params (case-insensitive)
-    // and not already set by request
-    final List<String> ogcParams = List.of(new String[] {"SERVICE", "REQUEST", "VERSION"});
+    // Add original service URL parameters if they are not required OGC params (case-insensitive). These take
+    // precedence over the request parameters (case-insensitive), so a request can't change parameters such as
+    // MapServer's MAP parameter to access other layers with the credentials of the service.
+    final List<String> ogcParams = List.of("SERVICE", "REQUEST", "VERSION");
     for (Map.Entry<String, List<String>> serviceParam : originalServiceParams.entrySet()) {
-      if (!params.containsKey(serviceParam.getKey())
-          && !ogcParams.contains(serviceParam.getKey().toUpperCase(Locale.ROOT))) {
-        params.put(serviceParam.getKey(), serviceParam.getValue());
+      String key = serviceParam.getKey();
+      if (!ogcParams.contains(key.toUpperCase(Locale.ROOT))) {
+        params.keySet().removeIf(key::equalsIgnoreCase);
+        params.put(key, serviceParam.getValue());
       }
     }
     return params;

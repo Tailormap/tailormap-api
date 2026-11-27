@@ -415,6 +415,89 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
+  void wmts_get_tile_other_layer_denied() throws Exception {
+    final String path = apiBasePath + obkUrl;
+    mockMvc.perform(get(path)
+            .param("SERVICE", "WMTS")
+            .param("VERSION", "1.0.0")
+            .param("REQUEST", "GetTile")
+            .param("layer", "lufo")
+            .param("STYLE", "default")
+            .param("FORMAT", "image/png")
+            .param("TILEMATRIXSET", "rd")
+            .param("TILEMATRIX", "4")
+            .param("TILEROW", "7")
+            .param("TILECOL", "8")
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Requested layer name does not match expected layer"));
+  }
+
+  @Test
+  void wms_get_map_without_layers_denied() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("VERSION", "1.3.0")
+            .param("FORMAT", "image/png")
+            .param("WIDTH", "256")
+            .param("HEIGHT", "256")
+            .param("CRS", "EPSG:28992")
+            .param("BBOX", "130574.85495843932,457818.25613033347,133951.6192003861,459037.5418133715")
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Missing LAYERS parameter"));
+  }
+
+  @Test
+  void wms_get_feature_info_other_query_layer_denied() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetFeatureInfo")
+            .param("SERVICE", "WMS")
+            .param("VERSION", "1.3.0")
+            .param("LAYERS", "postgis:begroeidterreindeel")
+            .param("QUERY_LAYERS", "postgis:invalid_layer_name")
+            .param("INFO_FORMAT", "application/json")
+            .param("WIDTH", "256")
+            .param("HEIGHT", "256")
+            .param("I", "128")
+            .param("J", "128")
+            .param("CRS", "EPSG:28992")
+            .param("BBOX", "130574.85495843932,457818.25613033347,133951.6192003861,459037.5418133715")
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Requested layer name does not match expected layer"));
+  }
+
+  @Test
+  void wms_sld_body_denied() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetMap")
+            .param("SERVICE", "WMS")
+            .param("LAYERS", "postgis:begroeidterreindeel")
+            .param("SLD_BODY", "<StyledLayerDescriptor/>")
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("SLD_BODY parameter not allowed for proxied services"));
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  void proxied_legend_layer_override_denied() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelLegendUrl;
+    mockMvc.perform(get(path)
+            .param("SCALE", "693745.6953993673")
+            .param("LAYER", "postgis:invalid_layer_name")
+            .with(setServletPath(path)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("LAYER parameter not allowed for proxied legend"));
+  }
+
+  @Test
+  @WithMockUser(username = "user")
   void obk_wmts_get_tile_conditional() throws Exception {
     final String path = apiBasePath + obkUrl;
 
