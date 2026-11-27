@@ -50,6 +50,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: 'Set up Maven'
+        uses: ./.github/actions/setup-maven
+
       - name: 'Generate sources with Maven'
         run: mvn generate-sources
 

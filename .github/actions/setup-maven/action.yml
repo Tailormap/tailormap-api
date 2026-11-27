@@ -1,0 +1,26 @@
+name: 'Set up Maven'
+description: >-
+  Installs a pinned Maven version. The distribution is kept in the Actions cache so it is downloaded from
+  repo.maven.apache.org only once per version instead of in every job, which got us rate-limited (HTTP 429).
+
+inputs:
+  maven-version:
+    description: 'Maven version to install'
+    required: false
+    default: '3.9.16'
+
+runs:
+  using: 'composite'
+  steps:
+    # setup-maven looks in the runner tool cache first (tc.find('maven', version)) and only downloads on a miss,
+    # so restoring the tool cache directory for this version is enough to skip the download.
+    - name: 'Cache Maven distribution'
+      uses: actions/cache@v6
+      with:
+        path: ${{ runner.tool_cache }}/maven/${{ inputs.maven-version }}
+        key: maven-dist-${{ runner.os }}-${{ runner.arch }}-${{ inputs.maven-version }}
+
+    - name: 'Set up Maven'
+      uses: stCarolas/setup-maven@v5.1
+      with:
+        maven-version: ${{ inputs.maven-version }}

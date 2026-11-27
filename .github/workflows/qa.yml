@@ -38,6 +38,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: 'Set up Maven'
+        uses: ./.github/actions/setup-maven
+        if: always()
+
       - name: 'QA build with Maven'
         if: always()
         run: mvn -B -V -fae -DskipQA=false -Dspotless.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install

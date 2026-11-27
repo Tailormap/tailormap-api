@@ -27,6 +27,9 @@ jobs:
           java-version: 25
           cache: 'maven'
 
+      - name: 'Set up Maven'
+        uses: ./.github/actions/setup-maven
+
       - name: 'Build'
         run: mvn -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
 
