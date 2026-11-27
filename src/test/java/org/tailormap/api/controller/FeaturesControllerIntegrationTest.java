@@ -117,7 +117,7 @@ class FeaturesControllerIntegrationTest {
    * some test queries for the applayers (database/wfs featuretypes).
    *
    * @return a list of arguments for the test methods
-   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">CQL</a>
+   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">ECQL</a>
    */
   static Stream<Arguments> filtersProvider() {
     return Stream.of(
@@ -1167,7 +1167,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   @DefaultTimeZone("Europe/Amsterdam")
-  void filter_test(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
+  void filter_test(String appLayerUrl, String filterECQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
     if (!exactWfsCounts && appLayerUrl.equals(provinciesWfs)) {
       // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
@@ -1179,7 +1179,7 @@ class FeaturesControllerIntegrationTest {
     MvcResult result = mockMvc.perform(get(appLayerUrl)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(appLayerUrl))
-            .param("filter", filterCQL)
+            .param("filter", filterECQL)
             .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
