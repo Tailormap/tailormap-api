@@ -52,7 +52,7 @@ public class UploadsController {
           BAD_REQUEST, "Uploads for category " + category + " are not accessible via this endpoint");
     }
 
-    long ifModifiedSince = request.getDateHeader("If-Modified-Since");
+    long ifModifiedSince = UploadsService.getIfModifiedSince(request);
 
     if (!uploadsService.checkIfModifiedSince(id, ifModifiedSince)) {
       return ResponseEntity.status(NOT_MODIFIED).build();

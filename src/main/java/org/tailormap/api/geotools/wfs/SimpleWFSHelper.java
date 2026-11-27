@@ -14,7 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class SimpleWFSHelper {
-  public static final String DEFAULT_WFS_VERSION = "1.1.0";
+  public static final String DEFAULT_WFS_VERSION = "2.0.0";
 
   public static URI getWFSRequestURL(
       String wfsUrl, String request, String version, MultiValueMap<String, String> parameters) {

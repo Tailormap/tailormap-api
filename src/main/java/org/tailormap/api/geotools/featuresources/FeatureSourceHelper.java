@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFactorySpi;
 import org.geotools.api.data.DataStoreFinder;
 import org.geotools.api.data.ResourceInfo;
 import org.geotools.api.data.ServiceInfo;
@@ -69,6 +70,20 @@ public abstract class FeatureSourceHelper {
   }
 
   public DataStore openDatastore(Map<String, Object> params, String passwordKey) throws IOException {
+    return openDatastore(params, passwordKey, null);
+  }
+
+  /**
+   * Open a datastore with the given parameters.
+   *
+   * @param params the datastore parameters
+   * @param passwordKey the key of the password parameter, which is masked in log messages
+   * @param factory the factory to create the datastore with, or {@code null} to find one with {@link DataStoreFinder}
+   * @return the datastore
+   * @throws IOException if the datastore can't be opened
+   */
+  public DataStore openDatastore(Map<String, Object> params, String passwordKey, DataStoreFactorySpi factory)
+      throws IOException {
     Map<String, Object> logParams = new HashMap<>(params);
     String passwd = (String) params.get(passwordKey);
     if (passwd != null) {
@@ -77,7 +92,7 @@ public abstract class FeatureSourceHelper {
     logger.debug("Opening datastore using parameters: {}", logParams);
     DataStore ds;
     try {
-      ds = DataStoreFinder.getDataStore(params);
+      ds = factory != null ? factory.createDataStore(params) : DataStoreFinder.getDataStore(params);
     } catch (IOException e) {
       throw new IOException("Cannot open datastore using parameters: " + logParams, e);
     }
