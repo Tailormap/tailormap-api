@@ -7,10 +7,9 @@
 package org.tailormap.api.geotools;
 
 import java.io.ByteArrayInputStream;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.tailormap.api.util.SecureXmlFactories;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,12 +25,9 @@ public class WMSServiceExceptionUtil {
    */
   public static String tryGetServiceExceptionMessage(byte[] body) {
     try {
-      DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-      documentBuilderFactory.setNamespaceAware(true);
-      documentBuilderFactory.setExpandEntityReferences(false);
-      documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      // Hardened against XXE, the response is from a possibly malicious WMS
+      DocumentBuilder builder =
+          SecureXmlFactories.newDocumentBuilderFactory().newDocumentBuilder();
       Document doc = builder.parse(new ByteArrayInputStream(body));
 
       String code = null;

@@ -77,7 +77,7 @@ class LayerBoundsControllerIntegrationTest {
    * some test queries for the applayers (database/wfs featuretypes).
    *
    * @return a list of arguments for the test methods
-   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">CQL</a>
+   *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">ECQL</a>
    */
   static Stream<Arguments> filtersProvider() {
     return Stream.of(
